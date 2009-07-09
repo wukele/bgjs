@@ -1,0 +1,139 @@
+﻿/*会员*/
+.flow_lay{ width:918px; background:#FFF9E9; border:1px #FFF0BF solid; padding:20px 10px 20px 10px; margin-bottom:10px; }
+.add_title_lay{ width:908px; height:24px; background:#FEE6C1; border-bottom:1px solid #FFFFFF; text-align:left; padding:7px 0 0 10px;}
+.add_title{ color:#B7460A; font-size:14px; font-weight:bold;}
+.add_h_lay{ width:916px; height:23px; border:1px solid #FDCA82; border-bottom:0; font-weight:bold; background:#FFECCA; }
+.add_h_layA{ width:556px; height:23px; border:1px solid #FDCA82; border-bottom:0; font-weight:bold; background:#FFECCA; }
+.add_h_layB{ width:938px; height:23px; border:1px solid #FDCA82; border-bottom:0; font-weight:bold; background:#FFECCA; }
+   .add_h_lay1{ float:left; width:62px; height:20px; background:url(../images/point/flow/diwen01.jpg) right no-repeat; padding:2px 0 0 0; text-align:center;}
+   .add_h_lay2{ float:left; width:76px; height:20px; background:url(../images/point/flow/diwen01.jpg) right no-repeat; padding:2px 0 0 5px; text-align:left;}
+   .add_h_lay3{ float:left; width:84px; height:20px; background:url(../images/point/flow/diwen01.jpg) right no-repeat; padding:2px 0 0 5px; text-align:left;}
+   .add_h_lay4{ float:left; width:92px; height:20px; background:url(../images/point/flow/diwen01.jpg) right no-repeat; padding:2px 0 0 5px; text-align:left;}
+   .add_h_lay5{ float:left; width:108px; height:20px; background:url(../images/point/flow/diwen01.jpg) right no-repeat; padding:2px 0 0 5px; text-align:left;}
+   .add_h_lay6{ float:left; width:123px; height:20px; background:url(../images/point/flow/diwen01.jpg) right no-repeat; padding:2px 0 0 5px; text-align:left;}
+   .add_h_lay7{ float:left; width:204px; height:20px; background:url(../images/point/flow/diwen01.jpg) right no-repeat; padding:2px 0 0 5px; text-align:left;}
+   .add_h_lay8{ float:left; width:132px; height:20px; padding:2px 0 0 5px; text-align:left; }
+   .add_h_lay9{ float:left; width:181px; height:20px; background:url(../images/point/flow/diwen01.jpg) right no-repeat; padding:2px 0 0 5px; text-align:left;}
+   .add_h_lay10{ float:left; width:481px; height:20px; background:url(../images/point/flow/diwen01.jpg) right no-repeat; padding:2px 0 0 5px; text-align:left;}
+   .add_h_lay11{ float:left; width:108px; height:20px;  padding:2px 0 0 5px; text-align:left;}
+   .add_h_lay12{ float:left; width:252px; height:20px;  padding:2px 0 0 5px; text-align:left;}
+.add_select_body{ width:916px; border:1px solid #FDCA82; border-bottom:0; border-top:0; line-height:30px; background:url(../images/point/flow/diwen03.jpg) bottom no-repeat; }
+.add_select_bodyA{ width:556px; border:1px solid #FDCA82; border-bottom:0; border-top:0; line-height:30px; background: #FFFAF1 url(../images/point/flow/diwen06.jpg) bottom left  repeat-x; }
+.add_select_bodyC{ width:556px; line-height:30px; padding:10px 0 10px 0;}
+.add_select_bodyD{ width:556px; line-height:30px; padding-bottom:10px;}
+.add_select_bodyE{ width:556px; line-height:24px; border-top:1px dashed #CCCCCC; text-align:left; font-size:14px; padding:10px 0 0 0;}
+.add_select_bodyf{ width:556px; line-height:30px; }
+   .add_select_body1{ float:left; width:62px;   padding:2px 0 0 0; text-align:left; border-right:1px solid #FFFFFF; text-align:center; font-weight:bold; }
+   .add_select_body2{ float:left; width:75px; padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+   .add_select_body3{ float:left; width:83px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+   .add_select_body4{ float:left; width:91px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+   .add_select_body5{ float:left; width:107px;   padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+   .add_select_body6{ float:left; width:122px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+   .add_select_body7{ float:left; width:202px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+   .add_select_body8{ float:left; width:131px;  padding:2px 0 0 5px; text-align:left;}
+   .add_select_body9{ float:left; width:180px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+   .add_select_body10{ float:left; width:251px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+.add_unselect_body{ width:916px; border:1px solid #FDCA82; border-bottom:0; border-top:0; line-height:30px; background:url(../images/point/flow/diwen03.jpg) bottom no-repeat #FFFFFF; }
+.add_unselect_bodyA{ width:536px; border:1px solid #FDCA82; border-bottom:0; border-top:0; line-height:30px; background:url(../images/point/flow/diwen03.jpg) bottom no-repeat #FFFFFF; }
+   .add_unselect_body1{ float:left; width:62px;   padding:2px 0 0 0; text-align:left; border-right:1px solid #FFFFFF; font-weight:bold; text-align:center; }
+   .add_unselect_body2{ float:left; width:75px; padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF; }
+   .add_unselect_body3{ float:left; width:83px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF; }
+   .add_unselect_body4{ float:left; width:91px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF; }
+   .add_unselect_body5{ float:left; width:107px;   padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF; }
+   .add_unselect_body6{ float:left; width:122px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+   .add_unselect_body7{ float:left; width:202px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+   .add_unselect_body8{ float:left; width:111px;  padding:2px 0 0 5px; text-align:left; }
+   .add_unselect_body9{ float:left; width:180px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF; }
+   .add_unselect_body10{ float:left; width:480px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF; }
+   .add_unselect_body11{ float:left; width:108px;  padding:2px 0 0 5px; text-align:left; }
+   .add_unselect_body12{ float:left; width:251px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+.add_normal_bodyL{ width:896px; padding:4px 10px 4px 10px; border:1px solid #FDCA82; border-top:0; border-bottom:0; background: #FFFBF1 url(../images/point/flow/diwen06.jpg) repeat-x bottom;}
+.add_normal_body_line{ float:left; width:428px;  padding:6px 10px 6px 10px;  }
+.add_normal_body_text{float:left; width:428px; text-align:left; line-height:22px;}
+.add_putin_lay{ width:896px; padding:20px 0 0 0; text-align:center;}
+.add_unputin_lay{ width:916px; padding:30px 0 30px 0; text-align:center; background:#FFFFFF;border:1px solid #FDCA82; border-top:0;}
+/*会员店*/
+.add_shop_titleL{ width:916px; padding:6px 0 6px 2px; text-align:left; }
+.add_shop_select_body{ width:916px; border:1px solid #FDCA82; border-bottom:0; border-top:0; line-height:30px; background: #FFF8E5 url(../images/point/flow/diwen06.jpg) bottom repeat-x; }
+.add_shop_unselect_body{width:916px; border:1px solid #FDCA82; border-bottom:0; border-top:0; line-height:30px; background:#FFFFFF url(../images/point/flow/diwen06.jpg) repeat-x bottom;}
+.add_shop_unselect_bodyA{ width:556px; border:1px solid #FDCA82; border-bottom:0; border-top:0; line-height:30px; background:#FFFFFF url(../images/point/flow/diwen06.jpg)  repeat-x bottom;}
+.add_shop_unselect_bodyB{ width:938px; border:1px solid #FDCA82; border-bottom:0; border-top:0; line-height:30px; background:url(../images/point/flow/diwen05.jpg) no-repeat bottom;}
+.shop_lay{ width:580px; }
+.shopF_top_lay{ width:580px; height:31px;}
+.shopF_top_lay2{ width:558px; height:30px; background:#F9AA4F; border:1px solid #F9A141; border-bottom:0; padding:0 10px 0 10px;}
+.shopF_bottom_lay2{ width:578px; height:8px; border:1px solid #F9A141; border-top:0; background:#FFFFFF;}
+.shopF_topM_lay{ width:560px; height:31px; background:url(../images/point/flow/shop02.jpg) repeat-x; float:left; text-align:left;}
+.shopF_topM_title{ float:left; font-size:14px; font-weight:bold; padding:6px 0 0 0; color:#B7460A;}
+.shopF_topM_close{ float:right;padding:8px 0 0 0 ;}
+.shopF_body_lay{ width:578px; border:1px solid #F9A141; border-bottom:0; border-top:0; background:#FFFBF1;}
+.shopF_body_lay4{ width:578px; border:0px solid #F9A141; border-bottom:0; border-top:0; background:#FFFBF1;}
+.shopF_body_lay2{ width:578px;  }
+.shopF_body_lay3{ width:558px;  background:#FFFFFF; padding:10px; }
+.shopF_body_lay4{ width:558px;  background:#FFFFFF; padding:10px 0 10px 0; }
+.shopF_body_top{ width:578px; height:30px; padding:10px 0 10px 0;}
+.shopF_body_top_1{ float:left; width:210px; height:0px; text-align:right; padding-top:8px;}
+.shopF_body_top_2{ float:left; width:165px; height:0px;text-align:left;padding-top:6px;}
+.shopF_body_top_3{ float:left; height:0px;padding-top:2px;}
+.shopF_body_top_4{ float:left;width:578px; text-align:center; font-size:14px; font-weight:bold; color:#FF0000; padding-bottom:10px;}
+.shopF_body_top_5{ float:left;width:566px; text-align:left; font-size:12px; font-weight:bold; color:#FF0000; padding:4px 0 4px 12px; background:#FFF0BF;}
+.shopF_body_top_6{ float:left;width:566px; text-align:left; font-size:14px; font-weight:bold; color:#000000; padding:14px 0 14px 12px;}
+.shopF_body_top_7{ float:left;width:566px; text-align:center; font-size:12px; font-weight:bold; color:#FF0000; padding:14px 0 14px 12px; background:#FFFFFF;}
+.shopF_body_middleT{ clear:both; width:568px; border-top:1px solid #FDCA82; height:20px; background:#FFECCA; padding:2px 0 0 10px;}
+.shopF_body_middleL{ float:left; clear:both; width:138px; height:20px;  text-align:right; padding:10px 6px 0 0; font-weight:bold;}
+.shopF_body_middleR{ float:left; width:434px;  text-align:left;padding:6px 0px 0px 0px;}
+.shopF_body_middleL2{ float:left; clear:both; width:188px; height:20px;  text-align:right; padding:10px 6px 0 0; font-weight:bold;}
+.shopF_body_middleR2{ float:left; width:384px;  text-align:left;padding:10px 0px 0px 0px;}
+.shopF_body_middleL3{ float:left; clear:both; width:188px; height:20px;  text-align:right; padding:4px 6px 2px 0; font-weight:bold;}
+.shopF_body_middleR3{ float:left; width:384px;  text-align:left;padding:4px 0px 2px 0px;}
+.shopF_body_bottom{ width:578px; padding:10px 0 10px 0; text-align:center; border-top:1px solid #FDCA82; background:#FFFFFF;}
+
+
+.shopF_shuru01{ width:146px; height:16px; border:#9C9C9C 1px solid; padding:2px 2px 0 2px}
+.shopF_shuru02{ width:336px; height:16px; border:#9C9C9C 1px solid; padding:2px 2px 0 2px}
+.shopF_shuru03{ width:180px; height:16px; border:#9C9C9C 1px solid; padding:2px 2px 0 2px}
+.shopF_shuru04{ width:30px; height:16px; border:#9C9C9C 1px solid; padding:2px 2px 0 2px}
+.shopF_shuru07{ width:436px; height:16px; border:#9C9C9C 1px solid; padding:2px 2px 0 2px}
+.shopF_shuru08{ width:45px; height:15px; padding:1px 0px 0 2px; border:1px solid #CCCCCC; margin-top:2px;}
+.shopF_shuru09{ width:330px; height:16px; border:#999999 1px solid; padding:2px 2px 0 2px}
+.shopF_shuru10{ width:103px; height:16px; border:#9C9C9C 1px solid; padding:2px 2px 0 2px}
+.shopF_shuru11{ width:214px; height:16px; border:#9C9C9C 1px solid; padding:2px 2px 0 2px}
+.shopF_search{ width:146px; height:18px; border:#DA5E08 1px solid; padding:3px 2px 0 2px}
+.shopF_xiala01{ width:88px; height:20px; border:#9C9C9C 1px solid; padding:2px 2px 0 2px}
+.shopF_xiala02{ width:336px; height:20px; border:#9C9C9C 1px solid; padding:2px 2px 0 2px}
+.shopF_shuru_lay{ float:left;padding:0px 4px 0px 0px; margin:0; border:0;}
+.shopF{ float:left;padding:0px 4px 0 0; }
+.shopF_xia_lay{ float:left; padding:0px 4px 0 0;}
+
+.shopF_adree_top{ width:558px; padding:10px 10px 10px 10px;}
+   .shopF_adree_layout{ float:left; width:558x; border-bottom:1px dashed #CCCCCC; padding:4px 0 6px 0;}
+   .shopF_adree_layout_unline{ float:left; width:558x; padding:4px 0 6px 0;}
+   .shopF_adree_left_layout{ float:left; width:30px;}
+   .shopF_adree_right_layout{ float:left; width:528px; text-align:left;}
+   .shopF_adree_right_bt{ float:left; padding:2px 8px 2px 0;}
+
+.add_select_bodyE{ width:556px; line-height:24px; border-top:1px dashed #CCCCCC; text-align:left; font-size:14px; padding:10px 0 0 0;}
+.shopF_shuru05{ width:146px; height:16px; border:#FFFBF1 1px solid; padding:2px 2px 0 2px; background-color:#FFFBF1}
+.shopF_shuru06{ width:336px; height:16px; border:#FFFBF1 1px solid; padding:2px 2px 0 2px;background-color:#FFFBF1}
+/*输入地址*/
+.add_input_title{float:left; width:242px; height:25px; padding-top:6px; background:url(../images/point/flow/add01.jpg); color:#B7460A; font-size:14px; font-weight:bold; text-align:center;}
+.add_input_zhushi{ width:937px; height:30px; text-align:center; font-weight:bold; color:#FF0000; padding:20px 0 20px 0;}
+.add_input_left{ float:left; width:180px; height:22px; padding:10px 0 0 0;text-align:right; font-size:14px; font-weight:bold;}
+.add_input_right{ float:right; width:750px; padding:10px 0 0 0; text-align:left; font-size:14px; height:22px; }
+.exchange_basket{ width:930px; padding:4px 5px 4px 5px;clear:both; height:25px; line-height:25px; background:#FEEFD7; border-top:1px solid #FFFFFF;}
+
+/*二次修改补丁*/
+.S_shopF_body_lay_top{width:566px; text-align:left; font-size:14px;  padding:10px 0 4px 12px; background:#FFECCA; float: left; line-height:30px;}
+.S_shopF_body_lay3{ width:578px;  background:#FFFFFF; text-align:left;}
+.S_add_h_layA{ width:578px;  line-height:30px;  font-weight:bold; background:#FFECCA; }
+.S_add_h_lay5{ float:left; width:80px; line-height:30px; background:url(../images/point/flow/diwen07.jpg) right no-repeat; padding:0 0 0 5px; text-align:left;}
+.S_add_h_lay9{ float:left; width:220px;  line-height:30px; background:url(../images/point/flow/diwen07.jpg) right no-repeat; padding:0 0 0 5px; text-align:left;}
+.S_add_h_lay12{ float:left; width:263px;  line-height:30px; padding:0 0 0 5px; text-align:left;}
+.S_add_select_bodyA{ width:578px; line-height:30px; background: #FFFAF1 url(../images/point/flow/diwen06.jpg) bottom left  repeat-x; }
+.S_add_select_body1{ float:left; width:80px;   padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+.S_add_select_body2{ float:left; width:220px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+.S_add_select_body3{ float:left; width:260px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+
+.S_add_select_bodyB{ width:578px; line-height:30px; background: #FFFFFF url(../images/point/flow/diwen06.jpg) bottom left  repeat-x; }
+.S_add_select_body4{ float:left; width:80px;   padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+.S_add_select_body5{ float:left; width:220px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
+.S_add_select_body6{ float:left; width:260px;  padding:2px 0 0 5px; text-align:left; border-right:1px solid #FFFFFF;}
