@@ -1,0 +1,47 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+
+  <script type="text/javascript" src="../bglib.js"></script>
+  <script type="text/javascript" src="../ui/shadow.js"></script>
+  <script type="text/javascript" src="../ui/container.js"></script>
+  <script type="text/javascript" src="../ui/resizer.js"></script>
+  <script type="text/javascript" src="../ui/window.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  
+<style>
+	.source {background:#CCC;width:200;height:100;text-align:center;vertical-align:middle;}
+	.droped {background:red;border:1px solid #CCC;height:50px;}
+</style>
+</head>
+<body lang="zh">
+	
+</body>
+</html>
+<script>
+		Event.ready(function(){
+	  	var w = new CWin({title:'Hello, drag & drop!', ondropable : true, 
+			    dragSBOver : function(){
+			    	this.setTitle('['+CGhost.instance.ddrEl.title+']处我领空，请求击落..');return true;},
+			    dragSBOut : function(){this.setTitle('['+CGhost.instance.ddrEl.title+']已离开');},
+			    SBDrop : function(){
+			    	this.add(CBase.create({cs:'droped', title:CGhost.instance.ddrEl.title}));
+			    	this.setTitle('['+CGhost.instance.ddrEl.title+']已击落.');
+			    }
+	  	});
+	  	w.setXY(550,150).render();
+	  	
+	  	var panel = new CContainerBase({
+	  		cs:'source', 
+	  		id:'_tle', 
+	  		tip: '拖动我到窗口区域', 
+	  		title : 'F45', 
+	  		draggable: true, 
+	  		autoRender:true, 
+	  		dragStart : function(){
+	  				CGhost.instance.setTitle('请拖我到窗口区域.');
+	  		},
+	  		showTo : CC.$body});
+		});
+</script>

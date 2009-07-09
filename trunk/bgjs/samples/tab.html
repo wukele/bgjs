@@ -1,0 +1,79 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>利用BackLight JS 库创建按钮</title>
+  <script type="text/javascript" src="../bglib.js"></script>
+  <script type="text/javascript" src="../ui/shadow.js"></script>
+  <script type="text/javascript" src="../ui/container.js"></script>
+  <script type="text/javascript" src="../ui/resizer.js"></script>
+  <script type="text/javascript" src="../ui/window.js"></script>
+  <script type="text/javascript" src="../ui/form.js"></script>
+	<script type="text/javascript" src="../ui/itemddrtag.js"></script>
+  <script type="text/javascript" src="../ui/button.js"></script>
+  <script type="text/javascript" src="../ui/tab.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="resources/example.css" type="text/css"/>
+  <style>
+  	.tab-right{position:absolute;bottom:200px;width:100%;}
+  	.tab-right .g-tab-wrap{
+  		float:right;
+  		padding-right:5px;
+  	}
+  </style>
+</head>
+<body lang="zh" class="gPage">
+	<p>
+	<h3>BackLight JS 库CBorderLayout类</h3>
+	</p>
+	<p><a href="tb.js" target="_blank">查看源文件</a></p>
+	<ul>
+	<li>支持<-  ->键导导航选项卡</li>
+	<li>支持选项卡拖放</li>
+	</ul>
+</body>
+</html>
+<script type="text/javascript">
+	Event.ready(function(){
+		var col = new CWin({title:'Hello, BackLight tab!'});
+		col.setXY(300,50);
+		var tab = new CTab();
+		tab.add(new CTabItem({title:'旺财'}));
+		tab.add(new CTabItem({title:'小强'}));
+		tab.add(new CTabItem({title:'not closeable', closeable:false}));
+		tab.add(new CTabItem({title:'小宝'}));
+		tab.add(new CTabItem({title:'阿三', closeable:false}));
+		tab.add(new CTabItem({title:'hello'}));
+		tab.add(new CTabItem({title:'如花', closeable:false}));
+		
+		tab.add(new CTabItem({title:'disabled tabitem',disabled:true}));
+		col.add(tab);
+		col.setSize(350,300);
+		col.render();
+		//
+		//或者
+		//
+		var tab2 = new CTab({showTo:document.body, array:[
+			{title:'旺财'},
+			{title:'小强'},
+			{title:'not closeable', closeable:false},
+			{title:'小宝'},
+			{title:'阿三', closeable:false},
+			{title:'如花', closeable:false}
+		]});
+		tab2.render();
+		tab2.select(0);
+		var tab3 = new CTab({
+			cs:'tab-right',
+			showTo:document.body, array:[
+			{title:'旺财'},
+			{title:'小强'},
+			{title:'not closeable', closeable:false},
+			{title:'小宝'},
+			{title:'阿三', closeable:false},
+			{title:'如花', closeable:false}
+		]});
+		tab3.render();
+		tab3.select(4);
+	});
+</script>

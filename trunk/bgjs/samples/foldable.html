@@ -1,0 +1,31 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>CFolderView控件</title>
+  <script type="text/javascript" src="../bglib.js"></script>
+  <script type="text/javascript" src="../ui/container.js"></script>
+  <script type="text/javascript" src="../ui/foldable.js"></script>
+  <script type="text/javascript" src="../more/folderview.js"></script>
+  <script type="text/javascript" src="../ui/loading.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="resources/example.css" type="text/css"/>
+</head>
+<body lang="zh">
+	<a id="target_url" href="" target="_blank"></a>
+</body>
+</html>
+<script>
+			Event.ready(function(){
+			var ct = new CContainerBase({
+				ItemClass:CFolderView,
+				view:document.body,
+				itemOptions:{buddleFire:true},
+				autoRender:true
+			});
+			ct.on('selected',function(item){
+				
+			});
+			ct.connect('/bgjs/testdata/listview.txt');
+		});
+</script>

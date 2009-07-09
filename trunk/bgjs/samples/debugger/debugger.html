@@ -1,0 +1,131 @@
+<html xmlns="http://www.w3.org/1999/xhtml"  xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>JavaScript格式化</title>
+  <script type="text/javascript" src="../../bglib.js"></script>
+  <script>CTemplate.BLANK_IMG = '../../default/s.gif';</script>
+  <script type="text/javascript" src="../../ui/shadow.js"></script>
+  <script type="text/javascript" src="../../ui/spliter.js"></script>
+  <script type="text/javascript" src="../../ui/resizer.js"></script>
+	<script type="text/javascript" src="../../ui/borderlayout.js"></script>
+  <script type="text/javascript" src="../../ui/window.js"></script>
+  <script type="text/javascript" src="../../ui/form.js"></script>
+  <script type="text/javascript" src="../../ui/group.js"></script>
+  <script type="text/javascript" src="../../ui/combo.js"></script>
+  <script type="text/javascript" src="../../ui/button.js"></script>
+  <script type="text/javascript" src="../../ui/tab.js"></script>
+  <script type="text/javascript" src="../../ui/loading.js"></script>
+  <script type="text/javascript" src="../../ui/msgbox.js"></script>
+  <script type="text/javascript" src="beautify.js"></script>
+  <script type="text/javascript" src="HTML-Beautify.js"></script>
+  <script type="text/javascript" src="formatter.js"></script>
+  <script id="js_formatter_code">/**
+ * Javascript Utility for web development.
+ * R&D : www.bgscript.com/forum
+ * @author javeejy@126.com
+ * www.bgscript.com © 2009 - 构建自由的WEB应用 
+ */
+
+Event.ready(function() {
+	//主窗体
+  var gFormatter = new CBottomWin({
+    id: 'fmt-win',
+    title: 'JavaScript - 格式化',
+    layout: 'border',
+    width: 810,
+    height: 427
+  });
+  
+  gFormatter.titlebar.setTip('双击最大化');
+  //点击关闭时销毁释放资源
+  gFormatter.on('closed',gFormatter.destoryComponent);
+  
+  var textarea = new CTextarea({
+    id: 'fmt-area',
+    focusCallback: CText.prototype.focusCallback,
+    value: CC.$('js_formatter_code').innerHTML
+  });
+  gFormatter.add(textarea, 'center');
+
+  //窗口居中
+  var vp = CC.getViewport();
+  gFormatter.setXY(((vp.width - gFormatter.width) / 2) | 0, (((vp.height - gFormatter.height) / 2) | 0) - 100);
+
+  var clsBtn = new CButton({
+    id: 'fmt-cls',
+    title: '&nbsp;清&nbsp;&nbsp;空&nbsp;',
+    tip : '点击清空文本框内容',
+    onClick: function() {
+      textarea.setValue('');
+      textarea.focus();
+    }
+  });
+	
+	var chkLineBr = new CCheckbox({cs:'c-fmt_chk_br',title:'保留换行', checked:true});
+	
+  var combo = new CCombox({
+    array: [{
+      title: 'Tab键缩进',
+      value: '1',
+      icon: 'icoNote'
+    },
+    {
+      title: '缩进2空格',
+      value: '2',
+      icon: 'icoNote'
+    },
+    {
+      title: '缩进4空格',
+      value: '4',
+      icon: 'icoNote'
+    },
+    {
+      title: '缩进8空格',
+      value: '8',
+      icon: 'icoNote'
+    }],
+    uneditable: true,
+    cs: 'c-fmt-combo'
+  });
+  combo.select(2);
+  combo.selector.on('selected', function(){
+  	this.disable(true);
+  	(function(){fmtBtn.onClick(); (function(){combo.selector.disable(false);}).timeout(20);}).timeout(0);
+  });
+  
+  var fmtBtn = new CButton({
+    id: 'fmt-fmt',
+    title: '&nbsp;格式化&nbsp;',
+    tip : '点击执行代码格式化',
+    onClick: function() {
+    		this.disable(true);
+    		gFormatter.setTitle('正在格式化,请稍候..');
+    		//采用timeout是为了能够看到disabled效果
+				(function(){do_js_beautify(textarea.element, combo.selector.selected.value, chkLineBr.checked);fmtBtn.disable(false);gFormatter.setTitle('JavaScript - 格式化');}).timeout(0);
+		}
+  });
+  
+  
+  gFormatter.bottomer.add(fmtBtn).add(clsBtn).add(combo).add(chkLineBr);
+  
+  //集中渲染所有控件,此时控件才可见
+  gFormatter.render();
+});
+  </script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+  <style>
+  	body {overflow:hidden;}
+  	#fmt-area {color:#608D45;border:0;font-family:terminus,consolas,"lucida console","courier new",courier,monospace;}
+  	.g-win-bottom .g-btn, .g-win-bottom .g-form-el{position:absolute;}
+  	#fmt-cls{right:85px;top:14px;}
+  	#fmt-fmt{right:15px;top:14px;}
+  	.c-fmt-combo{width:150px;right:230px;top:16px;}
+  	.c-fmt_chk_br {right:150px;top:17px;}
+  </style>
+</head>
+<body lang="zh"></body>
+</html>
+<script>
+</script>

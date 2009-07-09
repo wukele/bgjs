@@ -1,0 +1,69 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../bglib.js"></script>
+	<script>CTemplate.BLANK_IMG = '../default/s.gif';</script>
+	<script type="text/javascript" src="../ui/container.js"></script>
+	<script type="text/javascript" src="../ui/shadow.js"></script>
+  <script type="text/javascript" src="../ui/spliter.js"></script>
+	<script type="text/javascript" src="../ui/itemddrtag.js"></script>
+  <script type="text/javascript" src="../ui/resizer.js"></script>
+  <script type="text/javascript" src="../ui/window.js"></script>
+  <script type="text/javascript" src="../ui/form.js"></script>
+  <script type="text/javascript" src="../ui/foldable.js"></script>
+  <script type="text/javascript" src="../ui/grid.js"></script>
+  <script type="text/javascript" src="../ui/gridgroupview.js"></script>
+	<script type="text/javascript" src="../more/customgrid.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="resources/example.css" type="text/css"/>
+  
+<style>
+
+#grid_a{border:1px solid #CCC;}
+</style>
+</head>
+<body lang="zh">
+<div id="container">
+<h1>列自动宽</h1>
+<div id="grid_a"></div>
+</body>
+</html>
+<script>
+		Event.ready(function(){
+			var opt = {createCustomComponent : function(){this.customComp = CC.$$(CC.$C('DIV'));}};
+			var g = new CGrid({
+				header:[
+				    new CCustomColumn(),
+						{title:'名称'},
+						{title:'数目'},
+						{title:'分类'},
+						{title:'column D'},
+						{title:'column E'}
+					]
+				,
+				autoFit:true,
+				showTo:'grid_a'
+			});
+
+	var v = new CGridGroupView({
+		title : '收件箱',
+		rowHoverCS:false,
+		ItemClass : CCustomRow
+	});
+	
+			g.add(v);
+			var 	array = [
+					{array:[{title:'CellA'},{title:'Cell0'},{title:'H'},{title:'CellD'},{title:'CellE'}]},
+					{array:[{title:'CellB'},{title:'Cell7'},{title:'Z'},{title:'CellD'},{title:'CellE'}]},
+					{array:[{title:'CellC'},{title:'Cell4'},{title:'1'},{title:'CellD'},{title:'CellE'}]},
+					{array:[{title:'CellA'},{title:'Cell0'},{title:'H'},{title:'CellD'},{title:'CellE'}]},
+					{array:[{title:'CellA'},{title:'Cell0'},{title:'H'},{title:'CellD'},{title:'CellE'}]},
+					{array:[{title:'CellB'},{title:'Cell7'},{title:'Z'},{title:'CellD'},{title:'CellE'}]},
+					{array:[{title:'CellC'},{title:'Cell4'},{title:'1'},{title:'CellD'},{title:'CellE'}]},
+					{array:[{title:'CellA'},{title:'Cell0'},{title:'H'},{title:'CellD'},{title:'CellE'}]}
+				];
+				v.fromArray(array);
+			g.render();
+		});
+</script>

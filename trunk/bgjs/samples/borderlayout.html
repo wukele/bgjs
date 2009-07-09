@@ -1,0 +1,71 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>背光JS - CBorderLayout布局</title>
+  <script type="text/javascript" src="../bglib.js"></script>
+  <script type="text/javascript" src="../ui/container.js"></script>
+  <script type="text/javascript" src="../ui/spliter.js"></script>
+  <script type="text/javascript" src="../ui/borderlayout.js"></script>
+  <script type="text/javascript" src="../ui/viewport.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  
+<style>
+	.imgPanel {border:0;padding:0;display:block;}
+	.g-viewoport,.ly-p1,.ly-p2, .ly-p3, .ly-p4{background-position:50% 50%;}
+	.ly-p1 {background-image:url(http://demo.nextapp.com/echo3csjs/image/bgpictures/Poinsettia.jpg);}
+	.ly-p3 {background-image:url(http://demo.nextapp.com/echo3csjs/image/bgpictures/Leaf.jpg);}
+	.ly-p4 {background-image:url(http://demo.nextapp.com/echo3csjs/image/bgpictures/Winter.jpg);}
+	.g-viewoport{background-image:url(http://www.miji66.cn/upload/%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E6%A1%8C%E9%9D%A2%E5%A3%81%E7%BA%B82.jpg);}
+	.ly-p2 {background-image:url(http://i2.sinaimg.cn/ty/up/2008-01-07/U574P6T64D41318F1322DT20080107003055.jpg);}
+</style>
+</head>
+<body lang="zh">
+</body>
+</html>
+<script>
+		CTemplate['IMG'] = '<img class="imgPanel" />'
+		function getImgComponent(src){
+			var c = CBase.create({template:'IMG'});
+			c.view.src = src;
+			return c;
+		}
+		
+		Event.ready(function(){
+			var viewport = new CViewport({layout:'border'});
+			//嵌套
+			var north = new CPanel({cs:'ly-p1', height:100});
+			var south = new CPanel({cs:'ly-p2', height:100});
+			var east = new CPanel({cs:'ly-p3', width:125});
+			var west = new CPanel({cs:'ly-p4', width:125,maxW:300});
+			var center = new CPanel({cs:'ly-p',layout:'border'});
+			viewport.add(north, {split:true, dir:'north'})
+			        .add(south,{split:true, dir:'south'})
+			        .add(east,{split:true, dir:'east'})
+			        .add(west,{split:true, dir:'west'}).
+			        add(center,'center');
+			var center_north = new CPanel({cs:'ly-p5', height:100});
+			var center_south = new CPanel({cs:'ly-p6', height:100});
+			var center_east = new CPanel({cs:'ly-p7', width:100});
+			var center_west = new CPanel({cs:'ly-p8', title:'maxW:200,minW:50',width:100,maxW:200,minW:50});
+			var center_center = new CPanel({cs:'ly-p',layout:'border'});
+			
+			center.add(center_north, {split:true,dir:'north'})
+			     .add(center_south,{split:true, dir:'south'})
+			     .add(center_east,{split:true, dir:'east'})
+			     .add(center_west,{split:true, dir:'west'})
+			     .add(center_center, 'center');
+			//
+			var center_center_north = new CPanel({cs:'ly-p5', height:100});
+			var center_center_south = new CPanel({cs:'ly-p6', height:100});
+			var center_center_east = new CPanel({cs:'ly-p7', width:100});
+			var center_center_west = new CPanel({cs:'ly-p8', width:100});
+			center_center.add(center_center_north, {split:true,dir:'north',gap:1})
+			     .add(center_center_south,{split:true, dir:'south',gap:1})
+			     .add(center_center_east,{split:true, dir:'east',gap:1})
+			     .add(center_center_west,{split:true, dir:'west',gap:1});
+			     
+      viewport.render();
+      //center_west.layoutCfg[center.layout.type].separator.setTip('maxW:200,minW:50');
+		});
+</script>

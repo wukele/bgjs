@@ -1,0 +1,181 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>AJAX动态加载树型控件</title>
+  <script type="text/javascript" src="../bglib.js"></script>
+  <script type="text/javascript">CTemplate.BLANK_IMG = '../default/s.gif';</script>
+  <script type="text/javascript" src="../ui/container.js"></script>
+  <script type="text/javascript" src="../ui/shadow.js"></script>
+  <script type="text/javascript" src="../ui/loading.js"></script>
+  <script type="text/javascript" src="../ui/form.js"></script>
+  <script type="text/javascript" src="../ui/tree.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="resources/example.css" type="text/css"/>
+  
+<style>
+	.g-tree {width:49.9%;float:left;}
+	.addable .g-tree-nd-anchor{background-color:#CCC;}
+</style>
+</head>
+<body lang="zh">
+	
+</body>
+</html>
+<script>
+Event.ready(function() {
+/**
+ * Javascript Utility for web development.
+ * R&D : www.bgscript.com/forum
+ * @author javeejy@126.com
+ * www.bgscript.com © 2009 - 构建自由的WEB应用 
+ */
+  
+  //
+  // 树型控件功能与扩展演示
+  // 继承树项定义拖放行为,默认的树项是没有的.
+  //
+  var DragDropTreeItem = CC.create(CTreeItem, {
+    draggable: true,
+    ondropable: true,
+
+    dragStart: function() {
+      var g = CGhost.instance;
+      g.enableTip = true;
+      g.setTitle('Drag \'' + this.title.truncate(10) + '\'');
+      g.setIcon(this.nodes?'iconFolder':'iconLeaf');
+    },
+
+    dragSBOver: function(item, dd, evt) {
+      CGhost.instance.setTitle(item.title);
+      if (!item.root) return false;
+
+      //
+      if (item.nodes && item.parentOf(this)) {
+        return false;
+      }
+
+      if (this.nodes) {
+        if (item.parentContainer == this) return false;
+        var src = Event.element(evt);
+        if (this.root == this || src == this.titleNode) {
+          CGhost.instance.setTitle("'" + item.title + "'作为子项追加");
+          this._head.addClass('addable');
+          if(!this.expanded)
+          	this.expand(true);
+          return true;
+        }
+      }
+
+      CGhost.instance.setTitle("在'" + this.title + "'之前插入'" + item.title + "'");
+      return true;
+    },
+
+    dragSBOut: function() {
+      if (CGhost.instance.acceptable && this.nodes) this._head.delClass('addable');
+    },
+
+    SBDrop: function(tar, evt) {
+      var src = Event.element(evt);
+      if (CGhost.instance.acceptable && this.nodes) this._head.delClass('addable');
+
+      if (this == this.root || (src == this.titleNode && this.nodes)) {
+        tar.parentContainer.remove(tar);
+        this.add(tar);
+        return;
+      }
+
+      var ct = this.parentContainer;
+      ct.insertBefore(tar, this);
+      ct.root.tree.select(null);
+    }
+  });
+
+  DragDropTreeItem.prototype.ItemClass = DragDropTreeItem;
+
+  //自定义ROOT
+  var tree1Root = new DragDropTreeItem({
+    nodes: true,
+    draggable: false
+  });
+  var tree1 = new CTree({
+    root: tree1Root,
+    title: '树根目录',
+    showTo: document.body,
+    //自动ajax加载
+    url:'/q?bg_q=test_group', 
+    autoConnect:false
+  });
+
+  tree1.root.fromArray([{
+    title: '禁用项',
+    nodes: true,
+    disabled: true
+  },
+  {
+    title: '结点B'
+  },
+  {
+    title: '添加图标',
+    nodes: true
+  }]);
+
+  tree1.root.$(2).fromArray([{
+    title: '禁用 A',
+    nodes: true,
+    disabled: true
+  },
+  {
+    title: '结点E'
+  },
+  {
+    title: '点击标题',
+    nodes: true
+  }]);
+  //添加一个图标
+  tree1.root.$(2).addIcon('iconUser');
+  //添加一个checkbox和radio
+  tree1.root.$(2).$(2).addSpring(new CCheckbox({
+    checked: true
+  }));
+  tree1.root.$(2).$(1).setIcon('iconEdit').addSpring(new CRadio());
+  //
+  // 给其中一项增加可编辑标题功能
+  tree1.root.$(2).$(2).domEvent('click', function() {
+    if (!this.titleEditor) {
+      this.titleEditor = new CText();
+      this.titleEditor.setBlockMode('inline-block').display(false);
+      function cb() {
+        var tle = this.titleEditor.element.value.trim();
+        if (tle) this.setTitle(tle);
+        this.titleEditor.hide();
+        this.fly(this.titleNode).setDisplayMode('visibility').show().unfly();
+      };
+      this.domEvent('blur', cb, false, null, this.titleEditor.element);
+      this.bindEnter(cb, false, null, this.titleEditor.element);
+      this.addSpring(this.titleEditor);
+    }
+
+    if (this.titleEditor.display()) return;
+    this.titleEditor.setValue(this.title);
+    this.fly(this.titleNode).setDisplayMode('visibility').hide().unfly();
+    this.titleEditor.show().focus(0);
+  },
+  false, null, '_tle');
+  //
+  tree1.render();
+
+  //自定义ROOT
+  var tree2Root = new DragDropTreeItem({
+    nodes: true,
+    draggable: false,
+    itemOptions:{draggable:false}
+  });
+  var tree2 = new CTree({
+    root: tree2Root,
+    title: '树根目录',
+    showTo: document.body
+  });
+  tree2.render();
+});
+</script>

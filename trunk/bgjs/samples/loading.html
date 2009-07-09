@@ -1,0 +1,27 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../bglib.js"></script>
+  <script type="text/javascript" src="../ui/container.js"></script>
+  <script type="text/javascript" src="../ui/resizer.js"></script>
+  <script type="text/javascript" src="../ui/window.js"></script>
+  <script type="text/javascript" src="../ui/loading.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  
+<style>
+	.myct{border:1px solid #CCC;position:absolute;}
+</style>
+</head>
+<body lang="zh">
+	
+</body>
+</html>
+<script>
+		Event.ready(function(){
+			var ct = new CContainerBase({cs:'myct',height:400, width:450,autoRender:true, showTo:document.body});
+			var ld = new CLoading({});
+			ld.attach(ct);
+			ld.markIndicator();
+		});
+</script>

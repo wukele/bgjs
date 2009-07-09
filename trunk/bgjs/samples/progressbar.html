@@ -1,0 +1,56 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../bglib.js"></script>
+  <script type="text/javascript" src="../ui/container.js"></script>
+  <script type="text/javascript" src="../ui/form.js"></script>
+  <script type="text/javascript" src="../ui/progressbar.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  
+<style>
+	.myct{position:relative;left:300;top:200}
+	.g-progressbar{margin-top:5px;}
+	
+	.g-progress-right {text-align:right;}
+</style>
+</head>
+<body lang="zh">
+	
+</body>
+</html>
+<script>
+		function attachProgress(g, s, minus){
+			g.tid = setInterval(function(){
+				if(g.value > 100)
+					clearInterval(g.tid);
+				g.setValue(g.value+2);
+			}, s||100);
+		}
+		
+		Event.ready(function(){
+			var ct = new CContainerBase({cs:'myct',autoRender:true, width:280, showTo:document.body});
+			var g = new CProgressbar();
+			ct.append(g);
+			attachProgress(g);
+			g = new CProgressbar();
+			ct.append(g);
+			attachProgress(g, 300);
+			//黄色背景
+			CProgressbar.img = 'http://www.bgscript.com/images/progressbar-yellow.gif';
+			g = new CProgressbar();
+			ct.append(g);
+			attachProgress(g, 580);
+			g = new CProgressbar();
+			ct.append(g);
+			attachProgress(g, 700);
+			CProgressbar.img = 'http://www.bgscript.com/images/progressbar-black.gif';
+			g = new CProgressbar({cs:'g-progress-right'});
+			ct.append(g);
+			attachProgress(g, 450);
+			CProgressbar.img = 'http://www.bgscript.com/images/progressbar-red.gif';
+			g = new CProgressbar({cs:'g-progress-right'});
+			ct.append(g);
+			attachProgress(g, 280);
+		});
+</script>

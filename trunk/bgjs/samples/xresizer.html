@@ -1,0 +1,39 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../bglib.js"></script>
+  <script type="text/javascript" src="../ui/shadow.js"></script>
+  <script type="text/javascript" src="../ui/resizer.js"></script>
+  <script type="text/javascript" src="../ui/xresizer.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  
+<style>
+
+.g-resizer{left:200px;top:50px;width:400px;height:400px;position:absolute;background:gray;overflow:visible;}
+</style>
+</head>
+<body lang="zh">
+	<div class="g-panel g-resizer" id="xresizer">
+		<img style="width:100%;height:100%;position:absolute;left:0;top:0;" src="http://getfirebug.com/header.png" />
+		<div class="g-res-e" id="_xme"></div>
+		<div class="g-res-s" id="_xms"></div>
+		<div class="g-res-w" id="_xmw"></div>
+		<div class="g-res-n" id="_xmn"></div>
+		<div class="g-res-sw" id="_xsw"></div>
+		<div class="g-res-es" id="_xes"></div>
+		<div class="g-res-wn" id="_xwn"></div>
+		<div class="g-res-ne" id="_xne"></div>
+		
+		<div class="g-res-wc" id="_xw"></div>
+		<div class="g-res-ec" id="_xe"></div>
+		<div class="g-res-nc" id="_xn"></div>
+		<div class="g-res-sc" id="_xs"></div>
+	</div>
+</body>
+</html>
+<script>
+		Event.ready(function(){
+			new CXResizer({view:'xresizer', minH:0,minW:0}).render();
+		});
+</script>
