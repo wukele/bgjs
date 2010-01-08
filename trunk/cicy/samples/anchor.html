@@ -1,0 +1,50 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+<style>
+	 body {overflow:hidden;}
+	.box{cursor:move;position:absolute;height:20px;left:200px;top:150px;width:50px;text-align:center;background:black;line-height:20px;color:white;}
+	.panel {position:absolute;width:100px;height:100px;background:red;}
+	.act-ly {position:absolute;left:200px;top:10px;width:200px;height:auto;border:1px solid #CCC;cursor:move;}
+	.act-ly input{ float:left;cursor:default;}
+</style>
+</head>
+<body>
+<p>
+	CC.Base.anchorPos方法用法示例
+</p>
+<div class="box" id="anchor">锚点方块</div>
+<div class="panel" id="layer"></div>
+<div class="act-ly" id="actLy">
+	<input type="button" value="lt-vd" onclick="repos(this.value)"/>
+	<input type="button" value="lt-hr" onclick="repos(this.value)"/>
+	
+	<input type="button" value="lb-vu" onclick="repos(this.value)"/>
+	<input type="button" value="lb-hr" onclick="repos(this.value)"/>
+	
+	<input type="button" value="rt-vd" onclick="repos(this.value)"/>
+	<input type="button" value="rt-hl" onclick="repos(this.value)"/>
+	
+	<input type="button" value="rb-vu" onclick="repos(this.value)"/>
+	<input type="button" value="rb-hl" onclick="repos(this.value)"/>
+	<input type="checkbox" id="autoAjust" />是否调整到可见区域
+</div>
+</body>
+</html>
+<script>
+
+var anchor = CC.Base.create({view: 'anchor', unselectable:true}),
+    layer  = CC.Base.create({view: 'layer'});
+
+CC.Event.setDragable(anchor.view, anchor.view, true);
+CC.Event.setDragable(CC.$('actLy'), CC.$('actLy'), true);
+function repos(how){
+	how = how.split('-');
+	layer.anchorPos(anchor, how[0],how[1], null, CC.$('autoAjust').checked, true);
+}
+
+repos('lb-hr');
+</script>
