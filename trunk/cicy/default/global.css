@@ -1,4 +1,3 @@
-*:lang(zh) {outline:none;}
 body, td, th,dl, dt, form, input, textarea, select, button,ul{font-size:12px;}
 html,body, h1,h2,h3,h4,td, th, dl, dt, form, ul{
 	color:#333;
@@ -413,61 +412,6 @@ _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMe
 .g-combo-list .g-grp-bdy li {background-position:0 0;}
 .g-combo-list .g-panel-body{overflow:auto;}
 .g-clear{padding:0;clear:both;margin:0;}
-/**warning small*/
-.icoIbx {background-position:-9px -7px;}
-.icoDft {background-position:-36px -7px;}
-.icoSnt {background-position:-61px -7px;}
-.icoDel {background-position:-88px -7px;}
-.icoSpm {background-position:-114px -7px;}
-.icomFd2 {background-position:-228px -7px;}
-.icoPsn {background-position:-168px -6px;margin-top:-1px;}
-.icoAdb {background-position:-200px -7px;margin-top:-1px;}
-.icoNdsk {background-position:-257px -41px;}
-.icoNote {background-position:-1497px -2px;margin-top:-3px;}
-.icoMmail {background-position:-1388px -3px;margin-top:-1px;}
-.icoSms {background-position:-1414px -2px;margin-top:-2px;}
-.icoBnv {background-position:-1440px -4px;margin-top:-1px;}
-.icoUt188 {background-position:-1468px -3px;margin-top:-2px;}
-.icoClcont {background-position:-2994px -26px;}
-.icoDateRem {background-position:-3048px -28px;}
-.icoCard {background-position:-3021px -28px;}
-/* - */
-.icoCls{background-position:-2px -129px;}
-.icoIntf {background-position:-326px -8px;}
-.btnBack {background-position:-2053px -38px;margin-left:4px;width:17px;}
-.btnRej {background-position:-2082px -39px;height:20px;width:27px;}
-.btnState {background-position:-2021px -39px;margin-left:5px;width:15px;}
-.btnMove {background-position:-1467px -39px;width:25px;}
-.btnRef {background-position:-1731px -38px;margin:3px 0 0 4px;width:19px;}
-.click .btnRef {margin:4px 0 0 4px;}
-.btnRe {background-position:-1825px -36px;margin-top:3px;width:24px;}
-.click .btnRe {margin-top:4px;}
-.btnFw {background-position:-1392px -36px;margin-top:3px;width:24px;}
-.click .btnFw {margin-top:4px;}
-.btnMark {background-position:-2126px -39px;margin-left:6px;width:16px;}
-.btnCode {background-position:-1987px -39px;}
-.btnSend {background-position:-1318px -40px;width:25px;}
-.btnSave {background-position:-1356px -40px;width:18px;}
-.btnCrd {background-position:-1429px -40px;width:22px;}
-.btnSet {background-position:-2356px -34px;margin:3px 0 0 3px;width:22px;}
-.btnCnl {background-position:-1615px -39px;width:21px;}
-.btnDel {background-position:-1654px -39px;width:18px;}
-.btnPre, .btnNxt {background-position:-1765px -38px;cursor:pointer;display:block;height:18px;width:18px;}
-.btnNxt {background-position:-1795px -38px;width:18px;}
-.btnWrite {background-position:-2160px -39px;}
-.btnAddCnt, .btnDelCnt, .btnAddGroup {background-position:-1859px -36px;margin:3px 0 0 3px;width:20px;}
-.click .btnAddCnt, .click .btnDelCnt, .click .btnAddGroup, .click .btnSet {margin:4px 0 0 3px;}
-.btnAddGroup {background-position:-2120px -36px;width:23px;}
-.btnAddEdit {background-position:-2288px -38px;width:24px;}
-.btnDelCnt {background-position:-1892px -36px;}
-.btnExp {background-position:-2321px -38px;width:24px;}
-.btnCntList {background-position:-2194px -40px;margin-left:5px;width:15px;}
-.btnPrint {background-position:-1955px -39px;}
-.btnMore {background-position:-2256px -38px;margin-left:4px;width:16px;}
-.btnSent {background-position:-2230px -43px;cursor:pointer !important;display:block;height:12px;margin-top:3px;width:16px;}
-.btnDic {background-position:-2384px -38px;width:18px;}
-.btnSpam { background-position:-1502px -38px; margin-left:4px; margin-right:-2px; width:23px;}
-.btnNotSpam { background-position:-1536px -38px; margin-left:4px; margin-right:-2px; width:23px;}
 
 /** Form */
 .g-ipt-text,.g-textarea {padding: 2px 3px;	vertical-align: middle;	border: 1px solid #C0BBB4;}
