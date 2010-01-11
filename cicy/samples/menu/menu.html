@@ -1,0 +1,126 @@
+<html>
+<head> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Cicy库菜单控件</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+<style>
+	body{overflow:hidden;}
+	/*设置菜单宽度*/
+	.g-menu { width:120px; }
+	#notepad-menu {border:none;border-bottom:1px solid #CCC;width:auto;position:static;}
+</style>
+</head>
+<body>
+ <br>
+ <strong>菜单条(CC.ui.Menubar),菜单(CC.ui.Menu),菜单项(CC.ui.MenuItem),右键菜单</strong>
+</body>
+</html>
+<script type="text/javascript">
+	
+CC.ready(function() {
+  var fileMenu = new CC.ui.Menu({
+    showTo: document.body,
+    array: [{title: '新建'},{title: '打开'},{title: '关闭所有'},{title: '保存'},{title: '另存为',separator:true},{title: '最近文件'}]
+   });
+	
+  //也通过add方法增加菜单项
+  fileMenu.add(new CC.ui.MenuItem({title: '退出'}));
+  fileMenu.render();
+
+  var subMenu = new CC.ui.Menu({
+    showTo: document.body,
+    autoRender: true,
+    array: [{title: '编辑'},{title: '撤销'},{title: '重做'},{title: '复制'},{title: '删除',separator:true}, {title: '全选'},{title: '选择行'}]
+  });
+
+  var subMenu1 = new CC.ui.Menu({
+    showTo: document.body,
+    autoRender : true,
+    array: [{title: '子菜单'},{title: '编辑'},{title: '删除'}]
+  });
+  
+  //子菜单2
+  var subMenu2 = new CC.ui.Menu({
+    showTo: document.body,
+    autoRender : true,
+    array: [{title: '子菜单'},{title: '编辑'},{title: '删除'}]
+  });
+
+  var subMenu3 = new CC.ui.Menu({
+    showTo: document.body,
+    autoRender : true,
+    array: [{title: '子菜单'},{title: '编辑'},{title: '删除'}]
+  });
+
+  var subMenu4 = new CC.ui.Menu({
+    showTo: document.body,
+    autoRender : true,
+    array: [{title: '子菜单'},{title: '编辑'},{title: '删除'}]
+  });
+  
+  var subMenu5 = new CC.ui.Menu({
+    showTo: document.body,
+    autoRender : true,
+    array: [{title: '子菜单'},{title: '编辑'},{title: '删除'}]
+  });
+
+  var subMenu6 = new CC.ui.Menu({
+    showTo: document.body,
+    autoRender : true,
+    array: [{title: '子菜单'},{title: '编辑'},{title: '删除'}]
+  });
+  
+  //附加到fileMenu菜单第三层,下标从0起
+  //附加菜单时要按从左到右附加
+  fileMenu.attach(subMenu, 2);
+
+  subMenu.attach(subMenu2, 1);
+  
+  subMenu2.attach(subMenu3, 1);
+  
+  subMenu4.attach(subMenu5, 1);
+  
+  subMenu5.attach(subMenu6, 1);
+  
+  //监听菜单选择事件
+  fileMenu.on('selected', function(menuItem) {
+    alert('你选择了"' + menuItem.title + '".');
+  });
+
+  //菜单条
+  var basicMenubar = new CC.ui.Menubar({
+    showTo: document.body,
+    autoRender : true,
+    array: [{title: '文件'},{title: '编辑'}]
+   });
+  
+  basicMenubar.attach(fileMenu, 0);
+  basicMenubar.attach(subMenu4, 1);
+  basicMenubar.at(50,100);
+  
+  //或者更简单的方式建立菜单
+  var notepad = new CC.ui.Win({id:'notepad-win', showTo:document.body, layout:'row', title:'记事本'});
+  var notepadMenu = new CC.ui.Menubar({
+  	id:'notepad-menu',
+  	array:[
+  	 {title:'文件(F)', array:[{title:'新建'},{title:'打开'},{title:'保存'},{title:'另存为',separator:true},{title:'页面设置'},{title:'打印',separator:true},{title:'退出'}]},
+  	 {title:'编辑(E)', array:[{title: '撤销'},{title: '重做'},{title: '复制'},{title: '删除'}, {title: '全选'},{title: '选择行'}]},
+  	 {title:'格式(O)', array:[{title:'自动换行'},{title:'字体'}]},
+  	 {title:'查看(V)', array:[{title:'状态栏'}]},
+  	 {title:'帮助(H)', array:[{title:'帮助主题'},{title:'关于记事本'}]}
+  	]
+  });
+  notepad.layout.add(notepadMenu);
+  notepad.center().render();
+  
+  //右键菜单例子
+  CC.Event.on(document, 'contextmenu', function(e){
+  	var xy = CC.Event.pageXY(e);
+  	fileMenu.at(xy[0], xy[1]);
+  	//阻止浏览器右键菜单
+  	CC.Event.stop(e);
+  });
+});
+</script>

@@ -61,7 +61,6 @@ if(!window.__debug)
     isGecko3 = !isSafari && ua.indexOf("rv:1.9") > -1,
     //盒模型
     isBorderBox = isIE && !isStrict;
-
     // 修复在IE的一些版本中通过CSS改变元素背景图片会出现重新请求闪烁现象,IE6犹为明显.
     if(isIE && !isIE7){
         try{
@@ -1695,6 +1694,7 @@ CC.extend(Event,
         if ( !ev.which && ((ev.charCode || ev.charCode === 0) ? ev.charCode : ev.keyCode) )
             return ev.charCode || ev.keyCode;
     },
+
 /**
  * 是否左击.
  * @param {Event} ev
@@ -2799,6 +2799,11 @@ if(!Tpl){
 CC.extend(Tpl,
     /**@lends CC.Tpl*/
     {
+/**
+ * 为什么要有空图片?
+ * 这是为填充img标签用的,为什么要用到img标签,用其它标签的background-url定位不行么?
+ * img标签主要优点是可放大,缩小图片,目前兼容的css难做到这点
+ */
     	BLANK_IMG : window.BLANK_IMG || 'http://www.bgscript.com/bgjs/default/s.gif',
 /**
  * 根据模板名称获得模板字符串对应的HTML结点集,该结点生成只有一次,第二次调用时将从缓存克隆结点数据.
@@ -2924,6 +2929,8 @@ var hidMode = {visibility:'hidden', display:'none'};
 var dispMode = {visibility:'visible', display:'block'};
 
 var undefined;
+
+var NB = !CC.borderBox, Math = window.Math, parseInt = window.parseInt;
 
 CC.extend(Base.prototype,
   /**@lends CC.Base.prototype*/
@@ -3140,14 +3147,13 @@ CC.extend(Base.prototype,
         if(this.icon) {
             this.setIcon(this.icon);
         }
+        
         if(this.clickCS) {
-            var cp = this._csIf('clickCS', 'click');
-            this.bindClickStyle(cp);
+            this.bindClickStyle(this.clickCS);
         }
     
         if(this.hoverCS){
-            var cp = this._csIf('hoverCS', 'on');
-            this.bindHoverStyle(cp);
+            this.bindHoverStyle(this.hoverCS);
         }
 /**
 * @name CC.Base#unselectable
@@ -3753,7 +3759,7 @@ CC.extend(Base.prototype,
         oNew = f.view;
         var v = this.view;
         var oNext = v.nextSibling;
-        if (oNext == null) {
+        if (!oNext) {
             v.parentNode.appendChild(oNew);
         } else {
             v.parentNode.insertBefore(oNew, oNext);
@@ -3783,7 +3789,7 @@ CC.extend(Base.prototype,
    * @return {Number} 
    */  
     getZ : function(){
-    	return this.getStyle('zIndex')|0;
+    	return this.fastStyle('zIndex')|0;
     },
 /** 
  * 设置或获得控件样式. 
@@ -3876,7 +3882,36 @@ CC.extend(Base.prototype,
                 return null;
             };
     }(),
-  
+/**
+ * 快速获得元素样式,比getStyle更轻量级,但也有如下例外
+ * <li>不能获得float
+ * <li>传入属性名必须为JS变量格式,如borderLeft,非border-width
+ * <li>不能处理透明值
+ */
+    fastStyle : function(){
+        return view && view.getComputedStyle ?
+            function(prop){
+                var el = this.view, v, cs, camel;
+                if(v = el.style[prop]){
+                    return v;
+                }
+                if(cs = view.getComputedStyle(el, "")){
+                    return cs[prop];
+                }
+                return null;
+            } :
+            function(prop){
+                var el = this.view, v, cs;
+                if(v = el.style[prop]){
+                    return v;
+                }
+                if(cs = el.currentStyle){
+                    return cs[prop];
+                }
+                return null;
+            };
+    }(),
+    
 		/**
 	 	 * 先添加默认图标样式this.iconCS，再添加参数样式. 
 	 	 * @param {String} cssIco 
@@ -3981,6 +4016,31 @@ CC.extend(Base.prototype,
             return this.height;
         return this.getSize().height;
     },
+
+/**
+ * 得到padding+border 所占宽度
+ * @private
+ */
+    getOuterWidth : function(){
+    	var ow = parseInt(this.fastStyle('borderLeftWidth')||0,10) + 
+    	         parseInt(this.fastStyle('borderRightWidth')||0,10)+
+    	         parseInt(this.fastStyle('paddingLeft')||0,10)+
+    	         parseInt(this.fastStyle('paddingRight')||0,10);
+    	return parseInt(ow,10) || 0;
+    },
+
+/**
+ * 得到padding+border 所占高
+ * @private
+ */
+    getOuterHeight : function(){
+    	var oh = parseInt(this.fastStyle('borderTopWidth')||0,10) + 
+    	         parseInt(this.fastStyle('borderBottomWidth')||0,10)+
+    	         parseInt(this.fastStyle('paddingTop')||0,10)+
+    	         parseInt(this.fastStyle('paddingBottom')||0,10);
+    	return parseInt(oh,10) || 0;
+    },
+         
 /**
  * @param {Number|Object|false} a number或{width:number,height:number},为false时不更新 
  * @return this
@@ -3995,7 +4055,7 @@ CC.extend(Base.prototype,
             if(c !== false){
                 if(c<this.minW) c=this.minW;
                 if(c>this.maxW) c=this.maxW;
-                this.style('width', c + 'px');
+                this.setStyle('width', NB?Math.max(c - this.getOuterWidth(),0)+'px' : c + 'px');
                 this.width = c;
             }
             c=a.height;
@@ -4003,7 +4063,7 @@ CC.extend(Base.prototype,
                 if(c<this.minH) c=this.minH;
                 if(c>this.maxH) c=this.maxH;
                 if(c<0) a.height=c=0;
-                this.style('height', c + 'px');
+                this.setStyle('height', NB?Math.max(c - this.getOuterHeight(),0)+'px' : c + 'px');
                 this.height = c;
             }
             return this;
@@ -4012,13 +4072,13 @@ CC.extend(Base.prototype,
         if(a !== false){
             if(a<this.minW) a=this.minW;
             if(a>this.maxW) a=this.maxW;
-            this.style('width', a + 'px');
+            this.setStyle('width', NB?Math.max(a - this.getOuterWidth(),0)+'px' : a + 'px');
             this.width = a;
         }
         if(b !== false){
             if(b<this.minH) b=this.minH;
             if(b>this.maxH) b=this.maxH;
-            this.style('height', b + 'px');
+            this.setStyle('height', NB?Math.max(b - this.getOuterHeight(),0)+'px' : b + 'px');
             this.height=b;
         }
 		
@@ -4128,23 +4188,23 @@ CC.extend(Base.prototype,
 
             p = el;
 
-            var hasAbsolute = this.getStyle("position") == "absolute", f = CC.fly(el);
+            var hasAbsolute = this.fastStyle("position") == "absolute", f = CC.fly(el);
             
             while (p) {
 
                 x += p.offsetLeft;
                 y += p.offsetTop;
                 f.view = p;
-                if (!hasAbsolute && f.getStyle("position") == "absolute") {
+                if (!hasAbsolute && f.fastStyle("position") == "absolute") {
                     hasAbsolute = true;
                 }
 
                 if (CC.gecko) {
-                    var bt = parseInt(f.getStyle("borderTopWidth"), 10) || 0;
-                    var bl = parseInt(f.getStyle("borderLeftWidth"), 10) || 0;
+                    var bt = parseInt(f.fastStyle("borderTopWidth"), 10) || 0;
+                    var bl = parseInt(f.fastStyle("borderLeftWidth"), 10) || 0;
                     x += bl;
                     y += bt;
-                    if (p != el && f.getStyle('overflow') != 'visible') {
+                    if (p != el && f.fastStyle('overflow') != 'visible') {
                         x += bl;
                         y += bt;
                     }
@@ -4159,14 +4219,14 @@ CC.extend(Base.prototype,
 
             if (CC.gecko && !hasAbsolute) {
                 f.view = bd;
-                x += parseInt(f.getStyle("borderLeftWidth"), 10) || 0;
-                y += parseInt(f.getStyle("borderTopWidth"), 10) || 0;
+                x += parseInt(f.fastStyle("borderLeftWidth"), 10) || 0;
+                y += parseInt(f.fastStyle("borderTopWidth"), 10) || 0;
             }
 
             p = el.parentNode;
             while (p && p != bd) {
             		f.view = p;
-                if (!CC.opera || (p.tagName != 'TR' && f.getStyle("display") != "inline")) {
+                if (!CC.opera || (p.tagName != 'TR' && f.fastStyle("display") != "inline")) {
                     x -= p.scrollLeft;
                     y -= p.scrollTop;
                 }
@@ -4199,31 +4259,23 @@ CC.extend(Base.prototype,
         }
     
         var v = this.view;
-        var display = v.style.display;
-        if (display != 'none' && display != null){ // Safari bug
-            return {
-                width:v.offsetWidth,
-                height:v.offsetHeight
-            };
+        var w = Math.max(v.offsetWidth, v.clientWidth);
+        if(!w){
+            w = parseInt(this.fastStyle('width'), 10) || 0;
+            if(NB)
+                w += this.getOuterWidth();
         }
-
-        // All *Width and *Height properties give 0 on vs with display none,
-        // so enable the v temporarily
-        var els = v.style;
-        var oriVis = els.visibility;
-        var oriPos = els.position;
-        var oriDis = els.display;
-        els.visibility = 'hidden';
-        els.position = 'absolute';
-        els.display = 'block';
-        var oriW = v.clientWidth;
-        var oriH = v.clientHeight;
-        els.display = oriDis;
-        els.position = oriPos;
-        els.visibility = oriVis;
+        
+        var h = Math.max(v.offsetHeight, v.clientHeight);
+        if(!h){
+            h = parseInt(this.fastStyle('height'), 10) || 0;
+            if(NB)
+                h += this.getOuterHeight();
+        }
+        
         return {
-            width:oriW,
-            height:oriH
+            width:w,
+            height:h
         };
     },
 		
@@ -4280,7 +4332,7 @@ CC.extend(Base.prototype,
     ,
     
 /**
- * 获得相对控件或方块的坐标.
+ * 获得相对控件或方块的坐标,如果高度未定,请在显示控件后再调用该方法定位.
  * @param {CC.Base|Array} box 目标元素,或一个矩形方块[x,y,width,height]
  * @param {String} dir 锚准位置,可选值有l, t, r, b组合,如lt,rb
  * @param {String} rdir 水平或垂直翻转,可选值有v,h,u,d,l,r,如vu表示垂直向上翻转,hr水平右转
@@ -4299,7 +4351,7 @@ CC.extend(Base.prototype,
 	      bx = box[0], by = box[1],
 	      bw = box[2], bh = box[3],
 	      nx, ny;
-	    
+	      
 	    nx = dir.charAt(0) === 'l' ? bx - w : bx + bw;
 	    ny = dir.charAt(1) === 't' ? by - h : by + bh;
 
@@ -4323,22 +4375,21 @@ CC.extend(Base.prototype,
 	    			ny = by - h;
 	    		}
 	    	}
+	    	
 	    	if(nx + w > vw){
 	    		if(by+bh>ny && by<ny+h)
 	    			nx = bx - w;
 	    		else
 	    			nx = vw - w;
 	    	}
-	    	//y交叉
-	    	//if(by+bh>ny && by<ny+h)
-	    	//	ny = by-h;
-	    		
+
 	    	if(ny < 0){
 	    		ny = 0;
 	    		if(bx+bw>nx && bx<nx+w){
 	    			ny = by+bh;
 	    		}
 	    	}
+	    	
 	    	if(ny + h > vh){
 	    		//this与box是否重合(对角判断法则)
 	    		if(bx+bw>nx && bx<nx+w)
@@ -4387,13 +4438,7 @@ CC.extend(Base.prototype,
         des.setSize(this.getSize());
         return this;
     },
-    
-	//private
-    _csIf : function(cs, def, proxy, from) {
-        var a = this[cs];
-        return typeof a === 'string' ? a : def;
-    }
-    ,
+  
 /**
  * 控件获得焦点.
  * @param {Number} [timeout] 设置聚焦超时
@@ -4704,7 +4749,7 @@ CC.extend(Base.prototype,
     bindContext : function(callback,cancel, caller, childId, cssTarget, cssName) {
         if(this.contexted)
         	return this;
-        
+
         var tar = childId ? this.dom(childId) : this.view;
         if(!caller)
         	caller = this;
@@ -4719,11 +4764,11 @@ CC.extend(Base.prototype,
         	  var f = tar == self.view ? self : CC.fly(tar);
         	  
             self.contexted = false;
-            delete self.__contextedCallback;
+            delete self.__contextedCb;
             if(cssTarget){
         			CC.fly(cssTarget).delClass(cssName).unfly();
         		}
-            f.display(0).unfly();
+            f.display(false).unfly();
             self.fire('contexted', false, evt, tar);
         }
         );
@@ -4732,7 +4777,7 @@ CC.extend(Base.prototype,
         
         
         this.contexted = true;
-        this.__contextedCallback = releaseCall;
+        this.__contextedCb = releaseCall;
         if(cssTarget){
         	CC.fly(cssTarget).addClass(cssName).unfly();
         }
@@ -4743,7 +4788,7 @@ CC.extend(Base.prototype,
  * 释放已绑定的上下文切换
  */
     releaseContext : function(){
-    	this.__contextedCallback();
+    	this.__contextedCb();
     },
     
     /**
@@ -5409,7 +5454,7 @@ CC.create('CC.ui.Shadow', CC.Base,
 				this.target.on('resized', this.reanchor, this);
 				this.target.on('reposed', this.reanchor, this);
 		}
-		this.setZ((this.target.getStyle('z-index') || 1)-1);
+		this.setZ((this.target.fastStyle('zIndex') || 1)-1);
 		//专门针对不支持PNG图片的IE6
 		if(CC.ie6){
 			this._ie6OffDt = Math.floor(this.offset/2);
@@ -5792,7 +5837,7 @@ CC.create('CC.layout.Layout', null,
  * 显示/隐藏子项,如果layoutOnChange为true则重新布局容器
  */
         display : function(c, b){
-        	this.parentContainer.displayItem(c, b);
+        	c.display(b);
           if(this.layoutOnChange)
            	this.doLayout();
         },
@@ -5926,14 +5971,7 @@ CC.create('CC.layout.Layout', null,
                 if (!ch.rendered) 
                     ch.render();
             }
-        },
-/**
- * 显示子项,如果允许{@link #layoutOnChange}并触发布局.
- */
-		displayItem : function(item, b){
-		   if (this.layoutOnChange) 
-               this.doLayout.bind(this).timeout(0);
-		}
+        }
 });
 
 var lyx = CC.layout.Layout;
@@ -6216,7 +6254,7 @@ CC.create('CC.ui.ContainerBase', Base,
 	 * @event
 	 * @param {CC.Base} item
 	 */
-    else if(this.fire('beforeremove', a)!==false){
+    else if(this.fire('beforeremove', a)!==false && this.beforeRemove(a) !== false){
       a.pCt = null;
 	    this.children.remove(a);
 		  this._removeNode(a.view);
@@ -6230,6 +6268,9 @@ CC.create('CC.ui.ContainerBase', Base,
 	  }
     return this;
   },
+  
+  beforeRemove : fGo,
+  
   /**
  * 移除所有子项.
  */
@@ -6260,7 +6301,10 @@ CC.create('CC.ui.ContainerBase', Base,
 
   /**
      * 根据控件ID或控件自身或控件所在数组下标安全返回容器中该控件对象.
-     * @param {Base|String|Number} id 子控件
+     * <li>id为控件id,即字符串格式,返回id对应的子项,无则返回null
+     * <li>id为数字格式,返回数字下标对应子项,无则返回null
+     * <li>id为子项,直接返回该子项
+     * @param {CC.Base|String|Number} id 子控件
      */
   $: function(id) {
     if (id === null || id === undefined || id === false) {
@@ -6291,12 +6335,8 @@ CC.create('CC.ui.ContainerBase', Base,
     }
 
     //component
-    if (id.type) {
-      if (this.children.indexOf(id) == -1) {
-        return null;
-      }
+    if (id.view) 
       return id;
-    }
 
     var chs = this.children;
 
@@ -6306,19 +6346,6 @@ CC.create('CC.ui.ContainerBase', Base,
       }
     }
     return null;
-  },
-
-  /**
-   * 设置容器中指定控件的显示属性.
-   * @param {Base|String|Number} a 子控件
-   * @param {Boolean} b true或false.
-   * @return {Base} a
-   */
-  displayItem: function(a, b) {
-    a = this.$(a);
-    a.display(b);
-    //this.layout.displayItem(a, b);
-    return a;
   },
 
   display: function(b) {
@@ -6430,7 +6457,7 @@ CC.create('CC.ui.ContainerBase', Base,
     }
     return this;
   },
-  /**
+/**
  * 交换两子项.
  * @return this
  */
@@ -6466,25 +6493,6 @@ CC.create('CC.ui.ContainerBase', Base,
     }
     return this;
   },
-  /**
-   * 级联寻找某属性值
-   * @param {Object} k
-   * @return value
-   */
-  valueH : function(k){
-  	if(this[k] !== undefined)
-  		return this[k];
-  	
-  	var v;
-  	CC.eachH(this, 'pCt', function(){
-  			if(this[k] !== undefined){
-  				v = this[k];
-  				return false;
-  			}
-  		});
-  	
-  	return v;
-  },
   
   /**
      * 对容器控件进行排序,采用Array中sort方法,排序后控件的DOM结点位置也随之改变.
@@ -6505,7 +6513,7 @@ CC.create('CC.ui.ContainerBase', Base,
     this.sorted = true;
     return this;
   },
-  /**
+/**
  * 反转子控件
  * @return this
  */
@@ -6521,7 +6529,7 @@ CC.create('CC.ui.ContainerBase', Base,
     this.ct.appendChild(oFrag);
     return this;
   },
-  /**
+/**
  * 过滤方式隐藏子控件.
  * @param {Function} matcher
  * @param {Object} 调用matcher的this
@@ -6538,12 +6546,13 @@ CC.create('CC.ui.ContainerBase', Base,
     }));
     return this;
   },
-  /**
+/**
  * 根据控件某个属性值来过滤子项.
  * @param {Function} callback 符合条件后的回调,传递当前子项作参数
  * @param {String} attrName 属性名
  * @param {Object} attrV 测试的属性值
  * @param {Boolean} [strictEq=false] 是否使用绝对等比较方式
+ * @return this
  */
   filterBy: function(callback, attrName, attrV, strictEq) {
     var chs = this.children,
@@ -6564,7 +6573,7 @@ CC.create('CC.ui.ContainerBase', Base,
     }
     return this;
   },
-  /**
+/**
  * 枚举子项, 如果回调函数返回false,则终止枚举.
  * @param {Function} callback 回调,传递参数为 callback(item, i)
  * @param {Object} caller 调用callback的this, 默认为子项
@@ -6593,7 +6602,7 @@ CC.create('CC.ui.ContainerBase', Base,
     });
     return r == true;
   },
-  /**
+/**
  * 批量生成子项, 不能在初始化函数里调用fromArray,因为控件未初始化完成时不能加入子控件.
  * @param {Array} array 子项实始化配置
  * @param {CC.Base} [itemclass=this.ItemClass] 可选, 子类
@@ -6605,7 +6614,7 @@ CC.create('CC.ui.ContainerBase', Base,
       itemclass = window[itemclass];
     }
 
-    /**
+/**
  * @name CC.ui.ContainerBase#itemCfg
  * @property {Object} 用于批量添加子项{@link #fromArray}时子项的配置
  */
@@ -6627,23 +6636,25 @@ CC.create('CC.ui.ContainerBase', Base,
     return this;
   },
   
-  /**
- *
+/**
+ * @param {String} eventName
+ * @param {Function} callback
+ * @param {Boolean} cancelBubble
+ * @param {Object} scope
+ * @param {String|HTMLElement} childId
+ * @param {String} srcName
+ * @return this
  */
   itemAction: function(eventName, callback, cancelBubble, caller, childId, srcName) {
     var act = (function(event) {
       var el = event.target || event.srcElement;
-      if (srcName !== undefined) {
-        if (el.tagName != srcName) return;
+      
+      if((srcName === undefined || el.tagName === srcName) && el !== this.view){
+					var item = this.$(el);
+      		if (item)
+        		return item.disabled ? false : callback.call(this, item, event);
       }
-
-      if (el === this.view) return;
-      var item = this.$(el);
-      if (item) {
-        if (item.disabled) return false;
-        callback.call(this, item, event);
-      }
-    });
+   });
     if (!this.bndActs) {
       this.bndActs = [];
     }
@@ -6651,7 +6662,7 @@ CC.create('CC.ui.ContainerBase', Base,
     this.domEvent(eventName, act, cancelBubble, caller, childId);
     return this;
   },
-  /**
+/**
  *
  */
   unItemAction: function(eventName, callback, childId) {
@@ -6668,30 +6679,60 @@ CC.create('CC.ui.ContainerBase', Base,
 
     return this;
   },
-
+/**
+ * @property {Boolean|String} keyEvent
+ * 用于监听键盘按键的事件名称,如果该值在容器初始化时已设置,
+ * 可监听容器发出的keydown事件
+ * @example 
+   var ct = new CC.ui.ContainerBase({keyEvent:true});
+   ct.on('keydown', function(event){
+   		this....
+   });
+ */
+/**
+ * @name CC.ui.ContainerBase#keydown
+ * @event
+ * 如果已安装键盘监听器,键盘按键触发时发送该事件
+ * @param {DOMEvent} e
+ */
+/**
+ * 安装键盘事件监听器,用于发送容器的keydown事件,
+ * 一些具有选择功能(CC.util.SelectionProvider)控件已默认开启了该功能.
+ * 可通过获取容器keyEvent属性检测是否安装了监听器
+ * @return this
+ */
   bindKeyInstaller: function() {
     if(this.keyEvent === undefined)
     	this.keyEvent = true;
-  
+
     var kev = this.keyEvent === true ? 'keydown': this.keyEvent;
     var node = this.keyEventNode = this.keyEventNode ? this.dom(this.keyEventNode) : this.ct;
-    if (node.tabIndex == -1) {
+    if (node.tabIndex === -1) {
       //ie won't works.
       node.tabIndex = 0;
       node.hideFocus = 'on';
     }
     this.domEvent(kev, this._onKeyPress, this.cancelKeyBubble, null, node);
+    return this;
   },
 
-  _onKeyPress: function(evt) {
-    if (this.disabled || this.fire('keydown', evt) === false) return;
-    this.onKeyPressing(evt);
+/**@private*/
+  _onKeyPress: function(e) {
+    if (!this.disabled && this.fire('keydown', e) !== false)
+    	this.onKeyPressing(e);
   },
-  /**
- * 
+/**
+ * 在处理完keydown事件后默认调用的回调函数,
+ * 这是一个接口函数,默认为空函数,如果不想通过ct.on方式监听,
+ * 可通过重写该方法快速处理按键事件
  */
   onKeyPressing: fGo,
-
+ 
+/**
+ * 容器聚焦,可通过设置timeout非undefined值来超时聚焦
+ * @param {Number} timeout 设置超时
+ * @return this
+ */
   focus: function(timeout){
   	if (this.disabled) 
     	return this;
@@ -6703,45 +6744,44 @@ CC.create('CC.ui.ContainerBase', Base,
 	       }catch (ee) {}
        }).timeout(0);
     else try {ct.focus();}catch (e) {}
-    
     return this;
   },
         
-  /** 立即布局当前容器.*/
+  /**
+   * 立即布局当前容器
+   * @return this
+   */
   validate: function() {
     this.layout.invalidate = false;
     this.layout.doLayout();
     return this;
   },
-  /***/
+  /**
+   * 
+   */
   invalidate: function() {
     this.layout.invalidate = true;
+    return this;
   },
 
-  /**布局当前容器,如果当前容器正处于布局变更中,并不执行布局.*/
+  /**
+   * 布局当前容器,如果当前容器正处于布局变更中,并不执行布局
+   * @return this
+   */
   doLayout: function() {
     if (!this.layout.invalidate && this.rendered) this.layout.doLayout.apply(this.layout, arguments);
     return this;
   },
  
-  /**
+/**
  * 根据容器内容宽度自动调整.
  * @override
+ * @return this
  */
   autoHeight: function() {
     var v = this.ct;
     this.setSize(this.getWidth(true) + v.scrollWidth - v.clientWidth, this.getHeight(true) + v.scrollHeight - v.clientHeight);
     return this;
-  },
-  /**
- *
- */
-  acceptDrop: function(comp) {
-    return comp.pCt && comp.pCt.type == this.type;
-  },
-  /***/
-  ondrop: function(comp) {
-    this.add(comp);
   }
 });
 
@@ -6756,22 +6796,64 @@ var Event = CC.Event;
  
  
 //~@base/connectionprovider.js
-
+/**
+ * 为控件提供数据加载功能
+ * 这个类主要用于桥接CC.Ajax与CC.ui.ContainerBase
+ */
 CC.create('CC.util.ConnectionProvider', null, /**@lends CC.util.ConnectionProvider.prototype*/ {
-	
+/**
+ * 是否禁用指示器,默认false 
+ */
 	indicatorDisabled : false,
-	
+
+/**@private*/
 	initialize : function(t, cfg) {
 		if(t)
 			this.setTarget(t);
 		if(cfg)
 			CC.extend(this, cfg);
 	},
-	
+/**
+ * 设置目标控件
+ */	
 	setTarget : function(t){
 		this.t = t;
 	},
-	
+/**
+ * @name CC.util.ConnectionProvider#loadType
+ * @property {String} loadType 
+ * 指明返回数据的类型,成功加载数据后默认的处理函数将根据该类型执行
+ * 相应的操作,被支持的类型有如下两种
+ * <li>html,返回的HTML将被加载到target.wrapper中
+ * <li>json,返回的数据转换成json,并通过target.fromArray加载子项
+ * 如果未指定,按json类型处理
+ * @see #defaultLoadSuccess
+ */
+/**
+ * 成功返回后执行,默认是根据返回数据类型(loadType)执行相应操作,
+ * 如果要自定义处理返回的数据,可定义在连接时传递success方法或重写本方法
+ * @param {CC.Ajax} j
+ * @see #loadType
+ * @example
+   var ct = new CC.ui.ContainerBase({
+   	connectionCfg : {loadType:'json'}
+   });
+   //加载json
+   ct.getConnectionProvider().connect('http://server/getChildrenData');
+   
+   //加载html到容器
+   ct.connectionProvider.loadType = 'html';
+   ct.connectionProvider.connect('http://server/htmls/');
+   
+   //或自定义加载
+   ct.getConnectionProvider().connect('http://server/..', {
+   	 success : function(j){
+   	  //this默认是connectionProvider
+   	 	alert(this.loadType);
+   	 	alert(j.getText());
+   	 }
+   });
+ */
 	defaultLoadSuccess : function(j){
     switch(this.loadType){
       case 'html' :
@@ -6939,13 +7021,13 @@ CC.create('CC.util.SelectionProvider', null, function(){
  },
  
 /*@private**/
- itemSelectionTrigger : function(it){
- 	if(this.unselectable)
+ itemSelectionTrigger : function(it, e){
+ 	if(this.unselectable || !Event.isLeftClick(e))
  		return;
  	//this.decorateSelected(it, !this.isSelected(it));
  	if(this.mode)
- 		this.select(it);
- 	else this.setSelected(it, !this.isSelected(it));
+ 		this.select(it, e);
+ 	else this.setSelected(it, !this.isSelected(it), e);
  },
 
 /**
@@ -6974,11 +7056,11 @@ CC.create('CC.util.SelectionProvider', null, function(){
    } else if (kc === this.DOWN) {
     this.next();
     Event.stop(e);
-   } else return this._defKeyNav(e);
+   } else return this.defKeyNav(e);
  },
 
 /**@protected*/
- _defKeyNav : fGo,
+ defKeyNav : fGo,
  
 /**
  * @name CC.util.SelectionProvider#t
@@ -7019,7 +7101,7 @@ CC.create('CC.util.SelectionProvider', null, function(){
  * @param {CC.Base} item
  * @param {Boolean} b
  */
- select : function(item){
+ select : function(item, e){
  	
  	if(this.unselectable || this.disabled)
  		return this;
@@ -7056,7 +7138,8 @@ CC.create('CC.util.SelectionProvider', null, function(){
  * @name CC.ui.ContainerBase#selected
  * @event
  * @param {CC.Base} item
- * @param {Boolean}  b
+ * @param {CC.util.SelectionProvider} selectionProvider
+ * @param {DomEvent} event 如果该选择事件由DOM事件触发,传递event
  */
 		//fire selectchange
 /**
@@ -7065,10 +7148,10 @@ CC.create('CC.util.SelectionProvider', null, function(){
  * @property {Boolean} [forceSelect=false] 强制发送select事件,即使当前子项已被选中
  */
  	if((this.forceSelect || !this.isSelected(item))
-		  && this.t.fire('select', item, this) !== false){
-		this.onSelectChanged(item, true);
-		this.onSelect(item);
-		this.t.fire('selected', item, this);
+		  && this.t.fire('select', item, this, e) !== false){
+		this.onSelectChanged(item, true, e);
+		this.onSelect(item, e);
+		this.t.fire('selected', item, this, e);
 	}
 	return this;
  },
@@ -7085,7 +7168,7 @@ CC.create('CC.util.SelectionProvider', null, function(){
  onSelect : function(item) {
 	if(this.autoscroll)
 			item.scrollIntoView(this.t.scrollor || this.t.wrapper);
-  this.itemCallback && item.onselect && item.onselect();
+  item.onselect && item.onselect();
  },
 
 /**
@@ -7182,37 +7265,81 @@ CC.create('CC.util.SelectionProvider', null, function(){
  },
 
 /**
- * 选择并返回下一项,如无返回null
+ * 检测item是否能作为下一个选择项
+ * @return {Boolean}
  */
- next : function(){
-  var idx = this.selectedIndex + 1,
+ canNext : function(item){
+ 	return !item.disabled && !item.hidden;
+ },
+ 
+/**
+ * 检测item是否能作为上一个选择项
+ * @return {Boolean}
+ */
+ canPre : function(item){
+  return !item.disabled && !item.hidden;
+ },
+ 
+ /**
+  * @protected
+  * 获得当前用于计算下|上一选项的下标,默认返回当前选项项selectedIndex
+  */
+ getStartIndex : function(){
+ 	return this.selectedIndex;
+ },
+ 
+ /**
+  * 获得下一个可选择项,如无可选择项,返回null
+  * @return {CC.Base} item 下一个可选择项
+  */
+ getNext : function(){
+  var idx = this.getStartIndex() + 1,
       cs  = this.t.children,
       len = cs.length;
   
-  while (idx <= len - 1 && (cs[idx].disabled || cs[idx].hidden)) idx++;
+  while (idx <= len - 1 && !this.canNext(cs[idx])) idx++;
     
   if (idx >= 0 && idx <= len - 1) {
-    this.select(cs[idx]);
     return cs[idx];
   }
   return null;
+ },
+
+ /**
+  * 获得上一个可选择项,如无可选择项,返回null
+  * @return {CC.Base} item 上一个可选择项
+  */
+ getPre : function(){
+  var idx = this.getStartIndex() - 1,
+      cs  = this.t.children, 
+      len = cs.length;
+  
+  while (idx >= 0 && !this.canPre(cs[idx])) idx--;
+  
+  if (idx >= 0 && idx <= len - 1) {
+    return cs[idx];
+  }
+  return null;
+ },
+ 
+/**
+ * 选择并返回下一项,如无返回null
+ */
+ next : function(){
+  var n = this.getNext();
+  if(n)
+  	this.select(n);
+  return n;
  },
 
 /**
  * 选择并返回前一项,如无返回null
  */
  pre : function(){
-  var idx = this.selectedIndex - 1,
-      cs  = this.t.children, 
-      len = cs.length;
-  
-  while (idx >= 0 && (cs[idx].disabled || cs[idx].hidden)) idx--;
-  
-  if (idx >= 0 && idx <= len - 1) {
-  	this.select(cs[idx]);
-    return cs[idx];
-  }
-  return null;
+  var n = this.getPre();
+  if(n)
+  	this.select(n);
+  return n;
  },
  
 /**@protected*/
@@ -7387,20 +7514,17 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
         },
         
         /**
-         *@override 计算容器和Wrapper合适的宽高.
+         * @override 计算容器和Wrapper合适的宽高.
          */
         setSize: function(a, b){
-            if (a === this.width) {
-                a = false;
-            }
-            if (b === this.height) {
-                b = false;
-            }
-            
+        	
             if (a === false && b === false) 
                 return this;
             
-            var ba = false, bb = false, rs = false, wr = this.wrapper, ic = this.getWrapperInsets(), dx = 0, dy = 0, calWr = !!ic;
+            var ba = false, bb = false, rs = false, 
+                wr = this.wrapper, ic = this.getWrapperInsets(), 
+                dx = 0, dy = 0, calWr = !!ic;
+
             if (a !== false) {
                 if (a.width !== undefined) {
                     var c = a;
@@ -7409,7 +7533,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
                 }
                 if (a < this.minW) 
                     a = this.minW;
-                if (a > this.maxW) 
+                if (a > this.maxW)
                     a = this.maxW;
                 if (calWr) 
                     ba = a - ic[5];
@@ -7424,7 +7548,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
             if (b !== false) {
                 if (b < this.minH) 
                     b = this.minH;
-                if (b > this.maxH) 
+                if (b > this.maxH)
                     b = this.maxH;
                 if (calWr) 
                     bb = b - ic[4];
@@ -7514,7 +7638,7 @@ CC.ui.Panel.getBorderPanel = (function(cp){
 CC.create('CC.ui.Viewport', CC.ui.Panel, /**@lends Viewport.prototype*/{
 	
 	bodyCS : 'g-viewport-body',
-	
+
 	cs : 'g-viewoport',
 	
 	initComponent : function(){
@@ -8188,10 +8312,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
         	
         	l += cg;
         	w -= cg;
-      	}/*else{
-      		l += cpg;
-      		w -= cpg;
-      	}*/
+      	}
       	
       	if(!c.hidden && !c.contexted){
 	        dd = c.getWidth(true);
@@ -9206,7 +9327,6 @@ CC.Tpl['BarItem'] = '<table class="g-baritem" cellspacing="0" cellpadding="0" bo
 CC.ui.Bigbar = function(opt){
 	return new CC.ui.Panel(CC.extend(
 	{
-	 itemCallback:true,
 	 keyEvent:false,
 	 itemCfg : {
 	 	template : 'BarItem', 
@@ -9255,7 +9375,6 @@ CC.ui.Bigbar = function(opt){
 CC.ui.Smallbar = function(opt){
 	return new CC.ui.Panel(CC.extend(
 	{
-	 itemCallback:true,
 	 selectionProvider : true,
 	 selectionCfg : {forceSelect:true},
 	 keyEvent:false,
@@ -9714,7 +9833,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
 		    type: 'CC.ui.WinTitlebar',
 		    autoRender: true,
 		    clickEvent : true,
-		    selectionCfg : {forceSelect: true, selectedCS : false, itemCallback: true},
+		    selectionCfg : {forceSelect: true, selectedCS : false},
 		    unselectable:true,
 		    cancelClickBubble : true,
 		    itemCfg: { template: 'CC.ui.WinBarItem' },
@@ -10140,7 +10259,7 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
 						m = this.masker = new CC.ui.Mask();
 					if (!m.target) 
 						m.attach(this.modalParent || CC.$body);
-					m.setZ((this.getStyle('zIndex')||1002) - 1);
+					m.setZ((this.fastStyle('zIndex')||1002) - 1);
 				}
 				this.center(this.modalParent);
 				this.trackZIndex.bind(this).timeout(0);
@@ -10320,122 +10439,146 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider, {
  * 无论选中与否都强迫选择
  */
   forceSelect : true,
-
+/**
+ * 取消修饰选择的样式
+ */
+  selectedCS : false,
+  
 //@override
-  onSelect : function(item){
-    var t = this.t;
-    if (item && item.subMenu) {
-      if(t.noContext)
-	     	t.autoPopup = !t.autoPopup;
-			item.subMenu.show(t.autoPopup);
-			if(t.noContext && !t.contexted)
-        	t.contextedMe();
-    } else {
-    //无子菜单
-			t.hideAll();
-		}
+  onSelect : function(item, e){
+    item.handleClick(e);
 		SPP.onSelect.call(this, item);
   },
-  
-  //@override
-  _defKeyNav : function(e){
-  	var k = e.keyCode;
-  	switch(k){
-  		case Event.LEFT : 
-  		  this.left();
+
+/**
+ * 重载该方法可以定义按键导航
+ */
+ navigateKey : function(e){
+   var kc = e.keyCode;
+   switch(kc){
+   	  case Event.UP:
+   	  	this.t.menubar ? this.tryActive(this.t, true) : this.pre();
+   	  	Event.stop(e);
+   	    break;
+   	  case Event.DOWN:
+   	    this.t.menubar ? this.tryActive(this.t, true) : this.next();
+   	    Event.stop(e);
+   	    break;
+   	    
+  		case Event.LEFT :
+  		  this.t.menubar ? this.pre() : this.left();
   		  Event.stop(e);
   			break;
   		
   		case Event.RIGHT :
-  			this.right();
+  			this.t.menubar ? this.next() : this.right();
   			Event.stop(e);
   			break;
-  		case Event.ESC :
+  		
+  		case Event.ENTER :
   		  this.enter();
   		  Event.stop(e);
   		  break;
+  		  
+  		case Event.ESC :
+  		  this.esc();
+  		  Event.stop(e);
+  		  break;
+  		default : return this.defKeyNav(e);
+   }
+ },
+
+/**
+ * 展开菜单当前项或激活第一个能激活的菜单项
+ * @private
+ */
+  tryActive : function(menu, exp){
+  	var o = menu.onItem;
+  	if(o && o.subMenu){
+  		o.showMenu(true);
+  		this.tryActive(o.subMenu);
+  	}else {
+  		o = menu.getSelectionProvider().getNext();
+  		if(o)
+  			o.active(exp);
   	}
   },
+  
+/**
+ * @override
+ */
+  getStartIndex : function(){
+  	var m = this.t, o = m.onItem;
+  	return o?m.indexOf(o) : -1;
+  },
 
+/**
+ * 移动至下一菜单项
+ * @override
+ */
 	next : function(){
-    
-    var t = this.t, it = t.onItem;		
-		
-		if(t.align === 'x' && it){
-			this.select(it);
-			return;
-		}
-    
-		if(it){
-			this.deactive(it);
-			it = t.$(t.indexOf(it) + 1);
-		}
-		if(!it)
-			it = t.$(0);
-			
-		if(it)
-			this.active(it, true);
+    var t = this.t, it = this.getNext();
+		if(!it) it = t.$(0);
+		if(it) it.active(t.menubar);
 	},
 	
+/**
+ * 移动至前一菜单项
+ */
 	pre : function(){
-		var t = this.t, it = t.onItem;
-
-		if(it){
-			this.deactive(it);
-			it = t.$(t.indexOf(it) - 1);
-		}
-		if(!it)
-			it = t.$(t.size() - 1);
-			
-		if(it)
-			this.active(it, true);
+		var t = this.t, it = this.getPre();
+		if(!it) it = t.$(t.size() - 1);
+		if(it)  it.active(t.menubar);
 	},
 	
 	left : function(){
-		
+		var m = this.t;
+		if(m.menubar)
+			this.pre();
+		else {
+			var p = m.pItem;
+			if(p){
+				p.showMenu(false);
+				if(p.pCt.menubar)
+					p.pCt.getSelectionProvider().pre();
+				else p.active();
+			}
+	  }
 	},
 	
 	right : function(){
-		
+		var m = this.t;
+		if(m.menubar)
+			this.next();
+		else {
+			var o = m.onItem;
+			if(o && o.subMenu){
+				o.showMenu(true);
+				this.tryActive(o.subMenu);
+			}
+			else m.getRoot().getSelectionProvider().next();
+		}
+	},
+	
+	esc : function(){
+		var m = this.t, o = m.onItem;
+		if(m.menubar){
+			if(o){
+				o.deactive(true);
+			  m.setAutoExpand(false);
+			}
+		}else {
+			var sm = o && o.subMenu;
+			if(sm && !sm.hidden){
+				o.active(false);
+			}
+			else m.pItem.active(false);
+		}
 	},
 	
 	enter : function(){
-		
-	},
-
-/**
- * 激活指定菜单项
- */
-	active : function(item, expand){
-		var pc = this.t, sc = item.subHoverCS;
-		
-		if(!pc.autoPopup){
-			pc.onItem = item;
-		  return;
-		}
-		
-		//隐藏上一菜单项的子菜单
-		if(pc.onItem !== item)
-			pc._hidePre();
-		
-		if (item.subMenu){
-		  if(sc)
-		  	item.addClass(sc);
-		  // mouse control mode
-		  if(expand)
-		  	item.subMenu.show(1);
-		}
-		
-		pc.onItem = item;
-	},
-	
-	deactive : function(item){
-		//if currently the submenu is in view.
-		var sc = item.subHoverCS;
-	  if(item.subMenu && sc)
-		  item.delClass(sc);
-		
-		this.t.onItem = null;
+		var t = this.t, o = t.onItem;
+		if(o)	this.select(o);
 	}
 });
 /**
@@ -10468,41 +10611,117 @@ return {/**@lends CC.ui.MenuItem.prototype */
  * @param {Boolean} expand 激活时是否展开子菜单
  */
 	active : function(expand){
-		var c = this.pCt;
 		if(!this.disabled){
-			if(c.onItem !== this) {
+			var c = this.pCt, o = c.onItem;
+			if(o !== this) {
+				//每次只允许一个激活
+				if(o)
+					o.deactive(true);
+				
+				if(this.deactiveTimer)
+  				this.clearDefer();
+				
 				c.onItem = this;
-				this.addClass(c.activeCS);
+				
+				var pi = c.pItem;
+
+				if(pi && !pi.isActive())
+						pi.active(expand);
+				
+				this.decorateActive(true);
 			}
-		  if(expand && this.subMenu)
-		  	this.showMenu(true);
+			
+			//激活项时移焦
+			c.focus();
+		  if(this.subMenu)
+		  	this.showMenu(expand);
 		}
 	},
   
-  deactive : function(){
+  isActive : function(){
+  	return this.pCt.onItem === this;
+  },
+  
+  decorateActive : function(b){
+  	b ? this.addClass(this.pCt.activeCS) :
+  	    this.delClass(this.pCt.activeCS);
+  },
+  
+  deactive : function(fold){
   	var c = this.pCt, m = this.subMenu;
   	c.onItem = null;
-  	this.delClass(c.activeCS);
-  	if(m && !m.hidden)
+  	
+  	if(this.deactiveTimer)
+  		this.clearDefer();
+  	
+  	this.decorateActive(false);
+  	
+  	if(m && fold && !m.hidden)
       this.showMenu(false);
+  },
+  
+  deferDeactive : function(fold){
+  	this.deactiveTimer = this.deactive.bind(this, fold).timeout(100);
+  },
+  
+  clearDefer : function(){
+  	clearTimeout(this.deactiveTimer);
+  	this.deactiveTimer = false;
+  },
+  
+  decorateExpand : function(b){
+  	b ? this.addClass(this.pCt.expandCS) :
+  	    this.delClass(this.pCt.expandCS);
+  },
+  
+/**
+ * 当选择菜单后调用
+ */
+  handleClick : function(e){
+		var p = this.pCt;
+    if(p.menubar){
+    	this.active(true);
+    	if(!p.contexted)
+    		p.bindContext();
+    	p.setAutoExpand(true);
+    }else if(this.subMenu){
+    	this.active(true);
+    	if(e)
+    		Event.stop(e);
+    }else p.hideAll();
   },
   
 /**
  * 显示/隐藏子项菜单
  * @param b {Boolean} true|false
- * @param active {Boolean} 是否试图激活子菜单,只有显示时才生效
  */
-  showMenu : function(b, active){
+  showMenu : function(b){
 		var m = this.subMenu;
-		if(m.hidden !== !b){
-			var c = this.pCt, cs = c.expandCS;
-			if(b){
-		  	this.addClass(cs);
-		  	m.setZ((c.getZ()||8888)+2);
-			}else {
-			  this.delClass(cs);
+		if(m){
+			if(m.hidden !== !b){
+				var c = this.pCt;
+				
+				if(!m.rendered)
+					m.render();
+					
+				if(b){
+			  	this.decorateExpand(true);
+			  	m.setZ((c.getZ()||8888)+2);
+			  	
+			  	//向下展开 或 向右展开
+			  	c.menubar ? m.anchorPos(this, 'lb', 'hr', null, true, true) :
+			  	            m.anchorPos(this, 'rt', 'vd', null, true, true);
+			  	m.focus(0);
+				}else {
+				  this.decorateExpand(false);
+				  
+				  //cascade deactive
+				  if(m.onItem)
+				  	m.onItem.deactive(true);
+				}
+				m.display(b);
 			}
-		}
+	 }
 	},
 
 /**
@@ -10511,7 +10730,11 @@ return {/**@lends CC.ui.MenuItem.prototype */
 	bindMenu : function(menu){
     menu.pItem = this;
     this.subMenu = menu;
-    this.addClass(this.subCS);
+    this.decorateSub(true);
+	},
+	
+	decorateSub : function(b){
+		b ? this.addClass(this.subCS) : this.delClass(this.subCS);
 	},
 	
 /**
@@ -10520,7 +10743,7 @@ return {/**@lends CC.ui.MenuItem.prototype */
 	unbind : function(){
 		var m = this.subMenu;
 		if(m){
-			this.delClass(this.subCS);
+			this.decorateSub(false);
 			delete m.pItem;
 			delete this.subMenu;
 		}
@@ -10550,7 +10773,7 @@ return {/**@lends CC.ui.MenuItem.prototype */
 	destory : function(){
 		if(this.subMenu){
 			this.subMenu.destory();
-			this.unbindMenu();
+			this.unbind();
 		}
 		superclass.destory.call(this);
 	}
@@ -10564,6 +10787,7 @@ return {/**@lends CC.ui.MenuItem.prototype */
  */
 CC.create('CC.ui.Menu', CC.ui.Panel, function(superclass) {
 return {
+	
 	hidden : true,
 /**
  * 父菜单项,如果存在
@@ -10580,19 +10804,13 @@ return {
  * 当子菜单显示时,附加到菜单项上的样式
  * @type String
  */
-  expandCS : '',//'subHover',
+  expandCS : 'subHover',
  
-/**
- * 如果该项是一个MenuBar,设为true.
- * @type Boolean
- */
-	noContext : false,
+	clickEvent : 'mousedown',
 	
-	clickEvent : true,
-/**
- * 
- */
-	autoPopup : true,
+	//cancelClickBubble : true,
+	
+	shadow : true,
 	
 /**
  * @private 
@@ -10608,11 +10826,8 @@ return {
 	
 	ct : '_bdy',
 	
-/**
- * 当菜单存在子菜单时,添加到菜单项上的样式
- * @type String
- */
-	itemXCS : 'g-menu-item-x',
+	menubarCS : 'g-menu-bar',
+	
 /**
  * 分隔条结点样式
  * @type String
@@ -10621,17 +10836,19 @@ return {
 	
   initComponent: function() {
   	
-  	if(!this.noContext){
+  	if(this.shadow === true)
   		this.shadow = new CC.ui.Shadow({inpactH:6,inpactY:-2, inpactX : -5, inpactW:9});
-  	}else { 
-  		this.hidden = false;
-  	}
-  	
+
     superclass.initComponent.call(this);
+    
+    if(this.menubar)
+    	this.addClass(this.menubarCS);
+    	
     if(this.array){
     	this.fromArray(this.array);
     	delete this.array;
     }
+    
     //撤消菜单内的onclick事件上传
     //默认为不显示
     this.noUp();
@@ -10644,17 +10861,31 @@ return {
 
 /**@private*/
 	mouseoverCallback : function(item){
-		if(this.menubar && !this.autoExpand){
-		  item.active();
-		}else {
-			item.active(true);
-		}
+		var pi = this.pItem, o = this.onItem;
+		
+		if(o !== item){
+			if(o)
+				o.deactive(true);
+			
+			if(pi && pi.deactiveTimer)
+				pi.clearDefer();
+			
+			if(this.menubar && !this.autoExpand){
+				item.active();
+			}else {
+				item.active(true);
+			}
+	  }else if(o){
+	  	o.clearDefer();
+	  }
 	},
 
 /**@private*/	
-	mouseoutCallback : function(item){
-		var m = item.subMenu;
-    item.deactive();
+	mouseoutCallback : function(item, e){
+		if(!this.menubar)
+			item.deferDeactive(true);
+		else if(!this.autoExpand)
+			item.deferDeactive();
 	},
 	
 /**
@@ -10665,26 +10896,24 @@ return {
     tar = this.$(tar); 
 		tar.bindMenu(menu);
     if(this.menubar)
-    	tar.delClass(tar.subCS);
+    	tar.decorateSub(false);
   }
   ,
 	
-	add : function(item){
-		if(item.isSeparator){
+	beforeAdd : function(a){
+		superclass.beforeAdd.apply(this, arguments);
+		if(a.separator){
 			this.addSeparator();
-			return this;
+			delete a.separator;
 		}
-		
-		superclass.add.call(this,item);
-
-		if(this.menubar){
-			item.addClass(this.itemXCS);
-			item.menubar = this.menubar;
-		}
-		
-		if(item.subMenu && this.menubar)
-			item.delClass(item.subCS);
-		return this;
+		if(this.menubar && a.subMenu)
+			a.decorateSub(false);
+	},
+	
+	beforeRemove : function(a){
+		if(a === this.onItem)
+			this.onItem.deactive();
+		return superclass.beforeRemove.call(this, a);
 	},
 	
 /**
@@ -10693,47 +10922,64 @@ return {
  */
   detach: function(tar) {
     tar = this.$(tar);
-    tar.unbindMenu();
-    if(this.menubar){
-			tar.delClass(this.itemXCS);
-			tar.menubar=false;
-    }
+    tar.unbind();
   }
   ,
-	
-  /**
-   * 显示/隐藏菜单,当点击菜单外时菜单并不用消失.
-   * @param {Boolean} b
-   */
-  show : function(b) {
-    var pc = this.pItem;
-    if(pc){
-    	var cs = pc.subShowCS;
-     	if(cs)
-		  	if( b ){
-		  		pc.addClass(cs);
-		  		this.setZ((pc.pCt.getZ()||8888)+2);
-		  	}else {
-		  		pc.delClass(cs);
-		  	}
-    }
+  
+/**
+ * 获得最顶层菜单
+ * @return {CC.ui.Menu}
+ */
+	getRoot : function(){
+		var p = this.pItem;
+		if(!p)
+			return this;
+		return p.pCt.getRoot();
+	},
 
-    if (b){
-     this._autoPositioned();
-     this.display(true);
-     this.focus();
-    }else {
-    	var su;
-	    CC.each(this.children, (function(i, e) {
-	        su = this.subMenu;
-	        if (su && !su.hidden)
-	            su.show(0);
-	    }));
-	    this.display(b);
-   }
-   return this;
-  }
+/**
+ * 隐藏所有关联菜单
+ */
+  hideAll : function(){
+  	var r = this.getRoot();
+  		if(r.menubar && r.onItem){
+  			r.onItem.deactive(true);
+  			r.setAutoExpand(false);
+  		}else {
+  			r.display(false);
+  		}
+  },
+/**
+ * 与父类display方法相比:
+ * <li>隐藏时取消菜单激活项
+ * @override
+ */
+	display : function(b){
+		if(b === undefined)
+			return superclass.display.call(this);
+		if(!b){
+			var m;
+			if(this.onItem)
+				this.onItem.deactive(true);
+		}
+		superclass.display.call(this, b);
+		this.onDisplay(b);
+		return this;
+	}
   ,
+/**
+ * 可重写该方法添加其它控件的一些样式
+ */
+  onDisplay : fGo,
+
+/**
+ * 是否自动展开子菜单
+ * @private
+ */
+  setAutoExpand : function(b){
+  	this.autoExpand = b;
+  },
+  
 /**
  * 添加分隔条
  */
@@ -10741,120 +10987,30 @@ return {
 		this._addNode(CC.ui.Menu.Separator.view.cloneNode(true));
 	},
 	
-/**@private*/
-	contextedMe : function(){
-		if(!this.contexted){
-			var self = this, tr = this._tmpOnCtxClick;
-			if(!tr){
-				tr = this._tmpOnCtxClick = function(){
-						if(!self.hidden)
-							self.hideAll();
-						self.contexted = false;
-						Event.un(document, 'click', arguments.callee);
-						self.fire('contexted', false);
-				};
-			}
-	    Event.on(document, 'click', tr);
-	    this.contexted = true;
-	    this.fire('contexted', true);
-		}
-	},
-	
-  /**
-   * 显示界面菜单,与show不同,该方法在指定处显示菜单，并且当点击菜单范围外时自动消失
-   * @example
-    showMenu(obj,'bottom')或showMenu(120,230)
-   */
-  showMenu : function(a, b) {
-  		if(!this.rendered)
-  			this.render();
-
-  		this.contextedMe();
-	    
-	    if (typeof a !== 'number') {
-	    	var f = CC.fly(a);
-	    	/**
-	    	 * @name CC.Base#contextedMenuCS
-	    	 * @property {String} contextedMenuCS
-	    	 */
-	    	f.addClass(a.contextedMenuCS || 'menuDwn');
-	    	
-	    	this._trigger = a;
-	      this.anchorPos(f, 'lb', 'hr', null, true, true);
-	      f.unfly();
-	    } else {
-	      this.setXY(a, b);
-	    }
-    this.show(true);
-  }
-  ,
-
-  /**
-   * 隐藏与该菜单相联的所有菜单(包括子菜单和父菜单).
-   */
-  hideAll: function() {
-  	
-  	if(this._trigger) {
-  		CC.fly(this._trigger).delClass(this._trigger.contextedMenuCS || 'menuDwn');
-  		this._trigger = null;
+/**
+ * 在指定坐标或控件下显示菜单
+ * @param {CC.Base|Number} x
+ * @param {Number|Boolean} y
+ * @param {Boolean} contexted
+ * @example
+   //在指定坐标显示菜单
+   menu.at(110, 120);
+   //在指定控件下显示菜单
+   menu.at(text);
+   //在指定坐标显示菜单,并且点击菜单外部时取消隐藏
+   menu.at(110,120,false);
+ */
+  at : function(a,b){
+  	this.display(true);
+  	if(typeof a === 'number'){
+  		this.anchorPos([a, b, 0, 0] ,'lb', 'hr', null, true, true);
+  		if(arguments[2] !== false && !this.menubar)
+  			this.bindContext();
+  	}else {
+  		this.anchorPos(a ,'lb', 'hr', null, true, true);
+  		if(b !== false && !this.menubar)
+  			this.bindContext();
   	}
-  	
-  	if( !this.noContext )
-    	this.show(false);
-
-    if( this.autoPopup && this.noContext )
-    		this.autoPopup = false;
-    	
-    if ( this.onItem )
-      this.onItem.delClass(this.onItem.hoverCS);
-    
-    this.each((function(i, e) {
-      if (this.subMenu) {
-        if (!this.subMenu.hidden) {
-          this.subMenu.hideAll();
-        }
-      }
-    }
-    ));
-    
-    if (this.pItem) {
-    	var ct = this.pItem.pCt;
-      if (ct && !ct.hidden) {
-        ct.hideAll();
-      }
-    }
-  }
-  ,
-
-  _autoPositioned : function() {
-  	if(!this.hidden)
-  		return;
-  	var pi = this.pItem;
-    if (pi) {
-    	if(pi.menubar)
-      	this.anchorPos(pi, 'lb', 'hr', null, true, true);
-      else {
-	      var pos = this.anchorPos(pi,'rt', 'vd');
-	      if(!pos[2])
-	      	pos[0]-=2;
-	      pos[1]+=2;
-	      this.setXY(pos);
-      }
-    }
-  }
-  //在适当位置显示菜单.
-  ,
-
-  _hidePre: function() {
-    if (this.onItem) {
-      var pre = this.onItem; 
-      var cs = this.selectedCS;
-      if(cs)
-      	pre.delClass(cs);
-      if (pre.subMenu) {
-        pre.subMenu.show(false);
-      }
-    }
   },
   
   destory : function(){
@@ -10870,7 +11026,28 @@ return {
 });
 
 CC.ui.Menu.Separator = CC.$$(CC.$C({tagName:'LI', className:CC.ui.Menu.prototype.separatorCS}));
-CC.ui.Menu.Separator.isSeparator = true;
+
+CC.create('CC.ui.Menubar', CC.ui.Menu, {
+		menubar : true, 
+		hidden : false, 
+		shadow : false,
+/**@private*/
+  onContextedRelease : function(){
+  	if(this.onItem)
+  		this.onItem.deactive(true);
+  	this.getSelectionProvider().select(null);
+  	this.setAutoExpand(false);
+  	//无需隐藏
+  	return false;
+  },
+
+/**
+ * @override
+ */
+  bindContext : function(){
+  	return CC.ui.Menu.prototype.bindContext.call(this, this.onContextedRelease);
+  }
+});
 })();
 //~@ui/tree.js
 /**
@@ -11245,68 +11422,61 @@ CC.create('CC.ui.tree.TreeSelectionProvider', CC.util.SelectionProvider, {
 	isSelected : function(item){
 		return item._head.hasClass(this.selectedCS);
 	},
- 
-	/**
-	 * 按键导航
-	 */
-  next : function(t){
-  	var s = this.selected, root = this.t.root;
-  	if(!s){
-   		this.select(root);
-    	return root;
-    }
-		var n = s, 
-	      dir = !(n.nodes && n.expanded && n.children.length>0);
-    if(!dir)
-    	//向下
-    	n = n.children[0];
 
-    while(true){
-    	if(dir){
-	    	if(!n.next){
-	    		  //上溯到顶
-	    			if(n === root)
-	    				return null;
-		    		n = n.pCt;
-	    			continue;
-	    	}
-	      n = n.next;
-	      if(n.hidden || n.disabled)
-	    	 continue;
-	    	else break;
-	    }else {
-	    	if(n.hidden || n.disabled)
-	    	 dir = true;
-	    	else break;
+  getNext : function(t){
+  	var s = this.selected, root = this.t.root, n, dir;
+  	
+  	if(!s){
+    	n = root;
+    }else {
+			n = s;
+		  dir = !(n.nodes && n.expanded && n.children.length>0);
+	    
+	    if(!dir)
+	    	//向下
+	    	n = n.children[0];
+	
+	    while(true){
+	    	if(dir){
+		    	if(!n.next){
+		    		  //上溯到顶
+		    			if(n === root){
+		    				n = null;
+		    				break;
+		    			}
+			    		n = n.pCt;
+		    			continue;
+		    	}
+		      n = n.next;
+		      if(this.canNext(n))
+		      	break;
+		    }else if(!this.canNext(n)){
+		    	dir = true;
+		    }else break;
 	    }
     }
-    
-    this.select(n);
-
-    return null;
+    return n;
   },
   
-  pre : function(item){
-  	var s = this.selected, root = this.t.root;
+  getPre : function(){
+  	var s = this.selected, root = this.t.root, n;
   	if(!s){
-   		this.select(root);
-    	return;
+   		n = root;
+    }else {
+	    n = s.previous;
+	    while((!n || !this.canPre(n) || (n.nodes && n.expanded && n.children.length>0)) && n != root){
+	    	if(!n){
+	    		n = s===root ? null : s.pCt;
+		    	break;
+	    	}
+	    	else if(n.nodes && this.canPre(n)){
+	    		n = n.children[n.children.length-1];
+	    	}else n = n.previous;
+	    }
+	    
+	    if(n===s)
+	    	n = null;
     }
-    var n = s.previous;
-    while((!n || n.hidden || n.disabled || (n.nodes && n.expanded && n.children.length>0)) && n != root){
-    	if(!n){
-    			if(s === root)
-    				return null;
-	    		n = s.pCt;
-	    		break;
-    	}
-    	else if(n.nodes && !n.disabled && !n.hidden){
-    		n = n.children[n.children.length-1];
-    	}else n = n.previous;
-    }
-    
-    if(n!=s)
-    	this.select(n);
     return n;
   }
 });
@@ -12599,7 +12769,6 @@ CC.create('CC.ui.GridRow', CC.ui.ContainerBase, function(spr){
 		//因为没必要，所以置为空调用
 		add : fGo,
 		remove : fGo,
-		displayItem : fGo,
 		insertComponent:fGo
 	};
 		
@@ -12885,14 +13054,6 @@ CC.create('CC.ui.Grid', CC.ui.Panel, function(spr) {
           ly.layoutChild(this);
         });
       }
-    },
-
-    selectNext: function() {
-
-    },
-
-    selectPre: function() {
-
     }
   };
 });
@@ -13385,7 +13546,8 @@ return {
 
       var isv = !a.hidden;
 
-      SP.displayItem.call(this, a, b);
+      a.display(b);
+      
       var p = this.selectionProvider;
       //切换下一个TabItem
       if (!b && p.selected === a) {
@@ -13608,11 +13770,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       selector.on('selected', this.onSelected, this);
       selector.on('itemclick', this.onclickEvent, this);
 
-      this._savSelKeyHdr = selector._defKeyNav;
+      this._savSelKeyHdr = selector.defKeyNav;
 
       var self = this;
 
-      selector.selectionProvider._defKeyNav = (function(ev) {
+      selector.selectionProvider.defKeyNav = (function(ev) {
         self._keyHandler(ev, true);
       });
     },
@@ -13899,13 +14061,13 @@ return {
   
   setRightPosForTarget : function(target){
   	var f = CC.fly(target);
-	    var xy = CC.fly(target).absoluteXY();
-	    this.setXY(xy[0] - 2, xy[1] - this.view.offsetHeight - 2);
+  	this.anchorPos(f, 'lt', 'hr', false, true, true);
 	  f.unfly();
   },
   
   setRightPosForHover : function(xy){
-  	this.setXY(xy[0], xy[1] + 24);
+  	//box, dir, rdir, off, rean, move
+  	this.anchorPos([xy[0],xy[1],0,0], 'lb', 'hr', [5,24], true, true);
   },
   
   _timeoutCall : function(){
