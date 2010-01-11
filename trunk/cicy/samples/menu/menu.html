@@ -113,7 +113,8 @@ CC.ready(function() {
   	]
   });
   notepad.layout.add(notepadMenu);
-  notepad.center().render();
+  notepad.render();
+  notepad.center();
   
   //右键菜单例子
   CC.Event.on(document, 'contextmenu', function(e){
