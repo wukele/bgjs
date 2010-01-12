@@ -34,21 +34,20 @@ if(!window.__debug)
 
 (function(){
 	  
-	  var document = window.document;
+	  var document = window.document,
 	  
 	  /**@inner*/
-    var ua = navigator.userAgent.toLowerCase();
-    /**是否合法EMAIL字符串.
-     * 参见 CC.isMail().
-     * @inner
-     */
-    var mailReg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
+    ua = navigator.userAgent.toLowerCase(),
     
     /**产生全局一个唯一ID, 参见CC.uniqueID().
       * @inner
       */
     uniqueId = 0,
-   
+        
+    String = window.String,
+		
+		undefined,
+    
     //浏览器检测, thanks ExtJS here, copy & paste, so easy.
     isStrict = document.compatMode == "CSS1Compat",
     isOpera = ua.indexOf("opera") > -1,
@@ -60,7 +59,14 @@ if(!window.__debug)
     isGecko = !isSafari && ua.indexOf("gecko") > -1,
     isGecko3 = !isSafari && ua.indexOf("rv:1.9") > -1,
     //盒模型
-    isBorderBox = isIE && !isStrict;
+    isBorderBox = isIE && !isStrict,
+    
+    /**是否合法EMAIL字符串.
+     * 参见 CC.isMail().
+     * @inner
+     */
+    mailReg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+    
     // 修复在IE的一些版本中通过CSS改变元素背景图片会出现重新请求闪烁现象,IE6犹为明显.
     if(isIE && !isIE7){
         try{
@@ -85,11 +91,6 @@ if(!window.__debug)
             else { CC.extend(obj, c);}
         }
     }
-		
-     
-    var String = window.String;
-		
-		var undefined;
 		
 		/**
 		 * @name CC
@@ -1186,7 +1187,7 @@ CC.extendIf(String.prototype,  (function(){
     var onceScriptText = new RegExp('<script[^>]*>([\\S\\s]*?)<\/script>', 'im');
     var allStyleText = new RegExp('<style[^>]*>([\\S\\s]*?)<\/style>', 'img');
     var onceStyleText = new RegExp('<style[^>]*>([\\S\\s]*?)<\/style>', 'im');
-    var trimReg = new RegExp("(^[\\s]*)|([\\s]*$)", "g");
+    var trimReg = new RegExp("(?:^\\s*)|(?:\\s*$)", "g");
     
     return (/**@lends String.prototype*/{
 /**
@@ -3235,7 +3236,7 @@ CC.extend(Base.prototype,
     		this.del();
     	}
     	
-    	delete CPC[this.cacheId];
+    	CPC[this.cacheId] = null;
     	
     	//not come from cbase init
     	if(this.cacheId === undefined)
@@ -3253,7 +3254,7 @@ CC.extend(Base.prototype,
 		            el.detachEvent('on' + c[0], c[2]);
 		      }
 	      }
-	      delete this.observes;
+	      this.observes = null;
     	}
     	obs = this.__delegations;
     	if(obs){
@@ -3261,10 +3262,11 @@ CC.extend(Base.prototype,
     			obs[i].pCt = null;
     			obs[i].destory();
     		}
-    		delete this.__delegations;
+    		this.__delegations = null;
     	}
     	
-    	delete this.cacheId;
+    	this.view = null;
+    	this.cacheId = null;
     },
     /**
      * 渲染方式的实现方法,子类要自定渲染时,重写该方法即可.
@@ -4018,27 +4020,43 @@ CC.extend(Base.prototype,
     },
 
 /**
- * 得到padding+border 所占宽度
- * @private
+ * @name CC.Base#outerW border + padding 的宽度,除非确定当前
+ * 值是最新的,否则请通过{@link #getOuterW}方法来获得该值.
+ * 该值主要用于布局计算,当调用{@link #getOuterW}方法时缓存该值
+ * @property {Number}  outerW
+ * @protected
  */
-    getOuterWidth : function(){
+
+/**
+ * 得到padding+border 所占宽度, 每调用一次,该函数将缓存值在outerW属性中
+ */
+    getOuterW : function(){
     	var ow = parseInt(this.fastStyle('borderLeftWidth')||0,10) + 
     	         parseInt(this.fastStyle('borderRightWidth')||0,10)+
     	         parseInt(this.fastStyle('paddingLeft')||0,10)+
     	         parseInt(this.fastStyle('paddingRight')||0,10);
-    	return parseInt(ow,10) || 0;
+    	this.outerW = ow;
+    	return ow;
     },
 
 /**
- * 得到padding+border 所占高
- * @private
+ * @name CC.Base#outerH border + padding 的高度,除非确定当前
+ * 值是最新的,否则请通过{@link #getOuterH}方法来获得该值.
+ * 该值主要用于布局计算,当调用{@link #getOuterH}方法时缓存该值
+ * @property {Number}  outerH
+ * @protected
  */
-    getOuterHeight : function(){
+
+/**
+ * 得到padding+border 所占高度, 每调用一次,该函数将缓存该值在outerH属性中
+ */
+    getOuterH : function(){
     	var oh = parseInt(this.fastStyle('borderTopWidth')||0,10) + 
     	         parseInt(this.fastStyle('borderBottomWidth')||0,10)+
     	         parseInt(this.fastStyle('paddingTop')||0,10)+
     	         parseInt(this.fastStyle('paddingBottom')||0,10);
-    	return parseInt(oh,10) || 0;
+    	this.outerH = oh;
+    	return oh;
     },
          
 /**
@@ -4055,7 +4073,7 @@ CC.extend(Base.prototype,
             if(c !== false){
                 if(c<this.minW) c=this.minW;
                 if(c>this.maxW) c=this.maxW;
-                this.setStyle('width', NB?Math.max(c - this.getOuterWidth(),0)+'px' : c + 'px');
+                this.setStyle('width', NB?Math.max(c - this.getOuterW(),0)+'px' : c + 'px');
                 this.width = c;
             }
             c=a.height;
@@ -4063,7 +4081,7 @@ CC.extend(Base.prototype,
                 if(c<this.minH) c=this.minH;
                 if(c>this.maxH) c=this.maxH;
                 if(c<0) a.height=c=0;
-                this.setStyle('height', NB?Math.max(c - this.getOuterHeight(),0)+'px' : c + 'px');
+                this.setStyle('height', NB?Math.max(c - this.getOuterH(),0)+'px' : c + 'px');
                 this.height = c;
             }
             return this;
@@ -4072,13 +4090,13 @@ CC.extend(Base.prototype,
         if(a !== false){
             if(a<this.minW) a=this.minW;
             if(a>this.maxW) a=this.maxW;
-            this.setStyle('width', NB?Math.max(a - this.getOuterWidth(),0)+'px' : a + 'px');
+            this.setStyle('width', NB?Math.max(a - this.getOuterW(),0)+'px' : a + 'px');
             this.width = a;
         }
         if(b !== false){
             if(b<this.minH) b=this.minH;
             if(b>this.maxH) b=this.maxH;
-            this.setStyle('height', NB?Math.max(b - this.getOuterHeight(),0)+'px' : b + 'px');
+            this.setStyle('height', NB?Math.max(b - this.getOuterH(),0)+'px' : b + 'px');
             this.height=b;
         }
 		
@@ -4263,14 +4281,14 @@ CC.extend(Base.prototype,
         if(!w){
             w = parseInt(this.fastStyle('width'), 10) || 0;
             if(NB)
-                w += this.getOuterWidth();
+                w += this.getOuterW();
         }
         
         var h = Math.max(v.offsetHeight, v.clientHeight);
         if(!h){
             h = parseInt(this.fastStyle('height'), 10) || 0;
             if(NB)
-                h += this.getOuterHeight();
+                h += this.getOuterH();
         }
         
         return {
@@ -4287,49 +4305,6 @@ CC.extend(Base.prototype,
         this.setXY(x,y);
         return this.setSize(w,h);
     },
-/**
- * 设置position值
- * @param {String} pos='position' position类型 , 可选:absolute, relative, static ..
- * @param {Number} [zIndex] zIndex值
- * @param {Number} [x]
- * @param {Number} [y]
- * @see unPositioned
- * @return this
- */  
-    makePositioned: function(pos, zIndex, x, y) {
-        var v = this.view;
-        if (pos) {
-            this._madePositioned = true;
-            v.style.position = pos || 'absolute';
-        // Opera returns the offset relative to the positioning context, when an
-        // v is position relative but top and left have not been defined
-        }
-
-        if(zIndex)
-            this.setZ(zIndex);
-        
-        if(x !== undefined || y !== undefined)
-            this.setXY(x, y);
-        
-        return this;
-    }
-    ,
-/**
- * 如果控件已定位({@link #makePositioned}),清空style样式上的position, top, left, bottom, right值.
- */
-    unPositioned: function() {
-        var v = this.view;
-        if (this._madePositioned) {
-            delete this._madePositioned;
-            v.style.position = '';
-            v.style.top = '';
-            v.style.left = '';
-            v.style.bottom = '';
-            v.style.right = '';
-        }
-        return this;
-    }
-    ,
     
 /**
  * 获得相对控件或方块的坐标,如果高度未定,请在显示控件后再调用该方法定位.
@@ -4367,36 +4342,23 @@ CC.extend(Base.prototype,
 	    }
 	    //reanchor into view
 	    if(rean){
+	    	//this与box是否重合(对角判断法则)
 	    	var vp = CC.getViewport(),
 	    	    vh = vp.height, vw = vp.width;
 	    	if(nx < 0){
-	    			nx = 0;
-	    		if(by+bh>ny && by<ny+h){
-	    			ny = by - h;
-	    		}
-	    	}
-	    	
-	    	if(nx + w > vw){
+	    		nx = 0;
 	    		if(by+bh>ny && by<ny+h)
-	    			nx = bx - w;
-	    		else
-	    			nx = vw - w;
-	    	}
-
-	    	if(ny < 0){
-	    		ny = 0;
-	    		if(bx+bw>nx && bx<nx+w){
-	    			ny = by+bh;
-	    		}
+	    			ny = by - h;
 	    	}
 	    	
-	    	if(ny + h > vh){
-	    		//this与box是否重合(对角判断法则)
-	    		if(bx+bw>nx && bx<nx+w)
-	    			ny = by - h;
-	    		else 
-	    			ny = vh - h;
-	    	}
+	    	if(nx + w > vw)
+	    		nx = by+bh>ny && by<ny+h ? bx - w : vw - w;
+        
+	    	if(ny < 0)
+	    		ny = bx+bw>nx && bx<nx+w ? by+bh : 0;
+	    	
+	    	if(ny + h > vh)
+	    		ny = bx+bw>nx && bx<nx+w ? by - h : vh - h;
 	    }
 	    
 	    w = [nx, ny];
@@ -4519,7 +4481,9 @@ CC.extend(Base.prototype,
         }.bind(this), 0);
         return this;
     },
-/***/
+/**
+ * 返回{left:scrollLeft,top:scrollTop}
+ */
 		getScroll : function(){
 		    var d = this.view, doc = document;
         if(d == doc || d == doc.body){
@@ -5451,8 +5415,8 @@ CC.create('CC.ui.Shadow', CC.Base,
 		this.target = target;
 			
 	  if(this.target.eventable){
-				this.target.on('resized', this.reanchor, this);
-				this.target.on('reposed', this.reanchor, this);
+				this.target.on('resized', this.reanchor, this)
+				           .on('reposed', this.reanchor, this);
 		}
 		this.setZ((this.target.fastStyle('zIndex') || 1)-1);
 		//专门针对不支持PNG图片的IE6
@@ -5766,16 +5730,16 @@ CC.create('CC.layout.Layout', null,
          */
         beforeAdd: fGo,
 /**
- * @name CC.Base#layoutCfg
- * @property {Object} layoutCfg 布局配置数据,
+ * @name CC.Base#layoutInf
+ * @property {Object} layoutInf 布局配置数据,
     如果控件被布局管理器所管理,
-    其布局相关的配置信息将存放在component.layoutCfg[type_of_layout]下,
+    其布局相关的配置信息将存放在component.layoutInf,
     要访问子项当前布局信息,可通过layout.cfgFrom(component)方法获得.
  * @protected
  * @see #cfgFrom
  * @example
    var ct = ct;
-   var borderLayoutCfg = item.layoutCfg[ct.layout.type];
+   var borderLayoutInformation = item.layoutInf;
  */
          
 /**
@@ -5790,14 +5754,12 @@ CC.create('CC.layout.Layout', null,
         add : function(comp, cfg){
         	//添加到容器
         	this.ct.add(comp);
-          var cc = comp.layoutCfg;
+          var cc = comp.layoutInf;
           if (!cc)
-          	comp.layoutCfg = cc = {};
-          if (!cfg) 
-          	cfg = {};
-          cc[this.type] = cfg;
-          
-          this.beforeAdd(comp, cfg);
+          	comp.layoutInf = cc = cfg || {};
+          else if(cfg)
+          	CC.extend(cc, cfg);
+          this.beforeAdd(comp, cc);
 /**
  * @name CC.layout.Layout#itemCS
  * @property {String} itemCS 将子项被加进容器时添加到子项的CSS样式
@@ -5806,7 +5768,6 @@ CC.create('CC.layout.Layout', null,
           	comp.addClassIf(this.itemCS);
 
 				  if(this.isUp()){
-
             if (!comp.rendered)
             	comp.render();
             	
@@ -5818,6 +5779,7 @@ CC.create('CC.layout.Layout', null,
         },
 /**
  * 当前布局管理器是否就绪执行doLayout布局
+ * @private
  */
         isUp : function(){
         	return !this.invalidate && this.ct.rendered;
@@ -5827,7 +5789,7 @@ CC.create('CC.layout.Layout', null,
  * 如果layoutOnChange为true则重新布局容器
  */
         remove : function(c){
-        	delete c.layoutCfg[this.type];
+        	delete c.layoutInf;
         	this.ct.remove(c);
           
           if(this.layoutOnChange)
@@ -5892,8 +5854,7 @@ CC.create('CC.layout.Layout', null,
    }
  */
         cfgFrom : function(item) {
-        	var cfg = item.layoutCfg;
-        	return cfg ? cfg[this.type] || {} : {};
+        	return item.layoutInf || {};
         },
 
         insert : function(comp){
@@ -5981,12 +5942,16 @@ var lyx = CC.layout.Layout;
  * @Layout
  */
 CC.layout.def('default', lyx);
-
+//
+// WrapPanel模板, 设置wrap结点的padding,border而不会影响到panel层的宽高的计算,
+// 可绕过浏览器对BoxModel解析的不同
+//
 CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>')
       .def( 'CC.ui.WrapPanel', '<div class="g-panel"><div class="g-panel-wrap" id="_wrap"></div></div>');
 
 /**
- * 容器类控件.
+ * 容器类控件,容器是基类的扩展,可包含多个子组件,
+ * 子组件也可是一个容器,形成了组件树
  * @name CC.ui.ContainerBase
  * @class 容器基类
  * @extends CC.Base
@@ -6000,9 +5965,13 @@ CC.create('CC.ui.ContainerBase', Base,
  * @readonly
  */
   children: null,
-  /**
- * @property {Boolean} [eventable=true] 可处理事件
+/**
+ * @property {Boolean} [eventable=true] 可处理事件,即可通过on方法监听容器事件
  * @readonly
+ * @example
+ 	 ct.on('resized', function(){
+ 	   //...
+ 	 });
  */
   eventable: true,
 
@@ -6018,15 +5987,16 @@ CC.create('CC.ui.ContainerBase', Base,
   maxH: 65535,
 
   maxW: 65535,
-  /**
- * @property {Base} [ItemClass=CC.ui.Item] 容器子控件类
+ /**
+ * @property {Base} [ItemClass=CC.ui.Item] 容器子控件类, fromArray方法根据该子项类实例化子项
+ * @see #fromArray
  */
   ItemClass: CC.ui.Item,
   /**
  * @property {Boolean} [autoRender=false] 容器子控件类
  */
   autoRender: false,
-  
+
 /**
  * @property {Boolean|CC.util.SelectionProvider} 是否对容器应用子项选择功能
  */
@@ -6041,7 +6011,7 @@ CC.create('CC.ui.ContainerBase', Base,
  * @property {Layout|String} [layout='default'] 容器布局管理器
  */
       if (typeof this.layout === 'string') {
-        /**
+/**
  * @name CC.ui.ContainerBase#layoutCfg
  * @property {Object} layoutCfg 布局管理器初始化配置
  */
@@ -6114,6 +6084,8 @@ CC.create('CC.ui.ContainerBase', Base,
     }
     this.destoryChildren();
     this.layout.detach();
+    this.ct = null;
+    this.wrapper = null;
   },
 /**
  * 此时调用fromArray(array)加入子项,当onRender后布局容器.
@@ -6954,7 +6926,7 @@ CC.create('CC.util.SelectionProvider', null, function(){
 	
 	var Event = CC.Event;
 	
-	var TrackerOpt = { isValid : 	function (item){
+	var trackerOpt = { isValid : 	function (item){
 		return !item.hidden && !item.disabled;
 	}};
 	
@@ -6992,9 +6964,9 @@ CC.create('CC.util.SelectionProvider', null, function(){
 		
 		if(cfg)
 			CC.extend(this, cfg);
-			
+		
 		if(this.tracker === true)
-			this.tracker = new CC.util.Tracker(TrackerOpt);
+			this.tracker = new CC.util.Tracker(trackerOpt);
 	},
 /**
  * mode可选,1 | 0,设置时将清除现有选择
@@ -7467,6 +7439,17 @@ CC.create('CC.util.Tracker', null, {
 });
 
 /**
+ * @name CC.ui.Panel#resized
+ * @event
+ * @param {Number} contentWidth Wrapper宽度,即内容宽度
+ * @param {Number} contentHeight Wrapper高度,即内容高度
+ * @param {Number} containerWidth 容器宽度
+ * @param {Number} containerHeight 容器高度
+ * @param {Number} deltaX 内容宽度前后增量
+ * @param {Number} deltaY 内容高度前后增量
+ */
+ 
+/**
  * @name CC.ui.Panel
  * @class 面板
  */
@@ -7832,7 +7815,7 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
         var max, min, dir = this.dir,
         comp = ly[dir],
         op,
-        cfg = comp.layoutCfg[ly.type],
+        cfg = comp.layoutInf,
         lyv = ly.vgap,
         lyh = ly.hgap,
         vg = cfg.gap == undefined ? lyv: cfg.gap,
@@ -7846,7 +7829,7 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
           max = ch + min - vg;
           op = ly.south;
           if (op) {
-            cfg2 = op.layoutCfg[ly.type];
+            cfg2 = op.layoutInf;
             if(cfg2.cbar && !cfg2.cbar.hidden){
             	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
             	max -= cg;
@@ -7865,7 +7848,7 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
           min = -1 * ch + max + vg;
           op = ly.north;
           if (op) {
-            cfg2 = op.layoutCfg[ly.type];
+            cfg2 = op.layoutInf;
             if(cfg2.cbar && !cfg2.cbar.hidden){
             	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
             	min += cg;
@@ -7885,7 +7868,7 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
           max = cw + min - hg;
           op = ly.east;
           if (op) {
-            cfg2 = op.layoutCfg[ly.type];
+            cfg2 = op.layoutInf;
             if(cfg2.cbar && !cfg2.cbar.hidden){
             	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
             	max -= cg;
@@ -7904,7 +7887,7 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
           min = -1 * cw + max + hg;
 					op = ly.west;
           if (op) {
-            cfg2 = op.layoutCfg[ly.type];
+            cfg2 = op.layoutInf;
             
             if(cfg2.cbar && !cfg2.cbar.hidden){
             	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
@@ -8026,7 +8009,7 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
 			var xy = c.absoluteXY();
 			c.appendTo(document.body).setXY(xy);
 			
-			var cfg = c.layoutCfg[this.itsLayout.type];
+			var cfg = c.layoutInf;
 			var sd = cfg.shadow;
 			if(!sd){
 				sd = cfg.shadow = new uix.Shadow({inpactH:9,inpactY:-2, inpactX : -4, inpactW:11});
@@ -8049,7 +8032,7 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
 		},
 		
 		resetAutoHideTimer : function(){
-			var cfg = this.comp.layoutCfg[this.itsLayout.type];
+			var cfg = this.comp.layoutInf;
 			if(cfg.autoHideTimer){
 				clearTimeout(cfg.autoHideTimer);
 				delete cfg.autoHideTimer;
@@ -8061,7 +8044,7 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
 		 */
 		unFloat : function(){
 			var c = this.comp;
-			var cfg = c.layoutCfg[this.itsLayout.type];
+			var cfg = c.layoutInf;
 				
 			if(cfg.autoHideTimer)
 				this.resetAutoHideTimer();
@@ -8185,7 +8168,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
     
     getCollapseBar : function(c){
     	var cfg, cg, cbar;
-      cfg = c.layoutCfg[this.type];
+      cfg = c.layoutInf;
       cbar = cfg.cbar;
       if(!cbar && !cfg.noSidebar){
 	      cbar = cfg.cbar = new uix.BorderLayoutCollapseBar({dir:cfg.dir, comp:c, itsLayout:this});
@@ -8199,7 +8182,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
     collapse : function(comp, b){
     	var cbar = this.getCollapseBar(comp);
     	
-    	var cfg = comp.layoutCfg[this.type];
+    	var cfg = comp.layoutInf;
     	cfg.collapsed = b;
     	if(cfg.separator)
     		cfg.separator.display(!b);
@@ -8226,7 +8209,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
           cfg, cg, cb;
       
       if (c) {
-        cfg = c.layoutCfg[this.type];
+        cfg = c.layoutInf;
         cb = cfg.cbar;
         
         if(cb && !cb.hidden){
@@ -8253,7 +8236,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
 
       c = this.south;
       if (c) {
-        cfg = c.layoutCfg[this.type];
+        cfg = c.layoutInf;
         cb = cfg.cbar;
         if(cb && !cb.hidden){
         	cg = cfg.cgap === undefined ? cbg: cfg.cgap;
@@ -8278,7 +8261,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
 
       c = this.east;
       if (c) {
-        cfg = c.layoutCfg[this.type];
+        cfg = c.layoutInf;
         cb = cfg.cbar;
         
         if(cb && !cb.hidden){
@@ -8304,7 +8287,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
 
       c = this.west;
       if (c) {
-      	cfg = c.layoutCfg[this.type];
+      	cfg = c.layoutInf;
       	cb = cfg.cbar;
       	if(cb && !cb.hidden){
         	cg = cfg.cgap === undefined ? cbg: cfg.cgap;
@@ -8337,7 +8320,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
     },
 
     remove: function(c) {
-      var cfg = c.layoutCfg[this.type];
+      var cfg = c.layoutInf;
       this[cfg.dir] = null;
       var sp = cfg.separator;
       if (sp) {
@@ -8396,7 +8379,8 @@ ly.def('card', ly.CardLayout);
 CC.create('CC.layout.QQLayout', B,
 	/**@lends CC.layout.QQLayout.prototype*/{
 		add : function(comp, cfg){
-			comp.makePositioned('absolute').setLeft(0);
+			comp.style('position', 'absolute')
+			    .setLeft(0);
 			if(cfg && cfg.collapsed === false){
 				comp.fold(false, true);
 				this.frontOne = comp;
@@ -8445,14 +8429,14 @@ CC.create('CC.layout.QQLayout', B,
 		},
 		
 		collapse : function(comp, b){
-			var cfg = comp.layoutCfg[this.type];
+			var cfg = comp.layoutInf;
 			if(cfg.collapsed == b)
 				return;
 			
 			if(this.frontOne && this.frontOne !== comp){
 				if(this.frontOne.fold)
 					this.frontOne.fold(true, true);
-				this.frontOne.layoutCfg[this.type].collapsed = true;
+				this.frontOne.layoutInf.collapsed = true;
 			}
 			if(comp.fold)
 				comp.fold(b, true);
@@ -8493,7 +8477,7 @@ CC.create('CC.layout.RowLayout', B, {
       	if(it.hidden)
       		continue;
       	
-      	cfg = it.layoutCfg[ty];
+      	cfg = it.layoutInf;
       	switch(cfg.h){
       		case 'auto' :
       		case undefined : 
@@ -8522,7 +8506,7 @@ CC.create('CC.layout.RowLayout', B, {
        
        for(i=0,len=leH.length;i<len;i++){
       		it = leH[i];
-      		cfg = it.layoutCfg[ty];
+      		cfg = it.layoutInf;
       		iv = cfg.len;
       		if(CC.isNumber(iv)){
       		  	iv = Math.floor(iv*h);
@@ -14041,7 +14025,7 @@ return {
   
   //@override
   display : function(b) {
-    if(arguments.length == 0){
+    if(arguments.length === 0){
     	return superclass.display.call(this);
     }
 
@@ -14058,7 +14042,8 @@ return {
     return this;
   }
   ,
-  
+
+/**@private*/
   setRightPosForTarget : function(target){
   	var f = CC.fly(target);
   	this.anchorPos(f, 'lt', 'hr', false, true, true);

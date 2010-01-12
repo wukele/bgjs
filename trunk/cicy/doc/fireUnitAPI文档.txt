@@ -1,0 +1,23 @@
+fireUnit是一个firebug插件, firefox下 工具->附加组件 查找并安装
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script>
+fireunit.ok(true, "Passing test result");
+fireunit.ok(false, "Failing test result.");
+fireunit.compare("expected data", "expected data", 
+    "Passing verification of expected and actual input.");
+fireunit.compare("<div><a>expected</a></div>", "<div><a>actual</a></div>", 
+    "Failing verification of expected and actual input.");
+
+// Wait for asynchronous operation.
+setTimeout(function(){
+    // Finish test
+    fireunit.testDone();
+}, 1000);
+</script>
+</head>
+<body/>
+</html>
+
+详细请见http://wiki.github.com/jeresig/fireunit/
