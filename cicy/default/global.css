@@ -258,7 +258,7 @@ white-space:nowrap;
 .g-menu {position:absolute; border:1px solid;z-index:9998; left:-10000px;top:-10000px;}
 .g-menu .g-panel-wrap {overflow:hidden;}
 .g-menu-item { text-align:left; cursor:pointer; padding:6px 8px; line-height:1em;zoom:1;width:auto;zoom:1;}
-.g-menu-bar .g-menu-item { float:left; text-align:center; width:auto;}
+.g-menu-bar .g-menu-item { float:left; text-align:center;}
 .g-menu-opt .g-menu-separator{font-size:0;margin:1px 5px -1px;line-height:0px;}
 :lang(zh) .g-menu-opt .g-menu-separator{margin:1px 5px 1px;}
 .g-menu-opt .itemOn, .g-menu-opt .subHover{ padding:5px 7px;background-color:#FEF5BC; border:1px solid #FFC467; color:#333333;}
