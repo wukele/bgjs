@@ -2,7 +2,7 @@
  * Javascript Utility for web development.
  * 反馈 : www.bgscript.com/forum
  * @author Rock - javeejy@126.com
- * www.bgscript.com ? 2009 - 构建自由的WEB应用
+ * www.bgscript.com ? 2010 - 构建自由的WEB应用
  */
 //~@base/base.js
 /**
@@ -1141,6 +1141,8 @@ function testNoForm() {
 if(!window.console)
     	window.console = {};
 
+if(!window.tester)
+	window.tester = window.fireunit || {};
 CC.extendIf(console, 
   /**
    @lends console
@@ -1182,6 +1184,25 @@ CC.extendIf(console,
   	time:fGo,
   	/**@type function*/
   	timeEnd:fGo});
+/**
+ * 基于firebug插件fireunit
+ */
+CC.extendIf(tester, {
+	ok : function(a, b){
+		if(typeof a === 'function')
+			a = a();
+		if(typeof b === 'function')
+			b = b();
+		if(a != b){
+			alert('assert failed in testing '+a+'=='+b);
+			console.group('断言失败:',a, b);
+			console.error(a, b);
+			console.trace();
+			console.groupEnd();
+		}
+	},
+	testDone : fGo
+});
 CC.extendIf(String.prototype,  (function(){
     var allScriptText = new RegExp('<script[^>]*>([\\S\\s]*?)<\/script>', 'img');
     var onceScriptText = new RegExp('<script[^>]*>([\\S\\s]*?)<\/script>', 'im');
@@ -4030,12 +4051,15 @@ CC.extend(Base.prototype,
 /**
  * 得到padding+border 所占宽度, 每调用一次,该函数将缓存值在outerW属性中
  */
-    getOuterW : function(){
-    	var ow = parseInt(this.fastStyle('borderLeftWidth')||0,10) + 
-    	         parseInt(this.fastStyle('borderRightWidth')||0,10)+
-    	         parseInt(this.fastStyle('paddingLeft')||0,10)+
-    	         parseInt(this.fastStyle('paddingRight')||0,10);
-    	this.outerW = ow;
+    getOuterW : function(cache){
+    	var ow = this.outerW;
+    	if(!cache || ow === undefined){
+	    	ow =(parseInt(this.fastStyle('borderLeftWidth'),10) + 
+	    	     parseInt(this.fastStyle('borderRightWidth'),10)+
+	    	     parseInt(this.fastStyle('paddingLeft'),10)+
+	    	     parseInt(this.fastStyle('paddingRight'),10))||0;
+	    	this.outerW = ow;
+      }
     	return ow;
     },
 
@@ -4049,16 +4073,30 @@ CC.extend(Base.prototype,
 
 /**
  * 得到padding+border 所占高度, 每调用一次,该函数将缓存该值在outerH属性中
+ * @param {Boolean} cache 是否使用缓存值
  */
-    getOuterH : function(){
-    	var oh = parseInt(this.fastStyle('borderTopWidth')||0,10) + 
-    	         parseInt(this.fastStyle('borderBottomWidth')||0,10)+
-    	         parseInt(this.fastStyle('paddingTop')||0,10)+
-    	         parseInt(this.fastStyle('paddingBottom')||0,10);
-    	this.outerH = oh;
+    getOuterH : function(cache){
+    	var oh = this.outerH;
+    	if(!cache || oh === undefined){
+    	 	oh= (parseInt(this.fastStyle('borderTopWidth'),10) + 
+    	  	   parseInt(this.fastStyle('borderBottomWidth'),10)+
+    	       parseInt(this.fastStyle('paddingTop'),10)+
+    	       parseInt(this.fastStyle('paddingBottom'),10))||0;
+    		this.outerH = oh;
+    	}
     	return oh;
     },
-         
+    
+/**
+ * 获得容器内容宽高值
+ * @param {Boolean} cache 是否使用缓存值(outer)计算
+ * @return {Array} [outerWidth, outerHeight]
+ */
+    getContentSize : function(cache){
+    	var sz = this.getSize(cache);
+    	return [sz.width - this.getOuterW(cache), sz.height - this.getOuterH(cache)];
+    },
+    
 /**
  * @param {Number|Object|false} a number或{width:number,height:number},为false时不更新 
  * @return this
@@ -4073,7 +4111,8 @@ CC.extend(Base.prototype,
             if(c !== false){
                 if(c<this.minW) c=this.minW;
                 if(c>this.maxW) c=this.maxW;
-                this.setStyle('width', NB?Math.max(c - this.getOuterW(),0)+'px' : c + 'px');
+                this.contentW = 
+                this.setStyle('width', NB?Math.max(c - this.getOuterW(true),0)+'px' : c + 'px');
                 this.width = c;
             }
             c=a.height;
@@ -4081,7 +4120,7 @@ CC.extend(Base.prototype,
                 if(c<this.minH) c=this.minH;
                 if(c>this.maxH) c=this.maxH;
                 if(c<0) a.height=c=0;
-                this.setStyle('height', NB?Math.max(c - this.getOuterH(),0)+'px' : c + 'px');
+                this.setStyle('height', NB?Math.max(c - this.getOuterH(true),0)+'px' : c + 'px');
                 this.height = c;
             }
             return this;
@@ -4090,13 +4129,13 @@ CC.extend(Base.prototype,
         if(a !== false){
             if(a<this.minW) a=this.minW;
             if(a>this.maxW) a=this.maxW;
-            this.setStyle('width', NB?Math.max(a - this.getOuterW(),0)+'px' : a + 'px');
+            this.setStyle('width', NB?Math.max(a - this.getOuterW(true),0)+'px' : a + 'px');
             this.width = a;
         }
         if(b !== false){
             if(b<this.minH) b=this.minH;
             if(b>this.maxH) b=this.maxH;
-            this.setStyle('height', NB?Math.max(b - this.getOuterH(),0)+'px' : b + 'px');
+            this.setStyle('height', NB?Math.max(b - this.getOuterH(true),0)+'px' : b + 'px');
             this.height=b;
         }
 		
@@ -4155,7 +4194,7 @@ CC.extend(Base.prototype,
     getTop : function(usecache){
         if(usecache && this.top !== false)
             return this.top;
-        this.top = parseInt(this.style('top'), 10) || this.view.offsetTop;
+        this.top = parseInt(this.fastStyle('top'), 10) || this.view.offsetTop;
         return this.top;
     },
 /**
@@ -4174,7 +4213,7 @@ CC.extend(Base.prototype,
     getLeft : function(usecache){
         if(usecache && this.left !== false)
             return this.left;
-        this.left = parseInt(this.style('left'), 10) || this.view.offsetLeft;
+        this.left = parseInt(this.fastStyle('left'), 10) || this.view.offsetLeft;
         return this.left;
     },
 /**
@@ -6947,7 +6986,10 @@ CC.create('CC.util.SelectionProvider', null, function(){
  * 子项选择后是否滚动到容器可视范围内,默认为true
  */
   autoscroll : true,
-
+/**
+ * 选择后是否聚焦,默认为true
+ */
+ autoFocus : true,
 /**
  * @property {String} selectedCS 子项选择时子项样式
  */
@@ -7140,6 +7182,8 @@ CC.create('CC.util.SelectionProvider', null, function(){
  onSelect : function(item) {
 	if(this.autoscroll)
 			item.scrollIntoView(this.t.scrollor || this.t.wrapper);
+  if(this.autoFocus)
+  	 this.t.wrapper.focus();
   item.onselect && item.onselect();
  },
 
@@ -7443,10 +7487,8 @@ CC.create('CC.util.Tracker', null, {
  * @event
  * @param {Number} contentWidth Wrapper宽度,即内容宽度
  * @param {Number} contentHeight Wrapper高度,即内容高度
- * @param {Number} containerWidth 容器宽度
- * @param {Number} containerHeight 容器高度
- * @param {Number} deltaX 内容宽度前后增量
- * @param {Number} deltaY 内容高度前后增量
+ * @param {Number} panelWidth 容器宽度
+ * @param {Number} panelHeight 容器高度
  */
  
 /**
@@ -7493,62 +7535,53 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
         // 用于在控件setSize中计算客户区宽高,并不设置容器的坐标(Left, Top).
         //
         getWrapperInsets: function(){
-            return this.insets || [0, 0, 0, 0, 0, 0];
+            var ins = this.insets;
+            if(!ins){
+            	var w = this.wrapper;
+            	this.insets = ins = 
+            	  [parseInt(w.fastStyle('top'),10)||0,
+            	   parseInt(w.fastStyle('right'),10)||0,
+            	   parseInt(w.fastStyle('bottom'),10)||0,
+            	   parseInt(w.fastStyle('left'),10)||0
+            	  ];
+            	ins[4] = ins[0] + ins[2];
+            	ins[5] = ins[1] + ins[3];
+            }
+            return ins;
         },
         
-        /**
-         * @override 计算容器和Wrapper合适的宽高.
-         */
-        setSize: function(a, b){
-        	
-            if (a === false && b === false) 
-                return this;
-            
-            var ba = false, bb = false, rs = false, 
-                wr = this.wrapper, ic = this.getWrapperInsets(), 
-                dx = 0, dy = 0, calWr = !!ic;
-
-            if (a !== false) {
-                if (a.width !== undefined) {
-                    var c = a;
-                    a = c.width;
-                    b = c.height;
-                }
-                if (a < this.minW) 
-                    a = this.minW;
-                if (a > this.maxW)
-                    a = this.maxW;
-                if (calWr) 
-                    ba = a - ic[5];
-                if (ba < 0) 
-                    ba = 0;
-                if (wr.width != ba) 
-                    rs = true;
-                
-                dx = a - (this.width || this.getWidth(true));
+/**
+ * @param {Boolean} uncheck 性能优化项,是否比较宽高,如果宽高未变,则直接返回
+ * @override 计算容器和Wrapper或内容合适的宽高.
+ */
+        setSize: function(a, b, uncheck){
+            var w = this.width, h = this.height;
+            if(!uncheck){
+            	w = w===false?a:w===a?false:a;
+            	h = h===false?b:h===b?false:b;
             }
             
-            if (b !== false) {
-                if (b < this.minH) 
-                    b = this.minH;
-                if (b > this.maxH)
-                    b = this.maxH;
-                if (calWr) 
-                    bb = b - ic[4];
-                if (wr.height != bb) 
-                    rs = true;
-                dy = b - (this.height || this.getHeight(true));
+            if (w !== false || h !== false){
+              superclass.setSize.call(this, w, h);
+              //受max,min影响,重新获得
+              w = this.width;
+              h = this.height;
+					    
+					    var wr = this.wrapper, spaces,cw, ch;
+            	//如果wrapper非容器结点
+            	if(wr.view !== this.view){
+            		spaces = this.getWrapperInsets();
+                cw = Math.max(this.width - spaces[5], 0);
+                ch = Math.max(this.height - spaces[4], 0);
+            		this.wrapper.setSize(cw, ch);
+            	}else {
+            		//容器自身结点,计算容器content size
+            		cw = Math.max(this.width - this.getOuterW(true), 0);
+            		ch = Math.max(this.height - this.getOuterH(true), 0);
+            	}
+            	this.fire('resized', cw, ch, w, h);
+              this.doLayout(cw, ch, w, h);
             }
-            
-            superclass.setSize.call(this, a, b);
-            
-            if (calWr && wr.view != this.view && rs) {
-                wr.setSize(ba, bb);
-            }
-            
-            this.fire('resized', ba, bb, a, b, dx, dy);
-            this.doLayout(ba, bb, a, b, dx, dy);
-            
             return this;
         },
         
@@ -7584,7 +7617,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
 };
 });
   
-CC.ui.Panel.getBorderPanel = (function(cp){
+(function(cp){
   
   var borderOpts = {
   	insets : [1, 1, 1, 1],
@@ -7594,7 +7627,11 @@ CC.ui.Panel.getBorderPanel = (function(cp){
   	wrapperCS :'g-borderpanel-wrap'
   };
   
-  return function(opt, cls){
+/**
+ * @name CC.ui.BorderPanel
+ * @class
+ */
+	CC.ui.BorderPanel = function(opt, cls){
   	if(!opt)
   		opt = {};
   	CC.extendIf(opt, borderOpts);
@@ -7603,11 +7640,6 @@ CC.ui.Panel.getBorderPanel = (function(cp){
   		c.wrapper.addClass(c.wrapperCS);
   	return c;
   };
-/**
- * @name CC.ui.BorderPanel
- * @class
- */
-	CC.ui.BorderPanel = CC.ui.Panel.getBorderPanel;
 
 })(CC.ui.Panel);
 
