@@ -1,0 +1,70 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title></title>
+  <script type="text/javascript" src="../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="resources/example.css" type="text/css"/>
+</head>
+<style>
+	.panel {width:150px;height:100px;position:relative;overflow:hidden;border:0;padding:0;}
+	#border {border-style:solid; background:black;border-color:#CCC;border-width : 2px 1px 4px 5px;padding:2px 3px;}
+	#normal, #wrap {border:none;background:red;}
+	#wrap .wr{ left:2px; top:1px; bottom:5px; right:4px;position:absolute;background:green;}
+</style>
+<body>
+	<div id="border" class="panel"></div>
+	<div id="normal" class="panel"></div>
+	<div id="wrap" class="panel"><div class="wr" id="_wr"></div></div>
+</body>
+</html>
+<script>
+CC.ready(function(){
+	
+	//具有边框的面板
+	//主要测试内容宽高是否预期
+	//内容宽 = 盒宽 - paddingWidth - borderWidth
+	
+	var borderPanel = new CC.ui.Panel({view:'border', autoRender:true});
+	borderPanel.on('resized', function(contentWidth, contentHeight, width, height){
+		tester.ok(contentWidth, Math.max(width-12,0));
+		tester.ok(contentHeight, Math.max(height-10,0));
+	});
+	borderPanel.setSize(100, 50);
+	//
+	//测试outerH, outerW缓存
+	tester.ok(12, borderPanel.outerW);
+	tester.ok(10, borderPanel.outerH);
+	//@case:测试是否已使用width, height缓存
+	borderPanel.style('width', '200px');
+	borderPanel.style('height', '100px');
+	tester.ok(borderPanel.getSize(true).width, 100);
+	tester.ok(borderPanel.getSize(true).height, 50);
+	borderPanel.setSize(0,0);
+	//
+	//具有Wrapper的面板
+	//
+	
+	var wrapperPanel = new CC.ui.Panel({view:'wrap', ct:'_wr', autoRender:true});
+	wrapperPanel.on('resized', function(contentWidth, contentHeight, width, height){
+		tester.ok(contentWidth, Math.max(width-6,0));
+		tester.ok(contentHeight, Math.max(height-6,0));
+	});
+	wrapperPanel.setSize(100, 50);
+  wrapperPanel.setSize(0,0);
+  
+  //@case 一般的面板测试
+	var normalPanel = new CC.ui.Panel({view:'normal', autoRender:true});
+	normalPanel.on('resized', function(contentWidth, contentHeight, width, height){
+		tester.ok(contentWidth, width);
+		tester.ok(contentHeight, height);
+	});
+	normalPanel.setSize(100, 50);
+  normalPanel.setSize(0,0);
+	setTimeout(function(){
+	    // Finish test
+	    tester.testDone();
+	}, 1000);
+});
+</script>
