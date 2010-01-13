@@ -1,0 +1,94 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Cicy树型控件功能展示</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+	.g-tree {width:49.9%;float:left;}
+</style>
+</head>
+<body></body>
+</html>
+<script>
+CC.ready(function() {
+/**
+ * Javascript Utility for web development.
+ * R&D : www.bgscript.com/forum
+ * @author javeejy@126.com
+ * www.bgscript.com © 2009 - 构建自由的WEB应用 
+ */
+  
+  var tree = new CC.ui.Tree({
+    title: '树根目录',
+    showTo: document.body
+  });
+  
+  //
+  // 这些是结点数据
+  //
+  tree.root.fromArray([{
+    title: '禁用项',
+    nodes: true,
+    disabled: true
+  },
+  {
+    title: '结点B'
+  },
+  {
+    title: '添加图标',
+    nodes: true
+  }]);
+  
+  tree.render();
+  
+  function btnAction(){
+  	switch(this.title){
+  		
+  		case '多选模式' :
+  			this.setTitle('单选模式');
+  			tree.getSelectionProvider().setMode(0);
+  			break;
+  		
+  		case '单选模式':
+  			this.setTitle('多选模式');
+  			tree.getSelectionProvider().setMode(1);
+  			break;
+  		
+  		case '全选':
+  			tree.getSelectionProvider().selectAll(true);
+  			break;
+  			
+  		case '反选':
+  			tree.getSelectionProvider().selectOpp();
+  			break;
+  		
+  		case '移除选择':
+  			CC.each(tree.getSelectionProvider().getSelection(), function(){
+  				if(this !== this.root)
+  					this.destory();
+  			});
+  			break;
+  		
+  		case '增加子项':
+  			var s = tree.getSelectionProvider().selected;
+  			if(!s)
+  				s = tree.root;
+  			if(!s.nodes)
+  				s = s.pCt;
+  			if(!s.expanded)
+  				s.expand();
+  			s.fromArray([{title:'子项'+CC.uniqueID(), nodes:new Date().valueOf()%2}]);
+  			break;
+  	}
+  }
+  
+  new CC.ui.Button({showTo:document.body, autoRender:true, title:'多选模式', onclick : btnAction});
+  new CC.ui.Button({showTo:document.body, autoRender:true, title:'全选', onclick : btnAction});
+  new CC.ui.Button({showTo:document.body, autoRender:true, title:'反选', onclick : btnAction});
+  new CC.ui.Button({showTo:document.body, autoRender:true, title:'移除选择', onclick : btnAction});
+  new CC.ui.Button({showTo:document.body, autoRender:true, title:'增加子项', onclick : btnAction});
+});
+</script>
