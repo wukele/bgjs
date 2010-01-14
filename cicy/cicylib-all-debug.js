@@ -6793,7 +6793,34 @@ CC.create('CC.ui.ContainerBase', Base,
     var v = this.ct;
     this.setSize(this.getWidth(true) + v.scrollWidth - v.clientWidth, this.getHeight(true) + v.scrollHeight - v.clientHeight);
     return this;
-  }
+  },
+		/**
+		 * 相对父层居中,这里的居中是相对视角居中.
+		 * @function
+		 * @return this
+		 */
+		center : function(anchor){
+		    var xy, sz, p = anchor?anchor.view?anchor.view:anchor 
+			             : this.pCt?this.pCt.view : this.view.parentNode;
+		    if(!p)
+		    	p = document.body;
+		    
+		    if (p == document.body || p == document.documentElement) {
+				sz = CC.getViewport();
+				xy = [0,0];
+			}
+			else {
+				p = CC.fly(p);
+				sz = p.getSize();
+				xy = p.absoluteXY();
+				p.unfly();
+			}
+      
+      var off = (sz.height - this.height) / 2 | 0;
+			
+			this.setXY( Math.max(xy[0] + (((sz.width - this.width) / 2) | 0), 0), Math.max(xy[1] + off - off/2|0, 0));
+		  return this;
+		}
 });
 
 var ccx = CC.ui.ContainerBase;
@@ -9836,23 +9863,26 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
 
 CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
 	  var CC = window.CC;
-    CC.Tpl.def('CC.ui.WinTitlebar', '<div id="_g-win-hd" class="g-win-hd"><div class="fLe"></div><b class="icoSw" id="_ico"></b><span id="_tle" class="g-tle">提示</span><div class="fRi"></div><div class="g-win-hd-ct" style="position:absolute;right:5px;top:7px;" id="_ctx"></div></div>');
-	  CC.Tpl.def('CC.ui.WinBarItem', '<a class="g-hd-btn" href="javascript:fGo();"></a>');
+    CC.Tpl.def('CC.ui.win.Titlebar', '<div id="_g-win-hd" class="g-win-hd"><div class="fLe"></div><b class="icoSw" id="_ico"></b><span id="_tle" class="g-tle">提示</span><div class="fRi"></div><div class="g-win-hd-ct" style="position:absolute;right:5px;top:7px;" id="_ctx"></div></div>');
+	  CC.Tpl.def('CC.ui.win.TitlebarButton', '<a class="g-hd-btn" href="javascript:fGo();"></a>');
     
     //static变量,跟踪当前最顶层窗口的zIndex
     var globalZ = 900;
     var G = CC.ui.Ghost.instance;
     var Base = CC.Base;
     var BP = Base.prototype;
-    
-		var WinTitlebar = CC.create(CC.ui.ContainerBase, {
-		    type: 'CC.ui.WinTitlebar',
+/**
+ * @name CC.ui.win.Titlebar
+ * @class
+ * @super CC.ui.ContainerBase
+ */
+		CC.create('CC.ui.win.Titlebar', CC.ui.ContainerBase, {
 		    autoRender: true,
 		    clickEvent : true,
 		    selectionCfg : {forceSelect: true, selectedCS : false},
 		    unselectable:true,
 		    cancelClickBubble : true,
-		    itemCfg: { template: 'CC.ui.WinBarItem' },
+		    itemCfg: { template: 'CC.ui.win.TitlebarButton' },
 		    ct: '_ctx',
 		    draggable: true,
 		    dragStart: function() {
@@ -9911,7 +9941,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
         titlebar : true,
   
         initComponent: function() {
-            this.titlebar = new WinTitlebar({title:this.title, selectionProvider:true});
+            this.titlebar = new CC.ui.win.Titlebar({title:this.title, selectionProvider:true});
             this.follow(this.titlebar);
             
 						delete this.title;
@@ -9924,7 +9954,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
             if(this.closeable === true){
                     this.clsBtn = new CC.ui.Item({
                         cs:'g-win-clsbtn',
-                        template:'CC.ui.WinBarItem',
+                        template:'CC.ui.win.TitlebarButton',
                         onselect:this.onClsBtnClick,
                         tip:'关闭',
                         id:'_cls'
@@ -10117,39 +10147,12 @@ CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
         	
         	this.fire('statechanged', st, ws);
         	return this;
-        },
-		/**
-		 * 窗口相对父层居中,这里的居中是相对视角居中.
-		 * @function
-		 * @return this
-		 */
-		center : function(anchor){
-		    var xy, sz, p = anchor?anchor.view?anchor.view:anchor 
-			             : this.pCt?this.pCt.view : this.view.parentNode;
-		    if(!p)
-		    	p = document.body;
-		    
-		    if (p == document.body || p == document.documentElement) {
-				sz = CC.getViewport();
-				xy = [0,0];
-			}
-			else {
-				p = CC.fly(p);
-				sz = p.getSize();
-				xy = p.absoluteXY();
-				p.unfly();
-			}
-      
-      var off = (sz.height - this.height) / 2 | 0;
-			
-			this.setXY( Math.max(xy[0] + (((sz.width - this.width) / 2) | 0), 0), Math.max(xy[1] + off - off/2|0, 0));
-		  return this;
-		}
+        }
     };
 })());
 
 //~@ui/dialog.js
-CC.Tpl.def('Dialog.Bottom', '<div class="g-win-bottom"><div class="bottom-wrap"></div></div>');
+CC.Tpl.def('CC.ui.Dialog.Bottom', '<div class="g-win-bottom"><div class="bottom-wrap"></div></div>');
 /**
  * 对话框是一个特殊的窗体，底部具有按钮栏，并且可指定是否模式，即是否有掩层。 
  * @super CC.ui.Win
@@ -10311,7 +10314,7 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
 		createBottom: function(){
 			var b = this.bottomer = new CC.ui.ContainerBase({
 				ItemClass: CC.ui.Button,
-				template:'Dialog.Bottom',
+				template:'CC.ui.Dialog.Bottom',
 				ct : '_wrap',
 				showTo:this.view,
 				clickEvent : 'click',
@@ -11660,7 +11663,6 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
       
       if (CC.qtip) 
       	CC.qtip(this.$$('_planeY'), '点击选择或直接输入年份值');
-      
       if (this.value)
         this.setValue(this.value, true);
 
@@ -13636,10 +13638,12 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
     downCS: 'g-combo-dwn',
 
+    selectorCS:'g-combo-list',
+    
     _leaveFocus: true,
 
     maxH: 21,
-
+    
     initComponent: function() {
 
       //用于填充selector选项的数组
@@ -13725,16 +13729,16 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       if (this.uneditable !== undefined && this.uneditable == b) return this;
 
       if (this.uneditable && b) {
-        this.delClass(this.uneditCS);
-        this.unEvent('click', this.onUneditableClick);
+        this.delClass(this.uneditCS)
+            .unEvent('click', this.onUneditableClick);
       } else if (b) {
-        this.domEvent('click', this.onUneditableClick, true, null, '_trigger');
-        this.domEvent('mousedown', this.leaveFocusOff, false, null, '_trigger');
+        this.domEvent('click', this.onUneditableClick, true, null, '_trigger')
+            .domEvent('mousedown', this.leaveFocusOff, false, null, '_trigger');
       } else {
-        this.addClass(this.uneditCS);
-        this.domEvent('click', this.onUneditableClick);
-        this.unEvent('click', this.onUneditableClick, '_trigger');
-        this.unEvent('mousedown', this.leaveFocusOff, '_trigger');
+        this.addClass(this.uneditCS)
+            .domEvent('click', this.onUneditableClick)
+            .unEvent('click', this.onUneditableClick, '_trigger')
+            .unEvent('mousedown', this.leaveFocusOff, '_trigger');
       }
 
       this.uneditable = !b;
@@ -13779,12 +13783,12 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       selector.display(false);
 
       //ie hack:
-      if (selector.shadow) selector.shadow.setZ(999);
+      if (selector.shadow)
+        selector.shadow.setZ(999);
 
-      selector.addClass(this.selectorCS || 'g-combo-list');
-
-      selector.on('selected', this.onSelected, this);
-      selector.on('itemclick', this.onclickEvent, this);
+      selector.addClass(this.selectorCS)
+              .on('selected', this.onSelected, this)
+              .on('itemclick', this.onclickEvent, this);
 
       this._savSelKeyHdr = selector.defKeyNav;
 
@@ -13884,7 +13888,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
           p = s.selectionProvider;
 
       var v = this.editor.element.value;
-
+      
       if (!v && p.selected) {
         p.select(null);
         return;
@@ -13988,7 +13992,9 @@ CC.ui.form.def('combo', CC.ui.form.Combox);
 
 //~@ui/tips.js
 /**
- * 浮动提示框.
+ * 浮动提示框,可用于一般的对话提示或鼠标悬浮提示
+ * @class CC.ui.FloatTip
+ * @super CC.ui.Panel
  */
 
 if(!CC.ie)
@@ -13998,15 +14004,32 @@ else
 
 CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
 var CC = window.CC;
+
+//一个全局FloatTip对象
 var instance;
+
 var Event = CC.Event;
+//
+// 记录鼠标移动时坐标
+//
 var globalPos = [-10000,-10000];
+
+//当前document是否已绑定鼠标移动监听回调
 var docEvtBinded = false;
 
 function onDocMousemove(event){
 	globalPos = Event.pageXY(event || window.event);
 }
-
+/**
+ * @function
+ * @param {String} msg 提示消息
+ * @param {String} [title] 消息提示标题
+ * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
+ * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
+ * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
+ * @example
+   CC.Util.ftip('密码不能为空.', '提示', 'input_el', true, 3000);
+ */
 CC.Util.ftip = function(msg, title, proxy, getFocus, timeout){
 	if(!instance)
 		instance = new CC.ui.FloatTip({showTo:document.body, autoRender:true});
@@ -14015,34 +14038,54 @@ CC.Util.ftip = function(msg, title, proxy, getFocus, timeout){
 	
 	return instance;
 };
-  
+/**
+ * 给目标对象绑定悬浮消息
+ * @param {CC.ui.Base} target
+ * @param {String} msg
+ @example
+   CC.Util.qtip(input, '在这里输入您的大名');
+ */
 CC.Util.qtip = function(proxy, msg){
 	if(!instance)
 		instance = new CC.ui.FloatTip({showTo:document.body, autoRender:true});
 	instance.tipFor(proxy, msg);
 };
 
-return {
+return /**@lends CC.ui.FloatTip.prototype*/{
   /**
-   *@property {Number} timeout = 2500 设置消失超时ms, 如果为0 或 false 不自动关闭.
+   * @property {Number} timeout = 2500 设置消失超时ms, 如果为0 或 false 不自动关闭.
    */
   timeout: 2500,
-	
+/**
+ * 显示提示消息的延迟,消息将鼠标位于目标延迟daly毫秒后出现
+ * @type Number
+ */
 	delay : 500,
 	
 	/**
-	 *@property {Boolean} reuseable = false 是否可复用
+	 * @property {Boolean} [reuseable = true] 消息提示是否可复用,如果否,在消息隐藏后自动销毁
 	 */
 	reuseable : true,
-	
+/**
+ * @override
+ */
 	shadow:true,
-  
+
+/**
+ * 指定是哪种显示风格,一种为mouseover式提示,另一种为弹出提示
+ */
   qmode : false,
   
   zIndex : 10002,
-  
+/**
+ * mouseover式提示时样式
+ */
   hoverTipCS : 'g-small-tip',
   
+  /**
+   * @private
+   * @override
+   */
   initComponent: function() {
     superclass.initComponent.call(this);
     if(this.msg)
@@ -14050,8 +14093,8 @@ return {
     this.tail = this.dom('_cap');
     this.setXY(-10000,-10000).setZ(this.zIndex);
     if(this.qmode)
-    	this._returnQtip();
-    else this._returnFtip();
+    	this.createQtip();
+    else this.createFtip();
   }
   ,	
   
@@ -14077,16 +14120,18 @@ return {
 
 /**@private*/
   setRightPosForTarget : function(target){
-  	var f = CC.fly(target);
-  	this.anchorPos(f, 'lt', 'hr', false, true, true);
+  	var f = CC.fly(target), xy = f.absoluteXY();
+  	this.anchorPos([xy[0],xy[1],0,0], 'lt', 'hr', false, true, true);
 	  f.unfly();
   },
   
+/**@private*/
   setRightPosForHover : function(xy){
   	//box, dir, rdir, off, rean, move
   	this.anchorPos([xy[0],xy[1],0,0], 'lb', 'hr', [5,24], true, true);
   },
   
+/**@private*/
   _timeoutCall : function(){
   	superclass.display.call(this, false);
   	this.killTimer(true);
@@ -14094,9 +14139,10 @@ return {
   		this.ontimeout();
   },
   
-  /**
-   * @param {boolean} check 是否作回收(reuseable)检查
-   */
+/**
+ * 清除当前超时显示
+ * @param {boolean} check 是否作回收(reuseable)检查
+ */
   killTimer : function(check){
     if(this.timerId){
     		clearTimeout(this.timerId);
@@ -14106,7 +14152,11 @@ return {
     if(!this.reuseable && check)
   		this.destory();
   },
-  
+/**
+ * 设置提示标题与消息
+ * @param {String} msg
+ * @param {String} title
+ */
   setMsg: function(msg, title) {
   	this.fly('_msg').html(msg).unfly();
     if(title)
@@ -14114,10 +14164,13 @@ return {
     return this;
   },
   
-  /**
-   * @override
-   * @param {Mixed} target
-   */
+/**
+ * @param {String} msg 提示消息
+ * @param {String} [title] 消息提示标题
+ * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
+ * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
+ * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
+ */
   show : function(msg, title, target, getFocus, timeout){
   	if(arguments.length == 0)
   		return superclass.show.call(this);
@@ -14128,7 +14181,7 @@ return {
   		this.timeout = timeout;
   	
   	if(this.qmode)
-  		this._returnFtip();
+  		this.createFtip();
   	
   	this.display(true);
   	if(target){
@@ -14138,8 +14191,8 @@ return {
     }
   	return this;
   },
-  
-  _returnFtip : function(){
+  /**@private*/
+  createFtip : function(){
   	this.qmode = false;
     this.delClass(this.hoverTipCS);
   	if(this.shadow){
@@ -14147,8 +14200,8 @@ return {
   		this.shadow.inpactH = -12;
   	}
   },
-  
-  _returnQtip : function(){
+  /**@private*/
+  createQtip : function(){
   	this.qmode = true;
     this.addClassIf(this.hoverTipCS);
   	if(this.shadow){
@@ -14156,7 +14209,13 @@ return {
   		this.shadow.inpactH = CC.ui.Shadow.prototype.inpactH;
   	}
   },
-  
+/**
+ * 给目标对象绑定悬浮消息
+ * @param {CC.ui.Base} target
+ * @param {String} msg, 消息
+ @example
+   CC.Util.qtip(input, '在这里输入您的大名');
+ */
   tipFor : function(proxy, msg, title){
   	CC.fly(proxy)
   	  .domEvent('mouseover', 
@@ -14171,7 +14230,7 @@ return {
 						self.setMsg(proxy.qtip || proxy.tip || proxy.title || msg, title);
 						CC.fly(self.tail).hide().unfly();
   	    		if(!self.qmode)
-  	    			self._returnQtip();
+  	    			self.createQtip();
   	    		self.display(true)
   	    		    .setRightPosForHover(globalPos);
 					}).timeout(this.delay);
@@ -14180,7 +14239,7 @@ return {
   	  .domEvent('mouseout', this.onTargetMouseout, true, this)
   	  .unfly();
   },
-	
+/**@private*/  
 	onTargetMouseout : function(evt){
 		if(this.qmode)
 		   this.display(false);
@@ -14189,7 +14248,9 @@ return {
 			docEvtBinded = false;
 		}
 	},
-	
+/**
+ * 获得全局tip对象
+ */
   getInstance : function(){
   	return instance;
   }

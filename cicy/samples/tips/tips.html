@@ -1,0 +1,57 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+</head>
+<body>
+	<input type="text" size="40" id="username" style="position:absolute;left:100px;top:100px;border:1px solid #CCC;"/>
+	
+	<div id="qtip_el" style="position:absolute;left:430px;top:100px;width:200px;height:100px;border:1px solid #CCC;background-color:#E1E6F6;">鼠标悬浮提示方式</div>
+</body>
+</html>
+<script>
+	
+			CC.ready(function(){
+				  function justTip(){
+				  	//
+				  	// 利用CC.Util.ftip方法快速定位并提示
+				  	//
+						CC.Util.ftip('贾君鹏，你妈妈喊你回家吃饭！', '提示' , 'username', true)
+						     .ontimeout = function(){
+						        CC.Util.ftip('还在战斗中！', '回复' , 'username').ontimeout = null;
+						     };				  
+				  }
+				  
+				  justTip();
+				  
+				  CC.$('username').onfocus = justTip;
+          
+          //
+          // 鼠标悬浮提示方式
+          //
+          CC.Util.qtip('qtip_el', '鼠标悬浮提示方式');
+          
+          CC.Util.qtip('username', '请输入您的大名!!');
+          
+					//
+					// 或者直接实例化,自定义提示方式
+					//
+					var f = new CC.ui.FloatTip({showTo:document.body, autoRender:true, timeout : false , title : '温馨提示', msg:'<strong>这是标题吗？</strong><br/><br/><font color="red">消息主体内容。</font>'});
+					
+					f.setXY(500,200).show();
+					
+					var tid = (function(){
+						f.setXY(f.left+4, f.top+2);
+						if(f.left == 600)
+							clearTimeout(tid);
+					}).timeout(50, true);
+					
+					var f2 = new CC.ui.FloatTip({showTo:document.body, autoRender:true, timeout : false , title : '温馨提示', msg:'<strong>点击周围区域我才能离开</strong><font color="red">。</font>'});
+					f2.bindContext().setXY(150,200).show();
+					
+					//或者在控件中以qtip形式
+					new CC.ui.form.Text({qtip:'用户密码不能为空哦', value:'鼠标停留上面试试看', showTo:document.body, autoRender:true});
+		  });
+</script>

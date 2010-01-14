@@ -1,0 +1,98 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="../../cicylib-all-debug.js">
+        </script>
+        <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+        <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+        <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+        <style>
+        </style>
+    </head>
+    <body></body>
+</html>
+<script>
+    CC.ready(function(){
+        /**
+         * 创建模式对话框
+         */
+        var bwin = new CC.ui.Win({
+            title: '父层窗口 - 1',
+            showTo: document.body,
+            autoRender: true,
+            height:350
+        });
+
+        bwin.center();
+        
+    
+       function whenDialogReturn(){
+            //当退出模式时被调用
+            CC.Util.ftip('模式对话已返回!!<br/>返回值:<strong>' + this.returnCode + '</strong>', '提示', this.modalParent);
+        }
+    
+        /**
+         * 创建模式对话框,并添加三个按钮，具有返回值。
+         */
+        var dlg = new CC.ui.Dialog({
+            title: '对话框1',
+            showTo: document.body,
+            autoRender: true,
+            width: 320,
+            height: 180,
+            defaultButton:'ok',
+            buttons: [{
+                title: '确定',
+                id: 'ok',
+                icon:'iconUser'
+            }, {
+                title: '取消',
+                id: 'cancel'
+            }, {
+                title: '忽略',
+                id: 'not_care'
+            }]
+        });
+        
+        /**
+         * bwin:父层窗口, true:是否模式, callback:结束后回调
+         */
+        dlg.show(bwin ,true, whenDialogReturn);
+    
+        //
+        //可以建立任意层次的对话框，或基于对话框建立对话框
+        //
+        var dlg2 = new CC.ui.Dialog({
+            title: '是否关闭',
+            showTo: document.body,
+            autoRender: true,
+            width: 220,
+            height: 150,
+            hidden : true,
+            buttons: [{
+                title: '&nbsp;是&nbsp;',
+                qtip:'确定点击',
+                id: 'yes'
+            }, {
+                title: '&nbsp;否&nbsp;',
+                qtip:'直接返回',
+                id: 'no'
+            }],
+            defaultButton : 'no'
+        });
+    
+    dlg.on('close', function(){
+      if(!this.returnCode || this.returnCode == 'cancel'){
+        dlg2.show(this, true, function(){
+          if(this.returnCode == 'yes'){
+            this.modalParent.hide();
+          }
+        });
+        CC.Util.ftip("基于对话框的对话框，任意层次","说明", dlg2);
+        //取消默认的关闭
+        return false;
+      }
+    });
+    });
+    
+</script>
