@@ -7,7 +7,7 @@ html,body, h1,h2,h3,h4,td, th, dl, dt, form, ul{
 	z-index:inherit;
 	list-style-type:none;
 }
-
+*:lang(zh) *{outline:none;}
 img, table {border:0 none;border-collapse:collapse;}
 .bIco { display:block; float:left; font-size:0; height:24px; margin:6px 4px 0 0px; width:18px;}
 .g-tle { color:#333333; float:left; font-size:12px;white-space:nowrap;}
@@ -340,7 +340,6 @@ _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMe
 #sysWin .gIpt{border:1px solid #BCB19E; height:21px;padding-left:2px; padding-top:2px;width:180px;}
  /**Tree Component*/
 .g-tree-nd { font-family:arial,tahoma,helvetica,sans-serif; font-size:12px;white-space:nowrap;}
-.g-tree-nd-ct{outline:none;}
 .g-tree-nd-el { cursor:pointer; line-height:18px;width:100%;/*ie7*/}
 .g-tree-ln .g-tree-split-end-minus { background-image:url(elbow-end-minus.gif);}
 .g-tree-ln .g-tree-split-end-plus { background-image:url(elbow-end-plus.gif);}
