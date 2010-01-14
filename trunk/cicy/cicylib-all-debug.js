@@ -8973,7 +8973,7 @@ CC.Tpl.def('FolderItem', '<li class="g-unsel"><b id="_ico" class="icos"></b><a i
 
 CC.Util.createFolder = function(opt, type){
 	opt = CC.extendIf(opt, {
-        itemCfg : {template : 'FolderItem', hoverCS:'on', icon:'icoNote'},
+        itemCfg : {template : 'FolderItem', hoverCS:'on', icon:'icoNote', blockMode:''},
         keyEvent : true,
         ct : '_bdy',
         clickEvent : true,
