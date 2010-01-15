@@ -1910,28 +1910,33 @@ CC.extend(Event,
  * @param {DOMElement} dragObj
  * @param {DOMElement} moveObj
  * @param {Boolean} enable or not?
- * @param {Function} [fnOnMove] callback on moving
- * @param {Function} [fnOnDrag] callback on drag start
- * @param {Function} [fnOnDrog] callback when drogged
+ * @param {Function} [onmovee] callback on moving
+ * @param {Function} [ondrag] callback on drag start
+ * @param {Function} [ondrog] callback when drogged
  */
-    setDragable: function(dragObj, moveObj, b, fnOnMov, fnOnDrag, fnOnDrog) {
+    setDragable: function(dragObj, moveObj, b, onmove, ondrag, ondrog) {
         if (!b) {
             dragObj.onmousedown = dragObj.onmouseup = null;
             return ;
         }
-
+        if(!moveObj)
+        	moveObj = dragObj;
+        	
         var fnMoving = function(event) {
             var ev = event || window.event;
             if (!Event.isLeftClick(ev)) {
-                msup(ev); return ;
+                msup(ev);
+                return ;
             }
 
-            if (moveObj && fnOnDrag && !moveObj.__ondraged) {
-                fnOnDrag(ev, moveObj); moveObj.__ondraged = true;
+            if (!moveObj.__ondraged) {
+                if(ondrag)
+                	ondrag(ev, moveObj); 
+                moveObj.__ondraged = true;
             }
 
-            if (fnOnMov) {
-                if (!fnOnMov(ev, moveObj)) {
+            if (onmove) {
+                if (!onmove(ev, moveObj)) {
                     return false;
                 }
             }
@@ -1948,8 +1953,10 @@ CC.extend(Event,
         };
 
         var msup = function(event) {
-            if (moveObj && moveObj.__ondraged) {
-                fnOnDrog(event || window.event, moveObj); moveObj.__ondraged = false;
+            if (moveObj.__ondraged) {
+                if(ondrog)
+                	ondrog(event || window.event, moveObj);
+                moveObj.__ondraged = false;
             }
             /**@ignore*/
             document.ondragstart = function(event) {
