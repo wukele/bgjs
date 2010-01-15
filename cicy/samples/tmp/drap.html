@@ -1,0 +1,298 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="resources/example.css" type="text/css"/>
+<style>
+	.box {position:absolute;border:1px solid #CCC;width:100px;height:150px;cursor:move;}
+</style>
+</head>
+<body>
+	<div id="msg"></div>
+	<div id="layer">
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+  </div>
+  
+	<div id="layer2">
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+  </div>
+</body>
+</html>
+<script>
+CC.ready(function(){
+	   /**@function*/
+    //beforeDragStart : fGo,
+    /**@function*/
+    //dragStart : fGo,
+    /**@function*/
+   // drag : fGo,
+    /**@function*/
+   // dragOverSB : fGo,
+    /**@function*/
+   // dragSBOver : fGo,
+    /**@function*/
+   // dragSBOut : fGo,
+    /**@function*/
+   // dragOutSB : fGo,
+    /**@function*/
+   // dropSB : fGo,
+    /**@function*/
+   // SBDrop : fGo,
+    /**@function*/
+   // afterDrop:fGo
+/**
+ * 库drag & drop效果实现
+ * drag & drop实现有两种方法,
+ * <li>基于空间划分检测
+ * <li>一种基于浏览器自身的mouse
+ */
+(function(){
+/**
+ * 平面2D空间相关类库
+ * @name CC.util.d2d
+ * @namespace
+ */
+ CC.util.d2d = {};
+/**
+ * @name CC.util.d2d.Point
+ * 点类,描述平台空间上的一个点
+ * @class
+ */
+	CC.util.d2d.Point = function(x, y){
+		this.x = x || 0;
+		this.y = y || 0;
+	};
+/**
+ * @name CC.util.d2d.Rect
+ * 矩形类,l,t,w,h
+ * @class
+ */
+	CC.util.d2d.Rect = function(l, t, w, h){
+		var len = arguments.length;
+		if(len === 4){
+			this.l = l || 0;
+			this.t = t || 0;
+			this.w = w || 0;
+			this.h = h || 0;
+	  }else {
+	  	this.l = l[0];
+	  	this.t = l[1];
+	  	this.w = l[2];
+	  	this.h = l[3];
+	  }
+	}
+	
+	CC.extend(CC.util.d2d.Rect.prototype, {
+		l : 0, t : 0, w: 0, h : 0,
+/**
+ * 点p是位于入矩形内
+ * @param {CC.util.Point} 点
+ */
+	  isEnter : function(p){
+	  	var x = p.x, y = p.y;
+	  	
+	    return x>=this.l && x<=this.l+this.w &&
+	           y>=this.t && y<=this.t+this.h;
+	  },
+	  
+	  update : fGo,
+	  
+	  toString : function(){
+	  	return this.valueOf() + '';
+	  },
+	  
+	  valueOf : function(){
+	  	return [this.l,this.t,this.w,this.h];
+	  }
+	});
+	
+/**
+ * 矩域, 由多个矩形或矩域组成树型结构
+ * @name CC.util.d2d.RectZoom 矩域
+ * @class
+ */
+	CC.create('CC.util.d2d.RectZoom', CC.util.d2d.Rect, function(father){
+	 var Math = window.Math;
+	 
+	 return {
+
+/**
+ * 矩域,由多个矩形链组成
+ * 矩域大小由矩形链内最小的left,top与最大的left+width,top+height决定
+ * 矩域是一个树型结构
+ * @readonly
+ */
+	 	  rects : [],
+	 	  
+		  initialize : function(rects){
+		  	this.rects = rects||[];
+		  	this.update();
+		  },
+/**
+ * 加入矩域
+ * @param {CC.ui}
+ */
+		  add : function(r, update){
+		  	this.rects.push(r);
+		  	if(update)
+		  		this.update();
+		  	return this;
+		  },
+		  
+		  remove : function(r, update){
+		  	this.rects.remove(r);
+		  	if(update)
+		  		this.update();
+		  },
+		  
+	/**
+	 * 检测点是否位于当前矩形链中,如果点已进入范围,点所在的矩形
+	 * @return [Boolean|CC.util.d2d.Rect] false或矩形类
+	 */
+		  isEnter : function(p){
+		  	//先大范围检测
+		  	if(father.isEnter.call(this, p)){
+		  		var i, rs = this.rects, len = rs.length;
+		  		for(i=0;i<len;i++){
+		  			if(rs[i].isEnter(p)){
+		  				return rs[i];
+		  			}
+		  		}
+		  	}
+		  	return false;
+		  },
+	    
+	/**@private*/
+		  calValue : function(){
+			  var i, rs = this.rects, len = rs.length, r;
+			  var t1=[], t2=[], x1=[], x2=[];
+			  if(len === 0){
+			  	t1 = t2 = x1 = x2 = 0;
+			  }else{
+				  for(i=0;i<len;i++){
+				  		r = rs[i];
+				  		t1.push(r.t);
+				  		t2.push(r.t+r.h);
+				  		x1.push(r.l);
+				  		x2.push(r.l+r.w);
+				  }
+				  x1 = Math.min.apply(Math, x1);
+				  x2 = Math.max.apply(Math, x2);
+				  t1 = Math.min.apply(Math, t1);
+				  t2 = Math.max.apply(Math, t2);
+			  }
+			  this.l = x1;
+			  this.t = t1;
+			  this.w = x2 - x1;
+			  this.h = t2 - t1;
+		 },
+		
+		 update : function(){
+			var i, rs = this.rects, len = rs.length;
+			for(i=0;i<len;i++){
+				rs[i].update();
+			}
+			this.calValue();
+		 }
+	 };
+	  
+	});
+	
+	CC.create('CC.util.DragMgr', {
+	/**
+	 *
+	 */
+		zooms : null,
+	  
+	  $ : function(id){
+	  	
+	  }
+	  
+	    
+	});
+  
+
+  CC.create('CC.util.util.d2d.ComponentRect', CC.util.d2d.Rect, {
+  	initialize : function(comp){
+  		this.comp = comp;
+  		this.update();
+  	},
+
+/**
+ * 刷新矩形缓存数据
+ */
+  	update : function(){
+  		var sz = this.comp.getSize(),
+  		    xy = this.comp.absoluteXY();
+  		this.l = xy[0];
+  		this.t = xy[1];
+  		this.w = sz.width;
+  		this.h = sz.height;
+  	}
+  });
+  
+  CC.Base.prototype.enableDrag = function(b, group){
+  	
+  }
+})();
+
+(function(){
+	var a = new CC.util.d2d.Rect(10,20,110,120);
+	var b = new CC.util.d2d.Rect(30,40,130,220);
+	var zoom = new CC.util.d2d.RectZoom();
+	var k = 80;
+ var ondrop = function(){
+ 	zoom.update();
+ }
+ 
+ CC.each(CC.$('layer').childNodes, function(){
+ 	if(this.tagName=='DIV'){
+ 		var c = CC.Base.create({view:this});
+ 		k+=20;
+ 		c.setXY(k, k);
+ 		CC.Event.setDragable(this, this, true, null, null, ondrop);
+ 		zoom.add(new CC.util.util.d2d.ComponentRect(c));
+ 	}
+ });
+ 
+ var zoom2 = new CC.util.d2d.RectZoom();
+ 
+ ondrop = function(){
+ 	zoom2.update();
+ }
+ 
+ k = 80;
+ CC.each(CC.$('layer2').childNodes, function(){
+ 	if(this.tagName=='DIV'){
+ 		var c = CC.Base.create({view:this});
+ 		k+=20;
+ 		c.setXY(k+400, k);
+ 		CC.Event.setDragable(this, this, true, null, null, ondrop);
+ 		zoom2.add(new CC.util.util.d2d.ComponentRect(c));
+ 	}
+ });
+ zoom.update();
+ var point = new CC.util.d2d.Point();
+ var msg = CC.$('msg');
+ CC.Event.on(document, 'mousemove', function(e){
+ 	e = e||window.event;
+ 	var xy = CC.Event.pageXY(e);
+ 	point.x = xy[0];
+ 	point.y = xy[1];
+  msg.innerHTML = '鼠标进入:'+zoom.isEnter(point);
+ });
+})();
+});
+</script>
