@@ -1475,7 +1475,7 @@ Eventable.prototype.fire = (function(eid/**,arg1,arg2,arg3,...,argN*/){
     
     var fnArgs = CC.$A(arguments);
     fnArgs.remove(0);
-    if(__debug) {console.log('发送:%o,源:%o',arguments,this);}
+    if(__debug) {console.log('发送:%s,%o,源:%o',eid, fnArgs,this);}
     var handlers = this.events[eid];
     if(handlers){
     var argLen = fnArgs.length, ret, i, len;
@@ -1735,11 +1735,16 @@ CC.extend(Event,
     isEnterKey: function(ev) {
         return ev.keyCode === 13;
     },
-    
+/**
+ * 是否按下ESC键
+ */
     isEscKey : function(ev){
     	return ev.keyCode === 27;
     },
-    
+/**
+ * 获得滚轮增量
+ * @return {Number}
+ */
     getWheel : function(ev){
     	 /* IE或者Opera. */
 			 if (ev.wheelDelta) {
@@ -3996,7 +4001,7 @@ CC.extend(Base.prototype,
         	
         if(this.titleNode)
         	this.titleNode.innerHTML = this.brush ? this.brush(ss):ss;
-        if(this.tip !== undefined && this.view && !this.qtip)
+        if(this.tip && this.view && !this.qtip)
         	this.view.title = ss;
         if(this.qtip === true)
         	this.qtip = ss;
@@ -7063,12 +7068,14 @@ CC.create('CC.util.SelectionProvider', null, function(){
  
 /*@private**/
  itemSelectionTrigger : function(it, e){
- 	if(this.unselectable || !Event.isLeftClick(e))
- 		return;
- 	//this.decorateSelected(it, !this.isSelected(it));
- 	if(this.mode)
- 		this.select(it, e);
- 	else this.setSelected(it, !this.isSelected(it), e);
+ 	//TODO:|| !Event.isLeftClick(e)
+ 	// 在IE下,即使是左击,但event.button还是为0,很奇怪
+ 	if(!this.unselectable){
+ 	  //this.decorateSelected(it, !this.isSelected(it));
+ 	  if(this.mode)
+ 		  this.select(it, e);
+ 	  else this.setSelected(it, !this.isSelected(it), e);
+ 	}
  },
 
 /**
