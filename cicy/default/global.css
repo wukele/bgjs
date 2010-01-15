@@ -7,7 +7,9 @@ html,body, h1,h2,h3,h4,td, th, dl, dt, form, ul{
 	z-index:inherit;
 	list-style-type:none;
 }
-*:lang(zh) *{outline:none;}
+
+*:lang(zh) {outline:none;}
+
 img, table {border:0 none;border-collapse:collapse;}
 .bIco { display:block; float:left; font-size:0; height:24px; margin:6px 4px 0 0px; width:18px;}
 .g-tle { color:#333333; float:left; font-size:12px;white-space:nowrap;}
