@@ -1653,17 +1653,13 @@ CC.extend(Event,
 		 */
     noUp : function(ev) {
         Event.stop(ev||window.event);
+        return false;
     },
     
     noDef : function(ev){
     	Event.preventDefault(ev||window.event);
     },
     
-    /**
-     * @private
-     */
-    noSelect: function() { return false; },
-
 /**
  * 获得DOM事件源
  * @param {Event} ev
@@ -1907,20 +1903,20 @@ CC.extend(Event,
     },
 /**
  * 提供元素拖动行为,在RIA中不建议用该方式实现元素拖放,而应实例化一个Base对象,使之具有一个完整的控件生命周期.
- * @param {DOMElement} dragObj
- * @param {DOMElement} moveObj
+ * @param {DOMElement} dragEl
+ * @param {DOMElement} moveEl
  * @param {Boolean} enable or not?
  * @param {Function} [onmovee] callback on moving
  * @param {Function} [ondrag] callback on drag start
  * @param {Function} [ondrog] callback when drogged
  */
-    setDragable: function(dragObj, moveObj, b, onmove, ondrag, ondrog) {
+    setDragable: function(dragEl, moveEl, b, onmove, ondrag, ondrog) {
         if (!b) {
-            dragObj.onmousedown = dragObj.onmouseup = null;
+            dragEl.onmousedown = dragEl.onmouseup = null;
             return ;
         }
-        if(!moveObj)
-        	moveObj = dragObj;
+        if(!moveEl)
+        	moveEl = dragEl;
         	
         var fnMoving = function(event) {
             var ev = event || window.event;
@@ -1929,60 +1925,60 @@ CC.extend(Event,
                 return ;
             }
 
-            if (!moveObj.__ondraged) {
+            if (!moveEl.__ondraged) {
                 if(ondrag)
-                	ondrag(ev, moveObj); 
-                moveObj.__ondraged = true;
+                	ondrag(ev, moveEl); 
+                moveEl.__ondraged = true;
             }
 
             if (onmove) {
-                if (!onmove(ev, moveObj)) {
+                if (!onmove(ev, moveEl)) {
                     return false;
                 }
             }
 
             var x = ev.clientX;
             var y = ev.clientY;
-            var x1 = x - moveObj._x;
-            var y1 = y - moveObj._y;
-            moveObj._x = x;
-            moveObj._y = y;
+            var x1 = x - moveEl._x;
+            var y1 = y - moveEl._y;
+            moveEl._x = x;
+            moveEl._y = y;
 
-            moveObj.style.left = moveObj.offsetLeft + x1;
-            moveObj.style.top = moveObj.offsetTop + y1;
+            moveEl.style.left = moveEl.offsetLeft + x1;
+            moveEl.style.top = moveEl.offsetTop + y1;
         };
 
         var msup = function(event) {
-            if (moveObj.__ondraged) {
+            if (moveEl.__ondraged) {
                 if(ondrog)
-                	ondrog(event || window.event, moveObj);
-                moveObj.__ondraged = false;
+                	ondrog(event || window.event, moveEl);
+                moveEl.__ondraged = false;
             }
             /**@ignore*/
-            document.ondragstart = function(event) {
-                (event || window.event).returnValue = true;
-            };
+            //document.ondragstart = function(event) {
+            //    (event || window.event).returnValue = true;
+            //};
       
             Event.un(document, "mousemove", fnMoving);
             Event.un(document, 'mouseup', arguments.callee);
-            Event.un(document, "selectstart", Event.noSelect);
+            Event.un(document, "selectstart", Event.noUp);
         };
         
-        dragObj.onmousedown = function(event) {
-        		if(moveObj.unmoveable)
+        dragEl.onmousedown = function(event) {
+        		if(moveEl.unmoveable)
         			return;
             var ev = event || window.event;
             var x = ev.clientX;
             var y = ev.clientY;
-            moveObj._x = x;
-            moveObj._y = y;
+            moveEl._x = x;
+            moveEl._y = y;
             /**@ignore*/
-            document.ondragstart = function(event) {
-                (event || window.event).returnValue = false;
-            };
+            //document.ondragstart = function(event) {
+            //    (event || window.event).returnValue = false;
+            //};
       
             Event.on(document, "mousemove", fnMoving);
-            Event.on(document, "selectstart", Event.noSelect);
+            Event.on(document, "selectstart", Event.noUp);
             Event.on(document, 'mouseup', msup);
         };
     },
@@ -2970,7 +2966,7 @@ CC.extend(Base.prototype,
   /**@lends CC.Base.prototype*/
   {
 /**@property {String} type 控件类型标识符*/
-    type: 'Base',
+    type: 'CC.Base',
 /**
  * @property {DOMElement} view * 控件对应的DOM结点,即控件视图部份,如果未设置,默认创建一个DIV结点作为视图,初始化时可为DOM元素或页面元素中的ID值
  */
@@ -3108,7 +3104,7 @@ CC.extend(Base.prototype,
  */
     initComponent : function() {
 /**
-* @property {String} cacheId 控件全局唯一id,用于缓存识别.
+* @property {String} cacheId 控件全局唯一id,用于缓存识别,也可用于对象是否是类的实例化对象.
 * @readonly
 */
     		var cid = this.cacheId = 'c' + CC.uniqueID();
@@ -3234,7 +3230,7 @@ CC.extend(Base.prototype,
 */
     		if(this.shadow){
     			if(this.shadow === true)
-    				this.shadow = new CC.ui.Shadow();
+    				this.shadow = CC.ui.instance('shadow');
     			this.follow(this.shadow);
     		}
     },
@@ -3269,11 +3265,13 @@ CC.extend(Base.prototype,
     		this.del();
     	}
     	
-    	CPC[this.cacheId] = null;
-    	
     	//not come from cbase init
-    	if(this.cacheId === undefined)
+
+    	if(this.cacheId === undefined){
     		return;
+      }
+     	
+     	delete CPC[this.cacheId];
      	
     	var obs = this.observes, i, len, c;
     	if(obs){
@@ -3723,14 +3721,7 @@ CC.extend(Base.prototype,
     	
         return this;
     },
-/***/ 
-    enableDragBehavior : function(b){
-        b?this.bindDragDrop() : this.unDragDrop();
-    },
-/***/ 	
-    enableDropBehavior : function(b) {
-        b?this.bindDDRListener() : this.unDDRListener();
-    },
+
      /** 
       * this.view.appendChild(oNode.view || oNode); * @param {DOMElement} oNode
       * @return this; 
@@ -3814,7 +3805,7 @@ CC.extend(Base.prototype,
   * @return this 
   */ 
     setZ : function(zIndex) {
-        this.style("z-index", zIndex);
+        this.fastStyleSet("zIndex", zIndex);
         if(this.shadow)
         	this.shadow.setZ(zIndex - 1);
         return this;
@@ -3860,16 +3851,18 @@ CC.extend(Base.prototype,
       comp.setStyle('position','relative');
      */ 
     setStyle : function (key, value) {
-        if (key == 'opacity') {
+        if (key === 'opacity') {
             this.setOpacity(value)
         } else {
             var st = this.view.style;
             st[
-            key == 'float' || key == 'cssFloat' ? ( st.styleFloat === undefined ? ( 'cssFloat' ) : ( 'styleFloat' ) ) : (key.camelize())
+            key === 'float' || key === 'cssFloat' ? ( st.styleFloat === undefined ? ( 'cssFloat' ) : ( 'styleFloat' ) ) : (key.camelize())
             ] = value;
         }
         return this;
     },
+    
+    
 /***/
     getStyle : function(){
         return view && view.getComputedStyle ?
@@ -3917,6 +3910,16 @@ CC.extend(Base.prototype,
                 return null;
             };
     }(),
+/**
+ * 快速获得元素样式,比setStyle更轻量级,但也有如下例外
+ * <li>不能设置float
+ * <li>传入属性名必须为JS变量格式,如borderLeft,非border-width
+ * <li>不能设置透明值
+ */
+    fastStyleSet : function(k, v){
+    	this.view.style[k] = v;
+    	return this;
+    },
 /**
  * 快速获得元素样式,比getStyle更轻量级,但也有如下例外
  * <li>不能获得float
@@ -4124,7 +4127,7 @@ CC.extend(Base.prototype,
                 if(c<this.minW) c=this.minW;
                 if(c>this.maxW) c=this.maxW;
                 this.contentW = 
-                this.setStyle('width', NB?Math.max(c - this.getOuterW(true),0)+'px' : c + 'px');
+                this.fastStyleSet('width', NB?Math.max(c - this.getOuterW(true),0)+'px' : c + 'px');
                 this.width = c;
             }
             c=a.height;
@@ -4132,7 +4135,7 @@ CC.extend(Base.prototype,
                 if(c<this.minH) c=this.minH;
                 if(c>this.maxH) c=this.maxH;
                 if(c<0) a.height=c=0;
-                this.setStyle('height', NB?Math.max(c - this.getOuterH(true),0)+'px' : c + 'px');
+                this.fastStyleSet('height', NB?Math.max(c - this.getOuterH(true),0)+'px' : c + 'px');
                 this.height = c;
             }
             return this;
@@ -4141,13 +4144,13 @@ CC.extend(Base.prototype,
         if(a !== false){
             if(a<this.minW) a=this.minW;
             if(a>this.maxW) a=this.maxW;
-            this.setStyle('width', NB?Math.max(a - this.getOuterW(true),0)+'px' : a + 'px');
+            this.fastStyleSet('width', NB?Math.max(a - this.getOuterW(true),0)+'px' : a + 'px');
             this.width = a;
         }
         if(b !== false){
             if(b<this.minH) b=this.minH;
             if(b>this.maxH) b=this.maxH;
-            this.setStyle('height', NB?Math.max(b - this.getOuterH(true),0)+'px' : b + 'px');
+            this.fastStyleSet('height', NB?Math.max(b - this.getOuterH(true),0)+'px' : b + 'px');
             this.height=b;
         }
 		
@@ -4165,11 +4168,11 @@ CC.extend(Base.prototype,
         if(CC.isArray(a)){
 	         if(a[0]!== false || a[1]!== false){
 	        	if(a[0]!== false){
-	            this.style('left',a[0]+'px');
+	            this.fastStyleSet('left',a[0]+'px');
 	            this.left = a[0];
 	          }
 	          if(a[1] !== false){
-	            this.style('top',a[1]+'px');
+	            this.fastStyleSet('top',a[1]+'px');
 	            this.top = a[1];
 	          }
 	          return this;
@@ -4178,11 +4181,11 @@ CC.extend(Base.prototype,
         
         if(a !== false || b !== false){
            if(a !== false){
-            this.style('left',a+'px');
+            this.fastStyleSet('left',a+'px');
             this.left = a;
           }
            if(b !== false){
-           	this.style('top',b+'px');
+           	this.fastStyleSet('top',b+'px');
            	this.top = b;
           }
         }
@@ -4806,103 +4809,6 @@ CC.extend(Base.prototype,
     	this.__contextedCb();
     },
     
-    /**
-	 * 绑定使得一个元素具有拖动和放下过程中具有ondrag, ondrop, ondragstart事件.
-	 * ondragstart.call(element,event)
-	 */
-    bindDragDrop : function(dragNode, calcelBubble) {
-        var proxy = this.view, G = CC.ui.Ghost.instance;
-        if(dragNode || this.dragNode)
-        	proxy = this.dom(dragNode || this.dragNode);
-				this.draggable = true;
-				//firefox
-				if(CC.gecko)
-					proxy.draggable = true;
-        proxy._ddrTrigger = (function(event){
-            if(!this.draggable)
-            	return;
-            //mark the initial xy.
-            var ev = event||window.event, el = this;
-            //save mouse xy,and element position info.
-            //MX:开始按下时鼠标X坐标,MY:开始按下时鼠标Y坐标,EX:开始始下时元素X,..EY,EW,EH其它类推
-            G.IPXY = G.PXY = Event.pageXY(ev);
-            G.EW=el.view.offsetWidth;
-            G.EH=el.view.offsetHeight;
-						if(el.beforeDragStart(el)===false)
-							return false;
-						
-            document.ondragstart = G._noddrAction;
-
-            Event.on(document, "mouseup", G._ddrMouseUp);
-            Event.on(document, "mousemove", G._ddrMouseMove);
-            Event.on(document, "selectstart", Event.noSelect);
-            G.ddrEl = el;
-        });
-        
-        this.domEvent('mousedown', proxy._ddrTrigger, calcelBubble, null, proxy);
-    },
-/***/
-    unDragDrop : function(dragNode){
-    		this.draggable = false;
-        var proxy = this.view;
-        if(dragNode || this.dragNode)
-        	proxy = this.dom(dragNode || this.dragNode);
-        this.unEvent('mousedown', proxy._ddrTrigger);
-    },
-	
-    /**
-	 * 绑定使得一个元素具有监听拖放事件功能.
-	 * ondragover 返回true表示可接受Drop.
-	 */
-    bindDDRListener : function(dragNode) {
-        var proxy = this.view, G = CC.ui.Ghost.instance;
-        if(dragNode || this.dragNode )
-        	proxy = this.dom(dragNode || this.dragNode);
-        this.ondropable = true;
-        proxy._ddrMouseover = (function(event){
-            if(!G.draging || G.ddrEl == this || !this.ondropable)
-                return;
-            var ev = event || window.event;
-            //Event.stop(ev);
-            //注册DDR OVER 结点
-            G.onEl = this;
-            var data = G.ddrEl.dragOverSB(this, ev);
-            if(data === false)
-                return;
-				
-            data = this.dragSBOver(G.ddrEl, data, ev);
-				
-            //mark current returned state.
-            G.setAcceptable(data);
-        });
-		
-        proxy._ddrMouseout = (function(event){
-            if(!G.onEl || !this.ondropable)
-                return;
-            
-            var ev = event || window.event, el = this;
-            if(G.onEl.dragOutSB(el, ev) === false){
-                G.onEl = null;
-                return;
-            }
-			
-            el.dragSBOut(G.onEl, ev);
-            G.onEl = null;
-            G.setAcceptable(0);
-        });
-				
-				this.domEvent('mouseover', proxy._ddrMouseover, false, null, proxy);
-				this.domEvent('mouseout', proxy._ddrMouseout, false, null, proxy);
-    },
-/***/
-    unDDRListener : function(dragNode) {
-        var proxy = this.view;
-        this.ondropable = false;
-        if(dragNode || this.dragNode)
-        	proxy = this.dom(dragNode || this.dragNode);
-        this.unEvent('mouseover', proxy._ddrMouseover);
-        this.unEvent('mouseout', proxy._ddrMouseout);
-    },
 /**
  * Base包装控件内的子结点元素
  * @return {CC.Base}
@@ -4927,7 +4833,7 @@ CC.extend(Base.prototype,
 	  comp.inspectAttr(this.iconNode || '_ico','style.display','block');
 	*</pre>
 	 */
-    inspectDomAttr: function(childId, childAttrList, attrValue) {
+    $attr: function(childId, childAttrList, attrValue) {
         var obj = this.dom(childId);
         //??Shoud do this??
         if (!obj)
@@ -5031,34 +4937,19 @@ CC.extend(Base.prototype,
 /***/
     toString : function(){
         return (this.id?this.id:'')+(this.title?'$'+this.title:'')+'@'+this.type;
-    },
-   /**@function*/
-    beforeDragStart : fGo,
-    /**@function*/
-    dragStart : fGo,
-    /**@function*/
-    drag : fGo,
-    /**@function*/
-    dragOverSB : fGo,
-    /**@function*/
-    dragSBOver : fGo,
-    /**@function*/
-    dragSBOut : fGo,
-    /**@function*/
-    dragOutSB : fGo,
-    /**@function*/
-    dropSB : fGo,
-    /**@function*/
-    SBDrop : fGo,
-    /**@function*/
-    afterDrop:fGo
+    }
 });
 
-
-
 /**
+ * 创建一个具有完整生命周期的基本类实例,
+ * 注意如果直接用new Base创建的类没控件初始化过程.
+ * 该方法已被设为 protected, 不建议直接调用,要创建基类实例请调用
+ * CC.ui.instance(option)方法.
+ * @protected
+ * @param {Object} opt 类初始化信息
  * @name CC.Base.create
- * @function*/
+ * @function
+ */
 Base.create = function(opt){
 	  var comp;
 	  if(typeof opt === 'string'){
@@ -5217,171 +5108,813 @@ Base.BrushFactory.Float2 = Base.BrushFactory.floatBrush(2);
  */
 Base.BrushFactory.Percent2 = Base.BrushFactory.floatBrush(2, '%');
 
-})(CC);
 
 /**
  * @name CC.ui
- * @namespace Background 库控件包
+ * @class 控件包
+ */
+
+CC.ui = /**@lends CC.ui*/{
+/**@private*/
+	ctypes : {},
+
+/**
+ * 注册控件类标识,方便在未知具体类的情况下生成该类,也方便序列化生成类实例.
+ */
+	def : function(ctype, clazz){
+		this.ctypes[ctype] = clazz;
+	},
+	
+/**
+ * 根据类初始化信息返回类实例,如果初始化信息未指定ctype,默认类为CC.Base,
+ * 如果初始化信息中存在ctype属性,在实例化前将移除该属性.
+ * 如果传入的参数已是某个类的实例,则忽略.
+ @example
+  <pre>
+ 	通过该类创建类实例方式有几种
+ 	1. var inst = CC.ui.instance('shadow');
+ 	  或
+ 	   var inst = CC.ui.instance('shadow', { width:55, ...});
+ 	
+ 	2. var inst = CC.ui.instance({ctype:'shadow', width:55});
+ 	
+ 	//得到CC.ui.ContainerBase类实例,假定该类的ctype为ct
+ 	   var inst = CC.ui.instance({ ctype : 'ct', showTo : document.body });
+ 	</pre>
+ */
+	instance : function(opt){
+		if(typeof opt === 'string')
+			return new this.ctypes[opt](arguments[1]);
+			
+    var t;
+    
+    if(!opt)
+    	return Base.create();
+    
+    //判断是否已实例化
+    if(opt.cacheId)
+    		return opt;
+    
+    t = opt.ctype;
+		if(!t)
+			return Base.create(opt);
+			
+		else delete opt.ctype;
+			
+		return new this.ctypes[t](opt);
+	}
+};
+
+})(CC);
+
+/**
+ * @name CC.util
+ * @class
+ */
+CC.util = {};
+
+//~@base/d2d.js
+/**
+ * 平面2D相关类库
+ * @name CC.util.d2d
+ * @namespace
+ */
+ CC.util.d2d = {};
+/**
+ * @name CC.util.d2d.Point
+ * 点类,描述平台空间上的一个点
+ * @class
+ */
+	CC.util.d2d.Point = function(x, y){
+		this.x = x || 0;
+		this.y = y || 0;
+	};
+/**
+ * @name CC.util.d2d.Rect
+ * 矩形类,l,t,w,h
+ * @param {Array|Number} data 传入一个数组或left, top, width, height
+ * @class
+ */
+	CC.util.d2d.Rect = function(l, t, w, h){
+		var len = arguments.length;
+		if(len === 4){
+			this.l = l || 0;
+			this.t = t || 0;
+			this.w = w || 0;
+			this.h = h || 0;
+	  }else {
+	  	this.l = l[0];
+	  	this.t = l[1];
+	  	this.w = l[2];
+	  	this.h = l[3];
+	  }
+	};
+	
+	CC.extend(CC.util.d2d.Rect.prototype, /**@lends CC.util.d2d.Rect.prototype*/{
+/**
+ * @type Number
+ */
+		l : 0,
+/**
+ * @type Number
+ */
+		t : 0,
+/**
+ * @type Number
+ */
+		w: 0,
+/**
+ * @type Number
+ */
+		h : 0,
+/**
+ * 点p是位于矩形内
+ * @param {CC.util.Point} 点
+ */
+	  isEnter : function(p){
+	  	var x = p.x, y = p.y;
+	  	
+	    return x>=this.l && x<=this.l+this.w &&
+	           y>=this.t && y<=this.t+this.h;
+	  },
+/**
+ * 刷新矩形缓存数据,默认为空调用
+ */
+	  update : fGo,
+
+	  toString : function(){
+	  	return this.valueOf() + '';
+	  },
+	  
+	  valueOf : function(){
+	  	return [this.l,this.t,this.w,this.h];
+	  }
+	});
+	
+/**
+ * 矩域, 由多个矩形或矩域组成树型结构
+ * 矩域大小由矩形链内最小的left,top与最大的left+width,top+height决定
+ * @name CC.util.d2d.RectZoom 矩域
+ * @class
+ * @super CC.util.d2d.Rect
+ */
+	CC.create('CC.util.d2d.RectZoom', CC.util.d2d.Rect, function(father){
+	 
+	 var Math = window.Math;
+	 
+	 return {
+/**
+ * 父层矩域
+ */
+     pZoom : null,
+/**
+ * @constructor
+ * @param {Array} rects 包含CC.util.Rect实例的数组
+ */
+     initialize : function(rects){
+        this.rects = [];
+        if(rects){
+		  	 for(var i=0,len=rects.length;i<len;i++){
+		  	 	this.add(rects[i]);
+		  	 }
+		  	 this.update();
+		  	}
+		  },
+      
+/**
+ * 返回域内所有矩形
+ * @return {Array}
+ */
+      getRects : function(){
+      	return this.rects;
+      },
+      
+/**
+ * 矩形加入矩域
+ * @param {CC.util.d2d.Rect} rect
+ * @param {Boolean} update 是否更新
+ */
+		  add : function(r, update){
+		  	if(r.pZoom)
+		  		r.pZoom.remove(r);
+		  	
+		  	this.rects.push(r);
+		  	if(update)
+		  		this.update();
+		  	r.pZoom = this;
+		  	return this;
+		  },
+/**
+ * 矩形移出矩域
+ */
+		  remove : function(r, update){
+		  	delete r.pZoom;
+		  	this.rects.remove(r);
+		  	if(update)
+		  		this.update();
+		  	return this;
+		  },
+		  
+	/**
+	 * 检测点是否位于当前矩形链中,如果点已进入范围,点所在的矩形
+	 * @return [Boolean|CC.util.d2d.Rect] false或矩形类
+	 */
+		  isEnter : function(p){
+		  	//先大范围检测
+		  	if(father.isEnter.call(this, p)){
+		  		var i, rs = this.rects, len = rs.length;
+		  		for(i=0;i<len;i++){
+		  			if(rs[i].isEnter(p)){
+		  				return rs[i];
+		  			}
+		  		}
+		  	}
+		  	return false;
+		  },
+	    
+	/**@private*/
+		  calValue : function(){
+			  var i, rs = this.rects, len = rs.length, r;
+			  var t1=[], t2=[], x1=[], x2=[];
+			  if(len === 0){
+			  	t1 = t2 = x1 = x2 = 0;
+			  }else{
+				  for(i=0;i<len;i++){
+				  		r = rs[i];
+				  		t1.push(r.t);
+				  		t2.push(r.t+r.h);
+				  		x1.push(r.l);
+				  		x2.push(r.l+r.w);
+				  }
+				  x1 = Math.min.apply(Math, x1);
+				  x2 = Math.max.apply(Math, x2);
+				  t1 = Math.min.apply(Math, t1);
+				  t2 = Math.max.apply(Math, t2);
+			  }
+			  this.l = x1;
+			  this.t = t1;
+			  this.w = x2 - x1;
+			  this.h = t2 - t1;
+		 },
+
+		 update : function(){
+			var i, rs = this.rects, len = rs.length;
+			for(i=0;i<len;i++){
+				rs[i].update();
+			}
+			this.calValue();
+		 }
+	 };
+	  
+  });
+  
+/**
+ * @name CC.util.d2d.ComponentRect
+ * @class
+ */
+  CC.create('CC.util.d2d.ComponentRect', CC.util.d2d.Rect, {
+/**
+ * @type Number
+ * zIndex
+ */
+  	z : -1,
+  	
+  	initialize : function(comp){
+  		this.comp = comp;
+  		this.update();
+  	},
+
+/**
+ * 刷新矩形缓存数据
+ */
+  	update : function(){
+			if(this.hidden){
+				this.l = this.t = this.w = this.h = 0;
+				this.z = -1;
+			} else {
+        var c = this.comp, 
+            sz = c.getSize(),
+            xy = c.absoluteXY();
+				this.z = c.getZ();
+				this.l = xy[0];
+				this.t = xy[1];
+				this.w = sz.width;
+				this.h = sz.height;
+			}
+  	},
+/**
+ * 解除与控件关联
+ */
+  	destory : function(){
+  		this.comp = null;
+  	}
+  });
+  
+//~@base/dd.js
+/**
+ * 库drag & drop效果实现
+ * drag & drop实现有两种方法,
+ * <li>基于空间划分检测
+ * <li>一种基于浏览器自身的mouse over + mouse out检测
+ * 这里采用第二种
+ * @namespace CC.util.dd
  */
  
-//~@ui/ghost.js
 (function(){
-	
-var Base = CC.Base;
-var Event = CC.Event;
-var G;
+var CC = window.CC;
+CC.util.dd = {};
 
-CC.Tpl.def('CC.ui.Ghost', '<div class="g-ghost"><div id="_ico" class="g-ghost-icon"></div><div class="g-ghost-txt" id="_tle">请问有什么提示?</div></div>');
+var E = CC.Event, 
+    
+    _w = window,
+
+    doc = _w.document,
+    
+    M = _w.Math,
+	
+	  //位于上方的控件
+	  onEl = null,
+	
+	  //拖动中的控件
+	  dragEl = null,
+	
+	  //拖动开始时鼠标位置
+	  IXY,
+	
+		//当前鼠标位置
+		PXY,
+	
+		//鼠标离初始位置偏移量
+		DXY = [0,0],
+		
+		//开始时拖动元素位置
+    IEXY,
+    
+		//是否拖动中
+		ing = false,
+		
+		//当前拖动compoent所在域
+		zoom,
+		
+		//寄存点
+		P = new CC.util.d2d.Point,
+		
+		//寄存ComponentRect
+		R,
+		
+		//拖放事件是否已绑定,避免重复绑定
+		binded = false,
+		
+		//[MAX_DX,MIN_DX,MAX_DY,MIN_DY]
+		bounds = false;
+
+		function noSelect(e){
+			e = e || window.E;
+			E.stop(e);
+			return false;
+		}
+		
 /**
- * @class
- * @name CC.ui.Ghost
- * @extends CC.Base
+ * @name CC.Base#draggable
+ * @property {Boolean} 是否允许拖动功能,该值只有在已安装拖动功能情况下才生效
  */
-CC.create('CC.ui.Ghost', Base, {
-	  
-	  /**@lends CC.ui.Ghost*/
-    okCS : 'g-ghost-ok',
-	
-    tip : false,
-	
-    ddrEl : null,
-
-    onEl : null,
-		
-		height : 23,
+ 
+		function before(e){
+			if(this.draggable){
+        IXY = PXY = E.pageXY(e);
+        IEXY = this.absoluteXY();
+        dragEl = this;
+        if(__debug) console.group("拖放"+this);
+        if(__debug) console.log('beforedrag');
+				if(this.beforedrag(e)!==false && this.fire('beforedrag', e) !== false){
+				  //doc.ondragstart = E.noUp;
+				  if(!binded){
+					  binded = true;
+	          E.on(doc, "mouseup", drop);
+	          E.on(doc, "mousemove", drag);
+	          E.on(doc, "selectstart", noSelect);
+	          zoom = mgr.$(this.dragZoom);
+	          if(__debug && zoom) console.log('当前zoom:',this.dragZoom||zoom);
+          }
+			  }
+			}
+		}
     
+    function GDXY(){
+    	var d = DXY;
+		      d[0] = PXY[0] - IXY[0];
+		      d[1] = PXY[1] - IXY[1];
+		      if(bounds){
+		      	 var b = bounds;
+		         if(d[0]<b[1]) d[0]=b[1];
+		         else if(d[0]>b[0]) d[0]=b[0];
+		         
+		         if(d[1]<b[3]) d[1]=b[3];
+		         else if(d[1]>b[2]) d[1]=b[2];
+		      }
+		      return d;
+		}
     
-    draging : false,
-	
-    resizeMask : null,
-	
-    enableTip : true,
-	
-    resizeCS : 'g-resize-ghost',
-		
-		resizeMaskCS : 'g-resize-mask',
-		
-    setAcceptable : function(b){
-    	this.acceptable = !!b;
-    	if(b){
-    		this.addClass(this.okCS);
-    		if(CC.ie)
-    			this.setOpacity(1);
-    	}
-    	else{
-    		this.delClass(this.okCS);
-    		if(CC.ie)
-    			this.setOpacity(0.5);
-    	}
-    },
-/**@private*/
-    _ddrAction : function(event) {
-        (event||window.event).returnValue = true;
-    },
-/**@private*/
-    _noddrAction:function(event){
-        (event||window.event).returnValue = false;
-    },
-/**@private*/
-    _ddrMouseUp : function(event) {
-        document.ondragstart = G._ddrAction;
-        //清空全局监听器
-        Event.un(document, "mouseup", G._ddrMouseUp);
-        Event.un(document, "mousemove", G._ddrMouseMove);
-        Event.un(document, "selectstart", Event.noSelect);
-
-        var ev = event||window.event, ddrEl = G.ddrEl, onEl = G.onEl;
-        G.PXY = Event.pageXY(ev);
-        G.MDX = G.PXY[0] - G.IPXY[0];
-        G.MDY = G.PXY[1] - G.IPXY[1];
-        if(G.draging){
-            //如果在拖动过程中松开鼠标
-            if(ddrEl.dropSB(onEl, ev)===false)
-                return;
-            if(onEl  && G.acceptable)
-                onEl.SBDrop(ddrEl, ev);
-        }
-        if(ddrEl)
-        	ddrEl.afterDrop(ev);
-        G.endDDR(ev);
-    },
-/**@private*/
-    _ddrMouseMove : function(event){
-        var ev = event||window.event;
-        G.PXY = Event.pageXY(ev);
-        G.MDX = G.PXY[0] - G.IPXY[0];
-        G.MDY = G.PXY[1] - G.IPXY[1];
-        if(!G.draging) {
-            G.draging = true;
-            G.ddrEl.dragStart(ev);
-		        G.display(G.enableTip);
-        }
-    
-        if(G.enableTip) {
-            G.setXY(G.PXY[0]+25, G.PXY[1]+20);
-        }
-    
-        G.ddrEl.drag(ev);
-    },
-/**@private*/
-    endDDR : function(ev){
-        if(this.enableTip) {
-            this.display(0);
-        }
-		  
-        this.onEl = null;
-        this.ddrEl = null;
-        this.draging = false;
-        this.setAcceptable(false);
-    },
-/**@private*/
-    endResize : function(){
-    	  this.coverDragMask(false);
-        this.enableTip = this._tmpEnabled;
-        this.resizeLayer.display(0);
-        this.resizeMask.display(0);
-        this.resizing = false;
-    },
-/**@private*/
-    startResize : function(opt){
-        this._tmpEnabled = this.enableTip;
-        this.enableTip = false;
-        var r = this.resizeMask, ly = this.resizeLayer;
-        //如果半透明层未创建
-        if(!ly){
-        	ly = this.resizeLayer = Base.create({view:CC.$C('DIV'), showTo:document.body, autoRender:true,cs:this.resizeCS, hidden:true});
-        }
-        this.coverDragMask(true);
-        ly.display(1);
-        this.resizing = true;
-    },
-/**@private*/
-    coverDragMask : function(b){
-    	var r = this.resizeMask;
-      //如果客户区域掩层未创建
-      if(!r)
-       	r = this.resizeMask = Base.create({view:CC.$C('DIV'), showTo:document.body, autoRender:true, cs:this.resizeMaskCS, hidden:true, unselectable:true});
-
-      if(b && CC.ie)
-        r.setSize(CC.getViewport());
+/**@inner*/
+		function drag(e){
+			e = e || _w.E;
+			PXY = E.pageXY(e);
       
-      r.display(b);
-    }
-});
+      	
+    	P.x = PXY[0];
+	    P.y = PXY[1];
+		  
+		  GDXY();
+		  
+		  if(!ing){
+		  	if(__debug) console.log('dragstart       mouse x,y is ', PXY);
+		  	if(dragEl.dragstart(e) !== false && dragEl.fire('dragstart', e) !== false){
+		  		ing = true;
+		  	}
+		  }
+		  
+      if(dragEl.drag(e, onEl) !== false && zoom){	  
+			  //区域检测
+			  R = zoom.isEnter(P);
+			  
+			  if(R) {
+			  	if(onEl !== R.comp){
+			  		//首次进入,检测之前
+			  		if(onEl !== null){
+				  		onEl.sbout(dragEl, e);
+				  		if(__debug) console.log('离开目标:',onEl);
+			  		}
+			  		onEl = R.comp;
+			  		if(!onEl.disabled){
+			  			onEl.sbover(dragEl, e);
+			  			if(__debug) console.log('进入目标:',onEl);
+			  		}else {
+			  			onEl = null;
+			  		}
+			  	}
+			  	//目标内移动
+			  	onEl.sbmove(dragEl, e);
+			  }else{
+			  	if(onEl!== null){
+			  		onEl.sbout(dragEl, e);
+            if(__debug) console.log('离开目标:',onEl);
+			  		onEl = null;
+			  	}
+			  }
+		  }
+		}
 
-G = new CC.ui.Ghost({hidden:true, autoRender:true});
-CC.ui.Ghost.instance = G;
+/**@inner*/
+		function drop(e){
+			if(dragEl){
+				e = e || _w.E;
+				if(binded){
+					//doc.ondragstart = null;
+		      //清空全局监听器
+		      E.un(doc, "mouseup", arguments.callee);
+		      E.un(doc, "mousemove", drag);
+		      E.un(doc, "selectstart", noSelect);
+		      if(ing){
+		        //如果在拖动过程中松开鼠标
+		      	if(onEl !== null){
+		      		onEl.sbdrop(dragEl, e);
+		      		if(__debug) console.log(dragEl.toString(), '丢在', onEl.toString(),'上面');
+		      	}
+		      	dragEl.dragend(e);
+		      	ing = false;
+		      }
+		      binded = false;
+		      onEl = null;
+		      zoom = null;
+		      R = null;
+		      if(__debug) console.log('dragend         mouse delta x,y is ',DXY, ',mouse event:',e);
+	      }
+	      if(__debug) console.log('afterdrag');
+	      dragEl.afterdrag(e);
+        dragEl.fire('afterdrag', e);
+        dragEl = null;
+        bounds = false;
+        if(__debug) console.groupEnd();
+      }
+		}
+		
 
-//
-// 执行库自身初始化,在一切的Event.ready注册函数之前调用.
-//
-/**@private*/
-Event.defUIReady = (function(){
-	CC.$body = CC.$$(document.body);
-	if(!document.body.lang)
-		document.body.lang = "zh";
-	CC.$body.append(G.view);
-});
+/**
+ * @name CC.util.dd.Mgr
+ * Drag & Drop 管理器
+ * @class
+ */
+  var mgr = CC.util.dd.Mgr = {
+/**
+ * 矩域缓存
+ */
+		  	zmCache : {root:new CC.util.d2d.RectZoom()},
+
+/**
+ * 返回矩域
+ * @param {String} name 矩域名称
+ * @param {String} parent 父层矩域,如果该参数为非空,并且name域未存在,则创建一个新域并返回该域
+ * @return {CC.util.d2d.RectZoom}
+ */
+		  	$ : function(k, p){
+		  		var z = this.zmCache[k];
+		  		if(!z && p){
+		  			var c = this.zmCache;
+		  			if(k === 'root')
+		  				throw "can't named root";
+		  			if(typeof p === 'string'){
+		  				p = c[p];
+		  				if(!p)
+		  					throw "parent zoom doesn't exist."
+		  			}else if(p === true)
+		  				p = c.root;
+		  			
+		  			z = c[k] = new CC.util.d2d.RectZoom();
+		  			p.add(z);
+		  		}
+		  		return z;
+		  	},
+/**
+ * 设置拖放区域大小,在X方向上,最小的delta x与最大的delta x,
+ * 在Y方向上,最小的delta y与最大的delta y, 所以数组数据为
+ * [max_delta_x, min_delta_x, max_delta_y, min_delta_y],
+ * 设置拖动区域后,超出区域的行为将被忽略,也就是并不回调
+ * component.drag方法,所以,在drag方法内的操作都是安全的.
+ * 受限区域在拖放结束后清空.
+ * @type Array
+ */
+		  	setBounds : function(arr){
+		  		bounds = arr;
+		  	},
+/**
+ * 获得受限区域
+ */
+		  	getBounds : function(){
+		  		return bounds;
+		  	},
+/**
+ * 返回根域
+ */
+		  	getRoot : function(){
+		  		return this.zmCache.root;
+		  	},
+/**
+ * 从域链中移除名称为name的域
+ * @param {String} name
+ * @return {CC.util.d2d.RectZoom} 返回移除的域
+ */
+        remove : function(k){
+         var z = this.zmCache[k];
+         if(z && k !== 'root'){ 
+         	z.pZoom.remove(z);
+         	delete this.zmCache[k];
+         }
+         return z;
+        },
+        
+/**
+ * 将控件加入name域
+ * @param {CC.Base} 控件
+ * @param {String} name 矩域名
+ * @return this
+ */
+        addComp : function(comp, k){
+          k = this.$(k, true);
+          k.add(new CC.util.d2d.ComponentRect(comp));
+          return this;
+        },
+/**
+ * 控件移出域
+ * @param {CC.Base} 控件
+ * @param {String} name 矩域名
+ * @return this
+ */
+        removeComp : function(comp, k){
+        	k = this.$(k);
+        	var rs = k.getRects();
+        	CC.each(rs, function(){
+        		if(this.comp === comp){
+        			k.remove(this);
+        			this.destory();
+        			return false;
+        		}
+        	});
+        	return this;
+        },
+        
+/**
+ * 获得对象拖动开始时鼠标坐标
+ * @return {Array} [x, y]
+ */ 	
+		  	getIMXY : function(){
+		  		return IXY;
+		  	},
+/**
+ * 获得对象拖动开始时对象坐标
+ */
+        getIEXY : function(){
+          return IEXY;
+        },
+        
+/**
+ * 获得自鼠标拖动起至今的x,y方向偏移量
+ * @return {Array} [dx, dy]
+ */		  	
+		  	getDXY : function(){
+		  		return DXY;
+		  	},
+/**
+ * 获得当前鼠标位置
+ * @return {Array} [x,y]
+ */
+		  	getXY : function(){
+		  		return PXY;
+		  	},
+/**
+ * 获得当前拖动的对象
+ * @return {CC.Base}
+ */
+		  	getSource : function(){
+		  		return dragEl;
+		  	},
+/**
+ * 获得当前位正下方的对象,如果无,返回null
+ * @return {CC.Base}
+ */
+		  	getTarget : function(){
+		  	  return onEl;
+		  	},
+/**
+ * 给控件安装可拖动功能,安装后控件component具有
+ * component.draggable = true;
+ * 如果并不想控件view结点触发拖动事件,可设置component.dragNode
+ * 指定触发结点.
+ * @param {CC.Base} component
+ * @param {Boolean} install 安装或取消安装
+ * @param {HTMLElement} 触发事件的结点,如无则采用c.dragNode
+ */
+		  	installDrag : function(c, b, dragNode){
+					if(b===undefined || b){
+						c.draggable = true;
+						c.domEvent('mousedown', before, false, null, dragNode||c.dragNode);
+					}else {
+						c.draggable = false;
+						c.unEvent('mousedown', before,dragNode||c.dragNode);
+					}
+		  	},
+		  	
+/**
+ * 是否拖放中
+ */
+		  	isDragging : function(){
+		  		return ing;
+		  	},
+
+/**
+ * 当控件需要resize时调用,可以创建resize相关的掩层和映像,防止其它干扰resize的因素,如iframe
+ * @type Object
+ */
+		  	resizeHelper : /**@lends CC.util.dd.Mgr.resizeHelper*/{
+		  		
+			    resizeCS : 'g-resize-ghost',
+					
+					maskerCS : 'g-resize-mask',
+/**
+ * @property {CC.Base} layer 映像层,只读,当调用applyLayer方法后可直接引用
+ */
+
+/**
+ * @property {CC.Base} masker 页面掩层,只读,当调用applyMasker方法后可直接引用
+ */
+ 
+/**
+ * 在resize开始或结束时调用
+ * @param {Boolean} apply
+ */
+		      applyResize	: function(b){
+		      	this.resizing = b;
+			      this.applyLayer(b);
+			      this.applyMasker(b);
+		      },
+/**
+ * 是否应用映像层
+ */
+			    applyLayer : function(b){
+			    	var y = this.layer;
+			    	if(!y){
+              y = this.layer = 
+			        	  CC.Base.create({
+			        	   	view:CC.$C('DIV'),
+			        	   	autoRender:true,
+			        	   	cs:this.resizeCS,
+			        	   	hidden:true
+			        	  });
+			    	}
+			    	b ? y.appendTo(document.body) : y.del();
+			    	y.display(b);
+			    },
+/**
+ * 创建或移除页面掩层,在resize拖动操作开始时,创建一个页面掩层,
+ * 以防止受iframe或其它因素影响resize
+ * @param {Boolean} cor 创建或移除页面掩层
+ */
+			    applyMasker : function(b){
+			    	var r = this.masker;
+			      if(!r)
+			       	r = this.masker = 
+			       	  CC.Base.create({
+			       	  	view:CC.$C('DIV'),
+			       	  	autoRender:true,
+			       	  	cs:this.maskerCS, 
+			       	  	hidden:true, 
+			       	  	unselectable:true
+			       	  });
+			
+			      if(b && CC.ie)
+			        r.setSize(CC.getViewport());
+			      b ? r.appendTo(document.body) : r.del();
+			      r.display(b);
+			    }
+		  	}
+	};
+  
+	CC.extendIf(CC.Base.prototype,/**@lends CC.Base.prototype*/ {
+/**
+* @name CC.Base#dragNode
+* @property {String|HTMLElement} 触发控件拖动开始的结点或结点ID
+*/
+
+/**
+* @name CC.Base#dragZoom
+* @property {String} 设置或获取控件目标拖放区域名称(组)
+* 只有控件已安装拖动功能该设置才生效
+* @see #installDrag
+*/
+
+/**
+* 是否安装结点拖放效果
+* @function
+* @param {Boolean} true | false
+*/
+		installDrag : function(b){
+			mgr.installDrag(this, b);
+			return this;
+		},
+/**
+* 获得drag & drop 管理器
+* @return {CC.util.dd.Mgr}
+*/
+		getDDProvider : function(){
+			return mgr;
+		},
+
+/**
+ * 如果已安装拖放,
+ * 函数在鼠标按下时触发
+ */
+		beforedrag : fGo,
+/**
+ * 如果已安装拖放
+ * 拖动开始时触发
+ */
+    dragstart : fGo,
+/**
+ * 如果已安装拖放,
+ * 函数在鼠标松开时触发,拖动曾经发生过
+ */
+		dragend : fGo,
+/**
+ * 如果已安装拖放,
+ * 函数在鼠标松开时触发,拖动不一定发生过
+ */
+		afterdrag : fGo,
+/**
+ * 如果已安装拖放,
+ * 函数在鼠标拖动时触发
+ */
+		drag : fGo,
+		
+/**
+ * 如果已加入拖放组,
+ * 函数在目标进入时触发
+ */
+		sbover : fGo,
+/**
+ * 如果已加入拖放组,
+ * 函数在目标离开时触发
+ */
+		sbout : fGo,
+/**
+ * 如果已加入拖放组,
+ * 函数在目标丢下时触发
+ */
+		sbdrop : fGo,
+/**
+ * 如果已加入拖放组,
+ * 函数在目标移动时触发
+ */
+		sbmove : fGo
+	});
 })();
 
 //~@ui/shadow.js
@@ -5435,12 +5968,12 @@ CC.create('CC.ui.Shadow', CC.Base,
  */
 	hidden : true,
 	
+	
 	initComponent : function(){
 /**
  * @name CC.ui.Shadow#showTo
  * @property {DOMElement} [showTo=document.body] 默认显示在document.body中
  */
-		this.showTo = document.body;
 		
 		PR.initComponent.call(this);
 /**
@@ -5569,12 +6102,19 @@ CC.create('CC.ui.Shadow', CC.Base,
 		if(b===undefined)
 			return PR.display.call(this);
 		var b = b && this.target && !this.target.hidden;
-		if(b)
+		if(b){
 			this.reanchor();
+			this.appendTo(document.body);
+		}else {
+			this.del();
+		}
 		return PR.display.call(this, b);
 	}
 }
 );
+
+CC.ui.def('shadow', CC.ui.Shadow);
+
 })();
 
 //~@ui/loading.js
@@ -5705,6 +6245,8 @@ CC.create('CC.ui.Loading', CC.Base,
 		return this.target.loaded;
 	}
 });
+
+CC.ui.def('loading', CC.ui.Loading);
 })();
 
 //~@ui/ct.js
@@ -5713,7 +6255,7 @@ CC.create('CC.ui.Loading', CC.Base,
 var CC = window.CC;
 var Base = CC.Base;
 var cptx = Base.prototype;
-
+var UX = CC.ui;
 /**
  * @name CC.layout
  * @namespace 容器类布局管理器
@@ -5736,7 +6278,7 @@ CC.layout.def = function(type, cls){
  * @extends CC.Base
  */ 
  CC.create('CC.ui.Item', Base, {});
-
+ CC.ui.def('item', CC.ui.Item);
 /**
  * @name CC.layout.Layout
  * @class 布局管理器基类
@@ -5771,6 +6313,12 @@ CC.create('CC.layout.Layout', null,
             var ct = CC.delAttr(this, 'ct');
             if(ct)
             	this.attach(ct);
+            
+            if(this.items){
+            	for(var i=0, its = this.items,len=its.length;i<len;i++){
+            		this.add(UX.instance(its[i]));
+            	}
+            }
         },
         
         /**
@@ -5836,13 +6384,12 @@ CC.create('CC.layout.Layout', null,
         	return !this.invalidate && this.ct.rendered;
         },
 /**
- * 从布局移除指定组件,同时也从容器移除该组件,
+ * 从布局移除指定组件,同时也从容器移除该组件,并删除组件布局信息layoutInf
  * 如果layoutOnChange为true则重新布局容器
  */
         remove : function(c){
-        	delete c.layoutInf;
         	this.ct.remove(c);
-          
+        	delete c.layoutInf;
           if(this.layoutOnChange)
           	this.doLayout();
         },
@@ -5925,9 +6472,6 @@ CC.create('CC.layout.Layout', null,
          * 如果layoutOnChange设置为false时不调用。
          */
         remove: function(comp){
-        	  if(this.itemCS)
-            	comp.delClass(this.itemCS);
-            
             if (this.layoutOnChange) 
                 this.doLayout.bind(this).timeout(0);
         },
@@ -5959,17 +6503,12 @@ CC.create('CC.layout.Layout', null,
          * 移除容器的布局管理器.
          */
         detach: function(){
-            var ct = this.ct;
-            if(!ct)
-            	return this;
-            if (this.ctCS) 
-                ct.delClass(this.ctCS);
-            if(this.wrCS)
-            	ct.wrapper.delClass(this.wrCS);
-            
+          var ct = this.ct;
+          if(ct){
             this.ct = null;
             this.wrapper = null;
-            return this;
+          }
+          return this;
         },
         
         /**
@@ -6056,24 +6595,6 @@ CC.create('CC.ui.ContainerBase', Base,
   initComponent: function() {
     cptx.initComponent.call(this);
 
-    if (this.layout) {
-      /**
- * @name CC.ui.ContainerBase#layout
- * @property {Layout|String} [layout='default'] 容器布局管理器
- */
-      if (typeof this.layout === 'string') {
-/**
- * @name CC.ui.ContainerBase#layoutCfg
- * @property {Object} layoutCfg 布局管理器初始化配置
- */
-        var cfg = this.layoutCfg || {};
-        cfg.ct = this;
-        this.layout = new(CC.layout[this.layout])(cfg);
-        if (this.layoutCfg) delete this.layoutCfg;
-      }
-      else this.layout.attach(this);
-    }
-    else this.layout = new lyx({ ct: this });
     /**
  * @name CC.ui.ContainerBase#keyEvent
  * @property {Boolean} keyEvent 是否开启键盘监听事件
@@ -6102,6 +6623,25 @@ CC.create('CC.ui.ContainerBase', Base,
     	this.getSelectionProvider();
     	
     this.children = [];
+    
+    if (this.layout) {
+      /**
+ * @name CC.ui.ContainerBase#layout
+ * @property {Layout|String} [layout='default'] 容器布局管理器
+ */
+      if (typeof this.layout === 'string') {
+/**
+ * @name CC.ui.ContainerBase#layoutCfg
+ * @property {Object} layoutCfg 布局管理器初始化配置
+ */
+        var cfg = this.layoutCfg || {};
+        cfg.ct = this;
+        this.layout = new(CC.layout[this.layout])(cfg);
+        if (this.layoutCfg) delete this.layoutCfg;
+      }
+      else this.layout.attach(this);
+    }
+    else this.layout = new lyx({ ct: this });
   },
 /**
  * 创建容器的DOM结点
@@ -6627,6 +7167,9 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 /**
  * 批量生成子项, 不能在初始化函数里调用fromArray,因为控件未初始化完成时不能加入子控件.
+ * 子类寻找优先级为 :
+ * {item option}.ctype -> 参数itemclass -> 容器.ItemClass,
+ * 容器的ItemClass可以为ctype字符串, 也可以为具体类
  * @param {Array} array 子项实始化配置
  * @param {CC.Base} [itemclass=this.ItemClass] 可选, 子类
  * @return this
@@ -6634,7 +7177,7 @@ CC.create('CC.ui.ContainerBase', Base,
   fromArray: function(array, itemclass) {
     itemclass = itemclass || this.ItemClass;
     if (typeof itemclass === 'string') {
-      itemclass = window[itemclass];
+      itemclass = CC.ui.ctypes[itemclass];
     }
 
 /**
@@ -6646,8 +7189,11 @@ CC.create('CC.ui.ContainerBase', Base,
     for (var i = 0, len = array.length; i < len; i++) {
       item = array[i];
       if (!item.cacheId) {
-        if (itemOpts) CC.extendIf(item, itemOpts);
-        item = new(itemclass)(item);
+        if (itemOpts) 
+        	CC.extendIf(item, itemOpts);
+        
+        item = item.ctype ? CC.ui.instance(item) : new(itemclass)(item);
+        
         //层层生成子项
         if (item.array && item.children) {
           item.fromArray(item.array);
@@ -6836,14 +7382,12 @@ CC.create('CC.ui.ContainerBase', Base,
 });
 
 var ccx = CC.ui.ContainerBase;
+
+UX.def('ct', ccx);
+
 var ccxp = ccx.prototype;
 var Event = CC.Event;
 
-/**
- * @name CC.util
- * @class
- */
- 
  
 //~@base/connectionprovider.js
 /**
@@ -7456,10 +8000,6 @@ CC.ui.ContainerBase.prototype.getSelectionProvider = function(opt, cls){
 	return p;
 };
 
-CC.ui.ContainerBase.prototype.select = function(item){
-	return this.getSelectionProvider().select(item);
-};
-
 //~@base/Tracker.js
 /**
  * 状态变更跟踪器
@@ -7634,7 +8174,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
             var dl = 0, dt = 0;
             if ((a !== this.left && a !== false) || (b !== this.top && b !== false)) {
                 if (a !== this.left && a !== false) {
-                    this.style('left', a + 'px');
+                    this.fastStyleSet('left', a + 'px');
                     dl = a - this.left;
                     this.left = a;
                 }
@@ -7642,7 +8182,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
                     a = false;
                 
                 if (b !== this.top && b !== false) {
-                    this.style('top', b + 'px');
+                    this.fastStyleSet('top', b + 'px');
                     dt = b - this.top;
                     this.top = b;
                 }
@@ -7657,7 +8197,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
         }
 };
 });
-  
+
 (function(cp){
   
   var borderOpts = {
@@ -7684,6 +8224,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
 
 })(CC.ui.Panel);
 
+UX.def('panel', CC.ui.Panel);
 })();
 
 //~@ui/viewport.js
@@ -7714,131 +8255,7 @@ CC.create('CC.ui.Viewport', CC.ui.Panel, /**@lends Viewport.prototype*/{
 }
 );
 
-
-//~@ui/spliter.js
-CC.create('CC.ui.Spliter', CC.Base, function(superclass){
-	var CC = window.CC;
-	var G = CC.ui.Ghost.instance;
-	return {
-		maxLR : Math.MAX_VALUE,
-		minLR : Math.MIN_VALUE,
-		maxTB : Math.MAX_VALUE,
-		minTB : Math.MIN_VALUE,
-		autoRestrict : true,
-		draggable : true,
-		ct : null,
-		inherentCS : 'g-layout-split',
-		ghost : true,
-		onSplitStart : fGo,
-		onSplit : fGo,
-		onSplitEnd : fGo,
-		enableResizeMasker : false,
-		unselectable : true,
-		
-		initComponent : function(){
-			superclass.initComponent.call(this);
-			this.appendTo(this.ct);
-		},
-		
-		beforeDragStart : function(){
-				this.initX = this.left;
-				this.initY = this.top;
-				if(this.ghost) {
-					var sg = this.splitGhost;
-					if(!sg){
-						sg = this.splitGhost = CC.$$(CC.$C({tagName:'DIV', className:this.ghostCS||'g-layout-sp-ghost'}));
-						sg.appendTo(this.ct);
-					}
-					this.copyViewport(sg);
-					sg.display(1);
-			  }
-				this.initSPX = this.left;
-				this.initSPY = this.top;
-				G.enableTip = false;
-				if(!this.disableAutoStrict)
-					this.calRestrict();
-				this.onSplitStart();
-				
-				if(this.enableResizeMasker){
-					G.coverDragMask(true);
-					G.resizeMask.style('cursor', this.style('cursor'));
-				}
-		},
-		
-		calRestrict : function(){
-				var c = CC.fly(this.ct.view || this.ct);
-				if(!this.disableLR){
-					var i = this.getLeft();
-					this.minLR = -1*i;
-					this.maxLR = c.getWidth() - (i+this.getWidth());
-				}
-				
-				if(!this.disableTB){
-					var i = this.getTop();
-					this.minTB = -1*i;
-					this.maxTB = c.getHeight() - (i+this.getHeight());
-				}
-				c.unfly();
-		},
-		
-		applyDxy : function(dx, dy){
-			var d;
-			if(!this.disableTB){
-					if(dy < this.minTB)
-						dy = this.minTB;
-					else if(dy > this.maxTB)
-						dy = this.maxTB
-					d = this.initSPY+dy;
-					if(this.ghost)
-						this.splitGhost.setTop(d);
-					else if(this.syncView)
-					this.setTop(d);
-					this.splitDY = dy;
-			}
-				
-			if(!this.disableLR){
-					if(dx < this.minLR)
-						dx = this.minLR;
-					else if(dx > this.maxLR)
-						dx = this.maxLR;
-					
-					d = this.initSPX+dx;
-					if(this.ghost)
-					 this.splitGhost.setLeft(d);
-					else if(this.syncView)
-						this.setLeft(d);
-					this.splitDX = dx;
-			}
-		},
-		
-		drag : function(ev){
-				this.applyDxy(G.MDX, G.MDY);
-				this.onSplit();
-		},
-		
-		afterDrop : function(){
-				if(this.ghost)
-					this.splitGhost.display(0);
-					var t1 = this.ghost, t2 = this.syncView;
-					this.ghost = false;
-					this.syncView = true;
-					this.applyDxy(G.MDX, G.MDY);
-					this.ghost = t1;
-					this.syncView = t2;
-					this.onSplitEnd();
-					if(this.splitGhost){
-						this.splitGhost.destory();
-						delete this.splitGhost;
-					}
-				
-				if(this.enableResizeMasker){
-					G.coverDragMask(false);
-					G.resizeMask.style('cursor','');
-				}
-	  }
-	};
-});
-
+CC.ui.def('viewport', CC.ui.Viewport);
 
 //~@ui/borderlayout.js
 /**
@@ -7850,13 +8267,15 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
  */
 
 (function(){
-	var CC = window.CC;
-	var tpx = CC.Tpl;
-	var uix = CC.ui;
-	var ccx = uix.ContainerBase;
-  var superclass = CC.layout.Layout.prototype;
-  var Math = window.Math;
-  	
+	var CC = window.CC,
+	    tpx = CC.Tpl,
+	    uix = CC.ui,
+	    ccx = uix.ContainerBase,
+	    superclass = CC.layout.Layout.prototype,
+	    Math = window.Math,
+      G = CC.util.dd.Mgr,
+      undefined;
+  
 	tpx.def('CC.ui.BorderLayoutSpliter' , '<div class="g-layout-split"></div>')
 	   .def('CCollapseBarH' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td><td class="cb-r"></td></tr></table>')
 	   .def('CCollapseBarV' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td></tr><tr><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td></tr><tr><td class="cb-r"></td></tr></table>');
@@ -7864,149 +8283,186 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
    * @name CC.ui.BorderLayoutSpliter
    * @class
    */
-  uix.BorderLayoutSpliter = CC.create(uix.Spliter, function(spr) {
+  uix.BorderLayoutSpliter = CC.create(CC.Base, function(spr) {
+  	
+  	//ghost 初始坐标
+  	var GIXY;
   	
     return /**@lends CC.ui.BorderLayoutSpliter.prototype*/{
     	
       type: 'CC.ui.BorderLayoutSpliter',
       
-      enableResizeMasker : true,
+      ghostCS : 'g-layout-sp-ghost',
       
       initComponent: function() {
         this.ct = this.layout.ct.wrapper;
-        if (this.dir == 'north' || this.dir == 'south') this.disableLR = true;
-        else this.disableTB = true;
+        if (this.dir == 'north' || this.dir == 'south') 
+        	this.dxDisd = true;
         spr.initComponent.call(this);
-        this.domEvent('dblclick', this.onDBClick);
+        G.installDrag(this, true);
       },
-
-      onDBClick: fGo,
-
-      calRestrict: function() {
-        var ly = this.layout,
-        wr = this.ct;
-        var max, min, dir = this.dir,
-        comp = ly[dir],
-        op,
-        cfg = comp.layoutInf,
-        lyv = ly.vgap,
-        lyh = ly.hgap,
-        vg = cfg.gap == undefined ? lyv: cfg.gap,
-        hg = cfg.gap == undefined ? lyh: cfg.gap,
-        cfg2,cbg = ly.cgap,cg,
-        ch = wr.height,
-        cw = wr.width;
+/**
+ * 计算拖动范围dx,dy
+ * @private
+ * @return {Array}
+ */
+      getRestrict: function() {
+        var ly = this.layout, 
+            wr = this.ct, 
+            max, 
+            min, 
+            dir  = this.dir,
+            comp = ly[dir],
+            op, 
+            cfg = comp.layoutInf,
+            lyv = ly.vgap,
+            lyh = ly.hgap,
+            vg  = cfg.gap == undefined ? lyv: cfg.gap,
+            hg  = cfg.gap == undefined ? lyh: cfg.gap,
+            cfg2,
+            cbg = ly.cgap,
+            cg,
+            ch = wr.height,cw = wr.width;
+         
         switch (dir) {
-        case 'north':
-          min = -1 * comp.height;
-          max = ch + min - vg;
-          op = ly.south;
-          if (op) {
-            cfg2 = op.layoutInf;
-            if(cfg2.cbar && !cfg2.cbar.hidden){
-            	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
-            	max -= cg;
-            }
-            if(!op.hidden && !op.contexted)
-            	max -= op.height + (cfg2.gap == undefined ? lyv: cfg2.gap);
-          }
-
-          if(max>comp.maxH-comp.height)
-          	max = comp.maxH - comp.height;
-          if(Math.abs(min)>comp.height - comp.minH)
-          	min = -1*(comp.height - comp.minH);
-          break;
-        case 'south':
-          max = comp.height;
-          min = -1 * ch + max + vg;
-          op = ly.north;
-          if (op) {
-            cfg2 = op.layoutInf;
-            if(cfg2.cbar && !cfg2.cbar.hidden){
-            	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
-            	min += cg;
-            }
-            
-            if(!op.hidden && !op.contexted)
-            	min += op.height + (cfg2.gap == undefined ? lyv: cfg2.gap);
-          }
-          
-          if(max>comp.height - comp.minH)
-          	max = comp.height - comp.minH;
-          if(Math.abs(min)>comp.maxH-comp.height)
-          	min = -1*(comp.maxH-comp.height);
-          break;
-        case 'west':
-          min = -1 * comp.width;
-          max = cw + min - hg;
-          op = ly.east;
-          if (op) {
-            cfg2 = op.layoutInf;
-            if(cfg2.cbar && !cfg2.cbar.hidden){
-            	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
-            	max -= cg;
-            }
-            if(!op.hidden && !op.contexted)
-            	max -= op.width + (cfg2.gap == undefined ? lyh: cfg2.gap);
-          }
-          
-          if(max > comp.maxW - comp.width)
-          	max = comp.maxW - comp.width;
-          if(Math.abs(min)>comp.width - comp.minW)
-          	min = -1*(comp.width - comp.minW);
-          break;
-        case 'east':
-          max = comp.width;
-          min = -1 * cw + max + hg;
-					op = ly.west;
-          if (op) {
-            cfg2 = op.layoutInf;
-            
-            if(cfg2.cbar && !cfg2.cbar.hidden){
-            	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
-            	min += cg;
-            }
-            
-            if(!op.hidden && !op.contexted)
-            	min += op.width + (cfg2.gap === undefined ? lyh: cfg2.gap);
-          }
-          if(max > comp.width - comp.minW)
-          	max = comp.width - comp.minW;
-          if(Math.abs(min)>comp.maxW - comp.width)
-          	min = -1*(comp.maxW - comp.width);
-          break;
+	        case 'north':
+	          min = -1 * comp.height;
+	          max = ch + min - vg;
+	          op = ly.south;
+	          if (op) {
+	            cfg2 = op.layoutInf;
+	            if(cfg2.cbar && !cfg2.cbar.hidden){
+	            	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
+	            	max -= cg;
+	            }
+	            if(!op.hidden && !op.contexted)
+	            	max -= op.height + (cfg2.gap == undefined ? lyv: cfg2.gap);
+	          }
+	
+	          if(max>comp.maxH-comp.height)
+	          	max = comp.maxH - comp.height;
+	          if(Math.abs(min)>comp.height - comp.minH)
+	          	min = -1*(comp.height - comp.minH);
+	          break;
+	        case 'south':
+	          max = comp.height;
+	          min = -1 * ch + max + vg;
+	          op = ly.north;
+	          if (op) {
+	            cfg2 = op.layoutInf;
+	            if(cfg2.cbar && !cfg2.cbar.hidden){
+	            	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
+	            	min += cg;
+	            }
+	            
+	            if(!op.hidden && !op.contexted)
+	            	min += op.height + (cfg2.gap == undefined ? lyv: cfg2.gap);
+	          }
+	          
+	          if(max>comp.height - comp.minH)
+	          	max = comp.height - comp.minH;
+	          if(Math.abs(min)>comp.maxH-comp.height)
+	          	min = -1*(comp.maxH-comp.height);
+	          break;
+	        case 'west':
+	          min = -1 * comp.width;
+	          max = cw + min - hg;
+	          op = ly.east;
+	          if (op) {
+	            cfg2 = op.layoutInf;
+	            if(cfg2.cbar && !cfg2.cbar.hidden){
+	            	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
+	            	max -= cg;
+	            }
+	            if(!op.hidden && !op.contexted)
+	            	max -= op.width + (cfg2.gap == undefined ? lyh: cfg2.gap);
+	          }
+	          
+	          if(max > comp.maxW - comp.width)
+	          	max = comp.maxW - comp.width;
+	          if(Math.abs(min)>comp.width - comp.minW)
+	          	min = -1*(comp.width - comp.minW);
+	          break;
+	        case 'east':
+	          max = comp.width;
+	          min = -1 * cw + max + hg;
+						op = ly.west;
+	          if (op) {
+	            cfg2 = op.layoutInf;
+	            
+	            if(cfg2.cbar && !cfg2.cbar.hidden){
+	            	cg = cfg2.cgap === undefined ? cbg: cfg2.cgap;
+	            	min += cg;
+	            }
+	            
+	            if(!op.hidden && !op.contexted)
+	            	min += op.width + (cfg2.gap === undefined ? lyh: cfg2.gap);
+	          }
+	          if(max > comp.width - comp.minW)
+	          	max = comp.width - comp.minW;
+	          if(Math.abs(min)>comp.maxW - comp.width)
+	          	min = -1*(comp.maxW - comp.width);
+	          break;
         }
-        if (dir == 'west' || dir == 'east') {
-          this.minLR = min;
-          this.maxLR = max;
-        } else {
-          this.minTB = min;
-          this.maxTB = max;
+        return dir === 'west' || dir === 'east' ? 
+               [max, min, 0, 0] : [0,0,max,min]
+      },	
+/**
+ * @private
+ */
+      applyGhost : function(b){
+        var g = this.splitGhost;
+        if(!g){
+        	g = this.splitGhost = 
+        	     this.$$(CC.$C({tagName:'DIV', className:this.ghostCS}));
         }
+        if(b){
+        	this.copyViewport(g);
+        	GIXY = [g.left, g.top];
+        	g.appendTo(this.ct);
+        }else{
+          g.del();
+        }
+        return g;
+      },
+      
+      beforedrag : function(){
+      	this.applyGhost(true);
+      	G.setBounds(this.getRestrict());
+      	G.resizeHelper.applyMasker(true);
+      	G.resizeHelper.masker.fastStyleSet('cursor', this.fastStyle('cursor'));
       },
 
-      applyDist: function(dt) {
-        var c = this.layout[this.dir];
-        //this.presize = this.enableH ? c.height:c.width;
-        var wr = this.ct;
-        if (this.disableLR) {
-          c.setHeight(this.dir == 'north' ? c.height + dt: c.height - dt);
-        } else {
-          c.setWidth(this.dir == 'west' ? c.width + dt: c.width - dt);
+			drag : function(){
+				var d = G.getDXY(),i = G.getIEXY();
+				this.dxDisd ? 
+				  this.splitGhost.setTop(GIXY[1]+d[1]) : 
+				  this.splitGhost.setLeft(GIXY[0]+d[0]);
+			},
+			
+      dragend: function() {
+        var c   = this.layout[this.dir],
+            wr  = this.ct,
+            dxy = G.getDXY(),
+            cfg = c.layoutInf,
+            k;
+        k = this.dxDisd ? this.dir === 'north' ? c.height + dxy[1]: c.height - dxy[1] :
+                          this.dir === 'west'   ? c.width  + dxy[0]: c.width  - dxy[0];
+        
+        if(cfg.autoCollapseWidth !== false && k <= (cfg.autoCollapseWidth||40)){
+        	 this.layout.collapse(c, true);
+        }else {
+	        this.dxDisd ? 
+	             c.setHeight(k) :
+	             c.setWidth(k);
+	        this.layout.doLayout();
         }
-        this.layout.doLayout();
       },
-
-      onSplitEnd: function() {
-        var c = this.layout[this.dir];
-        //this.presize = this.enableH ? c.height:c.width;
-        var wr = this.ct;
-        if (this.disableLR) {
-          c.setHeight(this.dir == 'north' ? c.height + this.splitDY: c.height - this.splitDY);
-        } else {
-          c.setWidth(this.dir == 'west' ? c.width + this.splitDX: c.width - this.splitDX);
-        }
-        this.layout.doLayout();
+      
+      afterdrag :  function(){
+      	this.applyGhost(false);
+      	G.resizeHelper.applyMasker(false);
+      	G.resizeHelper.masker.fastStyleSet('cursor', '');
       }
     };
   });
@@ -8037,24 +8493,38 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
 	  },
 		
 		initComponent : function(){
-			this.template = (this.dir === 'south' || this.dir === 'north')?'CCollapseBarH' : 'CCollapseBarV';
+			this.template = 
+			  (this.dir === 'south' || this.dir === 'north') ?
+			    'CCollapseBarH' : 'CCollapseBarV';
+			    
 			ccx.prototype.initComponent.call(this);
 
 			if(this.dir === 'west' || this.dir === 'east')
 				this.addClass(this.inherentCS+'-v');
-										
+
 			this.centerExpander = this.dom('_expander');
-			
+
 			this.navBlock = this.dom('_navblock');
 			
-			CC.fly(this.navBlock).addClass(this.navBlockCS[this.dir]).unfly();
+			CC.fly(this.navBlock)
+			  .addClass(this.navBlockCS[this.dir])
+			  .unfly();
 
-			this.domEvent('mousedown', this.onBarClick, true);
-			this.domEvent('mousedown', this.onNavBlockClick, true, null, this.navBlock);
+			this.domEvent('mousedown', this.onBarClick, true)
+			    .domEvent('mousedown', this.onNavBlockClick, true, null, this.navBlock);
 			
 			this.sliperEl = CC.$C({tagName:'A', className:this.sliperCS,href:'javascript:fGo()'});
 			this.comp.wrapper.append(this.sliperEl);
 			this.comp.domEvent('mousedown', this.sliperAction, false, null, this.sliperEl);
+		},
+		
+		destory : function(){
+			this.centerExpander = null;
+			this.navBlock = null;
+			this.sliperEl = null;
+			if(this.compShadow)
+				this.compShadow.destory();
+			ccx.prototype.destory.call(this);
 		},
 		
 		sliperAction : function(){
@@ -8076,24 +8546,30 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
 		 */
 		makeFloat : function(){
 			var c = this.comp;
-			c.addClass(this.compContextedCS);
-			c.display(true);
+			c.addClass(this.compContextedCS)
+			 .show();
+			
 			this.setCompContextedBounds();
+			
 			var xy = c.absoluteXY();
-			c.appendTo(document.body).setXY(xy);
+			c.appendTo(document.body)
+			 .setXY(xy);
+			
+			this.getShadow().attach(c).display(true);
 			
 			var cfg = c.layoutInf;
-			var sd = cfg.shadow;
-			if(!sd){
-				sd = cfg.shadow = new uix.Shadow({inpactH:9,inpactY:-2, inpactX : -4, inpactW:11});
-				c.follow(sd);
-			}
-			
-			sd.attach(c).display(true);
 			if(!cfg.cancelAutoHide){
 				this.resetAutoHideTimer();
 				cfg.autoHideTimer = this.onTimeout.bind(this).timeout(cfg.autoHideTimeout||5000);
 			}
+		},
+		
+		getShadow : function(){
+			var sd = this.compShadow;
+			if(!sd)
+				sd = this.compShadow 
+				   = uix.instance('shadow', {inpactH:9,inpactY:-2, inpactX : -4, inpactW:11});
+		  return sd;
 		},
 		
 		onTimeout : function(){
@@ -8116,15 +8592,16 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
 		 * 面板复原
 		 */
 		unFloat : function(){
-			var c = this.comp;
-			var cfg = c.layoutInf;
-				
+			var c = this.comp,
+			    cfg = c.layoutInf;
+
 			if(cfg.autoHideTimer)
 				this.resetAutoHideTimer();
 				
 			c.pCt._addNode(this.comp.view);
 			c.delClass(this.compContextedCS);
-			cfg.shadow.detach();
+			
+			this.getShadow().detach();
 		},
 		
 		/**
@@ -8154,11 +8631,11 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
 		 */
 		setCompContextedBounds : function(){
 			var c = this.comp, dir = this.dir;
-			if(dir == 'west')
+			if(dir === 'west')
 				c.setBounds(this.left+this.width+1, this.top, false, this.height);
-			else if(dir == 'east')
+			else if(dir === 'east')
 				c.setBounds(this.left - c.width - 1, this.top, false, this.height);
-			else if(dir == 'north')
+			else if(dir === 'north')
 				c.setBounds(this.left, this.top+this.height+1, this.width, false);
 			else c.setBounds(this.left, this.top-c.height - 1, this.width, false);
 		},
@@ -8166,7 +8643,7 @@ CC.create('CC.ui.Spliter', CC.Base, function(superclass){
 		setSize : function(){
 			ccx.prototype.setSize.apply(this, arguments);
 			var v;
-			if(this.dir == 'north' || this.dir == 'south'){
+			if(this.dir === 'north' || this.dir === 'south'){
 				v = Math.max(0, this.width - 6)+'px';
 				this.centerExpander.style.width = v;
 				if(CC.ie)
@@ -8203,66 +8680,80 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
 		cpgap : 5,
     
     wrCS : 'g-borderlayout-ct',
+    
     itemCS :'g-borderlayout-item',
     
+    separatorVCS : 'g-ly-split-v',
+    
+    separatorHCS : 'g-ly-split-h',
+        
     add: function(comp, dir) {
+    	
       superclass.add.call(this, comp, dir);
-      var d, s;
-      if (dir === null || dir === undefined) d = 'center';
-      if (typeof dir == 'object') {
-        d = dir.dir;
-        s = dir.split;
-      }
-
-      else d = dir;
-
-      this[d] = comp;
       
+      var d, s;
+      
+      if(!dir)
+      	dir = comp.layoutInf;
+      
+      d = dir.dir;
+      s = dir.split;
+      
+      if(!d)
+      	d = 'center';
+      	
+      this[d] = comp;
+
       if (s && d !== 'center') {
         var sp = dir.separator = new uix.BorderLayoutSpliter({
           dir: d,
           layout: this
         });
-        if (d === 'west' || d === 'east') sp.addClass(this.separatorVCS || 'g-ly-split-v');
-        else sp.addClass(this.separatorHCS || 'g-ly-split-h');
-        sp.display(1).appendTo(this.ct.ct);
-        //
-        comp.follow(sp);
+        
+        sp.addClass(
+          d === 'west' || d === 'east' ? this.separatorVCS:this.separatorHCS
+        );
+
+        sp.appendTo(this.ct.ct)
+          .show();
       }
       
       comp.addClass(this.itemCS + '-' + (d||'center'));
       
-      if(dir.collapsed !== undefined)
-      	this.collapse(comp, dir.collapsed);
-      else this.doLayout();
+      dir.collapsed === undefined ? this.doLayout() : this.collapse(comp, dir.collapsed);
       
       return this;
     },
     
     getCollapseBar : function(c){
-    	var cfg, cg, cbar;
-      cfg = c.layoutInf;
-      cbar = cfg.cbar;
+    	var cfg,
+    	    cg, 
+    	    cbar,
+    	    cfg = c.layoutInf,
+          cbar = cfg.cbar;
+      
       if(!cbar && !cfg.noSidebar){
 	      cbar = cfg.cbar = new uix.BorderLayoutCollapseBar({dir:cfg.dir, comp:c, itsLayout:this});
-	      cbar.addClass(cbar.inherentCS+'-'+cfg.dir);
-	      cbar.appendTo(this.ct.ct);
-	      this.ct.follow(cbar);
+	      cbar.addClass(cbar.inherentCS+'-'+cfg.dir)
+	          .appendTo(this.ct.ct);
       }
       return cbar;
     },
     
     collapse : function(comp, b){
-    	var cbar = this.getCollapseBar(comp);
+    	var cbar = this.getCollapseBar(comp),
+    	    cfg = comp.layoutInf;
     	
-    	var cfg = comp.layoutInf;
     	cfg.collapsed = b;
     	if(cfg.separator)
     		cfg.separator.display(!b);
+    	
     	if(comp.fold)
     		comp.fold(b, true);
+    	
     	if(cbar)
     		cbar.display(b);
+    	
     	comp.display(!b);
     	this.doLayout();
     },
@@ -8341,9 +8832,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
         	cg = cfg.cgap === undefined ? cbg: cfg.cgap;
         	w -= cg;
         	cb.setBounds(w+cpg, t, cg - dcpg, h);
-        }/*else{
-      		w -= cpg;
-      	}*/
+        }
         
         if(!c.hidden && !c.contexted){
 	        dd = c.getWidth(true);
@@ -8394,25 +8883,27 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
 
     remove: function(c) {
       var cfg = c.layoutInf;
-      this[cfg.dir] = null;
+      
+      delete this[cfg.dir];
+      
       var sp = cfg.separator;
       if (sp) {
       	sp.destory();
-        cfg.separator = null;
+        delete cfg.separator;
       }
-        
+      
       var cb = cfg.cbar;
       if(cb){
         	cb.destory();
-        	cfg.cbar = null;
+        delete cfg.cbar;
       }
-      return superclass.remove.apply(this, arguments);
+      superclass.remove.apply(this, arguments);
     },
     
     detach : function(){
     	var self = this;
     	this.invalidated = true;
-    	CC.each(['east', 'sourth', 'west', 'north' , 'center'], function(){
+    	CC.each(['east', 'south', 'west', 'north' , 'center'], function(){
     		if(self[this])
     			self.remove(self[this]);
     	});
@@ -8452,7 +8943,7 @@ ly.def('card', ly.CardLayout);
 CC.create('CC.layout.QQLayout', B,
 	/**@lends CC.layout.QQLayout.prototype*/{
 		add : function(comp, cfg){
-			comp.style('position', 'absolute')
+			comp.fastStyleSet('position', 'absolute')
 			    .setLeft(0);
 			if(cfg && cfg.collapsed === false){
 				comp.fold(false, true);
@@ -8982,24 +9473,26 @@ if(!CC.Cache['ItemDDRBarUp']) {
 }
 
 //~@ui/group.js
-CC.Tpl.def('FolderItem', '<li class="g-unsel"><b id="_ico" class="icos"></b><a id="_tle" class="g-tle"></a></li>')
-      .def('Folder', '<div class="g-folder g-grp-bdy"><div class="g-grp-bdy" id="_scrollor"><ul id="_bdy" tabindex="1" hidefocus="on"></ul></div></div>');
+CC.Tpl.def('CC.ui.FolderItem', '<li class="g-unsel"><b id="_ico" class="icos"></b><a id="_tle" class="g-tle"></a></li>')
+      .def('CC.ui.Folder', '<div class="g-folder g-grp-bdy"><div class="g-grp-bdy" id="_scrollor"><ul id="_bdy" tabindex="1" hidefocus="on"></ul></div></div>');
 
-CC.Util.createFolder = function(opt, type){
+CC.ui.Folder = function(opt, type){
 	opt = CC.extendIf(opt, {
-        itemCfg : {template : 'FolderItem', hoverCS:'on', icon:'icoNote', blockMode:''},
+        itemCfg : {template : 'CC.ui.FolderItem', hoverCS:'on', icon:'icoNote', blockMode:''},
         keyEvent : true,
         ct : '_bdy',
         clickEvent : true,
 				useContainerMonitor : true,
-				template:'Folder',
+				template:'CC.ui.Folder',
 				selectionProvider : true
   });
 	var c = new CC.ui.ContainerBase(opt);
 	return c;
 };
 
-CC.ui.Folder = CC.Util.createFolder;
+CC.ui.def('folder', CC.ui.Folder);
+
+
 //~@ui/form.js
 
 (function(){
@@ -9299,13 +9792,13 @@ CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
 		
 		setValue : function(v){
 			if(v>=100){
-				CC.fly(this.img).setStyle('width','100%').unfly();
+				CC.fly(this.img).fastStyleSet('width','100%').unfly();
 				this.onStop();
 				this.fire('progressstop', this);
 				return father.setValue.call(this, 100);
 			}
 			
-			CC.fly(this.img).setStyle('width',v+'%').unfly();
+			CC.fly(this.img).fastStyleSet('width',v+'%').unfly();
 			return father.setValue.call(this, v);
 		},
 
@@ -9315,7 +9808,7 @@ CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
 CC.ui.form.def('progressbar', CC.ui.form.Progressbar);
 
 //~@ui/button.js
-CC.Tpl.def('Button', '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>');
+CC.Tpl.def('CC.ui.Button', '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>');
 /**
  *@class Button
  *@extend Base
@@ -9327,7 +9820,6 @@ CC.create('CC.ui.Button', CC.Base, function(superclass){
         hoverCS: 'g-btn-over',
         clickCS: 'g-btn-click',
         iconCS: 'g-btn-icon',
-        template: 'Button',
         focusCS: 'g-btn-focus',
         tip : false,
         disableNode: '_tle',
@@ -9513,7 +10005,7 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
             	this.pCt.layout.collapse(this, b);
             	return this;
             }
-            this.inspectDomAttr('_btnFN', 'className', b ? this.openCS || 'g-icoOpn' : this.clsCS || 'g-icoFld');
+            this.$attr('_btnFN', 'className', b ? this.openCS || 'g-icoOpn' : this.clsCS || 'g-icoFld');
             this.wrapper.display(!b);
             this.folded = b;
             this.fire('fold',b);
@@ -9684,172 +10176,207 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
 CC.Tpl.def('CC.ui.Resizer', '<div class="g-panel g-resizer"><div class="g-win-e" id="_xe"></div><div class="g-win-s" id="_xs"></div><div class="g-win-w" id="_xw"></div><div class="g-win-n" id="_xn"></div><div class="g-win-sw" id="_xsw"></div><div class="g-win-es" id="_xes"></div><div class="g-win-wn" id="_xwn"></div><div class="g-win-ne" id="_xne"></div><div class="g-panel-wrap g-resizer-wrap" id="_wrap"></div></div>');
 
 /**
- * Resize开始时位置长宽信息保存在控件的initPS属性.
+ * @class 边框缩放控件
+ * @super CC.ui.Panel
  */
 CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
-	var CC = window.CC, G = CC.ui.Ghost.instance;
-    return {
+	var CC = window.CC, G = CC.util.dd.Mgr, H = G.resizeHelper;
+    return /**@lends CC.ui.Resizer*/{
+/**
+ * 是否允许缩放
+ * @type Boolean
+ */
         resizeable : true,
+/**
+ * 是否允许纵向缩放
+ * @type Boolean
+ */
         enableH:true,
+/**
+ * 是否允许横向缩放
+ * @type Boolean
+ */
         enableW:true,
+        
         unresizeCS : 'g-win-unresize',
+        
         width:500,
+        
         height:250,
+        
         minW:12,
+        
         minH:6,
+
+/**
+ * @name CC.ui.Resizer#resizestart
+ * @event
+ * 缩放触发时发送
+ */
+/**
+ * @private
+ */
+				onResizeStart : function(){
+					if(this.resizeable){
+						var a = this.absoluteXY(),
+						    b = this.getSize(true);
+						if(!CC.borderBox){
+							b.width  -= 1;
+							b.height -= 1;
+						}
+						//记录初始数据,坐标,宽高
+						this.initPS = {pos:a,size:b};
+						H.applyResize(true);
+						H.layer.setXY(a)
+						       .setSize(b);
+						H.masker.fastStyleSet('cursor', this.fastStyle('cursor'));
+						this.fire('resizestart');
+					}
+				},
+				
+/**
+ * @name CC.ui.Resizer#resizeend
+ * @event
+ * @param {Array} xy [current_x, current_y]
+ * @param {Array} dxy [delta_x, delta_y]
+ * 缩放触发时发送
+ */
+				 
+/**
+ * @private
+ */
+				onResizeEnd : function(){
+					var dxy = G.getDXY();
+					if(dxy[0] === 0 && dxy[1] === 0){
+						H.applyResize(false);
+						H.masker.fastStyleSet('cursor','');
+					}else{
+						var sz = H.layer.getSize(true);
+						//TODO:hack
+						if(!CC.borderBox){
+							if(sz.width !== 0)
+								sz.width += 1;
+							if(sz.height !== 0)
+								sz.height += 1;
+						}
+						var dlt = H.layer.xy(),
+						    ips = this.initPS.pos,
+						    isz = this.initPS.size,
+						    dxy = [sz.width - isz.width, sz.height - isz.height],
+						    sd  = this.shadow, 
+						    sds = !sd.hidden;
+						
+						dlt[0] -= ips[0];
+						dlt[1] -= ips[1];
+						
+						//消除阴影残影
+						if(sd && sds)
+							sd.hide();
+						
+						this.setXY(this.getLeft(true) + dlt[0],
+						           this.getTop(true)  + dlt[1])
+						    .setSize(sz);
+						
+						if(sd && sds)
+							sd.show();
+							
+						this.fire('resizeend', dlt, dxy);
+						
+						H.applyResize(false);
+						H.masker.fastStyleSet('cursor', '');
+						delete this.initPS;
+					}
+				},
+
+/**
+ * @name CC.ui.Resizer#initPS
+ * @property {Object} 保存缩放开始时的数据,结构为{pos:[x, y], size:{width, height}}
+ */
+ 
         initComponent : function() {
-            superclass.initComponent.call(this);
-            if(this.resizeable){
-                var v = this.view;
-                var self = this;
-                //onmousedown and start
-                var ini = (function(){
-                		if(!self.resizeable)
-                			return false;
-                    var a = self.absoluteXY();
-                    var b = self.getSize();
-                    if(!CC.borderBox){
-                    	b.width -= 1;
-                    	b.height -= 1;
-                    }
-                    self.initPS = {
-                        pos:a,
-                        size:b
-                    };
-                    //current 'this' is the element which gets the event.
-                    //notice the ghost proxy.
-                    G.startResize();
-                    G.resizeLayer.setXY(a).setSize(b);
-                    G.resizeMask.style('cursor', this.style('cursor'));
-                    self.fire('resizestart');
-                });
-					
-                var end = (function(){
-                	  var dx = G.MDX,dy = G.MDY;
-                    
-                    if(dx == 0 && dy == 0){
-                    	G.endResize();
-                    	G.resizeMask.style('cursor','');
-                    	return;
-                    }
-                    
-                    if(self.fire('resize', self)=== false)
-                        return false;
-                    var sz = G.resizeLayer.getSize(true);
-                    //hack:
-                    if(!CC.borderBox){
-                    	if(sz.width != 0)
-                    		sz.width += 1;
-                    	if(sz.height != 0)
-                    		sz.height += 1;
-                    }
-                    
-                    var dlt = G.resizeLayer.xy(),
-                        initlt = self.initPS.pos,
-                        initxy = self.initPS.size,
-                        dxy = [sz.width - initxy.width, sz.height - initxy.height],
-                        sd = self.shadow, sds = !sd.hidden;
-                    dlt[0] -= initlt[0];
-                    dlt[1] -= initlt[1];
-                    //消除阴影残影
-                    if(sd && sds)
-                    	sd.hide();
-                    self.setXY(self.getLeft(true)+dlt[0], self.getTop(true)+dlt[1]);
-                    self.setSize(sz);
-                    if(sd && sds)
-                    	sd.show();
-                    self.fire('resizeend', dlt, dxy);
-                    G.endResize();
-                    G.resizeMask.style('cursor', '');
-                    delete self.initPS;
-                });
-					
-                var a = this._createFn(0x8);
-                var b = this._createFn(0x4);
-                var c = this._createFn(0x2);
-                var d = this._createFn(0x1);
-                var f = this._createFn('',c,b);
-                var e = this._createFn('',b,d);
-                var g = this._createFn('',a,c);
-                var h = this._createFn('',a,d);
-                this._bindTriggerAction('_xn',a,ini,end);
-                this._bindTriggerAction('_xs',b,ini,end);
-                this._bindTriggerAction('_xw',c,ini,end);
-                this._bindTriggerAction('_xe',d,ini,end);
-                this._bindTriggerAction('_xes',e,ini,end);
-                this._bindTriggerAction('_xsw',f,ini,end);
-                this._bindTriggerAction('_xwn',g,ini,end);
-                this._bindTriggerAction('_xne',h,ini,end);
-            }else {
-                this.setResizable(false);
-            }
+        	superclass.initComponent.call(this);
+        	this.resizeable ? this.bindRezBehavior() : this.setResizable(false);
         },
-				//
-				// 在窗口创建后调用
-				//
-				setResizable : function(resizeable) {
-					if(!resizeable)
-						this.addClass(this.unresizeCS);
-					else 
-						this.delClass(this.unresizeCS);
-					this.resizeable = resizeable;
-				},
-				
-				getWrapperInsets : function(){
-					return [6,1,1,1,7,2];
-				},
-				
-        _bindTriggerAction : function(id, drag, ini, end) {
+/**
+ * @private
+ */
+        bindRezBehavior : function(){
+        	var ini = this.onResizeStart.bind(this),
+            	end = this.onResizeEnd.bind(this),
+            	a = this.createRezBehavior(0x8),
+              b = this.createRezBehavior(0x4),
+              c = this.createRezBehavior(0x2),
+              d = this.createRezBehavior(0x1),
+              f = this.createRezBehavior('',c,b),
+              e = this.createRezBehavior('',b,d),
+              g = this.createRezBehavior('',a,c),
+              h = this.createRezBehavior('',a,d);
+              
+              this.bindRezTrigger('_xn', a,ini,end)
+                  .bindRezTrigger('_xs', b,ini,end)
+                  .bindRezTrigger('_xw', c,ini,end)
+                  .bindRezTrigger('_xe', d,ini,end)
+                  .bindRezTrigger('_xes',e,ini,end)
+                  .bindRezTrigger('_xsw',f,ini,end)
+                  .bindRezTrigger('_xwn',g,ini,end)
+                  .bindRezTrigger('_xne',h,ini,end);
+        },
+        
+/**
+ * @private
+ */
+        bindRezTrigger : function(id, drag, ini, end) {
             var vid = this.$$(id);
-            vid.beforeDragStart = ini;
+            vid.beforedrag = ini;
             vid.drag = drag;
-            vid.afterDrop = end;
-            vid.bindDragDrop(null, true);
-            vid.pCt = this;
+            vid.afterdrag = end;
+            vid.installDrag(true);
+            return this;
         },
-		
-        _createFn : function(axis,a,b) {
+/**
+ * @private
+ */
+        createRezBehavior : function(axis,a,b) {
             var self = this;
             if(axis == 0x4 || axis == 0x8){
-                return function(ev) {
+                return function() {
                     if(!self.enableH) {
                         return;
                     }
-                    var pace = G.PXY[1] - G.IPXY[1];
-                    self._zoom(axis, pace);
-                }
+                    var dxy = G.getDXY();
+                    self._zoom(axis, dxy[1]);
+                };
             }
             else if(axis == 0x1 || axis == 0x2) {
-                return function(ev) {
-                    if(!self.enableW) {
-                        return;
+                return function() {
+                    if(self.enableW) {
+                      var dxy = G.getDXY();
+                      self._zoom(axis, dxy[0]);
                     }
-                    var pace = G.PXY[0] - G.IPXY[0];
-                    self._zoom(axis, pace);
-                }
+                };
             }else {
                 return function(ev) {
-                    a.call(this,ev);
-                    b.call(this,ev);
+                    a.call(this);
+                    b.call(this);
                 };
             }
         },
-		
+/**@private*/
         _zoom : function(axis, pace) {
-            var ly = G.resizeLayer;
-            if((axis & 0x1) != 0x0) {
-                off =  this.initPS.size.width+ pace;
+            var ly = H.layer;
+            if((axis & 0x1) !== 0x0) {
+                off =  this.initPS.size.width + pace;
                 if(off>=this.minW)
-                    ly.setWidth(off);
+                  ly.setWidth(off);
             }
 			
-            else if((axis & 0x2) != 0x0) {
+            else if((axis & 0x2) !== 0x0) {
                 off = this.initPS.size.width - pace;
-                if(off<this.minW)
-                    return;
-                ly.setWidth(off);
-                off = this.initPS.pos[0] + pace;
-                ly.setLeft(off);
+                if(off >= this.minW){
+                  ly.setWidth(off);
+                  off = this.initPS.pos[0] + pace;
+                  ly.setLeft(off);                
+                }
             }
 			
             if((axis & 0x4) != 0x0) {
@@ -9860,13 +10387,30 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
 			
             else if((axis & 0x8) != 0x0) {
                 off = this.initPS.size.height - pace;
-                if(off<this.minH)
-                    return;
-                ly.setHeight(off);
-                off = this.initPS.pos[1] + pace;
-                ly.setTop(off);
+                if(off>=this.minH){
+                  ly.setHeight(off);
+                  off = this.initPS.pos[1] + pace;
+                  ly.setTop(off);
+                }
             }
-        }
+        },
+/**
+ * @name CC.ui.Resizer#resizeable
+ * @property {Boolean} resizeable 获得控件是否可缩放,只读,设置时可调用setResizeable方法
+ */
+/**
+ * 设置是否可以缩放
+ * @param {Boolean} resizeable
+ */
+				setResizable : function(resizeable) {
+					!resizeable ? this.addClass(this.unresizeCS) :
+					              this.delClass(this.unresizeCS);
+					this.resizeable = resizeable;
+				},
+				
+				getWrapperInsets : function(){
+					return [6,1,1,1,7,2];
+				}
     };
 }));
 
@@ -9875,16 +10419,22 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
  * window控件.
  */
 
-CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
+CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
 	  var CC = window.CC;
     CC.Tpl.def('CC.ui.win.Titlebar', '<div id="_g-win-hd" class="g-win-hd"><div class="fLe"></div><b class="icoSw" id="_ico"></b><span id="_tle" class="g-tle">提示</span><div class="fRi"></div><div class="g-win-hd-ct" style="position:absolute;right:5px;top:7px;" id="_ctx"></div></div>');
 	  CC.Tpl.def('CC.ui.win.TitlebarButton', '<a class="g-hd-btn" href="javascript:fGo();"></a>');
     
     //static变量,跟踪当前最顶层窗口的zIndex
-    var globalZ = 900;
-    var G = CC.ui.Ghost.instance;
-    var Base = CC.Base;
-    var BP = Base.prototype;
+    var globalZ = 900, 
+        G = CC.util.dd.Mgr,
+        H = G.resizeHelper,
+        Base = CC.Base,
+        SX = Base.prototype.setXY,
+        IPXY;
+/**
+ * @name CC.ui.Win#unmoveable
+ * @property {Boolean} unmoveable 设置该值操纵当前窗口是否允许移动
+ */
 /**
  * @name CC.ui.win.Titlebar
  * @class
@@ -9898,41 +10448,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
 		    cancelClickBubble : true,
 		    itemCfg: { template: 'CC.ui.win.TitlebarButton' },
 		    ct: '_ctx',
-		    draggable: true,
-		    dragStart: function() {
-		        var c = this.pCt;
-		        if(c.unmoveable)
-		        	return false;
-		        G.enableTip = false;
-		        
-		        if (c.fire('movestart') === false) return false;
-		        if (c.shadow) c.shadow.hide();
-		        G.coverDragMask(true);
-		        c.setOpacity(0.6);
-		        c.wrapper.hide();
-		        c.initPos = c.xy();
-		    },
-		    
-		    drag: function() {
-		      var c = this.pCt;
-		      BP.setXY.call(c, c.initPos[0] + G.MDX, c.initPos[1] + G.MDY);
-		    },
-		    
-		    dropSB: function() {
-		        var c = this.pCt;
-		        G.coverDragMask(false);
-		        if (c.fire('moveend') === false) {
-		            c.setXY(c.initPos);
-		            return false;
-		        }
-		        //update x,y
-		        c.left = c.top = false;
-		        c.setXY(c.initPos[0] + G.MDX, c.initPos[1] + G.MDY);
-		        c.setOpacity(1);
-		        if (c.shadow) c.shadow.show();
-		        delete c.initPos;
-		        c.wrapper.show();
-		    }
+		    selectionProvider : true
 		});
 		
 		
@@ -9943,52 +10459,108 @@ CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
         shadow : true,
   
         inherentCS : 'g-win g-tbar-win',
-        
+/**
+ * 最小化时窗口样式
+ */
         minCS : 'g-win-min',
-        
+
+/**
+ * 最大化时窗口样式
+ */        
         maxCS : 'g-win-max',
-        
+ 
         minH:30,
         
   			minW:80,
-  			
-        titlebar : true,
-  
+/**
+ * 拖放时窗口透明度
+ */  			
+  			dragOpacity : 0.6,
+
         initComponent: function() {
-            this.titlebar = new CC.ui.win.Titlebar({title:this.title, selectionProvider:true});
-            this.follow(this.titlebar);
+          var tb = this.titlebar = new CC.ui.win.Titlebar({title:this.title});
+          this.follow(tb);
+					delete this.title;
+					
+					if(this.shadow === true)
+						this.shadow = new CC.ui.Shadow({inpactY:-1,inpactH:5});
+          
+          father.initComponent.call(this);
+          
+          this.wrapper.insertBefore(tb);
             
-						delete this.title;
-						if(this.shadow === true)
-							this.shadow = new CC.ui.Shadow({inpactY:-1,inpactH:5});
-            CC.ui.Resizer.prototype.initComponent.call(this);    	
-            var tb = this.titlebar;
-            this.wrapper.insertBefore(tb);
-            
-            if(this.closeable === true){
-                    this.clsBtn = new CC.ui.Item({
-                        cs:'g-win-clsbtn',
-                        template:'CC.ui.win.TitlebarButton',
-                        onselect:this.onClsBtnClick,
-                        tip:'关闭',
-                        id:'_cls'
-                    });
-                    tb.add(this.clsBtn);
-           }
+          if(this.closeable === true){
+          	this.clsBtn = new CC.ui.Item({
+            	cs:'g-win-clsbtn',
+              template:'CC.ui.win.TitlebarButton',
+              onselect:this.onClsBtnClick,
+              tip:'关闭',
+              id:'_cls'
+            });
+            tb.add(this.clsBtn);
+          }
            
-           if(this.destoryOnClose)
-           	this.on('closed', this.destory);
+          if(this.destoryOnClose)
+          	this.on('closed', this.destory);
            
-           this.domEvent('mousedown', this.trackZIndex)
-               .domEvent('mousedown', this.onTBMousedown, true, null, this.titlebar.view)
-               .domEvent('dblclick',  this.switchState, true, null, this.titlebar.view);
+          this.domEvent('mousedown', this.trackZIndex)
+              //为避免获得焦点,已禁止事件上传,所以还需调用trackZIndex更新窗口zIndex
+              .domEvent('mousedown', this.trackZIndex, true, null, this.titlebar.view)
+              .domEvent('dblclick',  this.switchState, true, null, this.titlebar.view);
+              
+          if(!this.unmoveable)
+          	G.installDrag(this, true, tb.view);
         },
 /**
- * @private
- * titlebar为避免获得焦点,已禁止事件上传,所以还需调用trackZIndex更新窗口zIndex.
+ * 实现窗口的拖放
+ * @override
  */
-        onTBMousedown : function(e){
-        	this.trackZIndex();
+        dragstart : function(){
+		      if(this.unmoveable || this.fire('movestart') === false)
+		      	return false;
+		        
+		      if (this.shadow)
+		      	this.shadow.hide();
+		        
+		      H.applyMasker(true);
+		      this.decorateDrag(true);
+		      IPXY = this.xy();
+        },
+
+		    drag : function() {
+		    	var d = G.getDXY();
+		      SX.call(this, IPXY[0] + d[0], IPXY[1] + d[1]);
+		    },
+		    
+		    dragend : function() {
+		      H.applyMasker(false);
+		      if (this.fire('moveend') === false) {
+		      	this.setXY(IPXY);
+		      	this.decorateDrag(false);
+		        return false;
+		      }
+		      
+		      //update x,y
+		      var d = G.getDXY(), ip = IPXY;
+		      this.left = this.top = false;
+		      this.setXY(ip[0] + d[0], ip[1] + d[1]);
+		      this.decorateDrag(false);
+		      IPXY = null;
+		    },
+/**
+ * 拖动前台修饰或恢复窗口效果,主要是设置透明,隐藏内容
+ * @param {Boolean} decorate 修饰或恢复
+ */
+        decorateDrag : function(b){
+		      if(b){
+		       this.setOpacity(this.dragOpacity)
+		           .wrapper.hide();
+		      }else{
+		       this.setOpacity(1)
+		           .wrapper.show();
+		      }
+		      if (this.shadow)
+		        this.shadow.display(!b);
         },
         
 				/**
@@ -10019,13 +10591,19 @@ CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
 				
 				//override
 		    setZ : function(zIndex) {
-		        this.style("z-index", zIndex);
+		        this.fastStyleSet("zIndex", zIndex);
 		        if(this.shadow)
 		        	this.shadow.setZ(zIndex-1);
 		        this.zIndex = zIndex;
 		        return this;
 		    },
-    
+/**
+ * 改变窗口状态
+ * 可选状态有<br>
+ * <li>max
+ * <li>min
+ * <li>normal
+ */
 				switchState : function(){
 					if(this.win_s != 'max')
 						this.max();
@@ -10043,6 +10621,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
             }
             return this;
         },
+        
         /**
          * 关闭当前窗口,发送close, closed事件.
          * @return this;
@@ -10163,7 +10742,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, (function(){
         	return this;
         }
     };
-})());
+});
 
 //~@ui/dialog.js
 CC.Tpl.def('CC.ui.Dialog.Bottom', '<div class="g-win-bottom"><div class="bottom-wrap"></div></div>');
@@ -10277,7 +10856,7 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
 		trackZIndex : function(){
 			superclass.trackZIndex.call(this);
 			if(this.masker)
-				this.masker.setZ((this.style('z-index')||1002) - 1);
+				this.masker.setZ((this.fastStyleSet('zIndex')||1002) - 1);
 		},
 		
 		display: function(b){
@@ -11738,8 +12317,8 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
       pan.unfly();
       
       CC.fly(txt)
-        .style('width', sel.offsetWidth)
-        .style('height', sel.offsetHeight)
+        .fastStyleSet('width', sel.offsetWidth)
+        .fastStyleSet('height', sel.offsetHeight)
         .unfly();
 
       this.domEvent('change', function() {
@@ -12087,1037 +12666,6 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
   CC.ui.form.def('datepicker', CC.ui.form.DatepickerField);
 })();
 
-//~@ui/grid.js
-(function(){
-var CC = window.CC;
-
-CC.Tpl.def('CC.ui.Grid', '<div class="g-panel g-grid"><table class="g-panel-wrap g-grid-main" id="_wrap"  cellspacing="0" cellpadding="0"><tbody><tr><td style="vertical-align: top;" id="_hdctx"></td></tr><tr><td style="vertical-align: top;"><div id="_grid_ctx" class="g-gridview-ctx"><div class="g-grid-end" id="_g_end"></div></div></td></tr></tbody></table></div>')
-      .def('CC.ui.GridHeader', '<div class="g-grid-header"><table  id="_hdtbl" class="g-grid-header-tbl" cellspacing="0" cellpadding="0"><tbody><tr id="_hdColHolder"></tr></tbody></table></tbody></table></div>')
-      .def('CC.ui.GridView', '<div class="g-gridview"><table class="g-gridview-tbl" id="_gridviewtbl" cellspacing="0" cellpadding="0"><tbody id="_ctx"></tbody></table></div>');
-
-var B = CC.Base;
-var E = CC.Event;
-var C = CC.Cache;
-var G = CC.ui.Ghost.instance;
-
-/**
- * 表格列.
- * @class CC.ui.Column
- * @super B
- * @param {Object} spr
- */
-CC.create('CC.ui.Column', B, function(spr){
-    //
-    // 隐藏插入条,插入条是在列拖放的时候的插入图标提示
-    //
-    function hideDDRBar(){
-        C.put('ItemDDRBarUp', C.get('ItemDDRBarUp').display(false));
-    }
-    
-    /**
-     * 专为datepicker准备的函数,当select事件发送时结束编辑
-     */
-    function onDatepickerSelect(){
-    	this.endEdit.bind(this).timeout(this.editor.applyTimeout + 10);
-    }
-
-    return {
-        inherentCS: 'g-grid-hdcol',
-        editorCS : 'g-col-editor',
-        errorCS : 'g-form-error',
-        modifyCS :'g-form-mdy',
-        sortable: true,
-        draggable: true,
-        ondropable: true,
-        initComponent: function(){
-            this.view = CC.$C({
-                tagName: 'TD'
-            });
-            
-            this.view.appendChild(CC.$C({
-                tagName: 'DIV',
-                className: 'hdrcell',
-                id: '_tle'
-            }));
-            
-            if(this.width)
-            	this.setInnerWidth(this.width);
-            
-            spr.initComponent.call(this);
-            
-            var t = this.editor;
-            if(t) {
-            	if(typeof t == 'string'){
-            		var opts = CC.extendIf(this.editorOptions, {showTo : document.body, hidden : true, minW:80, cs:this.editorCS});
-            		if(opts.shadow === undefined){
-            			opts.shadow = new CC.ui.Shadow({inpactH:6,inpactY:-2, inpactX : -5, inpactW:9});
-            		}
-            		
-            		this.editor = new CC.ui.form[this.editor](opts);
-            		
-            		if(this.editorOptions)
-            			delete this.editorOptions;
-            	}
-            	
-            	this.follow(this.editor);
-            	this.decorateEditor(this.editor, t);
-            }
-        },
-        
-        decorateEditor : function(editor, type){
-        	editor.on('blur', this.onEditorBlur);
-        	if(type == 'datepicker'){
-        		editor.getDatepicker().on('select', onDatepickerSelect, this);
-        	}
-        	editor.on('keydown', this.onEditorKeydown, this);
-        },
-/**
- * 往Grid发送keydown事件
- */
-        onEditorKeydown : function(e){
-        	//key navigation
-        	this.pCt.pCt._onKeyPress(e);
-        },
-        
-        startEdit : function(cell){
-        	var g = this.pCt.pCt;
-        	g.editingCell = cell;
-/**
- * @name CC.ui.Grid#editingCell
- * @property {CC.ui.GridCell} editingCell 当前正在编辑的单元格
- */
-        	var et = this.editor;
-        	this.setBoundsForEditor(cell);
-        	et.setValue(cell.value||cell.title, cell.title)
-        	  .setTitle(cell.title)
-        	  .display(true)
-        	  .focus();
-        	g.fire('editstart', cell, et, this);
-        },
-        
-        decorateModified : function(cell, b) {
-        	if(b || b === undefined){
-        		cell.addClass(this.modifyCS);
-        		cell.modified = true;
-        	}
-        	else {
-        		cell.delClass(this.modifyCS);
-        		delete cell.modified;
-        	}
-        },
-        
-        endEdit : function(){
-          var g = this.pCt.pCt;
-        	var cell = g.editingCell;
-        	if(!cell)
-        		return;
-        	var et = this.editor, v;
-       		if(et.focused){
-       			et.onBlurTrigger();
-       			return;
-       		}
-       		
-       		if(this.pCt.pCt.fire('edit', cell, et, this) === false)
-       			return false;
-       		
-       	  et.hide();
-       	  
-       	  v = et.getValue();
-       	  
-       	  //添加已修改标记
-       	  //当cell.modified = false时清除
-       		if(cell.title != v){
-       			cell.setTitle(v);
-       			if(cell.modified === undefined){
-       				this.decorateModified(cell);
-       			}
-       		}
-       		
-       		this.pCt.pCt.fire('editend', cell, et, this);
-       		//如果本身列存在验证器,则自身代替编辑器的
-       		if(this.validator)
-       			this.validateCell(cell);
-       		else {
-       			this.decorateValidation(cell, et.isValid, et.errorMsg);
-       		}
-       		g.editingCell = null;
-        },
-        
-        validateCell : function(cell){
-        	var b = true;
-        	var vd = this.validator, msg='';
-        	if(!vd){
-        		var ed = this.editor;
-        		if(ed){
-        			vd = ed.validator;
-        			msg = ed.errorMsg;
-        		}
-        	}
-        	if(vd)
-        		b = vd(cell.value === undefined ? cell.title:cell.value);
-        	
-        	cell.isInvalid = !b;
-        	this.decorateValidation(cell, b, msg);
-        	return b;
-        },
-        
-        decorateValidation : function(cell, b, msg) {
-       		//验证输入,并给出提示
-       			if(!b){
-       				cell.addClass(this.errorCS);
-       				if(msg)
-       					cell.setTip(msg);
-       			}else if(cell.hasClass(this.errorCS)){
-       				cell.delClass(this.errorCS);
-       				cell.setTip(cell.title);
-       			}
-        },
-        
-        onEditorBlur : function(){
-        	return this.pCt.endEdit();
-        },
-        
-        setBoundsForEditor : function(cell){
-        	var ed = this.editor, cz = cell.getSize(), xy = cell.absoluteXY();
-        	ed.setSize(cz);
-        	
-        	if(ed.height < cz.height){
-        		xy[1] = xy[1] + Math.floor((cz.height - ed.height)/2);
-        	}
-        	
-        	this.editor.setXY(xy);
-        },
-/**
- * 遍历表格中该列对应的所有单元列.
- */
-        eachCell : function(callback){
-					var hd = this.pCt, g = hd.pCt, idx = hd.indexOf(this);
-					g.each(function(){
-						this.each(function(){
-							callback(this.indexOf(idx));
-						});
-					});
-        },
-        //
-        // 如果正在列缩放范围,取消拖放.
-        //
-        beforeDragStart: function(){
-            if (this.view.style.cursor == 'col-resize') 
-                return false;
-        },
-        
-        //
-        // 拖放开始,设置提示
-        //
-        dragStart: function(){
-            G.enableTip = true;
-            G.setTitle(this.title);
-        },
-        //
-        // 拖放列位于当前列上空时,测试是否允许放下
-        //
-        dragSBOver: function(col){
-            //是否允许放下
-            var b = (col.pCt && col.pCt == this.pCt);
-            if (b) {
-                //显示插入条
-                var pxy = this.absoluteXY(), bar = C.get('ItemDDRBarUp');
-                pxy[0] -= 9;
-                pxy[1] -= bar.getHeight(true);
-                bar.setXY(pxy).display(true);
-                C.put('ItemDDRBarUp', bar);
-            }
-            return b;
-        },
-        
-        dragSBOut: hideDDRBar,
-        //
-        // 拖放列放下时
-        //
-        SBDrop: function(col){
-            var ct = this.pCt;
-            ct.fire('colswap', this, col, ct.indexOf(this), ct.indexOf(col));
-            hideDDRBar();
-        },
-        
-        afterDrop: hideDDRBar,
-        
-        /**
-         * 设置列宽时,表头会发送colresize事件以通过表格的其它列更新宽度.
-         * 当该列的disabledResize属性为false,设置宽无效.
-         *@override
-         */
-        setWidth: function(a){
-            if (this.disabledResize) 
-                return this;
-            var delta = a - this.width;
-            spr.setWidth.call(this, a);
-            var ct = this.pCt;
-            if (ct) 
-                ct.fire('colresize', this, ct.indexOf(this), delta);
-            return this;
-        },
-/**
- * 忽略disabledResize属性直接设置宽度.
- */
-        setInnerWidth: function(a){
-            spr.setWidth.call(this, a);
-        },
-        
-        /**
-         * 创建该列的比较器,比较器创建后存在属性comparator中,用于两列值比较.
-         */
-        createComparator: function(){
-            var converter = this.converter, self = this;
-            if (!converter) 
-                converter = this.createConverter();
-            this.comparator = (function(a1, a2){
-                //mark
-                var idx = self.columnIdx;
-                var v1 = converter(a1.children[idx]), v2 = converter(a2.children[idx]);
-                if (v1 > v2) 
-                    return 1;
-                
-                if (v1 < v2) 
-                    return -1;
-                
-                return 0;
-            });
-        },
-        /**
-         * 数据类型转换器,创建后存在属性converter中,用于比较器比较两列值.
-         *@return {Object} 该列的数据类型转换器
-         */
-        createConverter: function(){
-            var numReg = /[\$,%]/g;
-            var datmat = this.dateFormat, cv;
-            switch (this.dataType) {
-                case "":
-                case undefined:
-                    cv = function(v){
-                        if (v === null || v === undefined) 
-                            return v;
-                        // for item value
-                        return v.toString();
-                    };
-                    break;
-                    
-                case "string":
-                    cv = function(v){
-                        return (v === undefined || v === null) ? '' : v.toString();
-                    };
-                    break;
-                case "int":
-                    cv = function(v){
-                        return v !== undefined && v !== null && v !== '' ? parseInt(v.toString().replace(numReg, ""), 10) : '';
-                    };
-                    break;
-                case "float":
-                    cv = function(v){
-                        return v !== undefined && v !== null && v !== '' ? parseFloat(v.toString().replace(numReg, ""), 10) : '';
-                    };
-                    break;
-                    
-                case "bool":
-                    cv = function(v){
-                        return v === true || v === "true" || v == 1;
-                    };
-                    break;
-                case "date":
-                    cv = function(v){
-                        if (!v) {
-                            return '';
-                        }
-                        if (CC.isDate(v)) {
-                            return v;
-                        }
-                        if (datmat) {
-                            if (datmat == "timestamp") {
-                                return new Date(v * 1000);
-                            }
-                            if (datmat == "time") {
-                                return new Date(parseInt(v, 10));
-                            }
-                            return Date.parseDate(v, datmat);
-                        }
-                        var parsed = Date.parse(v);
-                        return parsed ? new Date(parsed) : null;
-                    };
-                    break;
-            }
-            this.converter = cv;
-            return cv;
-        },
-        /**
-         * 排序该列,表头只是发送一个colsort事件表明要对该行进行排序,自己并没什么实际行动,并在排序后发送colsorted事件.
-         * 当列排序后,当前排序方式desc或asc保存在属性sortType中,当前排序列保存在父容器的sortedColumn属性中.
-         *@param {string} sortType=desc|asc
-         */
-        sortColumn: function(sortType){
-            if (!this.sortable) 
-                return this;
-            var ct = this.pCt, idx = ct.indexOf(this);
-            //内部使用,作标记,该标记只在排序期间有效,使得比较器不必每次询问当前列下标值.
-            this.columnIdx = idx;
-            
-            if (ct.fire('colsort', this, idx, sortType) === false) 
-                return this;
-            this.sortType = sortType;
-            ct.sortedColumn = this;
-            
-            ct.fire('colsorted', this, idx, sortType);
-            return this;
-        }
-    };
-});
-
-
-/**
- * 表格表头
- * @class CC.ui.GridHeader
- * @super CC.ui.Panel
- * @event colswap 表格列置换时发送.
- * @event colresize 表格列缩放时发送. 
- * @property {Boolean} resizing 指示列是否在缩放状态
- * @param {Object} spr
- */
-CC.create('CC.ui.GridHeader', CC.ui.Panel, function(spr){
-    //类静态成员
-    var hdRzA, hdRzB, maxRz, minRz, initMx, initLeft;
-    
-    //
-    // 如果父容器为自动调整
-    //
-    
-    function onLayout(){
-     var ct = this.ct;
-     var grid = ct.pCt;
-     if (grid.autoFit) {
-			ct.hdWidthAnchor.setWidth(ct.getWidth(true));
-			var rsl = 0, k = 0, hdcs = grid.header.children, i, ch;
-			//不能变动的
-			for (i = 0; i < hdcs.length; i++) {
-				ch = hdcs[i];
-				
-				if(ch.hidden)
-					continue;
-				
-				//正在编辑中,结束编辑.
-				if(ch.editor && ch.editor.focused)
-					ch.endEdit();
-					
-				if (ch.disabledResize || ch.disabled) {
-					rsl += ch.getWidth(true);
-					continue;
-				}
-				k++;
-			}
-			
-			var off = parseInt((grid.header.getWidth(true) - rsl) / k);
-			
-			for (i = 0; i < hdcs.length; i++) {
-				ch = hdcs[i];
-				if (ch.hidden || ch.disabledResize || ch.disabled)
-					continue;
-				ch.setInnerWidth(off);
-			}
-		 }
-		//初始时列自动宽度
-		else {
-			if (ct.hdWidthAnchor.width === false) {
-				var f = ct.hdWidthAnchor;
-				ct.addClass(ct.autoWidthCS);
-				//hack ff
-				grid.delClass(grid.noAutoFitCS);
-				f.setWidth(ct.getWidth(true));
-				var chs = ct.children, c;
-				ct._stopSyncHd = true;
-				
-				for (var i = 0; i < chs.length; i++) {
-					c = chs[i];
-					
-					if(c.hidden)
-						continue;
-					
-					if (c.width === false)
-						c.setWidth(c.getWidth());
-				}
-				delete ct._stopSyncHd;
-				
-				ct.delClass(ct.autoWidthCS);
-				grid.addClass(grid.noAutoFitCS);
-			}
-		}
-    };
-    
-    
-    return {
-    	  deffer : false,
-        ct: '_hdColHolder',
-        ItemClass: CC.ui.Column,
-        unselectable: true,
-        height: 21,
-        sortable: true,
-		    colHoverCS:'g-grid-hd-on',
-        resizeSpliterCS: 'g-grid-hd-spliter',
-        autoWidthCS: 'g-grid-header-autowidth',
-        initComponent: function(){
-            this.layout = new CC.layout.Layout({
-                onLayout: onLayout
-            });
-            spr.initComponent.call(this);
-            var hdtbl = this.hdWidthAnchor = this.$$('_hdtbl');
-            hdtbl.view.onmousemove = this.onHDMouseMove.bindAsListener(this);
-            hdtbl.view.onmousedown = this.onHDMouseDown.bindAsListener(this);
-            if (this.sortable) 
-                this.itemAction('click', this.colSortTrigger, false, null, null, 'DIV');
-            this.itemAction('mouseover', this.onMouseOver, false, null, null, 'DIV');
-            this.itemAction('mouseout', this.onMouseOut, false, null, null, 'DIV');
-            
-            this.on('colresize', this.onColResized);
-        },
-		
-        /**
-         * 处理列宽调整
-         * @param {Column} col Resized的列
-         * @param {Number} idx  列下标
-         * @param {Number} dt   Resized的增量
-         */
-        onColResized: function(col, idx, dt){
-            if (dt != 0 && !this._stopSyncHd && this.pCt && !this.pCt.autoFit) {
-                this.hdWidthAnchor.setWidth(this.hdWidthAnchor.getWidth(true) + dt);
-            }
-        },
-        
-        onMouseOver: function(item){
-            item.addClass(this.colHoverCS);
-        },
-        
-        onMouseOut: function(item){
-            item.delClass(this.colHoverCS);
-        },
-        
-        startResizeSpliter: function(col, ev){
-            var l = hdRzA, r = hdRzB;
-            if (!r) {
-                l = hdRzA = B.create({
-                    view: C.get('div'),
-                    hidden: true,
-                    inherentCS: this.resizeSpliterCS,
-                    showTo: document.body,
-                    autoRender: true
-                });
-                r = hdRzB = B.create({
-                    view: C.get('div'),
-                    hidden: true,
-                    inherentCS: this.resizeSpliterCS,
-                    showTo: document.body,
-                    autoRender: true
-                });
-            }
-            var g = col.pCt.pCt, 
-			    xy = col.absoluteXY(), 
-				colw = col.getWidth(true), 
-				startH = CC.borderBox ? col.pCt.getHeight(true) : col.pCt.getHeight(true) + 1, 
-				ctxh = g.wrapper.view.clientHeight;
-            
-            r.setXY(xy[0] + colw - 1, xy[1]).setHeight(g.wrapper.view.clientHeight + startH - 20).display(true);
-            l.setXY(xy[0] - 1, xy[1]).setHeight(r.height).display(true);
-            minRz = l.left - r.left + (this.resizerBarLen || 4);
-            maxRz = g.autoFit ? this.getMaxResizableAutoFitWidth(col) : Math.MAX_VALUE;
-            //初始x坐标
-            initMx = E.pageX(ev);
-            //初始长度
-            initLeft = r.left;
-        },
-        /**
-         * 在autoFit情况下返回col列最大可扩宽度
-         */
-        getMaxResizableAutoFitWidth: function(col, idx){
-            if (col.disabledResize) 
-                return 0;
-			if(idx === undefined)
-				idx = this.indexOf(col);
-            var len = 0;
-			var its = this.children;
-			var sz = its.length;
-			//计算接下来列宽和
-			for(++idx;idx<sz;idx++){
-				col = its[idx];
-				if (col.disabledResize || col.disabled)
-					continue;
-				len += col.getWidth(true) - col.minW; 
-			}
-            return len;
-        },
-        
-        endResizeSpliter: function(col){
-            hdRzA.display(0);
-            hdRzB.display(0);
-        },
-        
-        onHDMouseMove: function(ev){
-            var el = CC.tagUp(ev.target || ev.srcElement, 'TD');
-            var st = el.style;
-            if (this.disabledResize || this.resizing || G.draging) {
-                if (st.cursor != '') 
-                    st.cursor = "";
-                return;
-            }
-            var col = this.$(el);
-            if (!col || col.disabledResize || col.disabled) {
-                if (st.cursor != '') 
-                    st.cursor = "";
-                return;
-            }
-            
-            var px = el.offsetWidth - E.pageX(ev) + col.absoluteXY()[0];
-            if (px < (this.resizerBarLen || 10)) {
-                st.cursor = "col-resize";
-            }
-            
-            else 
-                if (st.cursor != '') 
-                    st.cursor = "";
-        },
-        
-        onHDMouseDown: function(ev){
-            var el = CC.tagUp(ev.target || ev.srcElement, 'TD');
-            var col = this.$(el);
-            if (!col) 
-                return;
-            if (el.style.cursor != 'col-resize' || col.disabledResize) 
-                return;
-            this.resizing = true;
-            var self = this;
-            this.startResizeSpliter(col, ev);
-            CC.$body.domEvent('mouseup', this.onHDMouseUp, true, col);
-            CC.$body.domEvent('mousemove', this.onHDResize, true, this);
-            this.fire('colresizestart', col, this.indexOf(col));
-        },
-        
-        //col === this
-		/**
-		 * 列宽变动时.
-		 * @param {Object} event
-		 */
-        onHDResize: function(event){
-            //this为header
-            var pace = E.pageX(event) - initMx;
-            if (pace < 0 && pace < minRz) {
-                pace = minRz
-            }
-            else 
-                if (pace > maxRz) {
-                    pace = maxRz;
-                }
-            hdRzB.setLeft(initLeft + pace);
-        },
-        
-        onHDMouseUp: function(event){
-            //当前this为resize列
-            var ct = this.pCt;
-            ct.endResizeSpliter();
-            CC.$body.unEvent('mouseup', ct.onHDMouseUp);
-            CC.$body.unEvent('mousemove', ct.onHDResize);
-			var dx = hdRzB.left - initLeft;
-            if (dx != 0) {
-				this.setWidth(this.width + dx);
-			}
-            ct.fire('colresizeend', this, ct.indexOf(this));
-            ct.resizing = false;
-        },
-        
-        destory: function(){
-            //fix when resizing but in destorying.
-            if (this.resizing) {
-                CC.$body.unEvent('mouseup', this.onHDMouseUp);
-                CC.$body.unEvent('mousemove', this.onHDResize);
-            }
-            spr.destory.call(this);
-        },
-        
-        colSortTrigger: function(item, evt){
-            if (item.style('cursor') != 'col-resize') {
-                var t = (item.sortType == 'desc') ? 'asc' : 'desc';
-                item.sortColumn(t);
-            }
-        }
-    };
-});
-
-
-CC.create('CC.ui.GridCell', B, function(spr){
-    C.register('GridCell', function(){
-        var td = CC.$C({
-            tagName: 'TD'
-        });
-        td.appendChild(CC.$C({
-            tagName: 'DIV',
-            className: 'rowcell',
-            id: '_tle'
-        }));
-        return td;
-    }, 100);
-
-    return {
-    	  
-        initComponent: function(){
-            this.view = C.get('GridCell');
-            this.view.className = 'rowcell';
-            spr.initComponent.call(this);
-        },
-
-        destory: function(){
-            var c = this.view.firstChild;
-            spr.destory.call(this);
-            c.innerHTML = '';
-            c.className = '';
-            C.put('GridCell', this.view);
-        }
-    };
-});
-
-
-CC.create('CC.ui.GridRow', CC.ui.ContainerBase, function(spr){
-    C.register('GridRow', function(){
-        return CC.$C({
-            tagName: 'TR',
-            className: 'g-grid-row'
-        });
-    });
-	
-    var rowLayout = {
-		doLayout : function(){
-		   var i = 0, ch, chs = this.ct.children, len = chs.length;
-		   for (; i < len; i++) {
-		       ch = chs[i];
-		       if (!ch.rendered) {
-				ch.render();
-			   }
-		   }
-	  },
-	  
-		//因为没必要，所以置为空调用
-		add : fGo,
-		remove : fGo,
-		insertComponent:fGo
-	};
-		
-    return {
-        eventable: false,
-        
-        autoRender : true,
-        
-        ItemClass: CC.ui.GridCell,
-        
-        hoverCS: 'g-row-over',
-        
-        initComponent: function(){
-            if(!this.layout)
-				      this.layout = new CC.layout['default'](rowLayout);
-            this.view = C.get('GridRow');
-            spr.initComponent.call(this);
-        },
-        
-        onMouseOver: function(ev){
-            this.pCt.onRowOver(this, ev);
-        },
-        
-        onMouseOut: function(item, ev){
-            this.pCt.onRowOut(this, ev);
-        }
-    };
-});
-
-/**
- * GridView不具备管理自身布局能力,让唯一能做的事就是提供方法让别人管理
- */
-CC.create('CC.ui.GridView', CC.ui.ContainerBase, function(spr){
-
-    //布局使得表格每行列与表头列对齐
-    function layoutRow(row){
-        var hd = this.ct.pCt.header, i = 0, chs = hd.children, len = chs.length;
-        for (; i < len; i++) {
-            row.children[i].setWidth(chs[i].getWidth(true));
-        }
-    }
-    
-    function onLayout(){
-    	CC.layout.Layout.prototype.onLayout.call(this);
-    	//恢复由Grid布局时设置的display属性
-    	this.ct.view.style.display = this.initDispAttr||'';
-    	this.initDispAttr = null;
-    }
-    
-    return {
-    
-        ItemClass: CC.ui.GridRow,
-        
-        ct: '_ctx',
-        
-        useContainerMonitor: true,
-        
-        initComponent: function(){
-            this.layout = new CC.layout.Layout({
-                layoutChild: layoutRow,
-                onLayout : onLayout
-            });
-            
-            spr.initComponent.call(this);
-            
-            if(this.clickEventE !== false)
-            	this.itemAction(this.clickEventE || 'mousedown', this._ctSelectTrigger, false, null, '_gridviewtbl');
-            if(this.itemDblclickE !== false)
-            	this.itemAction('dblclick', this.onRowDBClick, false, null, '_gridviewtbl');
-            this.tableNode = this.dom('_gridviewtbl');
-        },
-        
-        onRowOver: fGo,
-        
-        onRowOut: fGo,
-        
-        onRowDBClick: function(item, event){
-            var cell = item.$(event.target || event.srcElement);
-            if (cell) {
-                this.pCt.fire('celldbclick', cell);
-            }
-            this.pCt.fire('rowdbclick', item);
-        },
-
-        _ctSelectTrigger: function(item, event){
-            if(item.disabled || item.clickDisabled)
-            	return;
-            if (this.selectedCS) 
-                item.hasClass(this.selectedCS) ? item.delClass(this.selectedCS) : item.addClass(this.selectedCS);
-            var cell = item.$(event.target || event.srcElement);
-            if (cell && !cell.disabled && !cell.clickDisabled) {
-                this.pCt.fire('cellclick', cell);
-            }
-            this.pCt.fire('rowclick', item);
-            item.scrollIntoView(this.pCt.wrapper);
-        },
-        
-        swapColumn: function(idx1, idx2){
-            var cells = this.children;
-            for (var i = 0, len = cells.length; i < len; i++) {
-                cells[i].swap(idx1, idx2);
-            }
-        },
-        
-        
-        setCellWidth: function(idx, w){
-            var chs = this.children, len = chs.length, i = 0;
-            for (; i < len; i++) {
-                chs[i].children[idx].setWidth(w);
-            }
-        },
-/**
- * 遍历指定列所有单元格.
- * @param {Number} idx 指定列
- * @param {Function} callback 回调,回调调用形式: this.callback(cell, offset),  当callback返回false时终止遍历
- * @return this
- */
-        eachH : function(idx, callback){
-        	var i=0, chs=this.children, len=chs.length, it;
-        	for(;i<len;i++) {
-        		it = chs[i];
-        		if(callback.call(this, it.children[idx], i) === false)
-        			return;
-        	}
-        }
-    };
-});
-
-CC.create('CC.ui.Grid', CC.ui.Panel, function(spr) {
-  //
-  function layoutView(v) {
-    var ct = this.ct,
-    w = ct.header.hdWidthAnchor.width;
-    //表头锚宽对齐
-    v.setWidth(w);
-    CC.fly(v.tableNode).setWidth(w).unfly();
-    v.doLayout();
-  }
-
-  function onLayout() {
-    var ct = this.ct,
-    vs, its = ct.children;
-    if (ct.height !== false) ct.wrapper.setHeight(ct.getHeight(true) - ct.header.getHeight(true));
-    ct.header.setWidth(ct.getWidth(true));
-    //设置所有的view为不可见,与view的onLayout配合
-    for (var i = 0, len = its.length; i < len; i++) {
-      vs = its[i];
-      vs.layout.initDispAttr = vs.view.style.display || '';
-      vs.view.style.display = 'none';
-    }
-
-    CC.layout.Layout.prototype.onLayout.call(this);
-  }
-
-  return {
-    ct: '_grid_ctx',
-
-    ascCS: 'g-col-asc',
-
-    descCS: 'g-col-desc',
-
-    noAutoFitCS: 'g-grid-noautofit',
-
-    keyEvent: true,
-
-    autoFit: true,
-
-    cancelScrollIntoView: true,
-
-    initComponent: function() {
-      if (!this.layout) this.layout = new CC.layout.Layout({
-        layoutChild: layoutView,
-        onLayout: onLayout
-      });
-
-      spr.initComponent.call(this);
-      if (CC.isArray(this.header)) {
-        this.header = new CC.ui.GridHeader({
-          showTo: this.dom('_hdctx'),
-          array: this.header
-        });
-      }
-
-      this.header.on('colresize', this.onColumnResize, this);
-      this.header.on('colsort', this.onColumnSort, this);
-      this.header.on('colswap', this.onColumnSwap, this);
-      this.domEvent('scroll', this.onContainerScroll, false, null, this.ct);
-      this.follow(this.header);
-      this.setAutoFit(this.autoFit);
-
-      this.endNode = this.dom('_g_end');
-      
-      if(this.editable){
-			  this.editable = false;
-			  this.setEditable(true);
-			}
-			
-    },
-    
-    editTrigger : function(cell){
-			if(!this.editable || cell.uneditable || cell.pCt.uneditable)
-				return;
-			var idx = cell.pCt.indexOf(cell);
-			var col = this.header.$(idx);
-			if(col.editor){
-				(function(){col.startEdit(cell);}).timeout(20);
-			}
-    },
-
-/**
- *
- */
-    setEditable : function(b){
-      if(this.editable !== b){
-	      if(b)  //触发编辑功能
-				  this.on('cellclick', this.editTrigger);
-				else this.un('cellclick', this.editTrigger);
-				this.editable = b;
-		  }
-		  return this;
-    },
-    
-    _addNode: function(viewNode) {
-      if (this.endNode) this.ct.insertBefore(viewNode, this.endNode);
-      else spr._addNode.call(this, viewNode);
-    },
-
-    setAutoFit: function(b) {
-      this.autoFit = b; ! b ? this.addClass(this.noAutoFitCS) : this.delClass(this.noAutoFitCS);
-      if (this.rendered) this.doLayout();
-    },
-
-    onContainerScroll: function(evt) {
-      this.header.view.scrollLeft = this.ct.scrollLeft;
-    },
-
-    onColumnSwap: function(colA, colB, idxA, idxB) {
-      //swap header
-      this.header.swap(idxA, idxB);
-      //swap grid views
-      this.each(function() {
-        this.swapColumn(idxA, idxB);
-      });
-    },
-
-    /**
-         * 实际对列排序的方法.
-         */
-    onColumnSort: function(col, idx, sortType) {
-      //
-      if (!col.comparator) col.createComparator();
-      //切换排序样式
-      if (sortType == 'desc') col.switchClass(this.ascCS, this.descCS);
-      else col.switchClass(this.descCS, this.ascCS);
-      var ct = col.pCt;
-      if (ct.sortedColumn && ct.sortedColumn != col) ct.sortedColumn.delClass(this.ascCS).delClass(this.descCS);
-
-      //第一次排序?
-      var bs = idx === this.currSortedIdx;
-      //排序数据视图
-      this.each(function() {
-        if (this.sortable !== false) {
-          if (!bs) this.sort(col.comparator);
-          else this.reverse();
-        }
-      });
-      this.currSortedIdx = idx;
-    },
-
-    onColumnResize: function(col, idx) {
-      if (this.autoFit) {
-        //避免再次被布局
-        col.disabledResize = true;
-        this.header.doLayout();
-        this.doLayout();
-        col.disabledResize = false;
-      }
-      else {
-        var w = col.getWidth(true);
-        var ly = this.layout;
-        this.each(function() {
-          this.setCellWidth(idx, w);
-          ly.layoutChild(this);
-        });
-      }
-    }
-  };
-});
-})();
-
-//~@ui/gridgroupview.js
-CC.create('CC.ui.GridGroupView', CC.ui.GridView, function(father) {
-  return {
-    
-    initComponent: function() {
-      this.createView();
-      this.foldbar = new CC.ui.Foldable({target:this, foldNode:this.ct.parentNode, nodeBlockMode:''});
-      this.view.insertBefore(this.foldbar.view, this.view.firstChild);
-      father.initComponent.call(this);
-    },
-    
-    render: function() {
-      father.render.call(this);
-      this.foldbar.setTitle(this.title);
-    },
-    
-    fromArray : function(){
-    	father.fromArray.apply(this, arguments);
-    	this.foldbar.setTitle(this.title);
-    },
-    
-    destory:function(){
-    	this.foldbar.destory();
-    	father.destory.call(this);
-    }
-  };
-});
 
 //~@ui/msgbox.js
 /**
@@ -13213,11 +12761,11 @@ return {
     
     if(defButton)
     	s.defaultButton = defButton;
-    s.style('visibility', 'hidden');
+    s.fastStyleSet('visibility', 'hidden');
     s.show(modalParent||document.body, true, callback);
     (function(){
     	s.autoHeight().center(modalParent);
-    	s.style('visibility', '');
+    	s.fastStyleSet('visibility', '');
     }).timeout(0);
   },
 
@@ -13270,7 +12818,7 @@ return {
 
   var C = CC.Cache;
 
-  var G = CC.ui.Ghost.instance;
+  var G = CC.util.dd.Mgr;
 
   function hideDDRBar() {
     C.put('ItemDDRBarUp', C.get('ItemDDRBarUp').display(false));
@@ -14017,256 +13565,256 @@ else
 	CC.Tpl.def('CC.ui.FloatTip', '<table class="g-float-tip g-clear"><tr><td><table class="tipbdy"><tr><td id="_tle" class="important_txt"></td></tr><tr><td id="_msg" class="important_subtxt"></td></tr></table></td></tr><tr><td class="btm_cap" id="_cap"></td></tr></table>');
 
 CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
-var CC = window.CC;
-
-//一个全局FloatTip对象
-var instance;
-
-var Event = CC.Event;
-//
-// 记录鼠标移动时坐标
-//
-var globalPos = [-10000,-10000];
-
-//当前document是否已绑定鼠标移动监听回调
-var docEvtBinded = false;
-
-function onDocMousemove(event){
-	globalPos = Event.pageXY(event || window.event);
-}
-/**
- * @function
- * @param {String} msg 提示消息
- * @param {String} [title] 消息提示标题
- * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
- * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
- * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
- * @example
-   CC.Util.ftip('密码不能为空.', '提示', 'input_el', true, 3000);
- */
-CC.Util.ftip = function(msg, title, proxy, getFocus, timeout){
-	if(!instance)
-		instance = new CC.ui.FloatTip({showTo:document.body, autoRender:true});
-	CC.fly(instance.tail).show().unfly();
-	instance.show(msg, title, proxy, getFocus, timeout);
+	var CC = window.CC;
 	
-	return instance;
-};
-/**
- * 给目标对象绑定悬浮消息
- * @param {CC.ui.Base} target
- * @param {String} msg
- @example
-   CC.Util.qtip(input, '在这里输入您的大名');
- */
-CC.Util.qtip = function(proxy, msg){
-	if(!instance)
-		instance = new CC.ui.FloatTip({showTo:document.body, autoRender:true});
-	instance.tipFor(proxy, msg);
-};
-
-return /**@lends CC.ui.FloatTip.prototype*/{
-  /**
-   * @property {Number} timeout = 2500 设置消失超时ms, 如果为0 或 false 不自动关闭.
-   */
-  timeout: 2500,
-/**
- * 显示提示消息的延迟,消息将鼠标位于目标延迟daly毫秒后出现
- * @type Number
- */
-	delay : 500,
+	//一个全局FloatTip对象
+	var instance;
+	
+	var Event = CC.Event;
+	//
+	// 记录鼠标移动时坐标
+	//
+	var globalPos = [-10000,-10000];
+	
+	//当前document是否已绑定鼠标移动监听回调
+	var docEvtBinded = false;
+	
+	function onDocMousemove(event){
+		globalPos = Event.pageXY(event || window.event);
+	}
+	/**
+	 * @function
+	 * @param {String} msg 提示消息
+	 * @param {String} [title] 消息提示标题
+	 * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
+	 * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
+	 * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
+	 * @example
+	   CC.Util.ftip('密码不能为空.', '提示', 'input_el', true, 3000);
+	 */
+	CC.Util.ftip = function(msg, title, proxy, getFocus, timeout){
+		if(!instance)
+			instance = new CC.ui.FloatTip({showTo:document.body, autoRender:true});
+		CC.fly(instance.tail).show().unfly();
+		instance.show(msg, title, proxy, getFocus, timeout);
+		
+		return instance;
+	};
+	/**
+	 * 给目标对象绑定悬浮消息
+	 * @param {CC.ui.Base} target
+	 * @param {String} msg
+	 @example
+	   CC.Util.qtip(input, '在这里输入您的大名');
+	 */
+	CC.Util.qtip = function(proxy, msg){
+		if(!instance)
+			instance = new CC.ui.FloatTip({showTo:document.body, autoRender:true});
+		instance.tipFor(proxy, msg);
+	};
+	
+	return /**@lends CC.ui.FloatTip.prototype*/{
+	  /**
+	   * @property {Number} timeout = 2500 设置消失超时ms, 如果为0 或 false 不自动关闭.
+	   */
+	  timeout: 2500,
+	/**
+	 * 显示提示消息的延迟,消息将鼠标位于目标延迟daly毫秒后出现
+	 * @type Number
+	 */
+		delay : 500,
+		
+		/**
+		 * @property {Boolean} [reuseable = true] 消息提示是否可复用,如果否,在消息隐藏后自动销毁
+		 */
+		reuseable : true,
+	/**
+	 * @override
+	 */
+		shadow:true,
 	
 	/**
-	 * @property {Boolean} [reuseable = true] 消息提示是否可复用,如果否,在消息隐藏后自动销毁
+	 * 指定是哪种显示风格,一种为mouseover式提示,另一种为弹出提示
 	 */
-	reuseable : true,
-/**
- * @override
- */
-	shadow:true,
-
-/**
- * 指定是哪种显示风格,一种为mouseover式提示,另一种为弹出提示
- */
-  qmode : false,
-  
-  zIndex : 10002,
-/**
- * mouseover式提示时样式
- */
-  hoverTipCS : 'g-small-tip',
-  
-  /**
-   * @private
-   * @override
-   */
-  initComponent: function() {
-    superclass.initComponent.call(this);
-    if(this.msg)
-    	this.setMsg(this.msg);
-    this.tail = this.dom('_cap');
-    this.setXY(-10000,-10000).setZ(this.zIndex);
-    if(this.qmode)
-    	this.createQtip();
-    else this.createFtip();
-  }
-  ,	
-  
-  //@override
-  display : function(b) {
-    if(arguments.length === 0){
-    	return superclass.display.call(this);
-    }
-
-    //无论怎样,先清除前面一个timout
-    this.killTimer();
-
-    superclass.display.call(this, b);
-    
-    if(!b)
-    	return this;
-    
-    if(this.timeout)
-    	this.timerId = this._timeoutCall.bind(this).timeout(this.timeout);
-    return this;
-  }
-  ,
-
-/**@private*/
-  setRightPosForTarget : function(target){
-  	var f = CC.fly(target), xy = f.absoluteXY();
-  	this.anchorPos([xy[0],xy[1],0,0], 'lt', 'hr', false, true, true);
-	  f.unfly();
-  },
-  
-/**@private*/
-  setRightPosForHover : function(xy){
-  	//box, dir, rdir, off, rean, move
-  	this.anchorPos([xy[0],xy[1],0,0], 'lb', 'hr', [5,24], true, true);
-  },
-  
-/**@private*/
-  _timeoutCall : function(){
-  	superclass.display.call(this, false);
-  	this.killTimer(true);
-  	if(this.ontimeout)
-  		this.ontimeout();
-  },
-  
-/**
- * 清除当前超时显示
- * @param {boolean} check 是否作回收(reuseable)检查
- */
-  killTimer : function(check){
-    if(this.timerId){
-    		clearTimeout(this.timerId);
-    		this.timerId = false;
-    }
-    
-    if(!this.reuseable && check)
-  		this.destory();
-  },
-/**
- * 设置提示标题与消息
- * @param {String} msg
- * @param {String} title
- */
-  setMsg: function(msg, title) {
-  	this.fly('_msg').html(msg).unfly();
-    if(title)
-    	this.setTitle(title);
-    return this;
-  },
-  
-/**
- * @param {String} msg 提示消息
- * @param {String} [title] 消息提示标题
- * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
- * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
- * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
- */
-  show : function(msg, title, target, getFocus, timeout){
-  	if(arguments.length == 0)
-  		return superclass.show.call(this);
-  		
-  	this.setMsg(msg, title);
-  	
-  	if(timeout !== undefined)
-  		this.timeout = timeout;
-  	
-  	if(this.qmode)
-  		this.createFtip();
-  	
-  	this.display(true);
-  	if(target){
-    	this.setRightPosForTarget(target);
-    	if(getFocus)
-  			CC.fly(target).focus(true).unfly();
-    }
-  	return this;
-  },
-  /**@private*/
-  createFtip : function(){
-  	this.qmode = false;
-    this.delClass(this.hoverTipCS);
-  	if(this.shadow){
-  		this.shadow.inpactY = -1;
-  		this.shadow.inpactH = -12;
-  	}
-  },
-  /**@private*/
-  createQtip : function(){
-  	this.qmode = true;
-    this.addClassIf(this.hoverTipCS);
-  	if(this.shadow){
-  		this.shadow.inpactY = CC.ui.Shadow.prototype.inpactY;
-  		this.shadow.inpactH = CC.ui.Shadow.prototype.inpactH;
-  	}
-  },
-/**
- * 给目标对象绑定悬浮消息
- * @param {CC.ui.Base} target
- * @param {String} msg, 消息
- @example
-   CC.Util.qtip(input, '在这里输入您的大名');
- */
-  tipFor : function(proxy, msg, title){
-  	CC.fly(proxy)
-  	  .domEvent('mouseover', 
-  	    function(evt){
-  	    	var self = this;
-					if(!docEvtBinded){
-						Event.on(document, 'mousemove', onDocMousemove);
-						docEvtBinded = true;
-					}
-					
-					this.timerId = (function(){
-						self.setMsg(proxy.qtip || proxy.tip || proxy.title || msg, title);
-						CC.fly(self.tail).hide().unfly();
-  	    		if(!self.qmode)
-  	    			self.createQtip();
-  	    		self.display(true)
-  	    		    .setRightPosForHover(globalPos);
-					}).timeout(this.delay);
-					
-  	  	}, true, this)
-  	  .domEvent('mouseout', this.onTargetMouseout, true, this)
-  	  .unfly();
-  },
-/**@private*/  
-	onTargetMouseout : function(evt){
-		if(this.qmode)
-		   this.display(false);
-		if(docEvtBinded){
-			Event.un(document, 'mousemove', onDocMousemove);
-			docEvtBinded = false;
-		}
-	},
-/**
- * 获得全局tip对象
- */
-  getInstance : function(){
-  	return instance;
-  }
-};
+	  qmode : false,
+	  
+	  zIndex : 10002,
+	/**
+	 * mouseover式提示时样式
+	 */
+	  hoverTipCS : 'g-small-tip',
+	  
+	  /**
+	   * @private
+	   * @override
+	   */
+	  initComponent: function() {
+	    superclass.initComponent.call(this);
+	    if(this.msg)
+	    	this.setMsg(this.msg);
+	    this.tail = this.dom('_cap');
+	    this.setXY(-10000,-10000).setZ(this.zIndex);
+	    if(this.qmode)
+	    	this.createQtip();
+	    else this.createFtip();
+	  }
+	  ,	
+	  
+	  //@override
+	  display : function(b) {
+	    if(arguments.length === 0){
+	    	return superclass.display.call(this);
+	    }
+	
+	    //无论怎样,先清除前面一个timout
+	    this.killTimer();
+	
+	    superclass.display.call(this, b);
+	    
+	    if(!b)
+	    	return this;
+	    
+	    if(this.timeout)
+	    	this.timerId = this._timeoutCall.bind(this).timeout(this.timeout);
+	    return this;
+	  }
+	  ,
+	
+	/**@private*/
+	  setRightPosForTarget : function(target){
+	  	var f = CC.fly(target), xy = f.absoluteXY();
+	  	this.anchorPos([xy[0],xy[1],0,0], 'lt', 'hr', false, true, true);
+		  f.unfly();
+	  },
+	  
+	/**@private*/
+	  setRightPosForHover : function(xy){
+	  	//box, dir, rdir, off, rean, move
+	  	this.anchorPos([xy[0],xy[1],0,0], 'lb', 'hr', [5,24], true, true);
+	  },
+	  
+	/**@private*/
+	  _timeoutCall : function(){
+	  	superclass.display.call(this, false);
+	  	this.killTimer(true);
+	  	if(this.ontimeout)
+	  		this.ontimeout();
+	  },
+	  
+	/**
+	 * 清除当前超时显示
+	 * @param {boolean} check 是否作回收(reuseable)检查
+	 */
+	  killTimer : function(check){
+	    if(this.timerId){
+	    		clearTimeout(this.timerId);
+	    		this.timerId = false;
+	    }
+	    
+	    if(!this.reuseable && check)
+	  		this.destory();
+	  },
+	/**
+	 * 设置提示标题与消息
+	 * @param {String} msg
+	 * @param {String} title
+	 */
+	  setMsg: function(msg, title) {
+	  	this.fly('_msg').html(msg).unfly();
+	    if(title)
+	    	this.setTitle(title);
+	    return this;
+	  },
+	  
+	/**
+	 * @param {String} msg 提示消息
+	 * @param {String} [title] 消息提示标题
+	 * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
+	 * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
+	 * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
+	 */
+	  show : function(msg, title, target, getFocus, timeout){
+	  	if(arguments.length == 0)
+	  		return superclass.show.call(this);
+	  		
+	  	this.setMsg(msg, title);
+	  	
+	  	if(timeout !== undefined)
+	  		this.timeout = timeout;
+	  	
+	  	if(this.qmode)
+	  		this.createFtip();
+	  	
+	  	this.display(true);
+	  	if(target){
+	    	this.setRightPosForTarget(target);
+	    	if(getFocus)
+	  			CC.fly(target).focus(true).unfly();
+	    }
+	  	return this;
+	  },
+	  /**@private*/
+	  createFtip : function(){
+	  	this.qmode = false;
+	    this.delClass(this.hoverTipCS);
+	  	if(this.shadow){
+	  		this.shadow.inpactY = -1;
+	  		this.shadow.inpactH = -12;
+	  	}
+	  },
+	  /**@private*/
+	  createQtip : function(){
+	  	this.qmode = true;
+	    this.addClassIf(this.hoverTipCS);
+	  	if(this.shadow){
+	  		this.shadow.inpactY = CC.ui.Shadow.prototype.inpactY;
+	  		this.shadow.inpactH = CC.ui.Shadow.prototype.inpactH;
+	  	}
+	  },
+	/**
+	 * 给目标对象绑定悬浮消息
+	 * @param {CC.ui.Base} target
+	 * @param {String} msg, 消息
+	 @example
+	   CC.Util.qtip(input, '在这里输入您的大名');
+	 */
+	  tipFor : function(proxy, msg, title){
+	  	CC.fly(proxy)
+	  	  .domEvent('mouseover', 
+	  	    function(evt){
+	  	    	var self = this;
+						if(!docEvtBinded){
+							Event.on(document, 'mousemove', onDocMousemove);
+							docEvtBinded = true;
+						}
+						
+						this.timerId = (function(){
+							self.setMsg(proxy.qtip || proxy.tip || proxy.title || msg, title);
+							CC.fly(self.tail).hide().unfly();
+	  	    		if(!self.qmode)
+	  	    			self.createQtip();
+	  	    		self.display(true)
+	  	    		    .setRightPosForHover(globalPos);
+						}).timeout(this.delay);
+						
+	  	  	}, true, this)
+	  	  .domEvent('mouseout', this.onTargetMouseout, true, this)
+	  	  .unfly();
+	  },
+	/**@private*/  
+		onTargetMouseout : function(evt){
+			if(this.qmode)
+			   this.display(false);
+			if(docEvtBinded){
+				Event.un(document, 'mousemove', onDocMousemove);
+				docEvtBinded = false;
+			}
+		},
+	/**
+	 * 获得全局tip对象
+	 */
+	  getInstance : function(){
+	  	return instance;
+	  }
+	};
 });

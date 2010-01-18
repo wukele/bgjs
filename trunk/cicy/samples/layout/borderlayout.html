@@ -1,0 +1,41 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>BorderLayout布局</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  
+<style>
+	.g-layout-split{background:#CCC;}
+</style>
+</head>
+<body lang="zh">
+</body>
+</html>
+<script>
+		CC.ready(function(){
+			var Panel  = CC.ui.Panel;
+			var layoutCfg = {
+				items : [
+				  
+				]
+			};
+			
+			var win = new CC.ui.Win({
+				layout:'border',
+				layoutCfg : {
+					items : [
+					 {ctype:'panel', height:40, layoutInf:{split:true, dir:'north', collapsed:true}},
+					 {ctype:'panel', height:40, layoutInf:{split:true, dir:'south'}},
+					 {ctype:'panel', width:125, layoutInf:{split:true, dir:'east',autoCollapseWidth:80,collapsed: false}},
+					 {ctype:'panel', width:125, layoutInf:{split:true, dir:'west',collapsed: true}, maxW:300},
+					 {ctype:'panel', layoutInf:{dir:'center'}}
+					]
+				},
+				showTo:document.body
+			});
+      win.render();
+      win.center();
+		});
+</script>
