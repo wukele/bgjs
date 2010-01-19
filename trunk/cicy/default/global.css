@@ -8,7 +8,7 @@ html,body, h1,h2,h3,h4,td, th, dl, dt, form, ul{
 	list-style-type:none;
 }
 
-*:lang(zh) {outline:none;}
+:lang(zh) {outline:none;}
 
 img, table {border:0 none;border-collapse:collapse;}
 .bIco { display:block; float:left; font-size:0; height:24px; margin:6px 4px 0 0px; width:18px;}
@@ -284,7 +284,7 @@ white-space:nowrap;
 .g-win-hd-ct .g-hd-btn{float:right;margin-right:1px;display:block;height:15px;width:15px;font-size:1px;}
 .g-win .icoSw {background-position:-342px -7px;display:block;float:left;height:14px;margin:7px 0px 0px 2px;width:14px;}
 :lang(zh).g-win .icoSw{margin:7px 2px 0px;}
-.g-win .g-win-hd .g-tle {color:#FFFFFF;cursor:default;float:none;font-weight:normal;line-height:30px;}
+.g-win .g-win-hd .g-tle {color:#FFFFFF;cursor:default;float:none;font-weight:normal;line-height:26px;}
 :lang(zh) .g-win .g-win-hd .g-tle {line-height:26px;}
 .g-win-e,.g-win-s,.g-win-w,.g-win-n,.g-win-sw,.g-win-es,.g-win-wn,.g-win-ne{z-index:1000;position:absolute;font-size:0px;overflow:hidden;margin:0px;padding:0px;/*filter: Alpha(opacity=85); opacity:0.85;*/}
 .g-win-sw,.g-win-es,.g-win-wn,.g-win-ne{height:6px;width:6px;}
