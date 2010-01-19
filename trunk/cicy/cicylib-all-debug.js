@@ -8635,7 +8635,7 @@ CC.ui.def('viewport', CC.ui.Viewport);
 			    .domEvent('mousedown', this.onNavBlockClick, true, null, this.navBlock);
 			
 			this.sliperEl = CC.$C({tagName:'A', className:this.sliperCS,href:'javascript:fGo()'});
-			this.comp.wrapper.append(this.sliperEl);
+			this.comp.append(this.sliperEl);
 			this.comp.domEvent('mousedown', this.sliperAction, false, null, this.sliperEl);
 		},
 		

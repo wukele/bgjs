@@ -1,0 +1,48 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>BorderLayout布局</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  
+<style>
+	.g-layout-split{background:#CCC;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+		CC.ready(function(){
+			var win = new CC.ui.Win({
+				layout:'border',
+				width:670,
+				height:440,
+				layoutCfg : {
+					items : [
+					 {ctype:'titlepanel', height:40, title:'北部面板', layoutInf:{split:true, dir:'north', collapsed:false}},
+					 {ctype:'titlepanel', height:40, title:'南部面板', layoutInf:{split:true, dir:'south', collapsed:false}},
+					 {ctype:'titlepanel', width:125, title:'东部面板', layoutInf:{split:true, dir:'east',collapsed: false}},
+					 {ctype:'titlepanel', width:125, title:'西部面板', layoutInf:{split:true, dir:'west',collapsed: false}, maxW:300},
+					 {ctype:'panel', 
+					 	layoutInf:{dir:'center'},
+					  layout:'border',
+					  layoutCfg:{
+					  	items : [
+					    	 {ctype:'panel', height:25, layoutInf:{split:true, dir:'north', collapsed:true}},
+								 {ctype:'panel', height:25, layoutInf:{split:true, dir:'south', collapsed:true}},
+								 {ctype:'panel', width:50, layoutInf:{split:true, dir:'east',collapsed: true}},
+								 {ctype:'panel', width:50, layoutInf:{split:true, dir:'west',collapsed: true}, maxW:300}
+					    ]
+					  }
+					 }
+					]
+				},
+				showTo:document.body,
+				destoryOnClose:true
+			});
+      win.render();
+      win.center();
+		});
+</script>
