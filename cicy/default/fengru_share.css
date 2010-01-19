@@ -1,0 +1,40 @@
+.g-f1, .g-nav-block-l,.g-nav-block-r,.g-nav-block-u,.g-nav-block-d,.g-layout-cbar .cb-l,.g-layout-cbar .cb-r,.g-bigbar .auto-lefmov, .g-bigbar .auto-rigmov,.g-tab .auto-lefmov, .g-tab .auto-rigmov,.g-smallbar .auto-lefmov, .g-smallbar .auto-rigmov,.g-tabMoveSp, a.srhBtn, .g-datepicker-field .trigger, .g-datepicker .leftsplit, .g-datepicker .rightsplit, .g-smallbar-item-over .g-btn-l,.g-smallbar-item-over .g-btn-r, .g-smallbar-item-click .g-btn-l,.g-smallbar-item-click .g-btn-r, .g-combo .downIco, a.AdsrhBtn,a.g-win-clsbtn,a.g-win-clsbtn2, .g-icoFld,.g-baritem-over .g-btn-l,.g-baritem-over .g-btn-r,.g-btn .g-btn-l,.g-btn .g-btn-r, .g-progress-l,.g-progress-r,.g-icoOpn, a.addFd, a.addFd2, .g-tab-item td.tLe, .g-tab-item td.tRi, .g-ti-clsbtn, .btnDrop, a.addfile, a.addfile0, .g-win .g-win-hd .fLe, .g-win .g-win-hd .fRi, .g-win .icoSw, .g-menu-opt .opt1, .g-win-e,.g-win-w,.g-win-sw,.g-win-es,.g-win-wn,.g-win-ne
+{background-image:url(fengru/fregment1.gif);background-repeat:no-repeat;}
+
+.g-f1-ex, .g-layout-cbar-v .cb-c,.g-vbtn-over .g-btn-c,.g-vbtn-over .g-btn-l,.g-vbtn-over .g-btn-r,.g-vbtn-click .g-btn-c,.g-vbtn-click .g-btn-l,.g-vbtn-click .g-btn-r {background-image:url(fengru/fregment1.gif) !important;background-repeat:repeat-y !important;}
+
+.g-f2,.g-layout-cbar .cb-c, .g-grid-hd-on,.x-head-col .selected,.g-grid-header,.g-smallbar,.g-datepicker .headline,.g-baritem-over .g-btn-c,.g-btn .g-btn-c, .g-tab, .tLnk, .gSipt, .g-tab-item td, .g-tab .auto-offset .selected, .g-progress-c,.g-bigbar, .g-smallbar-item-over .g-btn-c,.g-smallbar-item-click .g-btn-c, .g-titlepanel-hd,.btnFnt, .btnFntOn, .cmp_lst_page h2,.g-win-bottom, .g-win .g-win-hd,.g-grid-end, .g-win2 .inner,.g-rowlayout-split,.g-win-s,.g-win-n
+ {background-image:url(fengru/fregment2.gif);background-repeat:repeat-x;}
+
+.g-grp-bdy li.on,.g-grp-bdy li.selected, .g-menu-opt .sub-x,.g-titlepanel-hd
+{background-image:url(fengru/fregment3.gif);}
+
+.IcoImg,.icos,.btnS,.g-bigbar .bIco,td.icoNdf,td.icoLcf,.icoEditCnt,.icoDelCnt,.btnSent,.icoPhone,b.mbm,a.mbm,.btnCntOpen,.btnCntCls,.ibxTagOpen,.ibxTagCls,.ibxAddCnt,.ibxNewWin,.rmAddCnt,.rmAddRef,.gOpt_mTitle .Ico,.ibxAddRef,.ibxRe,.ibxFw,.btnNxt,.btnPre,.icoSearch,.icoAG,.icoAU,.addDown,.addUp,.icoMailC,.icoIfo,.icoIfo,.gOpt_Ico,.addSpecialUser,.vipIcoRm,.vipIcoIbx,.icoAtch,.upFLSusIco,.icoAtn4,.upFLEroIco,.rmMailComm,.icoAtn3,.icoSend,.icoSendScs,.icoSendFal,.icoSendIng,.icoSendUnk,.ibxMore
+{ background-image:url(ru/ico.gif); background-repeat:no-repeat}
+
+.btnFnt {background-color:#F8FFF0;border-color:#84A567;}
+a.gfName{color:#4D784D;}
+.g-tab-item .g-tle{color:#608D45;}
+.gLe {border-right-color:#69CA26;border-bottom-color:#69CA26;}
+
+.g-ipt-text,.g-textarea {background: white url(ru/text-bg.png) top left repeat-x; }
+.g-ipt-text-hover,.g-textarea-hover {background-image:url(ru/text-bg-hover.png)}
+.g-checkbox img {background:transparent url(ru/checkbox.gif) no-repeat scroll 0 0;}
+.g-radio img {background:transparent url(ru/radio.gif) no-repeat scroll 0 0;}
+.g-titlepanel-hd .g-tle{color:#3E6444;}
+.g-tab .selected .g-tle {color:#3E6444;}
+.g-loading-indicator{
+	background-image:url(ru/loading.gif);
+	color:#444444;
+}
+.g-form-error{background-image:url(ru/form-error.gif) !important;}
+.g-form-mdy{background-image:url(ru/modified.gif);}
+.g-menu{border-color:#608D45;}
+.g-menu-opt .g-menu-separator {border-top:1px solid #608D45;}
+
+.g-tabitem-loading .g-ti-clsbtn, .g-tree-nd-loading .g-tree-nd-icon {background-image:url(ru/loading.gif) !important;}
+/***/
+.g-titlepanel-hd{background-position:0 -59px;background-repeat:no-repeat;}
+.g-rowlayout-split{background-image:none;}
+.g-menu .g-menu-opt{background-color:#F3FCF4;}
+.g-tab .auto-offset,.g-tab .g-tab-item { height:24px;}
