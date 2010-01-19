@@ -1,0 +1,47 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  
+<style>
+	.g-resizer-wrap{overflow:hidden;}
+</style>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+		CC.ready(function(){
+				window.win = new CC.ui.Win(
+				  { title : 'Loading http://www.bgscript.com ...', 
+				  	closeable : false, 
+				  	width : 600,
+				  	height : 400,
+				  	layout : 'card', 
+				  	showTo:document.body,
+				  	layoutCfg : {
+				  		items : [
+				  			{ctype:'iframe', 
+				  			 connectionCfg:{
+					  			 ajaxCfg:{
+					  				url:'http://www.bgscript.com',
+					  				  //在连接前可添加加载状态事件, 这些事件与ajax加载是一致的:
+					  				success : function(j){
+					  					CC.Util.ftip('IFrame 加载完成！', '提示' , win.ct);
+					  					win.setTitle('WEB开发交流 - http://www.bgscript.com');
+					  				}
+					  			 }
+				  		  }
+				  		 }
+				  		]
+				  	}
+				  }
+				);
+				
+				win.render();
+				win.center();
+		});
+</script>

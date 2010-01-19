@@ -1,0 +1,55 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>IFramePanel控件</title>
+        <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+        <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+        <link rel="stylesheet" href="../../default/lan_share.css" type="text/css"/>
+        <link rel="stylesheet" href="resources/example.css" type="text/css"/>
+</head>
+<body>
+</body>
+</html>
+<script>
+	    /**
+	     * IFrame应用示例,可查看子FRAME　testIframe.html代码
+	     */
+			CC.ready(function(){
+				
+				new CC.ui.form.Text({id : "idOfInput", value:'父窗口数据 aaa', qtip:'输入数据以测试', autoRender:true, showTo:document.body});
+				new CC.ui.Button({onclick : getChildFrameData, title:'获得子iframe数据', autoRender:true, showTo:document.body});
+				
+				
+				window.win = new CC.ui.Win(
+				  { title : 'IFrame测试', 
+				  	closeable : false, 
+				  	layout : 'card', 
+				  	showTo:document.body,
+				  	layoutCfg : {
+				  		items : [
+				  			{ctype:'iframe', id : 'childFrame', 
+				  			 connectionCfg:{
+					  			 ajaxCfg:{
+					  				url:'testIframe.html',
+					  				  //在连接前可添加加载状态事件, 这些事件与ajax加载是一致的:
+					  				success : function(j){
+					  					CC.Util.ftip('IFrame 加载完成！', '提示' , win.ct);
+					  				}
+					  			 }
+				  		  }
+				  		 }
+				  		]
+				  	}
+				  }
+				);
+				
+				win.render();
+				win.center();
+
+		  });
+		  
+		  function getChildFrameData(){
+		  	CC.Util.alert(win.byId('childFrame').$('textarea').value);
+		  }
+		  
+</script>
