@@ -270,9 +270,11 @@ if(!window.__debug)
 				  }
 				  ags.shift();
 				
-				  if (superclass)
+				  if (superclass){
 				  	superclass = superclass.prototype;
-				
+				  }else{
+				  	if(__debug) absObj.toString = function(){ return (this.id?this.id:'')+(this.title?'$'+this.title:'')+'@'+this.type;};
+				  }
 				  if (superclass) {
 				  	
 				  	function Bridge(){};
@@ -4933,11 +4935,7 @@ CC.extend(Base.prototype,
 		     }
 		}
 		return false;
-	},
-/***/
-    toString : function(){
-        return (this.id?this.id:'')+(this.title?'$'+this.title:'')+'@'+this.type;
-    }
+	}
 });
 
 /**
@@ -5163,6 +5161,15 @@ CC.ui = /**@lends CC.ui*/{
 			
 		return new this.ctypes[t](opt);
 	}
+};
+
+/**
+ * document.body的Base封装
+ * @type CC.Base
+ * @name CC.$body
+ */
+Event.defUIReady = function(){
+	CC.$body = CC.$$(document.body);
 };
 
 })(CC);
@@ -6621,7 +6628,10 @@ CC.create('CC.ui.ContainerBase', Base,
     
     if(this.selectionProvider === true)
     	this.getSelectionProvider();
-    	
+
+    if(this.connectionProvider === true)
+    	this.getConnectionProvider();
+    
     this.children = [];
     
     if (this.layout) {
@@ -7378,6 +7388,34 @@ CC.create('CC.ui.ContainerBase', Base,
 			
 			this.setXY( Math.max(xy[0] + (((sz.width - this.width) / 2) | 0), 0), Math.max(xy[1] + off - off/2|0, 0));
 		  return this;
+		},
+/**
+ * 根据ID深层遍历寻找子控件.
+ * @param {String} childId
+ * @return {CC.Base} 如无返回null
+ */
+		byId : function(cid){
+			var tmp = [], chs = this.children, child = this.children[0];
+			var k=0;
+			while(child){
+				if(child.id === cid)
+					return child;
+				
+				if(child.children && child.children.length > 0)
+					tmp.push(child);
+				
+				child = chs[++k];
+				
+				if(!child){
+					child = tmp.pop();
+					if(child){
+						chs = child.children;
+						k = 0;
+						child = chs[0];
+					}
+				}
+			}
+			return null;
 		}
 });
 
@@ -7388,7 +7426,7 @@ UX.def('ct', ccx);
 var ccxp = ccx.prototype;
 var Event = CC.Event;
 
- 
+
 //~@base/connectionprovider.js
 /**
  * 为控件提供数据加载功能
@@ -7399,6 +7437,28 @@ CC.create('CC.util.ConnectionProvider', null, /**@lends CC.util.ConnectionProvid
  * 是否禁用指示器,默认false 
  */
 	indicatorDisabled : false,
+/**
+ * 连接器设置,连接器保存当前默认的连接器connector配置信息,
+ * 每次连接时都以该配置信息与新的配置结合发出连接.
+ * @example
+   var provider = new CC.util.ConnectionProvider(target, {
+   	indicatorDisabled : true,
+   	ajaxCfg : {
+   	  url : 'http://www.server.com/old',
+   	  success : function(){},
+   	  ...
+   	}
+   });
+   
+   provider.connect('http://www.server.com/new', 
+    //这里的配置属性将会覆盖provider.ajaxCfg原有属性
+    {
+      success : function(){},
+      ...
+    }
+   );
+ */
+  ajaxCfg : null,
 
 /**@private*/
 	initialize : function(t, cfg) {
@@ -7406,6 +7466,12 @@ CC.create('CC.util.ConnectionProvider', null, /**@lends CC.util.ConnectionProvid
 			this.setTarget(t);
 		if(cfg)
 			CC.extend(this, cfg);
+		this.initConnection();
+	},
+	
+	initConnection : function(){
+		if(this.ajaxCfg && this.ajaxCfg.url)
+			this.connect();
 	},
 /**
  * 设置目标控件
@@ -7493,15 +7559,23 @@ CC.create('CC.util.ConnectionProvider', null, /**@lends CC.util.ConnectionProvid
  * @param {Object} cfg 配置Ajax类的配置信息, 参考信息:cfg.url = url, cfg.caller = this
  */
 	connect : function(url, cfg){
-    url = url || this.url;
-    if(!url)
-    	return;
-    if (!cfg) cfg = {};
-    cfg.url = url;
-    cfg.caller = this;
+    var afg = this.ajaxCfg;
+    if(!afg)
+    	afg = {};
+    if(url)
+    	afg.url = url;
     
-    if (!cfg.success)
-    	cfg.success = this.defaultLoadSuccess;
+    afg.caller = this;
+    
+    if(cfg)
+    	CC.extend(afg, cfg);
+
+    if (!afg.success){
+    	if(afg.caller !== this)
+    		throw '如果使用默认处理,ajaxCfg的caller须为当前的connection provider';
+    	afg.success = this.defaultLoadSuccess;
+    }
+    
 /**
  * @name CC.util.ConnectionProvider#indicatorCfg
  * @property {Object} indicatorCfg
@@ -7509,13 +7583,48 @@ CC.create('CC.util.ConnectionProvider', null, /**@lends CC.util.ConnectionProvid
     if (!this.indicatorDisabled && !this.indicator)
       this.getIndicator(this.indicatorCfg || this.t.indicatorCfg);
     
-    if(this.indicator.isBusy())
-    	this.connector.abort();
+    this.bindConnector(afg);
+    return this;
+	},
+  
+/**
+ * 获得连接器,该连接器只提供数据加载功能,默认用CC.Ajax类作为连接器.
+ * @return {CC.Ajax}
+ */
+  getConnector : function(){
+    return this.connector;
+  }, 
+  
+/**
+ * 绑定连接器
+ * 连接器接口为
+  <pre> 
+  function(config){
+    //终止当前连接
+    abort : fGo,
+    //订阅连接事件
+    to : fGo(subsciber),
+    //连接
+    connect : fGo
+  }
+  </pre>
+ * @protected
+ */
+	bindConnector : function(cfg){
+		
+		if(this.indicator.isBusy())
+    	this.getConnector().abort();
     
-    var a = this.connector = new CC.Ajax(cfg);
+		a = this.connector =  this.createConnector(cfg);
     a.to(this.t);
     a.connect();
-    return this;
+	},
+/**
+ * 创建并返回连接器
+ * @protected
+ */
+	createConnector : function(cfg){
+		return new CC.Ajax(cfg);
 	}
 });
 
@@ -7529,7 +7638,7 @@ CC.create('CC.util.ConnectionProvider', null, /**@lends CC.util.ConnectionProvid
  */
 CC.ui.ContainerBase.prototype.getConnectionProvider = function(cls){
 	var p = this.connectionProvider;
-	if(!p){
+	if(p === true){
 		p = this.connectionProvider = new (cls || this.connectionCls || CC.util.ConnectionProvider)(this, this.connectionCfg);
 		if(this.connectionCfg)
 			delete this.connectionCfg;
@@ -10067,85 +10176,45 @@ CC.create('CC.ui.Foldable', CC.Base, {
 });
 
 //~@ui/framepanel.js
+CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
 
-CC.Tpl.def('CC.ui.IFramePanel', '<iframe class="g-framepanel" frameBorder="no" scrolling="auto" hideFocus=""></iframe>');
-
-CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
-	
-	ct : undefined,
-	
-	traceResize : false,
-	
+/**
+ * 是否监听IFRAME加载事件,默认为true
+ * @type Boolean
+ */
 	traceLoad : true,
-	
-	onRender : function(){
-		CC.ui.Panel.prototype.onRender.call(this);
-		var c = this.pCt;
-		
-		if(this.traceResize){
-			c.on('resized', this.onContainerResize, this);
-			this.onContainerResize(false, false, c.wrapper.getWidth(true), c.wrapper.getHeight(true));
-	  }
-	  
-		if(this.traceLoad){
-			this.domEvent(CC.ie?'readystatechange':'load', this.traceFrameLoad,null, null, this.wrapper.view);
-		}
-		
-		//加载页面
-		if(this.autoConnect && (this.src || this.url)){
-			this.connect();
-		}
-	},
-	//
-	// 实例化时可重写该方法,以自定义IFRAME宽高.
-	//
-	onContainerResize : function(a,b,c,d){
-		this.setSize(a, b);
-	},
-	
-  //
-  //@override IFRAME与AJAX加载方式不同
-  //
-  connect: function(url, cfg) {
-    if(!url)
-      url = this.url || this.src;
-    else this.url = url;
-    	
-    this.loaderConfig = cfg;
-    
-    if (this.connectionProvider !== false) 
-      this.getConnectionProvider();
 
-		try{
-			this.fire('open');
-			var v = this.wrapper.view;
-			(function(){v.src = url;}).timeout(0);
-		}catch(e){
-			console.warn(e);
-		}
-		
-    return this;
-  },
-  
-  onFrameLoad : function(evt){
+/**
+ * 默认不处理
+ */
+	defaultLoadSuccess : fGo,
+	
+	initConnection : function(){
+		if(this.traceLoad)
+			this.t.domEvent(CC.ie?'readystatechange':'load', this.traceFrameLoad, false, this , this.t.getFrameEl());
+		CC.util.ConnectionProvider.prototype.initConnection.apply(this, arguments);
+	},
+
+/**@private*/
+  onFrameLoad : function(e){
+  	var t = this.t;
   	try{
-  		this.fire('success', evt);
-  		if(this.loaderConfig && this.loaderConfig.success){
-  			this.loaderConfig.success.call(this, evt);
-  		}
-    }catch(e){console.warn(e);}
-  	this.fire('final');
-  	if(this.loaderConfig && this.loaderConfig.onfinal){
-  		this.loaderConfig.onfinal.call(this, evt);
-  	}
+  		t.fire('success', this, e);
+  		if(this.success)
+  			this.success(this, e);
+    }catch(ex){console.warn(ex);}
+  	
+  	this.onFinal();
   },
   
+/**@private*/
 	traceFrameLoad : function(evt){
-		var status = CC.Event.element(evt).readyState || evt.type;
+		var status = CC.Event.element(evt).readyState || evt.type,
+		    t = this.t;
 	  switch(status){
 	  	case 'loading':  //IE  has several readystate transitions
-	    	if(!this.busy)
-	    		this.fire('open', evt);
+	    	if(!t.busy)
+	    		t.fire('open', this, evt);
 		  break;
 		  //
 		  //当用户手动刷新FRAME时该事件也会发送
@@ -10153,10 +10222,90 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
 	    case 'load': //Gecko, Opera
 	    case 'complete': //IE
 			  //May be ie would do a clean action before a new page loaded.
-			  if(!CC.ie || ((this.src||this.url) == this.view.src))
+			  if(!CC.ie || this.url === t.view.src)
 			  	this.onFrameLoad(evt);
 	      break;
 	  }
+	},
+	
+	abort : function(){
+		this.getFrameEl().src = CC.ie?'about:blank':'';
+		this.onFinal();
+	},
+	
+/**@private*/
+	onFinal : function(){
+  	this.t.fire('final', this);
+  	
+  	if(this['final']){
+  		this['final'](this,  e);
+  	}
+	},
+	
+/**@private*/
+	bindConnector : function(cfg){
+		if(this.t.busy)
+			this.abort();
+
+		CC.extend(this, cfg);
+		this.connectInner();
+	},
+	
+/**@private*/
+	connectInner : function(cfg){
+    this.t.fire('open', this);
+		(function(){
+			try{
+				this.t.getFrameEl().src = this.url;
+			}catch(e){
+			  if(__debug) console.warn(e);
+		  }
+		}).bind(this).timeout(0);
+	}
+});
+
+CC.Tpl.def('CC.ui.IFramePanel', '<iframe class="g-framepanel" frameBorder="no" scrolling="auto" hideFocus=""></iframe>');
+/**
+ * IFRAME面板封装
+ * @name CC.ui.IFramePanel
+ * @class
+ */
+CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
+/**
+ * 是否跟踪IFramePanel父容器宽高改变以便调整自身宽高,默认值为false,
+ * 通常并不需要该项,IFramePanel往往是通过父容器的布局管理器来调整它的大小.
+ * @type Boolean
+ */
+	traceResize : false,
+	
+	connectionCls : CC.util.IFrameConnectionProvider,
+	
+	connectionProvider : true,
+	
+	ct : undefined,
+  
+	onRender : function(){
+		CC.ui.Panel.prototype.onRender.call(this);
+		
+		var c = this.pCt;
+		
+		if(this.traceResize){
+			c.on('resized', this.onContainerResize, this);
+			this.onContainerResize(false, false, c.wrapper.getWidth(true), c.wrapper.getHeight(true));
+	  }
+	},
+/**
+ * 获得iframe html结点
+ */
+	getFrameEl : function(){
+	 	return this.view;
+	},
+	
+	//
+	// 实例化时可重写该方法,以自定义IFRAME宽高.
+	//
+	onContainerResize : function(a,b,c,d){
+		this.setSize(a, b);
 	},
 	
 	/**
@@ -10170,6 +10319,8 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
 	}
 }
 );
+
+CC.ui.def('iframe', CC.ui.IFramePanel);
 
 //~@ui/resizer.js
 //定义控件模板
@@ -10826,7 +10977,7 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
 		 */
 		onOk : function(){
 		   if(this.defaultButton){
-		   	this.bottomer.select(this.defaultButton, true);
+		   	this.bottomer.selectionProvider.select(this.defaultButton, true);
 		   }
 		},
 		
