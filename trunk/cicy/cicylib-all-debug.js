@@ -5170,6 +5170,8 @@ CC.ui = /**@lends CC.ui*/{
  */
 Event.defUIReady = function(){
 	CC.$body = CC.$$(document.body);
+	if(document.body.lang !== 'zh')
+		document.body.lang = 'zh';
 };
 
 })(CC);
@@ -10122,6 +10124,8 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
         }
     }
 });
+
+CC.ui.def('titlepanel', CC.ui.TitlePanel);
 
 //~@ui/foldable.js
 CC.Tpl.def('CC.ui.Foldable', '<div class="g-foldable"><div class="g-foldablewrap"><b title="隐藏" id="_trigger" class="icos icoCls"></b><div id="_tle"></div></div></div>');
