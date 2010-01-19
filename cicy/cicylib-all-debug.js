@@ -48,8 +48,9 @@ if(!window.__debug)
 		
 		undefined,
     
-    //浏览器检测, thanks ExtJS here, copy & paste, so easy.
-    isStrict = document.compatMode == "CSS1Compat",
+    //浏览器检测, thanks ExtJS here
+    isStrict = document.compatMode === "CSS1Compat",
+    isQuirks = document.compatMode === "BackCompat",
     isOpera = ua.indexOf("opera") > -1,
     isSafari = (/webkit|khtml/).test(ua),
     isSafari3 = isSafari && ua.indexOf('webkit/5') != -1,
@@ -58,8 +59,9 @@ if(!window.__debug)
     isIE6 = !isOpera && ua.indexOf("msie 6") > -1,
     isGecko = !isSafari && ua.indexOf("gecko") > -1,
     isGecko3 = !isSafari && ua.indexOf("rv:1.9") > -1,
-    //盒模型
-    isBorderBox = isIE && !isStrict,
+    //优先检测BackCompat,因为
+    //假如以后compatMode改变,也是非盒模型
+    isBorderBox = isQuirks || !isStrict,
     
     /**是否合法EMAIL字符串.
      * 参见 CC.isMail().
@@ -73,7 +75,6 @@ if(!window.__debug)
             document.execCommand("BackgroundImageCache", false, true);
         }catch(e){}
     }
-	  
 	 /**
 	  * 该方法在创建新类时被调用,依次执行父类构造函数以给子类添加父类属性.
 	  * 参见 CC.create()
@@ -4128,7 +4129,6 @@ CC.extend(Base.prototype,
             if(c !== false){
                 if(c<this.minW) c=this.minW;
                 if(c>this.maxW) c=this.maxW;
-                this.contentW = 
                 this.fastStyleSet('width', NB?Math.max(c - this.getOuterW(true),0)+'px' : c + 'px');
                 this.width = c;
             }
@@ -7020,6 +7020,7 @@ CC.create('CC.ui.ContainerBase', Base,
     return this;
   },
   
+  
   /**
  * 同{@link #removeAll}
  * @override
@@ -7418,6 +7419,14 @@ CC.create('CC.ui.ContainerBase', Base,
 				}
 			}
 			return null;
+		},
+/**
+ * 获得容器的滚动条所在控件,返回this.scrollor || this.wrapper,
+ * 明确容器的scrollor有利于控制容器内容的滚动,
+ * 在设计控件时可根据控件自身结构特点指定scrollor.
+ */
+		getScrollor : function(){
+			return this.scrollor || this.wrapper;
 		}
 });
 
@@ -7876,10 +7885,11 @@ CC.create('CC.util.SelectionProvider', null, function(){
  * @property {Function} onselect
  */
  onSelect : function(item) {
-	if(this.autoscroll)
-			item.scrollIntoView(this.t.scrollor || this.t.wrapper);
   if(this.autoFocus)
-  	 this.t.wrapper.focus();
+   this.t.wrapper.focus();
+   
+	if(this.autoscroll)
+			item.scrollIntoView(this.t.getScrollor());
   item.onselect && item.onselect();
  },
 
@@ -9042,6 +9052,7 @@ CC.create('CC.layout.CardLayout', B, {
 	wrCS : 'g-card-ly-ct',
 	layoutChild : function(item){
 		var sz = this.ct.wrapper.getSize(true);
+		console.trace();
 		item.setSize(sz);
 	}
 });
@@ -9761,8 +9772,6 @@ spr = cf.prototype;
 
 var fr = CC.ui.form;
 
-fr.def = CC.layout.def;
-
 Tpl.def('Text', '<input type="text" id="_el" class="g-ipt-text" />')
    .def('Textarea', '<textarea id="_el" class="g-textarea" />')
    .def('Checkbox', '<span tabindex="1" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>');
@@ -9791,7 +9800,7 @@ CC.create('CC.ui.form.Text', cf, {
     }
 });
 
-fr.def('text', fr.Text);
+CC.ui.def('text', fr.Text);
 
 CC.create('CC.ui.form.Textarea', cf, fr.Text.constructors, {
 	template : 'Textarea',
@@ -9799,7 +9808,7 @@ CC.create('CC.ui.form.Textarea', cf, fr.Text.constructors, {
   maxH : Bx.prototype.maxH
 });
 
-fr.def('textarea', fr.Textarea);
+CC.ui.def('textarea', fr.Textarea);
 
 CC.create('CC.ui.form.Checkbox', cf, {
 	  template : 'Checkbox',
@@ -9828,7 +9837,7 @@ CC.create('CC.ui.form.Checkbox', cf, {
     }
 });
 
-fr.def('checkbox', fr.Checkbox);
+CC.ui.def('checkbox', fr.Checkbox);
 
 CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
   inherentCS: 'g-radio',
@@ -9837,7 +9846,7 @@ CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
   clickCS: 'g-radio-click',
   checkedCS: 'g-radio-checked'
 });
-fr.def('radio', fr.Radio);
+CC.ui.def('radio', fr.Radio);
 
 CC.Tpl.def('CC.ui.form.FieldLine', '<li><label class="desc" id="_tle" ><span class="req">*</span></label><div id="_elCtx"></div></li>')
       .def('CC.ui.form.FormLayer', '<ul class="g-formfields"></ul>');
@@ -9869,7 +9878,7 @@ CC.create('CC.ui.form.FieldLine', CC.ui.ContainerBase, function(spr) {
   };
 });
 
-cf['fieldline'] = CC.ui.form.FieldLine;
+CC.ui.def('fieldline',CC.ui.form.FieldLine);
 
 fr.FormLayer = function(opt) {
   opt = opt || {};
@@ -9916,7 +9925,7 @@ CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
 		onStop : fGo
 	};
 });
-CC.ui.form.def('progressbar', CC.ui.form.Progressbar);
+CC.ui.def('progressbar', CC.ui.form.Progressbar);
 
 //~@ui/button.js
 CC.Tpl.def('CC.ui.Button', '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>');
@@ -9979,7 +9988,7 @@ CC.create('CC.ui.Button', CC.Base, function(superclass){
 });
 
 
-CC.ui.form.def('button', CC.ui.Button);
+CC.ui.def('button', CC.ui.Button);
 
 //~@ui/toolbar.js
 CC.Tpl['BarItem'] = '<table class="g-baritem" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>';
@@ -10078,10 +10087,14 @@ CC.ui.Smallbar = function(opt){
 
 
 //~@ui/titlepanel.js
+/**
+ * @class 
+ * @name CC.ui.TitlePanel
+ */
 CC.Tpl.def('CC.ui.TitlePanel', '<div class="g-panel g-titlepanel"><h3 class="g-titlepanel-hd" id="_tleBar"><a id="_btnFN" class="g-icoFld" href="javascript:fGo()"></a><a id="_tle" class="g-tle" href="javascript:fGo()"></a></h3><div id="_scrollor" class="g-panel-wrap g-titlepanel-wrap"></div></div>');
 
 CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
-    return {
+    return /**@lends CC.ui.TitlePanel.prototype*/{
   
         unselectable : '_tleBar',
         
@@ -10089,10 +10102,19 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
         
         minH : 29,
         
+/**foldNode展开时样式*/
+        openCS : 'g-icoOpn',
+        
+/**foldNode折叠时样式*/        
+        clsCS  : 'g-icoFld',
+        
+        foldNode : '_btnFN',
+        
         initComponent: function() {
             superclass.initComponent.call(this);
             //evName, handler, cancel, caller, childId
-            this.domEvent(this.toggleEvent || 'mousedown', this._btnFNOnclick, true, null, this.foldNode || '_btnFN');
+            this.domEvent('mousedown', this._btnFNOnclick, true, null, this.foldNode)
+                .domEvent('mousedown', this.onTitleClick,  true, null, this.titleNode);
             //_tleBar
             this.header = this.$$('_tleBar');
             
@@ -10108,15 +10130,23 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
         _btnFNOnclick: function() {
 	          var v = !this.wrapper.hidden;
 	          this.fold(v);
-        }
-        ,
-        //b:true or false.
+        },
+/**
+ * 标题点击时触发,默认执行缩放面板
+ */
+        onTitleClick : function(){
+        	this._btnFNOnclick();
+        },
+/**
+ * 收缩/展开内容面板
+ * @param {Boolean}
+ */
         fold: function(b, notNotifyLayout) {
         	  if(this.pCt && this.pCt.layout.collapse && !notNotifyLayout){
             	this.pCt.layout.collapse(this, b);
             	return this;
             }
-            this.$attr('_btnFN', 'className', b ? this.openCS || 'g-icoOpn' : this.clsCS || 'g-icoFld');
+            this.$attr(this.foldNode, 'className', b ? this.openCS : this.clsCS);
             this.wrapper.display(!b);
             this.folded = b;
             this.fire('fold',b);
@@ -10178,6 +10208,7 @@ CC.create('CC.ui.Foldable', CC.Base, {
         return v;
     }
 });
+CC.ui.def('foldable', CC.ui.Folderable);
 
 //~@ui/framepanel.js
 CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
@@ -10187,7 +10218,9 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
  * @type Boolean
  */
 	traceLoad : true,
-
+/**indicatorDisabled:false*/  
+  indicatorDisabled : true,
+  
 /**
  * 默认不处理
  */
@@ -10335,7 +10368,7 @@ CC.Tpl.def('CC.ui.Resizer', '<div class="g-panel g-resizer"><div class="g-win-e"
  * @super CC.ui.Panel
  */
 CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
-	var CC = window.CC, G = CC.util.dd.Mgr, H = G.resizeHelper;
+	var CC = window.CC, G = CC.util.dd.Mgr, H = G.resizeHelper, E = CC.Event;
     return /**@lends CC.ui.Resizer*/{
 /**
  * 是否允许缩放
@@ -10456,16 +10489,16 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
  * @private
  */
         bindRezBehavior : function(){
-        	var ini = this.onResizeStart.bind(this),
+         var  ini = this.onResizeStart.bind(this),
             	end = this.onResizeEnd.bind(this),
-            	a = this.createRezBehavior(0x8),
-              b = this.createRezBehavior(0x4),
-              c = this.createRezBehavior(0x2),
-              d = this.createRezBehavior(0x1),
-              f = this.createRezBehavior('',c,b),
-              e = this.createRezBehavior('',b,d),
-              g = this.createRezBehavior('',a,c),
-              h = this.createRezBehavior('',a,d);
+            	  a = this.createRezBehavior(0x8),
+                b = this.createRezBehavior(0x4),
+                c = this.createRezBehavior(0x2),
+                d = this.createRezBehavior(0x1),
+                f = this.createRezBehavior('',c,b),
+                e = this.createRezBehavior('',b,d),
+                g = this.createRezBehavior('',a,c),
+                h = this.createRezBehavior('',a,d);
               
               this.bindRezTrigger('_xn', a,ini,end)
                   .bindRezTrigger('_xs', b,ini,end)
@@ -12818,7 +12851,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
 
   });
 
-  CC.ui.form.def('datepicker', CC.ui.form.DatepickerField);
+  CC.ui.def('datepicker', CC.ui.form.DatepickerField);
 })();
 
 
@@ -13705,7 +13738,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     }
   };
 });
-CC.ui.form.def('combo', CC.ui.form.Combox);
+CC.ui.def('combo', CC.ui.form.Combox);
 
 //~@ui/tips.js
 /**
