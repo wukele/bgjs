@@ -11059,7 +11059,7 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
 						m = this.masker = new CC.ui.Mask();
 					if (!m.target) 
 						m.attach(this.modalParent || CC.$body);
-					m.setZ((this.fastStyle('zIndex')||1002) - 1);
+					m.setZ(Math.max(this.fastStyle('zIndex')||999,1002) - 1);
 				}
 				this.center(this.modalParent);
 				this.trackZIndex.bind(this).timeout(0);
