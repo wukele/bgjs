@@ -1,0 +1,144 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+	.box {width:120px;height:100px;margin:3px;border:1px solid #CCC;float:left;cursor:move;}
+	.box-ghost {border:2px dotted #CCC;display:none;}
+	#ddwin .g-resizer-wrap {overflow:hidden;display:block;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function(){
+	 
+	 new CC.ui.Button({title:'水平移动', onclick:setDirection, dir:'h', showTo:document.body, autoRender:true});
+	 new CC.ui.Button({title:'垂直移动', onclick:setDirection, dir:'v', showTo:document.body, autoRender:true});
+	 new CC.ui.Button({title:'自由移动', onclick:setDirection, dir:false, showTo:document.body, autoRender:true});
+	 
+	 var G = CC.util.dd.Mgr;
+	 
+	 //受限范围
+	 var bounds;
+	 
+	 var cfg = {
+	 	
+	 	ctype : 'titlepanel',
+	 	
+	 	cs:'box',
+	 	
+	 	title:'拖动我',
+	 	
+	 	//指定所属拖放组
+	 	dragZoom:'所属组名',
+	 	
+	 	beforedrag : function(){
+	 		G.setBounds(bounds);
+	 	},
+	 	
+	 	//开始拖动
+	 	dragstart : function(){
+	 		this.tmpIXY = [this.view.offsetLeft, this.view.offsetTop];
+	 		this.fastStyleSet('position','absolute')
+	 		    .setXY(this.tmpIXY)
+	 		    .setOpacity(0.8);
+	 		
+	 		var g = this.pCt.byId('ghost');
+	 		g.setSize(this.getSize());
+	 		this.pCt.swap(this, g);
+	 		g.show();
+	 	},
+	 	
+	 	//拖动中
+	 	drag :  function(){
+	 		var dxy = G.getDXY(), 
+	 		    ixy = this.tmpIXY;
+	 		this.setXY(ixy[0]+dxy[0], ixy[1]+dxy[1]);
+	 	},
+	 	
+	 	//目标进入
+	 	sbover: function(c){
+	 		var g = this.pCt.byId('ghost');
+	 		g.setSize(this.getSize());
+	 		this.pCt.swap(this, g);
+	 		//交换后更新位置缓存
+	 		G.update();
+	 	},
+	 	
+	 	//目标离开
+	 	sbout : function(c){
+	 		this.setOpacity(1);
+	 	},
+	 	
+	 	//结束拖放
+	 	dragend: function(){
+	 		this.setOpacity(1)
+	 		    .fastStyleSet('position','')
+	 		    .fastStyleSet('left','')
+	 		    .fastStyleSet('top','');
+	    var g = this.pCt.byId('ghost');
+	    this.pCt.swap(this, g);
+	    g.hide();
+	 	}
+	 };
+	 
+	 
+   var win = new CC.ui.Win({
+   	
+   	id:'ddwin',
+   	
+    showTo:document.body,
+    
+    height:250,
+    
+    width:390,
+    
+    array:[
+    	cfg,cfg,cfg,cfg,cfg,
+    	{ctype:'ct', cs:'box box-ghost', id:'ghost'}
+    ]
+   });
+   
+   win.render();
+   win.center();
+   
+   win.each(function(){
+   	if(this.id !== 'ghost'){
+   		//加入目标组,即drag target组
+	   	CC.util.dd.Mgr.addComp(this, '所属组名');
+	   	
+	   	//安装拖放,即drag source
+	   	CC.util.dd.Mgr.installDrag(this);
+	   	this.setTitle(this.title+CC.uniqueID());
+    }
+   });
+   
+   var vbounds = [0,0,Math.MAX_VALUE,Math.MIN_VALUE];
+   var hbounds = [Math.MAX_VALUE,Math.MIN_VALUE,0,0];
+   
+   function setDirection(){
+   	var d = this.dir;
+   	switch(d){
+   		case 'h':
+   		  win.setSize(645,140)
+   		     .center();
+   		  bounds = hbounds;
+   		  break;
+   		case 'v':
+   		  win.setSize(130,570)
+   		     .center();
+   		  bounds = vbounds;
+   		  break;
+   		default : 
+        win.setSize(387,248)
+   		     .center();
+   			bounds = false;
+   	}
+   }
+});
+</script>

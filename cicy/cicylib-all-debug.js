@@ -61,8 +61,7 @@ if(!window.__debug)
     isGecko3 = !isSafari && ua.indexOf("rv:1.9") > -1,
     //优先检测BackCompat,因为
     //假如以后compatMode改变,也是非盒模型
-    isBorderBox = isQuirks || !isStrict,
-    
+    isBorderBox = isIE && !isStrict,
     /**是否合法EMAIL字符串.
      * 参见 CC.isMail().
      * @inner
@@ -1118,8 +1117,8 @@ function testNoForm() {
         safari3 : isSafari3,
         gecko : isGecko,
         gecko3 : isGecko3,
-        borderBox : isBorderBox,
-        opera : isOpera
+        opera : isOpera,
+        borderBox:isBorderBox
     };
     
 
@@ -1995,16 +1994,16 @@ CC.extend(Event,
 /**@private*/    
     _onContentLoad : function(){
     	var et = Event;
-    	if(et.contentReady)
-    		return;
-    	et.contentReady = true;
-    	
-    	if(et.defUIReady)
-    		et.defUIReady();
-    		
-    	for(var i=0;i<et.readyList.length;i++){
-    		et.readyList[i].call(window);
-    	}
+    	if(!et.contentReady){
+	    	et.contentReady = true;
+				
+	    	if(et.defUIReady)
+	    		et.defUIReady();
+	    		
+	    	for(var i=0;i<et.readyList.length;i++){
+	    		et.readyList[i].call(window);
+	    	}
+      }
     }
 }
 );
@@ -2963,7 +2962,7 @@ var dispMode = {visibility:'visible', display:'block'};
 
 var undefined;
 
-var NB = !CC.borderBox, Math = window.Math, parseInt = window.parseInt;
+var Math = window.Math, parseInt = window.parseInt;
 
 CC.extend(Base.prototype,
   /**@lends CC.Base.prototype*/
@@ -4129,7 +4128,7 @@ CC.extend(Base.prototype,
             if(c !== false){
                 if(c<this.minW) c=this.minW;
                 if(c>this.maxW) c=this.maxW;
-                this.fastStyleSet('width', NB?Math.max(c - this.getOuterW(true),0)+'px' : c + 'px');
+                this.fastStyleSet('width', CC.borderBox?c + 'px':Math.max(c - this.getOuterW(true),0)+'px');
                 this.width = c;
             }
             c=a.height;
@@ -4137,7 +4136,7 @@ CC.extend(Base.prototype,
                 if(c<this.minH) c=this.minH;
                 if(c>this.maxH) c=this.maxH;
                 if(c<0) a.height=c=0;
-                this.fastStyleSet('height', NB?Math.max(c - this.getOuterH(true),0)+'px' : c + 'px');
+                this.fastStyleSet('height', CC.borderBox?c + 'px':Math.max(c - this.getOuterH(true),0)+'px');
                 this.height = c;
             }
             return this;
@@ -4146,13 +4145,13 @@ CC.extend(Base.prototype,
         if(a !== false){
             if(a<this.minW) a=this.minW;
             if(a>this.maxW) a=this.maxW;
-            this.fastStyleSet('width', NB?Math.max(a - this.getOuterW(true),0)+'px' : a + 'px');
+            this.fastStyleSet('width', CC.borderBox? a + 'px':Math.max(a - this.getOuterW(true),0)+'px');
             this.width = a;
         }
         if(b !== false){
             if(b<this.minH) b=this.minH;
             if(b>this.maxH) b=this.maxH;
-            this.fastStyleSet('height', NB?Math.max(b - this.getOuterH(true),0)+'px' : b + 'px');
+            this.fastStyleSet('height', CC.borderBox? b + 'px':Math.max(b - this.getOuterH(true),0)+'px');
             this.height=b;
         }
 		
@@ -4336,14 +4335,14 @@ CC.extend(Base.prototype,
         var w = Math.max(v.offsetWidth, v.clientWidth);
         if(!w){
             w = parseInt(this.fastStyle('width'), 10) || 0;
-            if(NB)
+            if(!CC.borderBox)
                 w += this.getOuterW();
         }
         
         var h = Math.max(v.offsetHeight, v.clientHeight);
         if(!h){
             h = parseInt(this.fastStyle('height'), 10) || 0;
-            if(NB)
+            if(!CC.borderBox)
                 h += this.getOuterH();
         }
         
@@ -5157,7 +5156,7 @@ CC.ui = /**@lends CC.ui*/{
 		if(!t)
 			return Base.create(opt);
 			
-		else delete opt.ctype;
+		//else delete opt.ctype;
 			
 		return new this.ctypes[t](opt);
 	}
@@ -5315,6 +5314,8 @@ CC.util = {};
 		  },
 /**
  * 矩形移出矩域
+ * @param {CC.util.d2d.Rect} rect
+ * @param {Boolean} update 是否更新
  */
 		  remove : function(r, update){
 		  	delete r.pZoom;
@@ -5322,6 +5323,25 @@ CC.util = {};
 		  	if(update)
 		  		this.update();
 		  	return this;
+		  },
+/**
+ * 是否包含某矩形(域),深层检测
+ */		  
+		  contains : function(r){
+		  	var c = false, ch;
+		  	for(var i=0,rs=this.rects,len=rs.length;i<len;i++){
+		  		ch = rs[i];
+		  		if(ch === r){
+		  			c = this;
+		  			break;
+		  		}
+		  		if(ch.contains){
+		  			c = ch.contains(r);
+		  			if(c)
+		  				break;
+		  		}
+		  	}
+		  	return c;
 		  },
 		  
 	/**
@@ -5387,9 +5407,14 @@ CC.util = {};
  * zIndex
  */
   	z : -1,
-  	
+/**
+ * @name CC.Base#ownRect
+ * 如果控件已注册拖放区域,引用指向封装该控件的矩形CC.util.d2d.ComponentRect
+ * @type {CC.util.d2d.ComponentRect}
+ */
   	initialize : function(comp){
   		this.comp = comp;
+  		comp.ownRect = this;
   		this.update();
   	},
 
@@ -5415,6 +5440,7 @@ CC.util = {};
  * 解除与控件关联
  */
   	destory : function(){
+  		delete this.comp.ownRect;
   		this.comp = null;
   	}
   });
@@ -5425,7 +5451,7 @@ CC.util = {};
  * drag & drop实现有两种方法,
  * <li>基于空间划分检测
  * <li>一种基于浏览器自身的mouse over + mouse out检测
- * 这里采用第二种
+ * 这里采用第一种
  * @namespace CC.util.dd
  */
  
@@ -5440,7 +5466,7 @@ var E = CC.Event,
     doc = _w.document,
     
     M = _w.Math,
-	
+	  
 	  //位于上方的控件
 	  onEl = null,
 	
@@ -5473,10 +5499,13 @@ var E = CC.Event,
 		
 		//拖放事件是否已绑定,避免重复绑定
 		binded = false,
-		
+    
+    //拖放控件是否位于当前域中
+    ownZoom = false,		
+    
 		//[MAX_DX,MIN_DX,MAX_DY,MIN_DY]
 		bounds = false;
-
+    
 		function noSelect(e){
 			e = e || window.E;
 			E.stop(e);
@@ -5503,6 +5532,15 @@ var E = CC.Event,
 	          E.on(doc, "mousemove", drag);
 	          E.on(doc, "selectstart", noSelect);
 	          zoom = mgr.$(this.dragZoom);
+	          if(zoom){
+	          	if(this.ownRect){
+	          		ownZoom = zoom.contains(this.ownRect);
+	          		if(ownZoom){
+	          			ownZoom.remove(this.ownRect);
+	          		}
+	          	}
+	          	zoom.update();
+	          }
 	          if(__debug && zoom) console.log('当前zoom:',this.dragZoom||zoom);
           }
 			  }
@@ -5521,7 +5559,6 @@ var E = CC.Event,
 		         if(d[1]<b[3]) d[1]=b[3];
 		         else if(d[1]>b[2]) d[1]=b[2];
 		      }
-		      return d;
 		}
     
 /**@inner*/
@@ -5546,7 +5583,7 @@ var E = CC.Event,
 			  //区域检测
 			  R = zoom.isEnter(P);
 			  
-			  if(R) {
+			  if(R && R.comp !== dragEl) {
 			  	if(onEl !== R.comp){
 			  		//首次进入,检测之前
 			  		if(onEl !== null){
@@ -5562,7 +5599,8 @@ var E = CC.Event,
 			  		}
 			  	}
 			  	//目标内移动
-			  	onEl.sbmove(dragEl, e);
+			  	if(onEl)
+			  		onEl.sbmove(dragEl, e);
 			  }else{
 			  	if(onEl!== null){
 			  		onEl.sbout(dragEl, e);
@@ -5592,9 +5630,16 @@ var E = CC.Event,
 		      	dragEl.dragend(e);
 		      	ing = false;
 		      }
-		      binded = false;
+		      binded = false;		      
 		      onEl = null;
-		      zoom = null;
+		      if(zoom){
+		        //重新将自己放入域
+			      if(ownZoom){
+			      	ownZoom.add(dragEl.ownRect);
+			      	ownZoom = false;
+			      }
+			      zoom = null;
+		      }
 		      R = null;
 		      if(__debug) console.log('dragend         mouse delta x,y is ',DXY, ',mouse event:',e);
 	      }
@@ -5654,7 +5699,9 @@ var E = CC.Event,
  */
 		  	setBounds : function(arr){
 		  		bounds = arr;
+		  		return this;
 		  	},
+		  	
 /**
  * 获得受限区域
  */
@@ -5753,6 +5800,16 @@ var E = CC.Event,
 		  	getTarget : function(){
 		  	  return onEl;
 		  	},
+		  	
+/**
+ * 更新当前拖动zoom
+ */
+    update : function(){
+    	if(zoom)
+    		zoom.update();
+    	return false;
+    },
+    
 /**
  * 给控件安装可拖动功能,安装后控件component具有
  * component.draggable = true;
@@ -5819,7 +5876,7 @@ var E = CC.Event,
 			        	   	hidden:true
 			        	  });
 			    	}
-			    	b ? y.appendTo(document.body) : y.del();
+			    	b ? y.appendTo(doc.body) : y.del();
 			    	y.display(b);
 			    },
 /**
@@ -5841,7 +5898,7 @@ var E = CC.Event,
 			
 			      if(b && CC.ie)
 			        r.setSize(CC.getViewport());
-			      b ? r.appendTo(document.body) : r.del();
+			      b ? r.appendTo(doc.body) : r.del();
 			      r.display(b);
 			    }
 		  	}
@@ -5876,7 +5933,7 @@ var E = CC.Event,
 		getDDProvider : function(){
 			return mgr;
 		},
-
+    
 /**
  * 如果已安装拖放,
  * 函数在鼠标按下时触发
@@ -9052,7 +9109,6 @@ CC.create('CC.layout.CardLayout', B, {
 	wrCS : 'g-card-ly-ct',
 	layoutChild : function(item){
 		var sz = this.ct.wrapper.getSize(true);
-		console.trace();
 		item.setSize(sz);
 	}
 });
