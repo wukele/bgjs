@@ -1,0 +1,221 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="../cicylib-all-debug.js"></script>
+        <link rel="stylesheet" href="../default/global.css" type="text/css"/>
+        <link rel="stylesheet" href="../default/lan_share.css" type="text/css"/>
+        <link rel="stylesheet" href="resources/example.css" type="text/css"/>
+        <style>
+/**Form**/
+.g-form {
+	margin:10px 0 0 20px;
+	padding:0 0 85px;
+}
+.g-formfields{ list-style-type:none; margin:0;padding:0;width:100%;text-align:left;float:left;position:relative;}
+
+.g-formfields .g-form-ln label.desc 
+{border:medium none;color:#222222;display:block;font-weight:bold;line-height:150%;padding:0 0 2px;}
+
+.g-formfields .g-form-ln {display:block;margin:0;padding:4px 5px 2px 9px;width:62%;position:relative;float:left;}
+
+.g-form-mdy {background-repeat:no-repeat;background-position:left top;}
+
+.g-form-error {background-repeat:repeat-x;background-position:center bottom;}
+
+.g-form-el {margin-right:3px;}
+.g-form-ln .field-ct .g-form-el{display:block;float:left;margin:0 5px 5px 0;}
+        </style>
+    </head>
+    <body></body>
+</html>
+<script type="text/javascript">
+
+CC.Tpl.def('CC.ui.form.FieldLine', '<li class="g-form-ln"><label class="desc" id="_tle" ><span class="req">*</span></label><div id="_elCtx" class="field-ct"></div></li>')
+      .def('CC.ui.form.FieldLayer', '<ul class="g-formfields"></ul>');
+
+var C = {
+	'1c':['width','96%'],
+	'2c':['width','46%'],
+	'3c':['width','30%'],
+	'np':['padding','0px'],
+	'nb':['border','0px'],
+	'fl':['float','left'],
+	'fr':['float','right'],
+	'cb':['clear','both']
+};
+var S = /\s/;
+
+CC.create('CC.layout.FormLayout', CC.layout.Layout, {
+	layoutChild : function(c){
+		if(!c.rendered && this.lyInf){
+			
+			var ct = this.ct;
+			var cs = this.lyInf.split(S);
+			var s, m,v;
+			ct.fastStyleSet('visibility', 'hidden');
+			for(var i=0,len=cs.length-1;i<len;i++){
+				s = cs[i];
+				if(s.charAt(0)==='-'){
+					s = s.substring(1);
+          m = C[s];
+          if(m)
+						c.setStyle(m[0], m[1]);
+				}else {
+          m = C[s];
+          if(m)
+						ct.setStyle(m[0], m[1]);
+				}
+			}
+			ct.fastStyleSet('visibility', '');
+		}
+	},
+	
+	onLayout : function(){
+		var cs = this.lyInf.split(S);
+		var cf = [], ct = this.ct, s;
+		for(var i=0,len=cs.length-1;i<len;i++){
+			s = cs[i];
+			if(s.charAt(0)==='-'){
+					s = s.substring(1);
+          m = C[s];
+          if(m) cf.push(m);
+      }else {
+          m = C[s];
+          if(m)
+						ct.setStyle(m[0], m[1]);
+      }
+     }
+     
+     for (i=0,cs=ct.children,len=cs.length-1; i < len; i++) {
+      	s = chs[i];
+        //this.layoutChild(ch);
+        if (!s.rendered) 
+         s.render();
+      }
+	
+	 }
+});
+
+CC.layout.def('foo', CC.layout.FormLayout);
+
+CC.create('CC.ui.form.FieldLine', CC.ui.ContainerBase, function(spr) {
+	return {
+		labelNode: '_tle',
+		labelFor: 0,
+		ct: '_elCtx',
+		title: false,
+		layout:'foo',
+		initComponent: function() {
+			//由layout初始化子项
+			if(!this.lyCfg)
+			this.lyCfg = {};
+
+			if(this.array){
+				var items = this.array;
+				delete this.array;
+				if(!this.lyCfg)
+				this.lyCfg = {};
+				this.lyCfg.items = items;
+			}
+
+			if(this.lyInf){
+				this.lyCfg.lyInf = this.lyInf;
+				delete this.lyInf;
+			}
+
+			spr.initComponent.call(this);
+
+			if (this.title === false && this.labelNode !== false) {
+				this.fly(this.labelNode).display(0).unfly();
+			}
+		},
+
+		add: function(field, cfg) {
+			spr.add.call(this, field, cfg);
+			if(this.labelFor !== false && this.$(this.labelFor) === field){
+				if(field.element)
+				this.dom(this.labelNode).htmlFor = field.element.id;
+			}
+		}
+	};
+});
+
+CC.ui.def('fieldline',CC.ui.form.FieldLine);
+
+CC.create('CC.ui.form.FieldLayer', CC.ui.form.FieldLine, {
+	title : false,
+	labelFor : false,
+	labelNode : false,
+	ItemClass : CC.ui.form.FieldLine
+});
+
+
+CC.ui.def('fieldlayer', CC.ui.form.FieldLayer);
+
+CC.ready(function(){
+
+	var layer = new CC.ui.form.FieldLayer({});
+
+
+	var layer = new CC.ui.form.FieldLayer({
+		id: 'aa',
+		array: [
+		{title: '单行文本', lyInf:'1c -1c', array:[{ctype:'text'}]},
+		{title:false, ctype:'fieldlayer', lyInf:'1c -2c',
+		 array:[
+		  {title: '第一行文本', array:[{ctype:'text'}]},
+		  {title: '第二行文本', array:[{ctype:'text'}]}
+		 ]
+		},
+		{title:'Checkbox元素', lyInf:'-3c 1c', array:[
+			{ ctype:'fieldlayer', 
+				array:[
+				 { title:false,lyInf : '1c np',
+					 array:[ 
+					  {title: 'Checkbox元素',ctype: 'checkbox'},
+					  {title: 'Checkbox元素',ctype: 'checkbox'},
+					  {title: 'Checkbox元素',ctype: 'checkbox',disabled:true}
+					 ]
+				 }
+				]
+			},
+			{ ctype:'fieldlayer', 
+				array:[
+				  { title:false,lyInf : '1c np',
+					  array:[ 
+					   {title: 'Checkbox元素',ctype: 'checkbox'},
+					   {title: 'Checkbox元素',ctype: 'checkbox'},
+					   {title: 'Checkbox元素',ctype: 'checkbox',disabled:true}
+					  ]
+				  }
+				]
+			},
+			{ ctype:'fieldlayer', array:[
+				{ title:false,lyInf : '1c',
+					array:[ 
+					{title: 'Checkbox元素',ctype: 'checkbox'},
+					{title: 'Checkbox元素',ctype: 'checkbox'},
+					{title: 'Checkbox元素',ctype: 'checkbox',disabled:true}]
+				}
+				]
+			}
+			]
+		}
+	]});
+
+	var w = new CC.ui.Dialog({
+		title: '库表单控件',
+		showTo: document.body,
+		height: 243,
+		width: 536,
+		buttons : [{
+			title: '取消'
+		}, {
+			title: '确定'
+		}]
+	});
+
+	w.add(layer).render();
+	w.center();
+});
+</script>
