@@ -16,7 +16,7 @@
 <script>
 		CC.ready(function(){
 			var Panel  = CC.ui.Panel;
-			var layoutCfg = {
+			var lyCfg = {
 				items : [
 				  
 				]
@@ -24,13 +24,13 @@
 			
 			var win = new CC.ui.Win({
 				layout:'border',
-				layoutCfg : {
+				lyCfg : {
 					items : [
-					 {ctype:'panel', height:40, layoutInf:{split:true, dir:'north', collapsed:true}},
-					 {ctype:'panel', height:40, layoutInf:{split:true, dir:'south'}},
-					 {ctype:'panel', width:125, layoutInf:{split:true, dir:'east',autoCollapseWidth:80,collapsed: false}},
-					 {ctype:'panel', width:125, layoutInf:{split:true, dir:'west',collapsed: true}, maxW:300},
-					 {ctype:'panel', layoutInf:{dir:'center'}}
+					 {ctype:'panel', height:40, lyInf:{split:true, dir:'north', collapsed:true}},
+					 {ctype:'panel', height:40, lyInf:{split:true, dir:'south'}},
+					 {ctype:'panel', width:125, lyInf:{split:true, dir:'east',autoCollapseWidth:80,collapsed: false}},
+					 {ctype:'panel', width:125, lyInf:{split:true, dir:'west',collapsed: true}, maxW:300},
+					 {ctype:'panel', lyInf:{dir:'center'}}
 					]
 				},
 				showTo:document.body
