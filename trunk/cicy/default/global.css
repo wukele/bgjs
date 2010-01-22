@@ -644,7 +644,8 @@ td .selday a{	border:1px solid darkred;font-weight:bold;padding:1px 4px;}
 .g-res-unresize .g-res-e,.g-res-unresize .g-res-s,.g-res-unresize .g-res-w,.g-res-unresize .g-res-n,.g-res-unresize .g-res-sw,.g-res-unresize .g-res-es,.g-res-unresize .g-res-wn,.g-res-unresize .g-res-ne{cursor:default;}
 
 .g-datepicker-field{width:230px;position:relative;height:20px;}
-.g-datepicker-field input{height:20px;border:1px solid #C0BBB4;border-right:0 none;display:block;padding:2px 0 0 3px;float:left;}
-.g-datepicker-field .trigger{background-position:-183px -48px;display:block;height:20px;width:22px;float:left;}
+.g-datepicker-field input{height:20px;border:1px solid #C0BBB4;border-right:0 none;display:block;padding:2px 22px 0 3px;width:100%;}
+.g-datepicker-field .trigger{background-position:-183px -48px;display:block;height:20px;width:22px;position:absolute;top:1px;right:5px;}
+:lang(zh) .g-datepicker-field .trigger{top:0;right:0;}
 .g-datepicker-field .triggerOn,.g-datepicker-field-focus .trigger, .g-datepicker-field-ctx .trigger{background-position:-160px -48px;}
 .g-datepicker-field-focus input {background-color:rgb(255,255,204);}
