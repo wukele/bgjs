@@ -16,8 +16,10 @@
 .g-form-ln label.desc 
 {border:medium none;color:#222222;display:block;font-weight:bold;line-height:150%;padding:0 0 2px;}
 
+.g-form-hln label.desc {float:left;text-align:right;padding:3px 3px 1px 0;}
+:lang(zh) .g-form-hln label.desc{padding:1px 4px 2px 0;}
 .g-form-ln {display:block;margin:0;padding:4px 5px 2px 9px;width:62%;position:relative;float:left;}
-
+.g-form-ln .field-ct{position:relative;}
 .g-form-mdy {background-repeat:no-repeat;background-position:left top;}
 
 .g-form-error {background-repeat:repeat-x;background-position:center bottom;}
@@ -25,357 +27,155 @@
 .g-form-el {margin-right:3px;}
 .g-form-ln .field-ct .g-form-el{display:block;margin:0 5px 5px 0;}
 
-.formRow {border-right:1px solid #CBCBCB;float:left;height:220px;padding-left:16px;}
+
+.g-form-ln label .req {display:none;}
+.g-fieldset {float:left;border:1px solid #E0E0E0;padding:10px;margin-bottom:10px;}
+.g-fieldset legend{font-weight:bold;color:#001119;font-size:12px;}
         </style>
     </head>
     <body></body>
 </html>
 <script type="text/javascript">
-	
-var C = {
-	'1c':['width','96%'],
-	'2c':['width','46%'],
-	'3c':['width','30%'],
-	'4c':['width','20%'],
-	'5c':['width','10%'],
-	'np':['padding','0px'],
-	'nb':['border','0px'],
-	'fl':['float','left'],
-	'fr':['float','right'],
-	'cb':['clear','both'],
-	'pdn':function(c, v){
-		      c.fastStyleSet('padding', v);
-		    },
-	'pa':['position', 'absolute'],
-	'pr':['position', 'relative']
-};
-
-var S = /\s+/, undefined;
-var BX  = CC.borderBox;
-CC.create('CC.layout.CSSLayout', CC.layout.Layout, {
-	
-	deffer:false,
-	
-	onLayout : function(){
-	 if(!this.layouted){
-	 	var ct = this.ct;
-	 	if(this.lyInf){
-		 	this.parse(ct, this.lyInf);
-	  }
-	  
-	  for(var i=0,ch,chs=ct.children,len=chs.length;i<len;i++){
-		  ch=chs[i];
-		  if(typeof ch.lyInf === 'string')
-		  	this.parse(ch, ch.lyInf);
-		  if(!ch.rendered)
-			  ch.render();
-		}
-		
-    this.layouted = true;
-	 }
-	},
-	
-	forceLayout : function(){
-		this.layouted = false;
-		this.doLayout();
-	},
-	
-/**
- * @param {CC.Base}
- * @param {String} pattern 样式
- * @param {Boolean} borderBox 是否只对支持borderbox的浏览器应该该样式
- */
-	parse : function(ct, cs){
-		var cf, r, 
-		    cs = cs.split(S),
-		    i,len,rv, rs = this.rules,
-		    wc,d,v;
-		 
-		for(i=0,len=cs.length;i<len;i++){
-			r = cs[i];
-			
-		  //parse r=v
-			d = r.indexOf('=');
-			if(d>0){
-					v = r.substring(d+1);
-					r = r.substr(0, d);
-		  }else v = false;
-		  
-			//parse -child
-			if(r.charAt(0)==='-'){
-				r = r.substring(1);
-				if(r.charAt(0) === '$'){
-					if(!BX)
-						continue;
-					r = r.substring(1);
-			  }
-				rv = rs&&rs[r] || C[r];
-				
-				if(rv){
-				  if(!cf)
-					  cf = [];
-				  cf.push(rv);
-					cf.push(v);
-				}
-			}
-			
-			//
-			else {
-				// parse $ border box only
-				if(r.charAt(0) === '$'){
-					if(BX){
-					  r = r.substring(1);
-						rv = rs&&rs[r] || C[r];
-						if(rv)
-							this.applyRule(ct, rv, v);
-					}
-				}else {
-					rv = rs&&rs[r] || C[r];
-					if(rv)
-						this.applyRule(ct, rv, v);
-				}
-			}
-		}
-		
-		if(cf && cf.length>0 && ct.children){
-			for (i=0,cs=ct.children,len=cs.length; i < len; i++) {
-				s = cs[i];
-				for(var k=0,m=cf.length;k<m;k+=2){
-           this.applyRule(s, cf[k], cf[k+1]);
-				}
-			}
-	  }
-	},
-	
-	applyRule : function(c, rv, v){
-		//array
-		if(rv.length){
-		  c.setStyle(rv[0], v||rv[1]);
-		}
-		
-		//object
-		else if(typeof rv === 'object'){
-			for(var k in rv)
-				c.setStyle(k, rv[k]);
-		}
-		
-		//string
-		else if(typeof rv === 'string'){
-			if(rv.charAt(0) !== '.'){
-				//continue parsing
-				this.parse(c, rv);
-			}else {
-				//single string
-				if(rv.charAt(0) === '.'){
-				  c.addClass(rv.substring(1));
-			  }
-			}
-		}
-		//function
-		else if(typeof rv === 'function'){
-			rv(c, v, this);
-		}
-	},
-	
-	defRule : function(k , r){
-		var rs = this.rules;
-		if(!rs)
-			rs = this.rules = {};
-		
-		if(typeof k === 'object'){
-			for(var i in k)
-				rs[i] = k[i];
-		}else {
-			rs[k] = r;
-		}
-		return this;
-	}
-});
-
-CC.layout.def('css', CC.layout.CSSLayout);
-
-CC.layout.CSSLayout.defRule = function(k, name, v){
-	C[k] = [name, v];
-	return this;
-};
 
 
 /**
  *
  */
-CC.Tpl.def('CC.ui.form.FieldLine', '<li class="g-form-ln"><label class="desc" id="_tle" ><span class="req">*</span></label><div id="_ctx" class="field-ct"></div></li>')
-      .def('CC.ui.form.FieldLayer', '<ul class="g-formfields"></ul>');
+CC.Tpl.def('CC.ui.form.Line', '<li class="g-form-ln"><label class="desc" id="_lbl"><span id="_tle"></span><span class="req" id="_req">*</span></label><div id="_ctx" class="field-ct"></div></li>')
+      .def('CC.ui.form.Layer', '<ul class="g-formfields"></ul>')
+      .def('CC.ui.form.FieldsetUL', '<fieldset class="g-fieldset g-corner"><legend id="_tle">标题栏</legend><div id="_ctx" class="fieldset-ct"></div><div class="g-clear"></div></fieldset>');
 
 
-CC.create('CC.ui.form.FieldLine', CC.ui.ContainerBase, function(spr) {
+CC.create('CC.ui.form.Line', CC.ui.ContainerBase, function(spr) {
 	return {
-		labelNode: '_tle',
+/**
+ * 指明Label结点ID,不存在时设为false
+ * @type {String}
+ */
+		labelNode: '_lbl',
+    
+    hlabel:false,
+    
+    hlabelCS:'g-form-hln',
+    
+/**
+ * 如果字段是必须的,属性指明用于修饰"必须"字段的结点
+ */
+		reqNode : '_req',
+
+/**
+ * 域中标签的htmlFor指向的子项id,默认为0,为首级第一个子项
+ */
 		labelFor: 0,
+		
 		ct: '_ctx',
+		
 		title: false,
-		layout:'css',
+		
 		initComponent: function() {
-			//由layout初始化子项
-			if(!this.lyCfg)
-				this.lyCfg = {};
-
-			if(this.array){
-				var items = this.array;
-				delete this.array;
-				this.lyCfg.items = items;
-			}
-
-			if(this.lyInf){
-				this.lyCfg.lyInf = this.lyInf;
-				delete this.lyInf;
-			}
-
 			spr.initComponent.call(this);
-
+      
+      if(this.hlabel)
+      	this.addClass(this.hlabel);
+      	
 			if (this.title === false && this.labelNode !== false) {
-				this.fly(this.labelNode).display(0).unfly();
+				var d = this.dom(this.labelNode);
+				d.parentNode.removeChild(d);
 			}
+			
+/**
+ * @name CC.ui.form.FieldLI
+ * @property {Boolean} required 值是否必须,
+ * 该属性在基类中只起修饰作用,并无验证功能,
+ * 并且当属性为真时,存在结点id为this.reqNode用于显示"必须"提示符.
+ */
+			if(this.required)
+				CC.fly(this.reqNode).show().unfly();
 		},
 
 		add: function(field, cfg) {
 			spr.add.call(this, field, cfg);
 			if(this.labelFor !== false && this.$(this.labelFor) === field){
-				if(field.element)
-				this.dom(this.labelNode).htmlFor = field.element.id;
+				if(field.element){
+				 var lbl =  this.dom(this.labelNode);
+				 if(lbl)
+				 	lbl.htmlFor = field.element.id;
+				}
 			}
 		}
 	};
 });
 
-CC.ui.def('fieldline',CC.ui.form.FieldLine);
 
-CC.create('CC.ui.form.FieldLayer', CC.ui.form.FieldLine, {
-	title : false,
-	labelFor : false,
-	labelNode : false,
-	ItemClass : CC.ui.form.FieldLine
+
+CC.ui.def('fieldline',CC.ui.form.Line);
+
+CC.create('CC.ui.form.Layer', CC.ui.ContainerBase, {
+	ItemClass : CC.ui.form.Line,
+	ct: '_ctx'
 });
 
+CC.ui.def('formlayer', CC.ui.form.Layer);
 
-CC.ui.def('fieldlayer', CC.ui.form.FieldLayer);
+CC.ui.form.Fieldset = function(opt){
+	return new CC.ui.form.Layer(CC.extendIf(opt, {
+		template:'CC.ui.form.FieldsetUL',
+		ItemClass : CC.ui.form.Layer,
+		ct: '_ctx'
+	}));
+};
+
+
+CC.ui.form.Line.prototype.ItemClass = CC.ui.form.Layer;
+
+CC.ui.def('fieldset',CC.ui.form.Fieldset);
 
 CC.ready(function(){
-
-	var layer = new CC.ui.form.FieldLayer({
-		id: 'aa',
+  
+	var layer = new CC.ui.form.Layer({
 		array: [
-		{title: '单行文本', lyInf:'1c -1c', array:[{ctype:'text'}]},
-		{title:false, ctype:'fieldlayer', lyInf:'1c -3c',
-		 array:[
-		  {title: '第一列文本', lyInf:'-1c', array:[{ctype:'text'},{ctype:'text'},{ctype:'text'}]},
-		  {title: '第二列文本', array:[{ctype:'combo', array:[
-				  			{title:'disabled item',icon:'iconRef',disabled:true},
-								{title:'粉红色',icon:'iconUser'},
-								{title:'蓝色',icon:'iconEdit'},
-								{title:'清除记录',icon:'iconLeaf'},
-								{title:'粉红色',icon:'iconTabs'},
-								{title:'蓝色',icon:'iconUser'},
-								{title:'清除记录',icon:'iconEdit'}
-	  	         ]
-	  	}]},
-		  {title: '第三列文本', array:[{ctype:'text'}]}
-		 ]
-		},
-		{title:'Checkbox元素,三组', lyInf:'-3c 1c', array:[
-			{ ctype:'fieldlayer', 
-				array:[
-				 { title:false,lyInf : '1c np',
-				 	 ItemClass:'checkbox',
-					 array:[ 
-					  {title: 'Checkbox元素'},
-					  {title: 'Checkbox元素'},
-					  {title: 'Checkbox元素',disabled:true}
-					 ]
-				 }
-				]
-			},
-			{ ctype:'fieldlayer', 
-				array:[
-				  { title:false,lyInf : '1c np',
-				  	ItemClass:'checkbox',
-					  array:[ 
-					   {title: 'Checkbox元素'},
-					   {title: 'Checkbox元素'},
-					   {title: 'Checkbox元素',disabled:true}
-					  ]
-				  }
-				]
-			},
-			{ ctype:'fieldlayer', array:[
-				{ title:false,lyInf : '1c',
-					ItemClass:'checkbox',
-					array:[ 
-					{title: 'Checkbox元素'},
-					{title: 'Checkbox元素'},
-					{title: 'Checkbox元素',disabled:true}]
-				}
-				]
+		
+		{title: '单行文本', hlabel:true, css:'^1c', array:[{ctype:'text'}]},
+		
+		{css:'1c ^c:42', array:[
+			{ctype:'fieldset', css:'^1c', array:[{ctype:'text'},{ctype:'text'}]},
+			{ctype:'fieldset', css:'^1c $mg:0,5', array:[{ctype:'text'},{ctype:'text'}]}
+		]},
+		
+		{css:'1c ^1c', array:[
+		
+			{ctype:'fieldlayer', css:'1c ^w:auto',
+			 array:[
+			  {css:'pdl:0', array:[{ctype:'fieldset', title: '第一列文本', array:[{ctype:'text'},{ctype:'text'},{ctype:'text'}]}]},
+			  {title: '第二列文本', array:[{ctype:'combo', array:[
+					  			{title:'disabled item',icon:'iconRef',disabled:true},
+									{title:'粉红色',icon:'iconUser'},
+									{title:'蓝色',icon:'iconEdit'},
+									{title:'清除记录',icon:'iconLeaf'},
+									{title:'粉红色',icon:'iconTabs'},
+									{title:'蓝色',icon:'iconUser'},
+									{title:'清除记录',icon:'iconEdit'}
+		  	         ]
+		  	}]},
+			  {title: '第三列文本', css:'^c:100',array:[{ctype:'text'}]}
+			 ]
 			}
-			]
-		},
-		{title:'Radio元素,两组',lyInf:'-4c 1c', array:[
-			{ ctype:'fieldlayer', 
-				array:[
-				 { title:false,lyInf : '1c np',
-				 	 ItemClass:'radio',
-					 array:[ 
-					  {title: 'Radio元素'},
-					  {title: 'Radio元素'}
-					 ]
-				 }
-				]
-			},
-			{ ctype:'fieldlayer', 
-				array:[
-				 { title:false,lyInf : '1c np',
-				 	 ItemClass:'radio',
-					 array:[ 
-					  {title: 'Radio元素'},
-					  {title: 'Radio元素'}
-					 ]
-				 }
-				]
-			},
-			{ ctype:'fieldlayer', 
-				array:[
-				 { title:false,lyInf : '1c np',
-				 	 ItemClass:'radio',
-					 array:[ 
-					  {title: 'Radio元素'},
-					  {title: 'Radio元素'}
-					 ]
-				 }
-				]
-			},
-			{ ctype:'fieldlayer', 
-				array:[
-				  { title:false,lyInf : '1c np',
-				  	ItemClass:'radio',
-					  array:[ 
-					   {title: 'Radio元素'},
-					   {title: 'Radio元素',disabled:true}
-					  ]
-				  }
-				]
-			}
-			]
-		},
-		{title: '日期选择', lyInf:'1c -fl', array:[{ctype:'datepicker'}, {ctype:'button', title:'确定'}]},
-		{title: '多行文本', lyInf:'1c -1c', array:[{ctype:'textarea', height:100}]}
-	]});
+		]}
+		
+		]
+	  });
 
 	var w = new CC.ui.Dialog({
 		title: '库表单控件',
 		showTo: document.body,
+		hidden:true,
+		array:[layer],
+		width:500,
+		height:640,
 		buttons : [{title: '取消'}, {title: '确定'}]
 	});
 
-	w.add(layer).render();
-	w.setSize(500,545).show().center();
+	w.render();
+	w.show().center();
 });
 </script>
