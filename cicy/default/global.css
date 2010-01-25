@@ -26,7 +26,7 @@ a.g-win-clsbtn:hover { background-position:-129px -49px;}
 
 /***************************************************************/
 .selected {cursor:default !important;}
-
+.g-corner {-webkit-border-radius:4px;-moz-border-radius:4px;}
 .g-icoFld {background-position:0 0;}
 .g-icoOpn {background-position:-16px 0;top:9px;}
 .g-icoFld, .g-icoOpn { display:block; height:16px; width:16px;font-size:1px;}
@@ -112,7 +112,7 @@ white-space:nowrap;
 .g-btn td{border:none;padding:0;}
 .g-btn-l,.g-btn-r{width:4px;height:23px;font-size:1px !important;}
 .g-btn-c{font-size:12px;text-align:center;vertical-align:middle;white-space:nowrap;cursor:pointer;overflow:hidden;}
-.g-btn-c button {	font-style:normal;	overflow:visible;	background:none;	border:0 none;	width:100%;	margin:0;	cursor:pointer;  line-height:normal;  padding:3px 0px 0px 2px;}
+.g-btn-c button {	font-style:normal;	overflow:visible;	background:none;	border:0 none;	width:100%;	margin:0;	cursor:pointer;vertical-align:middle; padding:2px 3px;}
 :lang(zh) .g-btn-c button {padding:0 2px 0;}
 .g-btn-icon .g-btn-c button {background-position:0 3px; background-repeat:no-repeat; padding:4px 0px 0px 18px;}
 :lang(zh) .g-btn-icon .g-btn-c button{padding:0 0 0 16px;background-position:0 0px;}
@@ -449,7 +449,8 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-loading .clsFd,.sIcoLoading {height:15px;width:15px;background:url(loading.gif) no-repeat !important;}
 .gSLoading{top: 24px; right: 10px;border:1px solid #CEA042 !important; position:absolute; padding:2px 5px 2px 25px;background-position:2px 2px !important;width:auto;color:#333; cursor:default; background-color:#FFFDD2 !important;}
 
-.g-radio, .g-checkbox {	white-space:nowrap;}
+.g-checkbox {	white-space:nowrap;}
+.g-checkbox:focus {	outline:1px dotted;}
 .g-radio .chkbk,.g-checkbox .chkbk {
 	height:13px;
 	width:13px;
