@@ -124,41 +124,8 @@ white-space:nowrap;
 .g-btn-over .g-btn-c{background-position:0 -391px;}
 .g-btn-over .g-btn-l{background-position:-8px -48px;}
 .g-btn-over .g-btn-r{background-position:-12px -48px;}
-/*
-.g-vbtn .g-btn-c{background-position:0px -414px;}
-.g-vbtn .g-btn-l{background-position:0px -48px;}
-.g-vbtn .g-btn-r{background-position:-4px -48px;}
-*/
-.g-vbtn td{border:none;padding:0;}
-.g-vbtn .g-btn-c button {	padding:0px;text-align:center;vertical-align:middle;writing-mode:tb-rl;}
-.g-vbtn .g-btn-c{width:23px;}
-.g-vbtn .g-btn-l, .g-vbtn .g-btn-r {width:23px;height:4px;}
-.g-vbtn-icon .g-btn-c button{padding-top:18px;background-position:2 0px; background-repeat:no-repeat;}
-.g-vbtn-notxt .g-btn-c button{height:16px;width:16px;background-position:1 0px;padding:0;}
-:lang(zh) .g-vbtn-notxt .g-btn-c button{background-position:0 0;}
 
-.g-vbtn-over .g-btn-c{background-position:-554px 0;}
-.g-vbtn-over .g-btn-l{background-position:-304px -62px;}
-.g-vbtn-over .g-btn-r{background-position:-304px -66px;}
-
-.g-vbtn-click .g-btn-c{background-position:-528px 0;}
-.g-vbtn-click .g-btn-l{background-position:-304px -70px;}
-.g-vbtn-click .g-btn-r{background-position:-304px -74px;}
-
-.g-bigbar { background-position:0 -225px; overflow:hidden;height:38px;}
-.g-bigbar .auto-lefmov, .g-bigbar .auto-rigmov{width:20px;height:15px;top:7px;}
-.g-bigbar .auto-lefmov {left:0px;background-position:-62px -1px;}
-.g-bigbar .auto-lefmov:hover {background-position:-86px -7px;}
-.g-bigbar .auto-lefmov-disabled {background-position:-62px -65px !important;}
-.g-bigbar .auto-margin{margin-top:4px;}
-.g-bigbar .auto-rigmov {right:0px;background-position:-30px -17px;}
-:lang(zh) .g-bigbar .auto-rigmov {right:-20px;}
-.g-bigbar .auto-rigmov:hover {background-position:-86px -28px;}
-.g-bigbar .auto-rigmov-disabled {background-position:-33px -65px !important;}
-
-.g-bigbar .auto-offset { height:38px;}
-
-.g-baritem {float:left;cursor:pointer !important;}
+.g-baritem {display:inline;cursor:pointer !important;}
 .g-baritem-menuDwn .g-btn-c, .g-baritem-over .g-btn-c{background-position:0px -1225px;}
 .g-baritem-click .g-btn-c{background-position:0px -1282px;}
 .g-baritem .g-btn-l, .g-baritem .g-btn-r {height:29px;width:4px;}
@@ -170,8 +137,14 @@ white-space:nowrap;
 .g-baritem-click .btnDrop {background-position:-0px -1282px;top:1px;}
 .g-baritem-over .g-tle {color:#000000;}
 
-.g-smallbar{background-position:0px -781px;}
-.g-smallbar-item{margin-top:3px;}
+
+.g-tbar{overflow:hidden;width:100%;}
+.g-tbar .g-tbar-wr {width:4000px;}
+.g-bigbar {background-position:0 -225px;}
+.g-bigbar .g-tbar-wr { padding:1px 3px 0;}
+.g-smallbar{background-position:0px -781px;height:26px;}
+.g-smallbar .g-tbar-wr{padding:2px 3px;}
+
 .g-smallbar-item .g-btn-l,.g-smallbar-item .g-btn-r{height:22px;width:4px;}
 .g-smallbar-item-over .g-btn-l{background-position:-304px -32px;}
 .g-smallbar-item-over .g-btn-r{background-position:-308px -32px;}
@@ -179,22 +152,6 @@ white-space:nowrap;
 .g-smallbar-item-click .g-btn-r{background-position:-316px -32px;}
 .g-smallbar-item-over .g-btn-c{background-position:0px -1820px;}
 .g-smallbar-item-click .g-btn-c{background-position:0px -1844px;}
-
-.g-smallbar .auto-lefmov, .g-smallbar .auto-rigmov{width:20px;height:15px;top:5px;}
-.g-smallbar .auto-lefmov {left:0px;background-position:-62px -1px;}
-.g-smallbar .auto-lefmov:hover {background-position:-86px -7px;}
-.g-smallbar .auto-lefmov-disabled {background-position:-62px -65px !important;}
-
-.g-mov-toolbar .auto-lefmov, .g-mov-toolbar .auto-rigmov{display:block !important;}
-.g-mov-toolbar .auto-scrollor {margin-left:20px;margin-right:20px;}
-
-.g-smallbar .auto-rigmov {right:0px;background-position:-30px -17px;}
-:lang(zh) .g-smallbar .auto-rigmov {right:-20px;}
-.g-smallbar .auto-rigmov:hover {background-position:-86px -28px;}
-.g-smallbar .auto-rigmov-disabled {background-position:-33px -65px !important;}
-
-.g-smallbar .auto-offset { height:26px;}
-
 
 .g-titlepanel-hd { background-position:0 -1671px; height:29px; position:relative; width:100%;}
 .g-titlepanel-hd .g-tle { left:29px; position:absolute;line-height:1.9em;}
@@ -284,7 +241,7 @@ white-space:nowrap;
 .g-win-hd-ct .g-hd-btn{float:right;margin-right:1px;display:block;height:15px;width:15px;font-size:1px;}
 .g-win .icoSw {background-position:-342px -7px;display:block;float:left;height:14px;margin:7px 0px 0px 2px;width:14px;}
 :lang(zh).g-win .icoSw{margin:7px 2px 0px;}
-.g-win .g-win-hd .g-tle {color:#FFFFFF;cursor:default;float:none;font-weight:normal;line-height:28px;}
+.g-win .g-win-hd .g-tle {color:#FFFFFF;cursor:default;float:none;font-weight:normal;line-height:29px;}
 :lang(zh) .g-win .g-win-hd .g-tle {line-height:26px;}
 .g-win-e,.g-win-s,.g-win-w,.g-win-n,.g-win-sw,.g-win-es,.g-win-wn,.g-win-ne{z-index:1000;position:absolute;font-size:0px;overflow:hidden;margin:0px;padding:0px;/*filter: Alpha(opacity=85); opacity:0.85;*/}
 .g-win-sw,.g-win-es,.g-win-wn,.g-win-ne{height:6px;width:6px;}
@@ -393,16 +350,16 @@ _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMe
 /*combobox*/
 .g-combo {}
 .g-combo-wrap{height:21px; display:block; position:relative; overflow:hidden; border:1px solid #999;}
-*:lang(zh) .g-combo-wrap{height:19px;}
+:lang(zh) .g-combo-wrap{height:19px;}
 .g-combo .downIco{ cursor:pointer;width:20px; height:21px; background-position:-230px 0px; display:block; position:absolute; right:0px; top:0; background-color:#FFF; z-index:9}
 .g-combo-on .g-combo-wrap {border: 1px solid #666;}
 .g-combo-on .downIco{background-position:-230px -29px}
 .g-combo-on input, .g-combo-on .unedit-txt {background-color:#FFFFCC;}
-.g-combo input, .g-combo .unedit-txt {border:none;height:100%;width:100%;padding:1px 2px 1px;}
+.g-combo input, .g-combo .unedit-txt {border:none;height:100%;width:100%;padding:0px 2px;}
 .g-combo .unedit-txt{display:none;}
 .g-combo-unedit .unedit-txt {display:block;cursor:pointer;}
 .g-combo-unedit input{display:none;}
-*:lang(zh) .g-combo input{padding-top:2px;}
+:lang(zh) .g-combo input{padding-top:0px;}
 .g-combo-list-tree .g-panel-wrap, .g-combo-list-folderview .g-folderview-wrap{border:1px solid #CCC;border-top:0;}
 /*********
  */
@@ -416,7 +373,7 @@ _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMe
 .g-clear{padding:0;clear:both;margin:0;}
 
 /** Form */
-.g-ipt-text,.g-textarea {padding: 2px 3px;	vertical-align: middle;	border: 1px solid #C0BBB4;}
+.g-ipt-text,.g-textarea {padding: 2px 3px;border: 1px solid #C0BBB4;}
 .g-ipt-text-hover{border-color:#99E300}
 .g-textarea {overflow:auto !important;overflow-x:auto !important;overflow-y:auto !important;white-space:normal;}
  /**/ .ibxTB .selected, .ibxTB .on { background-color: rgb(255, 253, 215); }
@@ -646,7 +603,21 @@ td .selday a{	border:1px solid darkred;font-weight:bold;padding:1px 4px;}
 
 .g-datepicker-field{width:230px;position:relative;height:20px;}
 .g-datepicker-field input{height:20px;border:1px solid #C0BBB4;border-right:0 none;display:block;padding:2px 22px 0 3px;width:100%;}
+:lang(zh) .g-datepicker-field input{padding-top:0px}
 .g-datepicker-field .trigger{background-position:-183px -48px;display:block;height:20px;width:22px;position:absolute;top:1px;right:5px;}
 :lang(zh) .g-datepicker-field .trigger{top:0;right:0;}
 .g-datepicker-field .triggerOn,.g-datepicker-field-focus .trigger, .g-datepicker-field-ctx .trigger{background-position:-160px -48px;}
 .g-datepicker-field-focus input {background-color:rgb(255,255,204);}
+
+/**Form**/
+.g-formfields{ list-style-type:none; margin:0;padding:0;width:100%;text-align:left;float:left;position:relative;}
+.g-form-ln label.desc {border:medium none;color:#222222;display:block;font-weight:bold;line-height:150%;padding:0 0 2px;}
+.g-form-hln label.desc {float:left;text-align:right;padding:3px 3px 1px 0;}
+:lang(zh) .g-form-hln label.desc{padding:1px 4px 2px 0;}
+.g-form-ln {display:block;margin:0;padding:4px 5px 2px 9px;width:62%;position:relative;float:left;}
+.g-form-ln .field-ct{position:relative;}
+.g-form-el {margin-right:3px;}
+.g-form-ln .field-ct .g-form-el{display:block;margin:0 5px 5px 0;}
+.g-form-ln label .req {display:none;}
+.g-fieldset {float:left;border:1px solid #E0E0E0;padding:10px;margin-bottom:10px;}
+.g-fieldset legend{font-weight:bold;color:#001119;font-size:12px;}
