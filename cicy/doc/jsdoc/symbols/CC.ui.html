@@ -1,0 +1,571 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="generator" content="background ui" />
+		
+		<title>Cicy JavaScript UI 框架API文档 - CC.ui</title>
+
+		<style type="text/css">
+			/* default.css */
+body, td, th,dl, dt, form, input, textarea, select, button,ul{font-size:12px;}
+html,body, h1,h2,h3,h4,td, th, dl, dd, dt, form, input, textarea, select, button,ul{
+	color:#333;
+	font-family:Verdana,Helvetica,Arial,sans-serif;
+	margin:0;padding:0;
+	border:0;
+	z-index:inherit;
+	list-style-type:none;
+}
+
+img, table {border:0 none;border-collapse:collapse;}
+a{text-decoration:none;}
+a:visited {color:#083772;}
+.header
+{
+	clear: both;
+	background-color: #ccc;
+	padding: 8px;
+}
+
+h1
+{
+  margin:20px 0 13px;
+	font-size:16px;
+}
+
+hr
+{
+	border: none 0;
+	border-top: 1px solid #EEE;
+	height: 1px;
+}
+
+pre.code
+{
+	display: block;
+	padding: 8px;
+	border: 1px dashed #ccc;
+}
+
+#index
+{
+	margin-top: 24px;
+	float: left;
+	width: 200px;
+	position: absolute;
+	left: 8px;
+	background-color: #F3F3F3;
+	padding: 8px;
+}
+
+#content
+{
+	margin-left: 240px;
+	width: 760px;
+}
+
+.classList
+{
+	margin: 0 0 0 8px;
+	overflow: auto;
+	font-weight:bold;
+}
+
+.classList li
+{
+	padding: 0;
+	margin: 0 0 8px 0;
+}
+
+.summaryTable { width: 100%; }
+
+h2 { font-weight:bold; font-size:14px;margin:13px 0 8px;}
+
+caption, div.sectionTitle
+{
+	background-color: #EEE;
+	text-align: left;
+	padding: 2px 6px 2px 6px;
+	border: 1px #EEE solid;
+}
+
+div.sectionTitle { margin-bottom: 8px; font-weight:bold; }
+.summaryTable thead { display: none; }
+
+.summaryTable td
+{
+	vertical-align: top;
+	padding: 4px;
+	border-bottom: 1px #EEE solid;
+	border-right: 1px #EEE solid;
+}
+
+/*col#summaryAttributes {}*/
+.summaryTable td.attributes
+{
+	border-left: 1px #EEE solid;
+	width: 140px;
+	text-align: right;
+}
+
+td.attributes, .fixedFont
+{
+	line-height: 15px;
+	color: #002EBE;
+	font-family: "Courier New",Courier,monospace;
+}
+
+.summaryTable td.nameDescription
+{
+	text-align: left;
+	line-height: 15px;
+}
+
+.summaryTable td.nameDescription, .description
+{
+	line-height: 15px;
+	padding: 4px;
+	padding-left: 4px;
+}
+
+.summaryTable { margin-bottom: 8px; }
+
+dl.inheritsList
+{
+	padding-left: 0;
+	padding : 5px 0px;
+}
+dl.inheritsList dt {background-color:#EEE;padding:3px 6px;}
+dl.inheritsList dl {padding : 5px 3px;}
+
+dl.inheritsList dd {padding-left : 5px;}
+
+dl.inheritsList dd a {padding:5px;}
+
+.detailList {
+	margin-left: 20px; 
+	line-height: 15px;
+}
+.detailList dt { margin-left: 20px; }
+
+.detailList .heading
+{
+	font-weight: bold;
+	padding-bottom: 6px;
+	margin-left: 0;
+}
+
+.light, td.attributes, .light a:link, .light a:visited
+{
+	color: #777;
+	font-style: italic;
+}
+
+.fineprint
+{
+	text-align: right;
+	font-size: 10px;
+}
+		</style>
+	</head>
+
+	<body>
+<!-- ============================== header ================================= -->	
+		<!-- begin static/header.html -->
+		<div id="header">
+</div>
+		<!-- end static/header.html -->
+
+<!-- ============================== classes index ============================ -->
+		<div id="index">
+			<!-- begin publish.classesIndex -->
+			<div><a href="../index.html">所有类</a>
+| <a href="../files.html">文件目录</a></div>
+<hr />
+<h2>类</h2>
+<ul class="classList">
+	
+	<li><i><a href="../symbols/_global_.html">_global_</a></i></li>
+	
+	<li><a href="../symbols/Array.html">Array</a></li>
+	
+	<li><a href="../symbols/CC.html">CC</a></li>
+	
+	<li><a href="../symbols/CC.Ajax.html">CC.Ajax</a></li>
+	
+	<li><a href="../symbols/CC.Base.html">CC.Base</a></li>
+	
+	<li><a href="../symbols/CC.Base.BrushFactory.html">CC.Base.BrushFactory</a></li>
+	
+	<li><a href="../symbols/CC.Cache.html">CC.Cache</a></li>
+	
+	<li><a href="../symbols/CC.Event.html">CC.Event</a></li>
+	
+	<li><a href="../symbols/CC.Eventable.html">CC.Eventable</a></li>
+	
+	<li><a href="../symbols/CC.layout.html">CC.layout</a></li>
+	
+	<li><a href="../symbols/CC.layout.BorderLayout.html">CC.layout.BorderLayout</a></li>
+	
+	<li><a href="../symbols/CC.layout.CardLayout.html">CC.layout.CardLayout</a></li>
+	
+	<li><a href="../symbols/CC.layout.Layout.html">CC.layout.Layout</a></li>
+	
+	<li><a href="../symbols/CC.layout.QQLayout.html">CC.layout.QQLayout</a></li>
+	
+	<li><a href="../symbols/CC.layout.RowLayout.html">CC.layout.RowLayout</a></li>
+	
+	<li><a href="../symbols/CC.Tpl.html">CC.Tpl</a></li>
+	
+	<li><a href="../symbols/CC.ui.html">CC.ui</a></li>
+	
+	<li><a href="../symbols/CC.ui.BorderLayoutCollapseBar.html">CC.ui.BorderLayoutCollapseBar</a></li>
+	
+	<li><a href="../symbols/CC.ui.BorderLayoutSpliter.html">CC.ui.BorderLayoutSpliter</a></li>
+	
+	<li><a href="../symbols/CC.ui.BorderPanel.html">CC.ui.BorderPanel</a></li>
+	
+	<li><a href="../symbols/CC.ui.Button.html">CC.ui.Button</a></li>
+	
+	<li><a href="../symbols/CC.ui.ContainerBase.html">CC.ui.ContainerBase</a></li>
+	
+	<li><a href="../symbols/CC.ui.Datepicker.html">CC.ui.Datepicker</a></li>
+	
+	<li><a href="../symbols/CC.ui.Dialog.html">CC.ui.Dialog</a></li>
+	
+	<li><a href="../symbols/CC.ui.FloatTip.html">CC.ui.FloatTip</a></li>
+	
+	<li><a href="../symbols/CC.ui.Foldable.html">CC.ui.Foldable</a></li>
+	
+	<li><a href="../symbols/CC.ui.Folder.html">CC.ui.Folder</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.html">CC.ui.form</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.Checkbox.html">CC.ui.form.Checkbox</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.Combox.html">CC.ui.form.Combox</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.DatepickerField.html">CC.ui.form.DatepickerField</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.FormElement.html">CC.ui.form.FormElement</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.Radio.html">CC.ui.form.Radio</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.Text.html">CC.ui.form.Text</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.Textarea.html">CC.ui.form.Textarea</a></li>
+	
+	<li><a href="../symbols/CC.ui.IFramePanel.html">CC.ui.IFramePanel</a></li>
+	
+	<li><a href="../symbols/CC.ui.Item.html">CC.ui.Item</a></li>
+	
+	<li><a href="../symbols/CC.ui.Loading.html">CC.ui.Loading</a></li>
+	
+	<li><a href="../symbols/CC.ui.Mask.html">CC.ui.Mask</a></li>
+	
+	<li><a href="../symbols/CC.ui.menu.html">CC.ui.menu</a></li>
+	
+	<li><a href="../symbols/CC.ui.Menu.html">CC.ui.Menu</a></li>
+	
+	<li><a href="../symbols/CC.ui.menu.MenuSelectionProvider.html">CC.ui.menu.MenuSelectionProvider</a></li>
+	
+	<li><a href="../symbols/CC.ui.Menubar.html">CC.ui.Menubar</a></li>
+	
+	<li><a href="../symbols/CC.ui.MenuItem.html">CC.ui.MenuItem</a></li>
+	
+	<li><a href="../symbols/CC.ui.Panel.html">CC.ui.Panel</a></li>
+	
+	<li><a href="../symbols/CC.ui.Resizer.html">CC.ui.Resizer</a></li>
+	
+	<li><a href="../symbols/CC.ui.Shadow.html">CC.ui.Shadow</a></li>
+	
+	<li><a href="../symbols/CC.ui.Smallbar.html">CC.ui.Smallbar</a></li>
+	
+	<li><a href="../symbols/CC.ui.TitlePanel.html">CC.ui.TitlePanel</a></li>
+	
+	<li><a href="../symbols/CC.ui.Tree.html">CC.ui.Tree</a></li>
+	
+	<li><a href="../symbols/CC.ui.tree.html">CC.ui.tree</a></li>
+	
+	<li><a href="../symbols/CC.ui.tree.TreeItemLoadingIndicator.html">CC.ui.tree.TreeItemLoadingIndicator</a></li>
+	
+	<li><a href="../symbols/CC.ui.tree.TreeSelectionProvider.html">CC.ui.tree.TreeSelectionProvider</a></li>
+	
+	<li><a href="../symbols/CC.ui.TreeItem.html">CC.ui.TreeItem</a></li>
+	
+	<li><a href="../symbols/CC.ui.Viewport.html">CC.ui.Viewport</a></li>
+	
+	<li><a href="../symbols/CC.ui.win.html">CC.ui.win</a></li>
+	
+	<li><a href="../symbols/CC.ui.Win.html">CC.ui.Win</a></li>
+	
+	<li><a href="../symbols/CC.ui.win.Titlebar.html">CC.ui.win.Titlebar</a></li>
+	
+	<li><a href="../symbols/CC.util.html">CC.util</a></li>
+	
+	<li><a href="../symbols/CC.Util.html">CC.Util</a></li>
+	
+	<li><a href="../symbols/CC.util.ConnectionProvider.html">CC.util.ConnectionProvider</a></li>
+	
+	<li><a href="../symbols/CC.util.CssParser.html">CC.util.CssParser</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.html">CC.util.d2d</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.ComponentRect.html">CC.util.d2d.ComponentRect</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.Point.html">CC.util.d2d.Point</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.Rect.html">CC.util.d2d.Rect</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.RectZoom.html">CC.util.d2d.RectZoom</a></li>
+	
+	<li><a href="../symbols/CC.util.dd.html">CC.util.dd</a></li>
+	
+	<li><a href="../symbols/CC.util.dd.Mgr.html">CC.util.dd.Mgr</a></li>
+	
+	<li><a href="../symbols/CC.util.dd.Mgr.resizeHelper.html">CC.util.dd.Mgr.resizeHelper</a></li>
+	
+	<li><a href="../symbols/CC.util.IFrameConnectionProvider.html">CC.util.IFrameConnectionProvider</a></li>
+	
+	<li><a href="../symbols/CC.util.SelectionProvider.html">CC.util.SelectionProvider</a></li>
+	
+	<li><a href="../symbols/console.html">console</a></li>
+	
+	<li><a href="../symbols/Function.html">Function</a></li>
+	
+	<li><a href="../symbols/String.html">String</a></li>
+	
+</ul>
+<hr />
+			<!-- end publish.classesIndex -->
+		</div>
+		
+		<div id="content">
+<!-- ============================== class title ============================ -->
+			<h1 class="classTitle">
+				
+				类 CC.ui
+			</h1>
+
+<!-- ============================== class summary ========================== -->			
+			<p class="description">
+				
+			
+				控件包
+				
+				
+					<br /><i>定义在: </i> <a href="../symbols/src/C__green_sources_cicy_cicylib-all-debug.js.html">cicylib-all-debug.js</a>.
+				
+			</p>
+
+<!-- ============================== constructor summary ==================== -->			
+			
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class CC.ui.">
+				<caption>类 概述</caption>
+				<thead>
+					<tr>
+						<th scope="col">属性</th>
+						<th scope="col">名称说明</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="attributes">&nbsp;</td>
+						<td class="nameDescription" >
+							<div class="fixedFont">
+								<b><a href="../symbols/CC.ui.html#constructor">CC.ui</a></b>()
+							</div>
+							<div class="description"></div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+
+<!-- ============================== properties summary ===================== -->
+			
+				
+				
+				
+				
+			
+<!-- ============================== events summary ======================== -->
+			
+			
+<!-- ============================== methods summary ======================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class CC.ui.">
+					<caption>方法</caption>
+					<thead>
+						<tr>
+							<th scope="col">Method Attributes</th>
+							<th scope="col">Method Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">CC.ui.<b><a href="../symbols/CC.ui.html#.def">def</a></b>(ctype, clazz)
+								</div>
+								<div class="description">注册控件类标识,方便在未知具体类的情况下生成该类,也方便序列化生成类实例.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">CC.ui.<b><a href="../symbols/CC.ui.html#.instance">instance</a></b>(opt)
+								</div>
+								<div class="description">根据类初始化信息返回类实例,如果初始化信息未指定ctype,默认类为CC.Base,如果初始化信息中存在ctype属性,在实例化前将移除该属性.</div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
+			
+<!-- ============================== constructor details ==================== -->		
+			
+			<div class="details"><a name="constructor"> </a>
+				<div class="sectionTitle">
+					类 Detail
+				</div>
+				
+				<div class="fixedFont">
+						<b>CC.ui</b>()
+				</div>
+				
+				<div class="description">
+					
+					
+				</div>
+				
+				
+				
+				
+					
+					
+					
+					
+					
+					
+					
+
+			</div>
+			
+
+<!-- ============================== field details ========================== -->		
+			
+
+<!-- ============================== event details ========================= -->		
+			
+			
+<!-- ============================== method details ========================= -->		
+			
+				<div class="sectionTitle">
+					方法详解
+				</div>
+				
+					<a name=".def"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">CC.ui.</span><b>def</b>(ctype, clazz)
+					
+					</div>
+					<div class="description">
+						注册控件类标识,方便在未知具体类的情况下生成该类,也方便序列化生成类实例.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>ctype</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>clazz</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".instance"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">CC.ui.</span><b>instance</b>(opt)
+					
+					</div>
+					<div class="description">
+						根据类初始化信息返回类实例,如果初始化信息未指定ctype,默认类为CC.Base,如果初始化信息中存在ctype属性,在实例化前将移除该属性.如果传入的参数已是某个类的实例,则忽略.
+						
+						
+					</div>
+					
+					
+					
+					<pre class="code">  <pre> 	通过该类创建类实例方式有几种 	1. var inst = CC.ui.instance('shadow'); 	  或 	   var inst = CC.ui.instance('shadow', { width:55, ...}); 	 	2. var inst = CC.ui.instance({ctype:'shadow', width:55}); 	 	//得到CC.ui.ContainerBase类实例,假定该类的ctype为ct 	   var inst = CC.ui.instance({ ctype : 'ct', showTo : document.body }); 	</pre></pre>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>opt</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					
+				
+			
+			<hr />
+		</div>
+
+		
+<!-- ============================== footer ================================= -->
+		<div class="fineprint" style="clear:both">
+			
+			<a href="http://www.bgscript.com/bgdemo" target="_blankt">bgscript.com</a> , Wed Jan 27 2010 18:11:51 GMT+0800 (CST)
+		</div>
+	</body>
+</html>
+ 

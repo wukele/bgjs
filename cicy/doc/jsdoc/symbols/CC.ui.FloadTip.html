@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="generator" content="background ui" />
+		
+		<title>Background JavaScript UI 框架API文档 - CC.ui.FloadTip</title>
+
+		<style type="text/css">
+			/* default.css */
+body, td, th,dl, dt, form, input, textarea, select, button,ul{font-size:12px;}
+html,body, h1,h2,h3,h4,td, th, dl, dd, dt, form, input, textarea, select, button,ul{
+	color:#333;
+	font-family:Verdana,Helvetica,Arial,sans-serif;
+	margin:0;padding:0;
+	border:0;
+	z-index:inherit;
+	list-style-type:none;
+}
+
+img, table {border:0 none;border-collapse:collapse;}
+a{text-decoration:none;}
+a:visited {color:#083772;}
+.header
+{
+	clear: both;
+	background-color: #ccc;
+	padding: 8px;
+}
+
+h1
+{
+  margin:20px 0 13px;
+	font-size:16px;
+}
+
+hr
+{
+	border: none 0;
+	border-top: 1px solid #EEE;
+	height: 1px;
+}
+
+pre.code
+{
+	display: block;
+	padding: 8px;
+	border: 1px dashed #ccc;
+}
+
+#index
+{
+	margin-top: 24px;
+	float: left;
+	width: 200px;
+	position: absolute;
+	left: 8px;
+	background-color: #F3F3F3;
+	padding: 8px;
+}
+
+#content
+{
+	margin-left: 240px;
+	width: 760px;
+}
+
+.classList
+{
+	margin: 0 0 0 8px;
+	overflow: auto;
+	font-weight:bold;
+}
+
+.classList li
+{
+	padding: 0;
+	margin: 0 0 8px 0;
+}
+
+.summaryTable { width: 100%; }
+
+h2 { font-weight:bold; font-size:14px;margin:13px 0 8px;}
+
+caption, div.sectionTitle
+{
+	background-color: #EEE;
+	text-align: left;
+	padding: 2px 6px 2px 6px;
+	border: 1px #EEE solid;
+}
+
+div.sectionTitle { margin-bottom: 8px; font-weight:bold; }
+.summaryTable thead { display: none; }
+
+.summaryTable td
+{
+	vertical-align: top;
+	padding: 4px;
+	border-bottom: 1px #EEE solid;
+	border-right: 1px #EEE solid;
+}
+
+/*col#summaryAttributes {}*/
+.summaryTable td.attributes
+{
+	border-left: 1px #EEE solid;
+	width: 140px;
+	text-align: right;
+}
+
+td.attributes, .fixedFont
+{
+	line-height: 15px;
+	color: #002EBE;
+	font-family: "Courier New",Courier,monospace;
+}
+
+.summaryTable td.nameDescription
+{
+	text-align: left;
+	line-height: 15px;
+}
+
+.summaryTable td.nameDescription, .description
+{
+	line-height: 15px;
+	padding: 4px;
+	padding-left: 4px;
+}
+
+.summaryTable { margin-bottom: 8px; }
+
+dl.inheritsList
+{
+	padding-left: 0;
+	padding : 5px 0px;
+}
+dl.inheritsList dt {background-color:#EEE;padding:3px 6px;}
+dl.inheritsList dl {padding : 5px 3px;}
+
+dl.inheritsList dd {padding-left : 5px;}
+
+dl.inheritsList dd a {padding:5px;}
+
+.detailList {
+	margin-left: 20px; 
+	line-height: 15px;
+}
+.detailList dt { margin-left: 20px; }
+
+.detailList .heading
+{
+	font-weight: bold;
+	padding-bottom: 6px;
+	margin-left: 0;
+}
+
+.light, td.attributes, .light a:link, .light a:visited
+{
+	color: #777;
+	font-style: italic;
+}
+
+.fineprint
+{
+	text-align: right;
+	font-size: 10px;
+}
+		</style>
+	</head>
+
+	<body>
+<!-- ============================== header ================================= -->	
+		<!-- begin static/header.html -->
+		<div id="header">
+</div>
+		<!-- end static/header.html -->
+
+<!-- ============================== classes index ============================ -->
+		<div id="index">
+			<!-- begin publish.classesIndex -->
+			<div><a href="../index.html">所有类</a>
+| <a href="../files.html">文件目录</a></div>
+<hr />
+<h2>类</h2>
+<ul class="classList">
+	
+	<li><i><a href="../symbols/_global_.html">_global_</a></i></li>
+	
+	<li><a href="../symbols/Array.html">Array</a></li>
+	
+	<li><a href="../symbols/CC.html">CC</a></li>
+	
+	<li><a href="../symbols/CC.Ajax.html">CC.Ajax</a></li>
+	
+	<li><a href="../symbols/CC.Base.html">CC.Base</a></li>
+	
+	<li><a href="../symbols/CC.Base%23initialize.html">CC.Base#initialize</a></li>
+	
+	<li><a href="../symbols/CC.Base.BrushFactory.html">CC.Base.BrushFactory</a></li>
+	
+	<li><a href="../symbols/CC.Cache.html">CC.Cache</a></li>
+	
+	<li><a href="../symbols/CC.Event.html">CC.Event</a></li>
+	
+	<li><a href="../symbols/CC.Eventable.html">CC.Eventable</a></li>
+	
+	<li><a href="../symbols/CC.layout.html">CC.layout</a></li>
+	
+	<li><a href="../symbols/CC.layout.BorderLayout.html">CC.layout.BorderLayout</a></li>
+	
+	<li><a href="../symbols/CC.layout.CardLayout.html">CC.layout.CardLayout</a></li>
+	
+	<li><a href="../symbols/CC.layout.Layout.html">CC.layout.Layout</a></li>
+	
+	<li><a href="../symbols/CC.layout.QQLayout.html">CC.layout.QQLayout</a></li>
+	
+	<li><a href="../symbols/CC.layout.RowLayout.html">CC.layout.RowLayout</a></li>
+	
+	<li><a href="../symbols/CC.Tpl.html">CC.Tpl</a></li>
+	
+	<li><a href="../symbols/CC.ui.html">CC.ui</a></li>
+	
+	<li><a href="../symbols/CC.ui.BorderLayoutCollapseBar.html">CC.ui.BorderLayoutCollapseBar</a></li>
+	
+	<li><a href="../symbols/CC.ui.BorderLayoutSpliter.html">CC.ui.BorderLayoutSpliter</a></li>
+	
+	<li><a href="../symbols/CC.ui.BorderPanel.html">CC.ui.BorderPanel</a></li>
+	
+	<li><a href="../symbols/CC.ui.ContainerBase.html">CC.ui.ContainerBase</a></li>
+	
+	<li><a href="../symbols/CC.ui.Datepicker.html">CC.ui.Datepicker</a></li>
+	
+	<li><a href="../symbols/CC.ui.FloadTip.html">CC.ui.FloadTip</a></li>
+	
+	<li><a href="../symbols/CC.ui.Foldable.html">CC.ui.Foldable</a></li>
+	
+	<li><a href="../symbols/CC.ui.Folder.html">CC.ui.Folder</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.Combox.html">CC.ui.form.Combox</a></li>
+	
+	<li><a href="../symbols/CC.ui.form.DatepickerField.html">CC.ui.form.DatepickerField</a></li>
+	
+	<li><a href="../symbols/CC.ui.IFramePanel.html">CC.ui.IFramePanel</a></li>
+	
+	<li><a href="../symbols/CC.ui.Item.html">CC.ui.Item</a></li>
+	
+	<li><a href="../symbols/CC.ui.Loading.html">CC.ui.Loading</a></li>
+	
+	<li><a href="../symbols/CC.ui.Mask.html">CC.ui.Mask</a></li>
+	
+	<li><a href="../symbols/CC.ui.menu.html">CC.ui.menu</a></li>
+	
+	<li><a href="../symbols/CC.ui.Menu.html">CC.ui.Menu</a></li>
+	
+	<li><a href="../symbols/CC.ui.menu.MenuSelectionProvider.html">CC.ui.menu.MenuSelectionProvider</a></li>
+	
+	<li><a href="../symbols/CC.ui.Menubar.html">CC.ui.Menubar</a></li>
+	
+	<li><a href="../symbols/CC.ui.MenuItem.html">CC.ui.MenuItem</a></li>
+	
+	<li><a href="../symbols/CC.ui.Panel.html">CC.ui.Panel</a></li>
+	
+	<li><a href="../symbols/CC.ui.Shadow.html">CC.ui.Shadow</a></li>
+	
+	<li><a href="../symbols/CC.ui.Smallbar.html">CC.ui.Smallbar</a></li>
+	
+	<li><a href="../symbols/CC.ui.TitlePanel.html">CC.ui.TitlePanel</a></li>
+	
+	<li><a href="../symbols/CC.ui.Tree.html">CC.ui.Tree</a></li>
+	
+	<li><a href="../symbols/CC.ui.tree.TreeItemLoadingIndicator.html">CC.ui.tree.TreeItemLoadingIndicator</a></li>
+	
+	<li><a href="../symbols/CC.ui.tree.TreeSelectionProvider.html">CC.ui.tree.TreeSelectionProvider</a></li>
+	
+	<li><a href="../symbols/CC.ui.TreeItem.html">CC.ui.TreeItem</a></li>
+	
+	<li><a href="../symbols/CC.ui.Viewport.html">CC.ui.Viewport</a></li>
+	
+	<li><a href="../symbols/CC.ui.win.Titlebar.html">CC.ui.win.Titlebar</a></li>
+	
+	<li><a href="../symbols/CC.util.html">CC.util</a></li>
+	
+	<li><a href="../symbols/CC.Util.html">CC.Util</a></li>
+	
+	<li><a href="../symbols/CC.util.CssParser.html">CC.util.CssParser</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.html">CC.util.d2d</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.ComponentRect.html">CC.util.d2d.ComponentRect</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.Point.html">CC.util.d2d.Point</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.Rect.html">CC.util.d2d.Rect</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.RectZoom.html">CC.util.d2d.RectZoom</a></li>
+	
+	<li><a href="../symbols/CC.util.d2d.RectZoom%23initialize.html">CC.util.d2d.RectZoom#initialize</a></li>
+	
+	<li><a href="../symbols/CC.util.dd.html">CC.util.dd</a></li>
+	
+	<li><a href="../symbols/CC.util.dd.Mgr.html">CC.util.dd.Mgr</a></li>
+	
+	<li><a href="../symbols/CC.util.IFrameConnectionProvider.html">CC.util.IFrameConnectionProvider</a></li>
+	
+	<li><a href="../symbols/CC.util.SelectionProvider.html">CC.util.SelectionProvider</a></li>
+	
+	<li><a href="../symbols/console.html">console</a></li>
+	
+	<li><a href="../symbols/Function.html">Function</a></li>
+	
+	<li><a href="../symbols/String.html">String</a></li>
+	
+</ul>
+<hr />
+			<!-- end publish.classesIndex -->
+		</div>
+		
+		<div id="content">
+<!-- ============================== class title ============================ -->
+			<h1 class="classTitle">
+				
+				类 CC.ui.FloadTip
+			</h1>
+
+<!-- ============================== class summary ========================== -->			
+			<p class="description">
+				<br />Extends
+					<a href="../symbols/CC.ui.Panel.html">CC.ui.Panel</a>.<br />
+				
+			
+				
+				
+				
+					<br /><i>定义在: </i> <a href="../symbols/src/C__green_sources_cicy_cicylib-all-debug.js.html">cicylib-all-debug.js</a>.
+				
+			</p>
+
+<!-- ============================== constructor summary ==================== -->			
+			
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class CC.ui.FloadTip.">
+				<caption>类 概述</caption>
+				<thead>
+					<tr>
+						<th scope="col">属性</th>
+						<th scope="col">名称说明</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="attributes">&nbsp;</td>
+						<td class="nameDescription" >
+							<div class="fixedFont">
+								<b><a href="../symbols/CC.ui.FloadTip.html#constructor">CC.ui.FloadTip</a></b>()
+							</div>
+							<div class="description">浮动提示框,可用于一般的对话提示或鼠标悬浮提示</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+
+<!-- ============================== properties summary ===================== -->
+			
+				
+				
+				
+				
+				<dl class="inheritsList">
+				<dt>基类 <a href="../symbols/CC.ui.Panel.html">CC.ui.Panel</a> 属性: </dt><dd><a href="../symbols/CC.ui.Panel.html#ct">ct</a>, <a href="../symbols/CC.ui.Panel.html#deffer">deffer</a>, <a href="../symbols/CC.ui.Panel.html#syncWrapper">syncWrapper</a></dd><dt>基类 <a href="../symbols/CC.ui.ContainerBase.html">CC.ui.ContainerBase</a> 属性: </dt><dd><a href="../symbols/CC.ui.ContainerBase.html#array">array</a>, <a href="../symbols/CC.ui.ContainerBase.html#autoRender">autoRender</a>, <a href="../symbols/CC.ui.ContainerBase.html#cancelClickBubble">cancelClickBubble</a>, <a href="../symbols/CC.ui.ContainerBase.html#children">children</a>, <a href="../symbols/CC.ui.ContainerBase.html#clickEvent">clickEvent</a>, <a href="../symbols/CC.ui.ContainerBase.html#eventable">eventable</a>, <a href="../symbols/CC.ui.ContainerBase.html#itemCfg">itemCfg</a>, <a href="../symbols/CC.ui.ContainerBase.html#ItemClass">ItemClass</a>, <a href="../symbols/CC.ui.ContainerBase.html#keyEvent">keyEvent</a>, <a href="../symbols/CC.ui.ContainerBase.html#layout">layout</a>, <a href="../symbols/CC.ui.ContainerBase.html#lyCfg">lyCfg</a>, <a href="../symbols/CC.ui.ContainerBase.html#onKeyPressing">onKeyPressing</a>, <a href="../symbols/CC.ui.ContainerBase.html#selectionProvider">selectionProvider</a>, <a href="../symbols/CC.ui.ContainerBase.html#useContainerMonitor">useContainerMonitor</a></dd><dt>基类 <a href="../symbols/CC.Base.html">CC.Base</a> 属性: </dt><dd><a href="../symbols/CC.Base.html#afterdrag">afterdrag</a>, <a href="../symbols/CC.Base.html#beforedrag">beforedrag</a>, <a href="../symbols/CC.Base.html#blockMode">blockMode</a>, <a href="../symbols/CC.Base.html#brush">brush</a>, <a href="../symbols/CC.Base.html#clickCS">clickCS</a>, <a href="../symbols/CC.Base.html#clickDisabled">clickDisabled</a>, <a href="../symbols/CC.Base.html#cs">cs</a>, <a href="../symbols/CC.Base.html#css">css</a>, <a href="../symbols/CC.Base.html#disabled">disabled</a>, <a href="../symbols/CC.Base.html#disabledCS">disabledCS</a>, <a href="../symbols/CC.Base.html#displayMode">displayMode</a>, <a href="../symbols/CC.Base.html#drag">drag</a>, <a href="../symbols/CC.Base.html#dragend">dragend</a>, <a href="../symbols/CC.Base.html#draggable">draggable</a>, <a href="../symbols/CC.Base.html#dragNode">dragNode</a>, <a href="../symbols/CC.Base.html#dragstart">dragstart</a>, <a href="../symbols/CC.Base.html#dragZoom">dragZoom</a>, <a href="../symbols/CC.Base.html#fastStyle">fastStyle</a>, <a href="../symbols/CC.Base.html#fire">fire</a>, <a href="../symbols/CC.Base.html#focusNode">focusNode</a>, <a href="../symbols/CC.Base.html#getStyle">getStyle</a>, <a href="../symbols/CC.Base.html#height">height</a>, <a href="../symbols/CC.Base.html#hidden">hidden</a>, <a href="../symbols/CC.Base.html#hoverCS">hoverCS</a>, <a href="../symbols/CC.Base.html#icon">icon</a>, <a href="../symbols/CC.Base.html#iconNode">iconNode</a>, <a href="../symbols/CC.Base.html#id">id</a>, <a href="../symbols/CC.Base.html#innerCS">innerCS</a>, <a href="../symbols/CC.Base.html#left">left</a>, <a href="../symbols/CC.Base.html#lyInf">lyInf</a>, <a href="../symbols/CC.Base.html#maxH">maxH</a>, <a href="../symbols/CC.Base.html#maxW">maxW</a>, <a href="../symbols/CC.Base.html#minH">minH</a>, <a href="../symbols/CC.Base.html#minW">minW</a>, <a href="../symbols/CC.Base.html#ondropable">ondropable</a>, <a href="../symbols/CC.Base.html#pCt">pCt</a>, <a href="../symbols/CC.Base.html#qtip">qtip</a>, <a href="../symbols/CC.Base.html#rendered">rendered</a>, <a href="../symbols/CC.Base.html#sbdrop">sbdrop</a>, <a href="../symbols/CC.Base.html#sbmove">sbmove</a>, <a href="../symbols/CC.Base.html#sbout">sbout</a>, <a href="../symbols/CC.Base.html#sbover">sbover</a>, <a href="../symbols/CC.Base.html#shadow">shadow</a>, <a href="../symbols/CC.Base.html#strHtml">strHtml</a>, <a href="../symbols/CC.Base.html#template">template</a>, <a href="../symbols/CC.Base.html#title">title</a>, <a href="../symbols/CC.Base.html#titleNode">titleNode</a>, <a href="../symbols/CC.Base.html#top">top</a>, <a href="../symbols/CC.Base.html#type">type</a>, <a href="../symbols/CC.Base.html#unselectable">unselectable</a>, <a href="../symbols/CC.Base.html#view">view</a>, <a href="../symbols/CC.Base.html#viewAttr">viewAttr</a>, <a href="../symbols/CC.Base.html#width">width</a></dd>
+				</dl>
+				
+			
+<!-- ============================== events summary ======================== -->
+			
+				
+				
+				
+				
+				<dl class="inheritsList">
+				<dt>基类 <a href="../symbols/CC.ui.Panel.html">CC.ui.Panel</a> 事件: </dt><dd><a href="../symbols/CC.ui.Panel.html#event:reposed">reposed</a>, <a href="../symbols/CC.ui.Panel.html#event:resized">resized</a></dd><dt>基类 <a href="../symbols/CC.ui.ContainerBase.html">CC.ui.ContainerBase</a> 事件: </dt><dd><a href="../symbols/CC.ui.ContainerBase.html#event:add">add</a>, <a href="../symbols/CC.ui.ContainerBase.html#event:beforeadd">beforeadd</a>, <a href="../symbols/CC.ui.ContainerBase.html#event:beforeremove">beforeremove</a>, <a href="../symbols/CC.ui.ContainerBase.html#event:keydown">keydown</a>, <a href="../symbols/CC.ui.ContainerBase.html#event:remove">remove</a>, <a href="../symbols/CC.ui.ContainerBase.html#event:removed">removed</a>, <a href="../symbols/CC.ui.ContainerBase.html#event:select">select</a>, <a href="../symbols/CC.ui.ContainerBase.html#event:selected">selected</a></dd><dt>基类 <a href="../symbols/CC.Base.html">CC.Base</a> 事件: </dt><dd><a href="../symbols/CC.Base.html#event:contexted">contexted</a>, <a href="../symbols/CC.Base.html#event:render">render</a>, <a href="../symbols/CC.Base.html#event:rendered">rendered</a></dd>
+				</dl>
+				
+			
+			
+<!-- ============================== methods summary ======================== -->
+			
+				
+				
+				
+				
+				<dl class="inheritsList">
+				<dt>基类 <a href="../symbols/CC.ui.Panel.html">CC.ui.Panel</a> 方法: </dt><dd><a href="../symbols/CC.ui.Panel.html#getWrapperInsets">getWrapperInsets</a>, <a href="../symbols/CC.ui.Panel.html#setSize">setSize</a>, <a href="../symbols/CC.ui.Panel.html#setXY">setXY</a></dd><dt>基类 <a href="../symbols/CC.ui.ContainerBase.html">CC.ui.ContainerBase</a> 方法: </dt><dd><a href="../symbols/CC.ui.ContainerBase.html#$">$</a>, <a href="../symbols/CC.ui.ContainerBase.html#_addNode">_addNode</a>, <a href="../symbols/CC.ui.ContainerBase.html#_insertBefore">_insertBefore</a>, <a href="../symbols/CC.ui.ContainerBase.html#_onKeyPress">_onKeyPress</a>, <a href="../symbols/CC.ui.ContainerBase.html#_removeNode">_removeNode</a>, <a href="../symbols/CC.ui.ContainerBase.html#add">add</a>, <a href="../symbols/CC.ui.ContainerBase.html#autoHeight">autoHeight</a>, <a href="../symbols/CC.ui.ContainerBase.html#bindKeyInstaller">bindKeyInstaller</a>, <a href="../symbols/CC.ui.ContainerBase.html#byId">byId</a>, <a href="../symbols/CC.ui.ContainerBase.html#center">center</a>, <a href="../symbols/CC.ui.ContainerBase.html#clear">clear</a>, <a href="../symbols/CC.ui.ContainerBase.html#clickEventTrigger">clickEventTrigger</a>, <a href="../symbols/CC.ui.ContainerBase.html#contains">contains</a>, <a href="../symbols/CC.ui.ContainerBase.html#createView">createView</a>, <a href="../symbols/CC.ui.ContainerBase.html#ctClickTrigger">ctClickTrigger</a>, <a href="../symbols/CC.ui.ContainerBase.html#destoryChildren">destoryChildren</a>, <a href="../symbols/CC.ui.ContainerBase.html#doLayout">doLayout</a>, <a href="../symbols/CC.ui.ContainerBase.html#each">each</a>, <a href="../symbols/CC.ui.ContainerBase.html#filter">filter</a>, <a href="../symbols/CC.ui.ContainerBase.html#filterBy">filterBy</a>, <a href="../symbols/CC.ui.ContainerBase.html#focus">focus</a>, <a href="../symbols/CC.ui.ContainerBase.html#fromArray">fromArray</a>, <a href="../symbols/CC.ui.ContainerBase.html#getConnectionProvider">getConnectionProvider</a>, <a href="../symbols/CC.ui.ContainerBase.html#getScrollor">getScrollor</a>, <a href="../symbols/CC.ui.ContainerBase.html#indexOf">indexOf</a>, <a href="../symbols/CC.ui.ContainerBase.html#insert">insert</a>, <a href="../symbols/CC.ui.ContainerBase.html#insertBefore">insertBefore</a>, <a href="../symbols/CC.ui.ContainerBase.html#invalidate">invalidate</a>, <a href="../symbols/CC.ui.ContainerBase.html#itemAction">itemAction</a>, <a href="../symbols/CC.ui.ContainerBase.html#onRender">onRender</a>, <a href="../symbols/CC.ui.ContainerBase.html#parentOf">parentOf</a>, <a href="../symbols/CC.ui.ContainerBase.html#remove">remove</a>, <a href="../symbols/CC.ui.ContainerBase.html#removeAll">removeAll</a>, <a href="../symbols/CC.ui.ContainerBase.html#reverse">reverse</a>, <a href="../symbols/CC.ui.ContainerBase.html#size">size</a>, <a href="../symbols/CC.ui.ContainerBase.html#sort">sort</a>, <a href="../symbols/CC.ui.ContainerBase.html#swap">swap</a>, <a href="../symbols/CC.ui.ContainerBase.html#unItemAction">unItemAction</a>, <a href="../symbols/CC.ui.ContainerBase.html#validate">validate</a></dd><dt>基类 <a href="../symbols/CC.Base.html">CC.Base</a> 方法: </dt><dd><a href="../symbols/CC.Base.html#$$">$$</a>, <a href="../symbols/CC.Base.html#$T">$T</a>, <a href="../symbols/CC.Base.html#absoluteX">absoluteX</a>, <a href="../symbols/CC.Base.html#absoluteXY">absoluteXY</a>, <a href="../symbols/CC.Base.html#absoluteY">absoluteY</a>, <a href="../symbols/CC.Base.html#addClass">addClass</a>, <a href="../symbols/CC.Base.html#addClassIf">addClassIf</a>, <a href="../symbols/CC.Base.html#ancestorOf">ancestorOf</a>, <a href="../symbols/CC.Base.html#anchorPos">anchorPos</a>, <a href="../symbols/CC.Base.html#append">append</a>, <a href="../symbols/CC.Base.html#appendTo">appendTo</a>, <a href="../symbols/CC.Base.html#attr">attr</a>, <a href="../symbols/CC.Base.html#bindAlternateStyle">bindAlternateStyle</a>, <a href="../symbols/CC.Base.html#bindClickStyle">bindClickStyle</a>, <a href="../symbols/CC.Base.html#bindContext">bindContext</a>, <a href="../symbols/CC.Base.html#bindEnter">bindEnter</a>, <a href="../symbols/CC.Base.html#bindFocusStyle">bindFocusStyle</a>, <a href="../symbols/CC.Base.html#bindHoverStyle">bindHoverStyle</a>, <a href="../symbols/CC.Base.html#clip">clip</a>, <a href="../symbols/CC.Base.html#copyViewport">copyViewport</a>, <a href="../symbols/CC.Base.html#cset">cset</a>, <a href="../symbols/CC.Base.html#cssText">cssText</a>, <a href="../symbols/CC.Base.html#del">del</a>, <a href="../symbols/CC.Base.html#delClass">delClass</a>, <a href="../symbols/CC.Base.html#destory">destory</a>, <a href="../symbols/CC.Base.html#disable">disable</a>, <a href="../symbols/CC.Base.html#display">display</a>, <a href="../symbols/CC.Base.html#dom">dom</a>, <a href="../symbols/CC.Base.html#domEvent">domEvent</a>, <a href="../symbols/CC.Base.html#fastStyleSet">fastStyleSet</a>, <a href="../symbols/CC.Base.html#fly">fly</a>, <a href="../symbols/CC.Base.html#follow">follow</a>, <a href="../symbols/CC.Base.html#getContentSize">getContentSize</a>, <a href="../symbols/CC.Base.html#getDDProvider">getDDProvider</a>, <a href="../symbols/CC.Base.html#getHeight">getHeight</a>, <a href="../symbols/CC.Base.html#getHiddenAreaOffsetHori">getHiddenAreaOffsetHori</a>, <a href="../symbols/CC.Base.html#getHiddenAreaOffsetVeti">getHiddenAreaOffsetVeti</a>, <a href="../symbols/CC.Base.html#getLeft">getLeft</a>, <a href="../symbols/CC.Base.html#getOpacity">getOpacity</a>, <a href="../symbols/CC.Base.html#getOuterH">getOuterH</a>, <a href="../symbols/CC.Base.html#getOuterW">getOuterW</a>, <a href="../symbols/CC.Base.html#getScroll">getScroll</a>, <a href="../symbols/CC.Base.html#getSize">getSize</a>, <a href="../symbols/CC.Base.html#getTop">getTop</a>, <a href="../symbols/CC.Base.html#getWidth">getWidth</a>, <a href="../symbols/CC.Base.html#getZ">getZ</a>, <a href="../symbols/CC.Base.html#hasClass">hasClass</a>, <a href="../symbols/CC.Base.html#hide">hide</a>, <a href="../symbols/CC.Base.html#html">html</a>, <a href="../symbols/CC.Base.html#initComponent">initComponent</a>, <a href="../symbols/CC.Base.html#insertAfter">insertAfter</a>, <a href="../symbols/CC.Base.html#installDrag">installDrag</a>, <a href="../symbols/CC.Base.html#noselect">noselect</a>, <a href="../symbols/CC.Base.html#noUp">noUp</a>, <a href="../symbols/CC.Base.html#offsetsTo">offsetsTo</a>, <a href="../symbols/CC.Base.html#releaseContext">releaseContext</a>, <a href="../symbols/CC.Base.html#render">render</a>, <a href="../symbols/CC.Base.html#scrollChildIntoView">scrollChildIntoView</a>, <a href="../symbols/CC.Base.html#scrollIntoView">scrollIntoView</a>, <a href="../symbols/CC.Base.html#setBlockMode">setBlockMode</a>, <a href="../symbols/CC.Base.html#setBounds">setBounds</a>, <a href="../symbols/CC.Base.html#setClass">setClass</a>, <a href="../symbols/CC.Base.html#setCloseable">setCloseable</a>, <a href="../symbols/CC.Base.html#setDisplayMode">setDisplayMode</a>, <a href="../symbols/CC.Base.html#setHeight">setHeight</a>, <a href="../symbols/CC.Base.html#setIcon">setIcon</a>, <a href="../symbols/CC.Base.html#setLeft">setLeft</a>, <a href="../symbols/CC.Base.html#setOpacity">setOpacity</a>, <a href="../symbols/CC.Base.html#setTip">setTip</a>, <a href="../symbols/CC.Base.html#setTitle">setTitle</a>, <a href="../symbols/CC.Base.html#setTop">setTop</a>, <a href="../symbols/CC.Base.html#setWidth">setWidth</a>, <a href="../symbols/CC.Base.html#setZ">setZ</a>, <a href="../symbols/CC.Base.html#show">show</a>, <a href="../symbols/CC.Base.html#style">style</a>, <a href="../symbols/CC.Base.html#switchClass">switchClass</a>, <a href="../symbols/CC.Base.html#un">un</a>, <a href="../symbols/CC.Base.html#unclip">unclip</a>, <a href="../symbols/CC.Base.html#unEvent">unEvent</a>, <a href="../symbols/CC.Base.html#unfly">unfly</a>, <a href="../symbols/CC.Base.html#xy">xy</a></dd>
+				</dl>
+				
+			
+<!-- ============================== constructor details ==================== -->		
+			
+			<div class="details"><a name="constructor"> </a>
+				<div class="sectionTitle">
+					类 Detail
+				</div>
+				
+				<div class="fixedFont">
+						<b>CC.ui.FloadTip</b>()
+				</div>
+				
+				<div class="description">
+					浮动提示框,可用于一般的对话提示或鼠标悬浮提示
+					
+				</div>
+				
+				
+				
+				
+					
+					
+					
+					
+					
+					
+					
+
+			</div>
+			
+
+<!-- ============================== field details ========================== -->		
+			
+
+<!-- ============================== event details ========================= -->		
+			
+			
+<!-- ============================== method details ========================= -->		
+			
+			<hr />
+		</div>
+
+		
+<!-- ============================== footer ================================= -->
+		<div class="fineprint" style="clear:both">
+			
+			<a href="http://www.bgscript.com/bgdemo" target="_blankt">bgscript.com</a> , Wed Jan 27 2010 15:34:57 GMT+0800 (CST)
+		</div>
+	</body>
+</html>
+ 
