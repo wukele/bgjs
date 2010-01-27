@@ -1,0 +1,46 @@
+﻿<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Cicy工具栏</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+</head>
+<body></body>
+</html>
+<script type="text/javascript">
+	CC.ready(function(){
+		
+    var win = new CC.ui.Win({
+    	title:'工具栏',
+    	showTo:document.body,
+    	array:[
+    		{ctype:'smallbar', array:[
+					{title:'你好',icon:'iconTabs', qtip:'这是一个可停靠，具有文本和图标的按钮', dockable:true},
+					{icon:'iconFolder', qtip:'文件夹图标'},
+					{icon:'iconTabs', qtip:'Tab图标'},
+					{disabled:true,icon:'iconLeaf', qtip:'该项已禁用'},
+					{icon:'iconRef',dockable:true, docked:true,  qtip:'点击刷新'},
+					{icon:'iconUser', qtip:'单个图标按钮,无文本'}
+    		 ]
+    		},
+    		//css: pa b:0 表示 style.{position:absolute;bottom:0;},参见CC.uitl.CssParser
+    		{ctype:'bigbar', css:'pa b:0', array:[
+					{icon:'iconUser',title:'disabled',disabled:true},
+					{icon:'iconUser',title:'selectItem',onclick:selectItem},
+					{icon:'iconUser',title:'selected调用'},
+					{icon:'iconUser',title:'onclick调用'}    		  
+    		 ]
+    		}
+    	]
+    });
+  
+	 win.render();
+	 win.center();
+	
+	function selectItem(){
+		alert(this.title);
+		this.disable(true);
+	}
+});
+</script>

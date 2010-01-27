@@ -1,0 +1,51 @@
+
+.iconCalendar {
+	background-image:url(ext/images/default/shared/calendar.gif) !important;
+}
+.iconUser {background-image:url(user_green.gif) !important;}
+.iconEdit {background-image:url(cog_edit.png) !important;}
+.iconRef {background-image:url(refresh.gif) !important;}
+.iconFolder {background-image:url(ext/images/default/tree/folder.gif) !important;}
+.iconLeaf {background-image:url(ext/images/default/tree/leaf.gif) !important;}
+.iconTabs {	background-image:url(ext/images/default/tabs.gif) !important;}
+
+/**CFolderView*/
+.g-folderview-ctx dd{
+cursor:pointer;
+float:left;
+height:100px;
+margin:5px 5px 5px 10px;
+width:300px;
+}
+
+.g-folderview-ctx dd div {
+float:left;
+margin-left:10px;
+width:160px;
+}
+
+.g-folderview-ctx img{
+float:left;
+height:90px;
+margin:5px 0 0 5px;
+width:120px;
+}
+
+.g-folderview-ctx dd h4 {
+color:#555555;
+font-family:tahoma,arial,san-serif;
+font-weight:bold;
+margin:7px 0;
+font-size:12px;
+}
+.g-folderview-ctx dd p {
+color:#777777;
+margin-bottom:8px;
+margin-top:8px;
+}
+
+.g-folderview-ctx .g-fd-view-on,.g-folderview-ctx .g-fd-view-selected{
+	background:url(folder-vier-on.gif) no-repeat;
+}
+
+.demo-box { background:blue;position:absolute; left:120px;top:20px; width:300px;height:230px;}
