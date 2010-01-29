@@ -1,0 +1,52 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>QQLayout布局</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+		CC.ready(function(){
+			var win = new CC.ui.Win({
+				layout:'qq',
+				title:'QQ布局管理器',
+				left:90,
+				top:40,
+				width:190,
+				height:450,
+				itemCls:'titlepanel',
+				lyCfg : {
+					items : [
+					 {ctype:'titlepanel',title:'我的好友', array:[
+	  					{ctype:'folder',
+	  					 selectionCfg : {/**允许多选*/mode:0},
+	  					 array:[
+				  			{title:'disabled item',icon:'iconRef',disabled:true},
+								{title:'粉红色',icon:'iconUser'},
+								{title:'蓝色',icon:'iconEdit'},
+								{title:'清除记录',icon:'iconLeaf'},
+								{title:'粉红色',icon:'iconTabs'},
+								{title:'蓝色',icon:'iconUser'},
+								{title:'清除记录',icon:'iconEdit'}
+	  	         ]
+	  				 }
+	  			]},
+					 {title:'我的同学'},
+					 {title:'公司同事'},
+					 {title:'陌生人'},
+					 {title:'黑名单'}
+					]
+				},
+				showTo:document.body
+			});
+      win.render();
+      win.layout.collapse(win.$(0), false);
+		});
+</script>

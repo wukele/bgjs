@@ -10,6 +10,12 @@ html,body, h1,h2,h3,h4,td, th, dl, dt, form, ul{
 
 :lang(zh) {outline:none;}
 
+.hid {display:none !important;}
+.vid {visibility:hidden !important;}
+.dbl {display:block !important;}
+.dbi {display:inline !important;}
+.vvi {visibility:visible !important;}
+
 img, table {border:0 none;border-collapse:collapse;}
 .bIco { display:block; float:left; font-size:0; height:24px; margin:6px 4px 0 0px; width:18px;}
 .g-tle { color:#333333; float:left; font-size:12px;white-space:nowrap;}
