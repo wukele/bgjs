@@ -1,0 +1,133 @@
+<<<<<<< .mine
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>BorderLayout布局</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+  
+<style>
+	.g-ly-split-h{border-top:1px solid #CCC;border-bottom:1px solid #CCC;}
+	.g-ly-split-v{border-left:1px solid #CCC;border-right:1px solid #CCC;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+		CC.ready(function(){
+			var win = new CC.ui.Win({
+				layout:'border',
+				width:670,
+				height:540,
+				lyCfg : {
+					items : [
+					 {ctype:'titlepanel', height:80, title:'北部面板', lyInf:{split:true, dir:'north', collapsed:false}},
+					 {ctype:'titlepanel', height:80, title:'南部面板', lyInf:{split:true, dir:'south', collapsed:false}},
+					 {ctype:'titlepanel', width:125, title:'东部面板', lyInf:{split:true, dir:'east',collapsed: false}},
+					 {ctype:'titlepanel', width:125, title:'西部面板', id:'west', lyInf:{split:true, dir:'west',collapsed: false}, maxW:300,
+					 	layout:'border',
+					 	lyCfg:{
+					 	  items:[
+					 	  	{ctype:'tree', title:'根目录', lyInf:{dir:'center'}, array:[{title:'show case'}, {title:'Wiki changes', nodes:true}]},
+					 	  	{ctype:'folder', height:200, lyInf:{split:true,dir:'south',collapsed:false}, array:[
+						  			{title:'disabled item',icon:'iconRef',disabled:true},
+										{title:'粉红色',icon:'iconUser'},
+										{title:'蓝色',icon:'iconEdit'},
+										{title:'清除记录',icon:'iconLeaf'},
+										{title:'粉红色',icon:'iconTabs'},
+										{title:'蓝色',icon:'iconUser'},
+										{title:'清除记录',icon:'iconEdit'}
+	  	         		]}
+					 	  ]
+					 	}
+					 },
+					 {ctype:'panel', 
+					 	lyInf:{dir:'center'},
+					  layout:'border',
+					  lyCfg:{
+					  	items : [
+					    	 {ctype:'panel', height:25, lyInf:{split:true, dir:'north', collapsed:true}},
+								 {ctype:'panel', height:25, lyInf:{split:true, dir:'south', collapsed:true}},
+								 {ctype:'panel', width:50, lyInf:{split:true, dir:'east',collapsed: true}},
+								 {ctype:'panel', width:50, lyInf:{split:true, dir:'west',collapsed: true}, maxW:300}
+					    ]
+					  }
+					 }
+					]
+				},
+				showTo:document.body,
+				destoryOnClose:true
+			});
+      win.render();
+      win.center();
+		});
+</script>=======
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>BorderLayout布局</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+  
+<style>
+	.g-ly-split-h{border-top:1px solid #CCC;border-bottom:1px solid #CCC;}
+	.g-ly-split-v{border-left:1px solid #CCC;border-right:1px solid #CCC;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+		CC.ready(function(){
+			var win = new CC.ui.Win({
+				layout:'border',
+				width:670,
+				height:440,
+				lyCfg : {
+					items : [
+					 {ctype:'titlepanel', height:80, title:'北部面板', lyInf:{split:true, dir:'north', collapsed:false}},
+					 {ctype:'titlepanel', height:80, title:'南部面板', lyInf:{split:true, dir:'south', collapsed:false}},
+					 {ctype:'titlepanel', width:125, title:'东部面板', lyInf:{split:true, dir:'east',collapsed: false}},
+					 {ctype:'titlepanel', width:125, title:'西部面板', id:'west', lyInf:{split:true, dir:'west',collapsed: false}, maxW:300,
+					 	layout:'border',
+					 	lyCfg:{
+					 	  items:[
+					 	  	{ctype:'tree', title:'根目录', lyInf:{dir:'center'}},
+					 	  	{ctype:'folder', height:100, lyInf:{split:true,dir:'south',collapsed:false}, array:[
+						  			{title:'disabled item',icon:'iconRef',disabled:true},
+										{title:'粉红色',icon:'iconUser'},
+										{title:'蓝色',icon:'iconEdit'},
+										{title:'清除记录',icon:'iconLeaf'},
+										{title:'粉红色',icon:'iconTabs'},
+										{title:'蓝色',icon:'iconUser'},
+										{title:'清除记录',icon:'iconEdit'}
+	  	         		]}
+					 	  ]
+					 	}
+					 },
+					 {ctype:'panel', 
+					 	lyInf:{dir:'center'},
+					  layout:'border',
+					  lyCfg:{
+					  	items : [
+					    	 {ctype:'panel', height:25, lyInf:{split:true, dir:'north', collapsed:true}},
+								 {ctype:'panel', height:25, lyInf:{split:true, dir:'south', collapsed:true}},
+								 {ctype:'panel', width:50, lyInf:{split:true, dir:'east',collapsed: true}},
+								 {ctype:'panel', width:50, lyInf:{split:true, dir:'west',collapsed: true}, maxW:300}
+					    ]
+					  }
+					 }
+					]
+				},
+				showTo:document.body,
+				destoryOnClose:true
+			});
+      win.render();
+      win.center();
+		});
+</script>>>>>>>> .r63
