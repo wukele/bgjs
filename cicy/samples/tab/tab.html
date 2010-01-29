@@ -1,0 +1,54 @@
+﻿<html>
+    <head>
+        <meta http-equiv="ontent-Type" content="text/html; charset=UTF-8">
+        <title>Cicy Tab控件</title>
+        <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+        <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+        <link rel="stylesheet" href="../../default/lan_share.css" type="text/css"/>
+        <link rel="stylesheet" href="resources/example.css" type="text/css"/>
+        <style>
+body {overflow:hidden;}
+        </style>
+    </head>
+    <body>
+    </body>
+</html>
+<script type="text/javascript">
+CC.ready(function(){
+	
+	//Tab内容面板可以任意指定，这里把一个窗口控件作为Tab的内容显示面
+	var contentWin = new CC.ui.Win({
+		showTo: document.body,
+		title: 'Tab控件内容面板',
+		layout: 'card',
+		width:785,
+		height:540
+	});
+
+	var tab = new CC.ui.Tab({
+
+		showTo: document.body,
+
+		//指示子项关闭后自动销毁(默认是隐藏，但不销毁)
+		destoryItemOnclose: true,
+
+		//
+		// TAB项内容显示面
+		//
+		contentPanel: contentWin,
+
+		array: [ //此项用个IFrame作为显示面
+		{title: 'google',  src: 'http://www.g.cn'},
+		{title: '背光脚本',src: 'http://www.bgscript.com'},
+		{title: '小强'}, {title: 'not closeable',closeable: false},
+		{title: '小宝'}, {title: '阿三',closeable: false}
+		],
+
+		selectedItem : 0
+	});
+	
+   tab.render();
+   contentWin.render();
+   contentWin.center();
+});
+</script>
