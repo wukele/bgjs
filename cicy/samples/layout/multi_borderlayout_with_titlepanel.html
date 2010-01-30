@@ -8,8 +8,12 @@
   <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
   
 <style>
-	.g-ly-split-h{border-top:1px solid #CCC;border-bottom:1px solid #CCC;}
-	.g-ly-split-v{border-left:1px solid #CCC;border-right:1px solid #CCC;}
+	.lnl {border-left:1px solid #CCC;}
+	.lnt {border-top:1px solid #CCC;}
+	.lnb {border-bottom:1px solid #CCC;}
+	.lnr {border-right:1px solid #CCC;}
+	.lnx {border:1px solid #CCC;}
+	#northTab .auto-margin{margin-left:150px;}
 </style>
 </head>
 <body>
@@ -19,27 +23,37 @@
 		CC.ready(function(){
 			var win = new CC.ui.Win({
 				layout:'border',
-				title:'综合DEMO',
+				title:'经典DEMO',
 				width:880,
 				height:640,
 				lyCfg : {
 					items : [
-					 {ctype:'titlepanel', height:80, title:'北部面板', lyInf:{gap:0,dir:'north', collapsed:false}, array:[
-					 	 {ctype:'tab', contentPanel : 'tabContent', css:'pa b:0 w:100% bdb:1px,solid,#ccc', array: [ //此项用个IFrame作为显示面
+					 {ctype:'panel', height:80, title:'北部面板', lyInf:{gap:1,dir:'north', collapsed:false}, array:
+					 	[
+					 	 {ctype:'tab', id:'northTab', selectedItem:0, contentPanel : 'tabContent', css:'pa b:0 w:100%', array: 
+					 	 	[ //此项用个IFrame作为显示面
 								{title: 'google',  src: 'http://www.g.cn'},
-								{title: '背光脚本',src: 'http://www.bgscript.com'},
-								{title: '小强'}, {title: 'not closeable',closeable: false},
+								{title: 'JavaScript编程与WEB开发',src: 'http://www.bgscript.com'},
+								{title: '小强'}, {title: 'not closeable'},
 								{title: '小宝'}, {title: '阿三',closeable: false}
-						  ]}
-					 ]},
-					 {ctype:'titlepanel', height:80, title:'南部面板', lyInf:{split:true, dir:'south', collapsed:false}},
-					 {ctype:'titlepanel', width:160, title:'东部面板', lyInf:{split:true, dir:'east',collapsed: false}},
-					 {ctype:'titlepanel', width:160, title:'西部面板', id:'west', lyInf:{split:true, dir:'west',collapsed: false}, maxW:300,
+						  ]
+						 }
+					  ]
+					 },
+					 {ctype:'titlepanel', css:'lnt', height:80, title:'南部面板', lyInf:{split:true, dir:'south', collapsed:false}},
+					 {ctype:'titlepanel', width:160, css:'lnt lnb lnl', title:'东部面板', lyInf:{split:true, dir:'east',collapsed: false}},
+					 {ctype:'titlepanel', width:160, title:'西部面板', lyInf:{split:true, dir:'west',collapsed: false}, maxW:300,
 					 	layout:'border',
-					 	lyCfg:{
-					 	  items:[
-					 	  	{ctype:'tree', title:'根目录', lyInf:{dir:'center'}, array:[{title:'show case'}, {title:'Wiki changes', nodes:true}]},
-					 	  	{ctype:'folder', height:200, lyInf:{split:true,dir:'south',collapsed:false}, array:[
+					 	css:'lnr lnb lnt',
+					 	lyCfg:{items:
+					 		[
+					 	  	{ctype:'tree', title:'根目录', css:'lnb', lyInf:{dir:'center'}, 
+					 	  		rootCfg:{ expanded:true, array:
+					 	  			[ {title:'show case'}, {title:'Wiki changes', nodes:true}
+					 	  			]}
+					 	  	},
+					 	  	{ctype:'folder', height:200, css:'lnt',lyInf:{split:true,dir:'south',collapsed:false}, array:
+					 	  		[
 						  			{title:'disabled item',icon:'iconRef',disabled:true},
 										{title:'粉红色',icon:'iconUser'},
 										{title:'蓝色',icon:'iconEdit'},
@@ -47,22 +61,16 @@
 										{title:'粉红色',icon:'iconTabs'},
 										{title:'蓝色',icon:'iconUser'},
 										{title:'清除记录',icon:'iconEdit'}
-	  	         		]}
+	  	         		]
+	  	         	}
 					 	  ]
 					 	}
 					 },
 					 {ctype:'panel', 
+					 	css:'lnx',
 					 	lyInf:{dir:'center'},
-					  layout:'border',
-					  lyCfg:{
-					  	items : [
-					    	 {ctype:'panel', height:25, lyInf:{split:true, dir:'north', collapsed:true}},
-								 {ctype:'panel', height:25, lyInf:{split:true, dir:'south', collapsed:true}},
-								 {ctype:'panel', width:50,  lyInf:{split:true, dir:'east',collapsed: true}},
-								 {ctype:'panel', width:50,  lyInf:{split:true, dir:'west',collapsed: true}, maxW:300},
-								 {ctype:'panel', width:50,  lyInf:{dir:'center'}, id:'tabContent', layout:'card'}
-					    ]
-					  }
+					  layout:'card',
+					  id:'tabContent'
 					 }
 					]
 				},
