@@ -127,17 +127,17 @@ white-space:nowrap;
 .g-btn .g-btn-c{background-position:0px -414px;}
 .g-btn .g-btn-l{background-position:0px -48px;}
 .g-btn .g-btn-r{background-position:-4px -48px;}
-.g-btn-over .g-btn-c{background-position:0 -391px;}
-.g-btn-over .g-btn-l{background-position:-8px -48px;}
-.g-btn-over .g-btn-r{background-position:-12px -48px;}
+.g-btn-over .g-btn-c, .g-btn-dwn .g-btn-c{background-position:0 -391px;}
+.g-btn-over .g-btn-l, .g-btn-dwn .g-btn-l{background-position:-8px -48px;}
+.g-btn-over .g-btn-r, .g-btn-dwn .g-btn-r{background-position:-12px -48px;}
 
 .g-baritem {display:inline;cursor:pointer !important;}
-.g-baritem-menuDwn .g-btn-c, .g-baritem-over .g-btn-c{background-position:0px -1225px;}
+.g-baritem-dwn .g-btn-c, .g-baritem-over .g-btn-c{background-position:0px -1225px;}
 .g-baritem-click .g-btn-c{background-position:0px -1282px;}
 .g-baritem .g-btn-l, .g-baritem .g-btn-r {height:29px;width:4px;}
-.g-baritem-over .g-btn-l,.g-baritem-menuDwn .g-btn-l {background-position:-304px -0px;}
+.g-baritem-over .g-btn-l,.g-baritem-dwn .g-btn-l {background-position:-304px -0px;}
 .g-baritem-click .g-btn-l {background-position:-312px 0px;}
-.g-baritem-over .g-btn-r,.g-baritem-menuDwn .g-btn-r {background-position:-308px -0px;margin-right:-1px;}
+.g-baritem-over .g-btn-r,.g-baritem-dwn .g-btn-r {background-position:-308px -0px;margin-right:-1px;}
 .g-baritem-click .g-btn-r {background-position:-316px 0px;}
 .g-baritem-over .btnDrop {background-position:-440px -129px;}
 .g-baritem-click .btnDrop {background-position:-0px -1282px;top:1px;}
@@ -152,12 +152,13 @@ white-space:nowrap;
 .g-smallbar .g-tbar-wr{padding:2px 3px;}
 
 .g-smallbar-item .g-btn-l,.g-smallbar-item .g-btn-r{height:22px;width:4px;}
-.g-smallbar-item-over .g-btn-l{background-position:-304px -32px;}
-.g-smallbar-item-over .g-btn-r{background-position:-308px -32px;}
+.g-smallbar-item-over .g-btn-l, .g-smallbar-item-dwn .g-btn-l{background-position:-304px -32px;}
+.g-smallbar-item-over .g-btn-r, .g-smallbar-item-dwn .g-btn-r{background-position:-308px -32px;}
 .g-smallbar-item-click .g-btn-l{background-position:-312px -32px;}
 .g-smallbar-item-click .g-btn-r{background-position:-316px -32px;}
-.g-smallbar-item-over .g-btn-c{background-position:0px -1820px;}
+.g-smallbar-item-over .g-btn-c, .g-smallbar-item-dwn .g-btn-c{background-position:0px -1820px;}
 .g-smallbar-item-click .g-btn-c{background-position:0px -1844px;}
+
 
 .g-titlepanel-hd { background-position:0 -1671px; height:29px; position:relative; width:100%;}
 .g-titlepanel-hd .g-tle { left:29px; position:absolute;line-height:1.9em;}
