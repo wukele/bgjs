@@ -1,0 +1,32 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+<style>
+	 body {overflow:hidden;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+
+CC.ready(function(){
+__debug=true;
+ var win = new CC.ui.Win({
+  title : 'Advanced Tab Demo',
+  destoryOnClose : true,
+  layout : 'card',
+  showTo:document.body,
+  lyCfg : {items:[{
+   ctype:'tab',
+   layout:'tabitem',
+   lyCfg:{items:[{title:'TAB_1'},{title:'TAB_2'},{title:'TAB_3'},{title:'TAB_4'},{title:'TAB_5'},{title:'TAB_6'},{title:'TAB_7'},{title:'TAB_8'},{title:'TAB_9'},{title:'TAB_10'}]}
+  }]}
+ });
+ win.render();
+ win.center();
+});
+</script>

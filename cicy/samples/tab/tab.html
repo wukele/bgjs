@@ -1,0 +1,29 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+<style>
+	#mytab .auto-margin{margin-left:50px;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function(){
+__debug=true;
+ var win = new CC.ui.Win({
+  title : '选项卡',
+  destoryOnClose : true,
+  layout : 'card',
+  showTo:document.body,
+  array:[
+   {ctype:'tab', id:'mytab', selectionCfg:{selected:0}, array:[{title:'选项_1'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4'}]}
+  ]
+ });
+ win.render();
+ win.center();
+});
+</script>
