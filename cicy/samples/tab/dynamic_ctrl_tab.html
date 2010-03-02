@@ -1,0 +1,68 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+<style>
+	 body {overflow:hidden;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+
+CC.ready(function(){
+__debug=true;
+
+ new CC.ui.Panel({
+ 	showTo : document.body,
+ 	autoRender : true,
+ 	array:[
+ 		{ctype:'button', title:'添 加', onclick:add},
+ 		{ctype:'button', title:'移 除', onclick:remove}
+ 	]
+ });
+ 
+ var win = new CC.ui.Win({
+  title : 'Advanced Tab Demo',
+  destoryOnClose : true,
+  layout : 'card',
+  showTo:document.body,
+  lyCfg : {items:[{
+   ctype:'tab',
+   id : 'mytab',
+   layout:'tabitem',
+   lyCfg:{items:[{title:'TAB_1'},{title:'TAB_2'},{title:'TAB_3'},{title:'TAB_4'},{title:'TAB_5'},{title:'TAB_6'},{title:'TAB_7'},{title:'TAB_8'},{title:'TAB_9'},{title:'TAB_10'}]}
+  }]}
+ });
+ win.render();
+ win.center();
+ 
+ // --------
+ // 动态控制tab
+ // --------
+ var count = 11;
+ var tab = win.byId('mytab');
+ 
+ function add(){
+ 	tab.layout.add({ctype:'tabitem', title:'tab_'+ (count++)});
+ 	// or : tab.layout.add(new CC.ui.TabItem({title:'tabitem'}));
+ 	
+ 	//selec it
+ 	tab.selectionProvider.select(tab.size() - 1);
+ }
+ 
+ function remove(){
+ 	if(tab.size()>=2){
+	  if(tab.selectionProvider.selected){
+	  	//移出tab item无需经过layout
+	  	tab.remove(tab.selectionProvider.selected);
+	  }
+	  //remove the last one
+	  else tab.remove(tab.size() - 1);
+  }
+ }
+});
+</script>
