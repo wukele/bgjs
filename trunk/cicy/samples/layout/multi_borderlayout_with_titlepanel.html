@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
   
 <style>
-	#northTab .auto-margin{margin-left:150px;}
+	#northTab {position:absolute;bottom:0;}
 </style>
 </head>
 <body>
@@ -21,27 +21,38 @@
 				title:'经典DEMO',
 				lyCfg : {
 					items : [
-					 {ctype:'panel', height:80, title:'北部面板', lyInf:{gap:1,dir:'north', collapsed:false}, array:
-					 	[
-					 	 {ctype:'tab', id:'northTab', selectedItem:0, contentPanel : 'tabContent', css:'pa b:0 w:100%', array: 
-					 	 	[ //此项用个IFrame作为显示面
-								{title: 'google',  src: 'http://www.g.cn'},
-								{title: 'JavaScript编程与WEB开发',src: 'http://www.bgscript.com'},
-								{title: '小强'}, {title: 'not closeable'},
-								{title: '小宝'}, {title: '阿三',closeable: false}
-						  ]
+					 {ctype:'panel', height:80, title:'北部面板', 
+					 	lyInf:{gap:1,dir:'north', collapsed:false}, 
+					 	layout:'row',
+					 	lyCfg:{items:[
+					 	 {ctype:'tab', id:'northTab',
+					 	 	selectionCfg:{selected:0}, 
+					 	 	contentPanel : 'tabContent', 
+					 	 	layout:'tabitem',
+					 	 	lyCfg:{
+					 	 	 marginLeft:190,
+					 	 	 marginRight:50,
+					 	 	 items:
+					 	 	  [ //此项用个IFrame作为显示面
+								 {title: 'google',  src: 'http://www.g.cn'},
+								 {title: 'JavaScript编程与WEB开发',src: 'http://www.bgscript.com'},
+								 {title: '小强'}, {title: 'not closeable'},
+								 {title: '小宝'}, {title: '阿三',closeable: false}
+						    ]
+						  }
 						 }
-					  ]
+					   ]
+					  }
 					 },
 					 {ctype:'titlepanel', css:'lnt', height:80, title:'南部面板', lyInf:{split:true, dir:'south', collapsed:false}},
 					 {ctype:'titlepanel', width:160, css:'lnt lnb lnl', title:'东部面板', lyInf:{split:true, dir:'east',collapsed: false}},
-					 {ctype:'titlepanel', width:160, title:'西部面板', lyInf:{split:true, dir:'west',collapsed: false}, maxW:300,
+					 {ctype:'titlepanel', width:190, title:'西部面板', lyInf:{split:true, dir:'west',collapsed: false}, maxW:300,
 					 	layout:'border',
 					 	css:'lnr lnb lnt',
 					 	lyCfg:{items:
 					 		[
-					 	  	{ctype:'tree', title:'根目录', css:'lnb', lyInf:{dir:'center'}, 
-					 	  		rootCfg:{ expanded:true, array:
+					 	  	{ctype:'tree', css:'lnb', lyInf:{dir:'center'}, 
+					 	  		rootCfg:{ expanded:true, title:'根目录', array:
 					 	  			[ {title:'show case'}, {title:'Wiki changes', nodes:true}
 					 	  			]}
 					 	  	},
