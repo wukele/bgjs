@@ -17,13 +17,21 @@ __debug=true;
  var win = new CC.ui.Win({
   title : '选项卡',
   destoryOnClose : true,
-  layout : 'card',
+  layout : 'row',
   showTo:document.body,
-  array:[
-   {ctype:'tab', id:'mytab', selectionCfg:{selected:0}, array:[{title:'选项_1'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4'}]}
-  ]
+  lyCfg:{
+   items:[
+    {ctype:'tab',   id:'mytab', selectionCfg:{selected:0}, contentPanel:'tabcontentpanel', lyInf:{h:'auto'}, array:[{title:'选项_1', src:'http://www.g.cn'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4'}]},
+    {ctype:'panel', id:'tabcontentpanel', lyInf:{h:'lead'}, layout:'card'}
+   ]
+  }
  });
  win.render();
  win.center();
+ 
+ //监听tabitem选择事件
+ win.byId('mytab').on('selected', function(item){
+   CC.Util.ftip('你选择了'+item.title, '提示' , item);
+ });
 });
 </script>
