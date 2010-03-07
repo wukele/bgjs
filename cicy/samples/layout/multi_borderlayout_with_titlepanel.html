@@ -25,6 +25,14 @@
 					 	lyInf:{gap:1,dir:'north', collapsed:false}, 
 					 	layout:'row',
 					 	lyCfg:{items:[
+					 	 {ctype:'bigbar', css:'pa t:0 lnb', array:[
+								{icon:'iconUser',title:'disabled',disabled:true},
+								{icon:'iconUser',title:'selectItem'},
+								{icon:'iconUser',title:'selected调用'},
+								{icon:'iconTabs', ctype:'dropbutton', title:'下拉', qtip:'Tab图标', array:[{title:'菜单项', array:[{title:'菜单项'}]}, {title:'菜单项'}]},
+								{icon:'iconUser',title:'onclick调用'}    		  
+			    		 ]
+			    	 },
 					 	 {ctype:'tab', id:'northTab',
 					 	 	selectionCfg:{selected:0}, 
 					 	 	contentPanel : 'tabContent', 
@@ -44,7 +52,18 @@
 					   ]
 					  }
 					 },
-					 {ctype:'titlepanel', css:'lnt', height:80, title:'南部面板', lyInf:{split:true, dir:'south', collapsed:false}},
+					 {ctype:'titlepanel', css:'lnt', height:80, title:'南部面板', lyInf:{split:true, dir:'south', collapsed:false}, array:
+					 	[
+						 	{ctype:'smallbar', css:'pa b:0 lnt', array:[
+								{title:'你好',icon:'iconTabs', qtip:'这是一个可停靠，具有文本和图标的按钮', dockable:true},
+								{icon:'iconFolder', qtip:'文件夹图标'},
+								{icon:'iconTabs', ctype:'dropbutton', title:'下拉', qtip:'Tab图标', array:[{title:'菜单项', array:[{title:'菜单项'}]}, {title:'菜单项'}]},
+								{disabled:true,icon:'iconLeaf', qtip:'该项已禁用'},
+								{icon:'iconRef',dockable:true, docked:true,  qtip:'点击刷新'},
+								{icon:'iconUser', qtip:'单个图标按钮,无文本'}
+			    		 ]
+			    		} 
+					 ]},
 					 {ctype:'titlepanel', width:160, css:'lnt lnb lnl', title:'东部面板', lyInf:{split:true, dir:'east',collapsed: false}},
 					 {ctype:'titlepanel', width:190, title:'西部面板', lyInf:{split:true, dir:'west',collapsed: false}, maxW:300,
 					 	layout:'border',
