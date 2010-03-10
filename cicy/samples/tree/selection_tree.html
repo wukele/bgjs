@@ -22,25 +22,14 @@ CC.ready(function() {
  */
   
   var tree = new CC.ui.Tree({
-    title: '树根目录',
-    showTo: document.body
+    showTo: document.body,
+    rootCfg:{title: '树根目录', array:
+    	[{title: '禁用项',nodes: true,disabled: true},
+			  {title: '结点B'},
+			  {title: '添加图标',nodes: true}
+			]
+    }
   });
-  
-  //
-  // 这些是结点数据
-  //
-  tree.root.fromArray([{
-    title: '禁用项',
-    nodes: true,
-    disabled: true
-  },
-  {
-    title: '结点B'
-  },
-  {
-    title: '添加图标',
-    nodes: true
-  }]);
   
   tree.render();
   
