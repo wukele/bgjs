@@ -28,33 +28,36 @@ function createCellData(cols, rows){
 
 CC.ready(function(){
 	__debug = true;
-  var g = 
-  new CC.ui.Grid({
-   width:500,
-   height:272,
-   autoFit : true,
-   showTo:document.body,
-   deffer:false,
-   css:'pa l:100 t:100 lnx',
-   header:
-    {
-     array:[
-      {title:'第一列', width:.3},
-      {title:'第二列', width:.3},
-      {title:'第三列'}
-     ]
-    },
-   content : {array:createCellData(3, 10)}
+  var g = new CC.ui.Panel({
+  	layout:'card',
+    width:500,
+		height:172,
+		showTo:document.body,
+  	css:'pa l:100 t:100',
+  	lyCfg:{items:[
+  		{
+  		 ctype:'grid',
+		   autoFit : true,
+		   header:
+		    {
+		     array:[
+		      {title:'第一列', width:.3},
+		      {title:'第二列', width:.3},
+		      {title:'第三列'}
+		     ]
+		    },
+		   content : {array:createCellData(3, 10)}
+		  }
+  	]}
   });
   g.render();
   
   
   g = new CC.ui.Grid({
-   width:500,
-   height:272,
-   showTo:document.body,
-   deffer:false,
-   css:'pa l:650 t:100 lnx',
+   //width:500,
+   //height:272,
+   //showTo:document.body,
+   //css:'pa l:650 t:100 lnx',
    header:
     {
      array:[
@@ -65,10 +68,10 @@ CC.ready(function(){
     },
    content : {array:createCellData(3, 10), selectionCfg:{mode:0}}
   });
-  g.render();
+  //g.render();
   
   //g.header.$(0).setWidth(600);
-/*
+
   var win = new CC.ui.Win({
   	title:'Grid演示',
   	destoryOnClose : true,
@@ -78,7 +81,7 @@ CC.ready(function(){
   });
   win.render();
   win.center();
-*/
+
  
 });
 </script>

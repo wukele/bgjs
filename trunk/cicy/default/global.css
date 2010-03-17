@@ -457,17 +457,18 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-datepicker-days td {	cursor:pointer;}
 .g-datepicker-days td a:hover{text-decoration:none!important;color:black;background:#ddecfe;}
 .g-datepicker-days td a{	display:block;	padding:2px 5px;	font-size:11px;	color:black;	text-align:right;	border:1px solid #FFF;}
-td .month_sep{	cursor:default;}
-td .month_sep a{	font-size:10px;	text-align:center;	background:#EEEEEE;	color:#999;	cursor:default;	padding:2px 6px;}
-td .month_r a{	padding:2px;}
-td .curday {}
-td .sateday{}
-td.preday a{	color:#AAA;}
-td.nxtday a{color:#AAA;}
-td .selday a{	border:1px solid darkred;font-weight:bold;padding:1px 4px;}
+.g-datepicker td .month_sep{	cursor:default;}
+.g-datepicker td .month_sep a{	font-size:10px;	text-align:center;	background:#EEEEEE;	color:#999;	cursor:default;	padding:2px 6px;}
+.g-datepicker td .month_r a{	padding:2px;}
+.g-datepicker td .curday {}
+.g-datepicker td .sateday{}
+.g-datepicker td a.today {background:#FFFFCC;border:1px dotted #CCC;}
+.g-datepicker td.preday a{	color:#AAA;}
+.g-datepicker td.nxtday a{color:#AAA;}
+.g-datepicker td .selday a{	border:1px solid darkred;font-weight:bold;padding:1px 4px;}
 .g-datepicker td.holiday {color:#0000CC;font-weight:bold;text-decoration:underline;}
 .g-datepicker-selecor{	position:absolute;	width:59px;	border:1px solid #7B9EBD;	overflow:hidden;}
-*:lang(zh) .g-datepicker-selecor{width:56px;}
+*:lang(zh) .g-datepicker-selecor{width:50px;}
 .g-datepicker-selecor input{font-size:10pt;overflow:hidden;border:none;border-top:1px solid #7B9EBD;color:#999;padding:2px;}
 .g-datepicker-selecor select{	width:auto;	height:18px;}
 /**Grid*/
