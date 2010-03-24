@@ -16,14 +16,16 @@
         /**
          * 创建模式对话框
          */
-        var bwin = new CC.ui.Win({
-            title: '父层窗口 - 1',
+        var bwin = new CC.ui.Dialog({
+            title: '父层对话框 - 无按钮栏',
             showTo: document.body,
             autoRender: true,
-            height:350
+            bottomer : false,
+            height:350,
+            width : 450
         });
 
-        bwin.center();
+        bwin.show(null, true);
         
     
        function whenDialogReturn(){
@@ -39,7 +41,7 @@
             showTo: document.body,
             autoRender: true,
             width: 320,
-            height: 180,
+            height: 200,
             defaultButton:'ok',
             buttons: [{
                 title: '确定',
