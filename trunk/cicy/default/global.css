@@ -462,6 +462,7 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-datepicker td .month_r a{	padding:2px;}
 .g-datepicker .curday {}
 .g-datepicker .sateday{}
+.g-datepicker td.selmonth a {border:2px solid #CCC;padding:0px;}
 .g-datepicker .disabledday a{cursor:default !important;color:#CCC !important;border:none !important;}
 .g-datepicker td a.today {background:#FFFFCC;border:1px dotted #CCC;}
 .g-datepicker td.preday a{	color:#AAA;}
