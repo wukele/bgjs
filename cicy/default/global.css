@@ -460,8 +460,9 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-datepicker td .month_sep{	cursor:default;}
 .g-datepicker td .month_sep a{	font-size:10px;	text-align:center;	background:#EEEEEE;	color:#999;	cursor:default;	padding:2px 6px;}
 .g-datepicker td .month_r a{	padding:2px;}
-.g-datepicker td .curday {}
-.g-datepicker td .sateday{}
+.g-datepicker .curday {}
+.g-datepicker .sateday{}
+.g-datepicker .disabledday a{cursor:default !important;color:#CCC !important;border:none !important;}
 .g-datepicker td a.today {background:#FFFFCC;border:1px dotted #CCC;}
 .g-datepicker td.preday a{	color:#AAA;}
 .g-datepicker td.nxtday a{color:#AAA;}
