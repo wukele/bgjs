@@ -485,7 +485,7 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-grid .g-grid-ct .grid-row { border-right:1px solid #CCC;}
 .g-grid .g-grid-ct .row-select{background-color:#FFFFCA;}
 .g-grid-fit .g-grid-ct{overflow-x:hidden;}
-
+.g-grid .alt-row {	background-color:#F7F7F7; }
 
 
 .g-foldable {overflow:hidden;}
