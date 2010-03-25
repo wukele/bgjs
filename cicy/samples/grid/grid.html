@@ -53,11 +53,28 @@ CC.ready(function(){
   g.render();
   
   
+  CC.create('CC.ui.grid.Twobar', null, {
+  	
+  	initialize : function(opt){
+  		this.opt = opt;
+  	},
+  	
+  	gridEventHandlers : {
+  		beforeaddheader : function(hd, g){
+  			g.layout.add(new CC.ui.Smallbar(this.opt.small));
+  			delete this.opt.small;
+  		},
+  		
+  		afteraddcontent : function(hd, g){
+  			g.layout.add(new CC.ui.Bigbar(this.opt.big));
+  			delete this.opt.big;
+  		}
+  	}
+  });
+  
+  CC.ui.def('gridtwobar', CC.ui.grid.Twobar);
   g = new CC.ui.Grid({
-   //width:500,
-   //height:272,
-   //showTo:document.body,
-   //css:'pa l:650 t:100 lnx',
+   plugins:{ twobar : {ctype:'gridtwobar'} },
    header:
     {
      array:[
@@ -66,7 +83,8 @@ CC.ready(function(){
       {title:'第三列'}
      ]
     },
-   content : {array:createCellData(3, 10), selectionCfg:{mode:0}}
+   content : {array:createCellData(3, 10), selectionCfg:{mode:0}, altCS:'alt-row'},
+   twobar : {small:{array:[{title:'小按钮'}, {title:'上一页'}, {title:'下一页'}]}, big:{css:'lnt', array:[{title:'大按钮'}, {title:'上一页'}, {title:'下一页'}]}}
   });
   //g.render();
   
@@ -79,7 +97,12 @@ CC.ready(function(){
   	layout:'card',
   	lyCfg:{items:[g]}
   });
+  
+  
   win.render();
+  
+  
+  
   win.center();
 
  
