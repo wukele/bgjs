@@ -482,9 +482,10 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-grid .g-grid-hd .hd-tbl .hdrcell{white-space:nowrap;overflow:hidden;padding:4px 3px 4px 3px;border-right:1px solid #CCC;}
 .g-grid .g-grid-ct {overflow:auto;position:relative;cursor:default;}
 .g-grid .g-grid-ct .cell{padding:4px 3px 3px;overflow:hidden;white-space:nowrap;border-bottom:1px solid #CCC;}
+.g-grid .g-grid-ct .grid-td {border-right:1px solid #DDD;}
 .g-grid .g-grid-ct .ct-tbl{table-layout:fixed;}
 .g-grid .g-grid-ct .row-over {background-color:#FFFFE1;}
-.g-grid .g-grid-ct .grid-row { border-right:1px solid #CCC;}
+/*.g-grid .g-grid-ct .grid-row {}*/
 .g-grid .g-grid-ct .row-select{background-color:#FFFFCA;}
 .g-grid-fit .g-grid-ct{overflow-x:hidden;}
 .g-grid .alt-row {	background-color:#F7F7F7; }
