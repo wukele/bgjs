@@ -22,6 +22,11 @@ a.gfName{color:#4D784D;}
 .g-checkbox img {background:transparent url(ru/checkbox.gif) no-repeat scroll 0 0;}
 .g-radio img {background:transparent url(ru/radio.gif) no-repeat scroll 0 0;}
 .g-titlepanel-hd .g-tle{color:#676767;}
+.g-icon-navnxt {background-image:url(ru/next.gif) !important;}
+.g-icon-navpre {background-image:url(ru/prev.gif) !important;}
+.g-icon-navfirst {background-image:url(ru/first.gif) !important;}
+.g-icon-navlast {background-image:url(ru/last.gif) !important;}
+.g-icon-loading {background-image:url(ru/loading.gif) !important;}
 
 .g-loading-indicator{
 	background-image:url(ru/loading.gif);
