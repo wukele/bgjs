@@ -10,6 +10,7 @@
 </style>
 </head>
 <body>
+	<input type="button" onclick="testAddRow()" value="新增行" />
 </body>
 </html>
 <script>
@@ -28,31 +29,7 @@ function createCellData(cols, rows){
 
 CC.ready(function(){
 	__debug = true;
-  var g = new CC.ui.Panel({
-  	layout:'card',
-    width:500,
-		height:172,
-		showTo:document.body,
-  	css:'pa l:100 t:100',
-  	lyCfg:{items:[
-  		{
-  		 ctype:'grid',
-		   autoFit : true,
-		   header:
-		    {
-		     array:[
-		      {title:'第一列', width:.3},
-		      {title:'第二列', width:.3},
-		      {title:'第三列'}
-		     ]
-		    },
-		   content : {array:createCellData(3, 10)}
-		  }
-  	]}
-  });
-  g.render();
-  
-  
+	  
   CC.create('CC.ui.grid.Twobar', null, {
   	
   	initialize : function(opt){
@@ -60,7 +37,7 @@ CC.ready(function(){
   	},
   	
   	gridEventHandlers : {
-  		beforeaddheader : function(hd, g){
+  		afteraddheader : function(hd, g){
   			g.layout.add(new CC.ui.Smallbar(this.opt.small));
   			delete this.opt.small;
   		},
@@ -73,7 +50,8 @@ CC.ready(function(){
   });
   
   CC.ui.def('gridtwobar', CC.ui.grid.Twobar);
-  g = new CC.ui.Grid({
+  
+  window.g = new CC.ui.Grid({
    plugins:{ twobar : {ctype:'gridtwobar'} },
    header:
     {
@@ -83,8 +61,8 @@ CC.ready(function(){
       {title:'第三列'}
      ]
     },
-   content : {array:createCellData(3, 10), selectionCfg:{mode:0}, altCS:'alt-row'},
-   twobar : {small:{array:[{title:'小按钮'}, {title:'上一页'}, {title:'下一页'}]}, big:{css:'lnt', array:[{title:'大按钮'}, {title:'上一页'}, {title:'下一页'}]}}
+   content : {array:createCellData(3, 10), altCS:'alt-row'},
+   twobar : {small:{array:[{title:false,icon:'g-icon-loading',dockable:true, docked:true}, {title:false, icon:'g-icon-navpre'}, {title:false,qtip:'下一页', icon:'g-icon-navnxt'}]}, big:{css:'lnt', array:[{title:'大按钮'}, {title:'上一页'}, {title:'下一页'}]}}
   });
   //g.render();
   
@@ -101,10 +79,11 @@ CC.ready(function(){
   
   win.render();
   
-  
-  
   win.center();
-
- 
 });
+
+
+  function testAddRow(){
+  	g.content.add({ctype:'gridrow', array:[{title:'测试add'},{title:'测试add2'},{title:'测试add3'}]});
+  }
 </script>
