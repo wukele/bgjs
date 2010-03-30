@@ -22,11 +22,16 @@ __debug=true;
   showTo:document.body,
   lyCfg : {items:[{
    ctype:'tab',
+   id:'mytab',
    layout:'tabitem',
    lyCfg:{items:[{title:'TAB_1'},{title:'TAB_2'},{title:'TAB_3'},{title:'TAB_4'},{title:'TAB_5'},{title:'TAB_6'},{title:'TAB_7'},{title:'TAB_8'},{title:'TAB_9'},{title:'TAB_10'}]}
   }]}
  });
  win.render();
  win.center();
+ 
+// win.byId('mytab').on('closed', function(item){
+//   this.layout.display.bind(this.layout, item, true).timeout(3000);
+// });
 });
 </script>
