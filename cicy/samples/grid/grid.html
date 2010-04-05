@@ -1,39 +1,37 @@
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
   <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
   <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
   <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
-  
+
 <style>
 </style>
 </head>
 <body>
-	<input type="button" onclick="testAddRow()" value="新增行" />
+  <input type="button" onclick="testAddRow()" value="新增行" />
 </body>
 </html>
 <script>
-	
+
 function createCellData(cols, rows){
-	var rs = [];
-	for(var i=0;i<rows;i++){
-		var cs = {array:[]};
-		for(var j=0;j<cols;j++){
-			cs.array.push({title:i+','+j});
-			if(((i+j)%3) === 0)
-				cs.array[cs.array.length - 1].disabled = true;
-		}
-		rs.push(cs);
-	}
-	return rs;
+  var rs = [];
+  for(var i=0;i<rows;i++){
+    var cs = {array:[]};
+    for(var j=0;j<cols;j++){
+      cs.array.push({title:i+','+j});
+      if(((i+j)%3) === 0)
+        cs.array[cs.array.length - 1].disabled = true;
+    }
+    rs.push(cs);
+  }
+  return rs;
 }
 
 CC.ready(function(){
-	__debug = true;
+  __debug = true;
 
-  CC.ui.def('gridtwobar', CC.ui.grid.Twobar);
-  
   window.g = new CC.ui.Grid({
    plugins : {edition:{ctype:'grideditor'}},
    header:
@@ -47,22 +45,22 @@ CC.ready(function(){
     },
    content : {array:createCellData(4, 6), altCS:'alt-row'}
   });
- 
+
   var win = new CC.ui.Win({
-  	title:'Grid演示',
-  	showTo:document.body,
-  	layout:'card',
-  	lyCfg:{items:[g]}
+    title:'Grid演示',
+    showTo:document.body,
+    layout:'card',
+    lyCfg:{items:[g]}
   });
-  
-  
+
+
   win.render();
-  
+
   win.center();
 });
 
 
   function testAddRow(){
-  	g.content.add({ctype:'gridrow', array:[{title:'测试add'},{title:'测试add2'},{title:'测试add3'}]});
+    g.content.add({ctype:'gridrow', array:[{title:'测试add'},{title:'测试add2'},{title:'测试add3'}]});
   }
 </script>
