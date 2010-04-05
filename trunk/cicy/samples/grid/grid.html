@@ -2,7 +2,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
-  <!--<script type="text/javascript" src="../../grid.js"></script>-->
   <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
   <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
   <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
@@ -22,6 +21,8 @@ function createCellData(cols, rows){
 		var cs = {array:[]};
 		for(var j=0;j<cols;j++){
 			cs.array.push({title:i+','+j});
+			if(((i+j)%3) === 0)
+				cs.array[cs.array.length - 1].disabled = true;
 		}
 		rs.push(cs);
 	}
@@ -30,48 +31,25 @@ function createCellData(cols, rows){
 
 CC.ready(function(){
 	__debug = true;
-	  
-  CC.create('CC.ui.grid.Twobar', null, {
-  	
-  	initialize : function(opt){
-  		this.opt = opt;
-  	},
-  	
-  	gridEventHandlers : {
-  		afteraddheader : function(hd, g){
-  			g.layout.add(new CC.ui.Smallbar(this.opt.small));
-  			delete this.opt.small;
-  		},
-  		
-  		afteraddcontent : function(hd, g){
-  			g.layout.add(new CC.ui.Bigbar(this.opt.big));
-  			delete this.opt.big;
-  		}
-  	}
-  });
-  
+
   CC.ui.def('gridtwobar', CC.ui.grid.Twobar);
   
   window.g = new CC.ui.Grid({
-   plugins:{ twobar : {ctype:'gridtwobar'} },
+   plugins : {edition:{ctype:'grideditor'}},
    header:
     {
      array:[
-      {title:'第一列', width:.2},
-      {title:'第二列'},
-      {title:'第三列'}
+      {title:'第一列', width:.2, editor:{ctype:'text'}, validator:function(v){ if(v=='') return '不能为空'; return true;}},
+      {title:'第二列', editor:{ctype:'textarea', minW:100, minH:100}},
+      {title:'第三列', editor:{ctype:'combo', array:[{title:'第一项', icon:'iconUser'}]}},
+      {title:'第四列', editor:{ctype:'datepicker'}}
      ]
     },
-   content : {array:createCellData(3, 10), altCS:'alt-row'},
-   twobar : {small:{array:[{title:false,icon:'g-icon-loading',dockable:true, docked:true}, {title:false, icon:'g-icon-navpre'}, {title:false,qtip:'下一页', icon:'g-icon-navnxt'}]}, big:{css:'lnt', array:[{title:'大按钮'}, {title:'上一页'}, {title:'下一页'}]}}
+   content : {array:createCellData(4, 6), altCS:'alt-row'}
   });
-  //g.render();
-  
-  //g.header.$(0).setWidth(600);
-
+ 
   var win = new CC.ui.Win({
   	title:'Grid演示',
-  	destoryOnClose : true,
   	showTo:document.body,
   	layout:'card',
   	lyCfg:{items:[g]}
@@ -81,7 +59,6 @@ CC.ready(function(){
   win.render();
   
   win.center();
-  
 });
 
 
