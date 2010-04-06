@@ -547,6 +547,7 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-res-unresize .g-res-e,.g-res-unresize .g-res-s,.g-res-unresize .g-res-w,.g-res-unresize .g-res-n,.g-res-unresize .g-res-sw,.g-res-unresize .g-res-es,.g-res-unresize .g-res-wn,.g-res-unresize .g-res-ne{cursor:default;}
 
 .g-datepicker-field{width:230px;height:20px;}
+.g-datepicker-field .field-wrap {position:relative;}
 .g-datepicker-field input{height:20px;border:1px solid #C0BBB4;border-right:0 none;display:block;padding:2px 22px 0 3px;width:100%;}
 :lang(zh) .g-datepicker-field input{padding-top:0px}
 .g-datepicker-field .trigger{background-position:-183px -48px;display:block;height:20px;width:22px;position:absolute;top:1px;right:0px;}
