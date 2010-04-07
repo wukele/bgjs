@@ -135,9 +135,9 @@ white-space:nowrap;
 .g-baritem-dwn .g-btn-c, .g-baritem-over .g-btn-c{background-position:0px -1225px;}
 .g-baritem-click .g-btn-c{background-position:0px -1282px;}
 .g-baritem .g-btn-l, .g-baritem .g-btn-r {height:29px;width:4px;}
-.g-baritem-over .g-btn-l,.g-baritem-dwn .g-btn-l {background-position:-304px -0px;}
+.g-baritem-over .g-btn-l, .g-baritem-dwn .g-btn-l {background-position:-304px -0px;}
 .g-baritem-click .g-btn-l {background-position:-312px 0px;}
-.g-baritem-over .g-btn-r,.g-baritem-dwn .g-btn-r {background-position:-308px -0px;margin-right:-1px;}
+.g-baritem-over .g-btn-r, .g-baritem-dwn .g-btn-r {background-position:-308px -0px;margin-right:-1px;}
 .g-baritem-click .g-btn-r {background-position:-316px 0px;}
 .g-baritem-over .btnDrop {background-position:-440px -129px;}
 .g-baritem-click .btnDrop {background-position:-0px -1282px;top:1px;}

@@ -11,7 +11,6 @@
 </head>
 <body>
   <input type="button" onclick="testAddRow()" value="新增行" />
-  <input type="button" onclick="testClear()" value="清空" />
 </body>
 </html>
 <script>
@@ -34,6 +33,7 @@ CC.ready(function(){
   __debug = true;
 
   window.g = new CC.ui.Grid({
+   plugins : {edition:{ctype:'grideditor'}},
    header:
     {
      array:[
@@ -43,11 +43,11 @@ CC.ready(function(){
       {title:'第四列', editor:{ctype:'datepicker'}}
      ]
     },
-   content : {array:createCellData(4, 50), altCS:'alt-row'}
+   content : {array:createCellData(4, 6), altCS:'alt-row'}
   });
 
   var win = new CC.ui.Win({
-    title:'Grid演示',
+    title:'Grid 编辑功能演示 - TAB导航',
     showTo:document.body,
     layout:'card',
     lyCfg:{items:[g]}
@@ -62,9 +62,5 @@ CC.ready(function(){
 
   function testAddRow(){
     g.content.add({ctype:'gridrow', array:[{title:'测试add'},{title:'测试add2'},{title:'测试add3'},{title:'测试add4'}]});
-  }
-  
-  function testClear(){
-    g.content.destoryChildren();
   }
 </script>
