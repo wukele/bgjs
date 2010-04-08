@@ -1,0 +1,62 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+
+<style>.demo-grid .g-grid-ct .cell {height:20px;} </style>
+</head>
+<body>
+</body>
+</html>
+<script>
+
+CC.ready(function(){
+  __debug = true;
+
+  var g = new CC.ui.Grid({
+   cs : 'demo-grid',
+   autoFit:true,
+   header:
+    {
+     array:[
+      {title:'姓 名(非空)', editor:{ctype:'text'}, validator:function(v){ if(v=='') return '该值不能为空'; return true;}},
+      {title:'邮 箱(格式要正确)', editor:{ctype:'textarea', minW:100, minH:100}, validator:function(v){ return (!CC.isMail(v))?'请输入正确的邮箱格式':true; }},
+      {title:'性 别(非空)', editor:{ctype:'combo', array:[{title:'第一项', icon:'iconUser'}]}, validator:function(v){ if(v=='') return '该值不能为空'; return true;}},
+      {title:'描 述(长度大于2)', editor:{ctype:'text'}, validator:function(v){ if(v.length<=2) return '长度大于2'; return true;}}
+     ]
+    },
+   
+   content : { altCS:'alt-row', storeCfg:{
+   		modifyUrl:'http://localhost/test.txt',
+   		addUrl:'http://localhost/test.txt',
+   		delUrl:'http://localhost/test.txt'
+   }, array:[{array:[{title:'Rock'}, {title:'javeejy@126.com'}, {title:'男'}, {title:'...'}]}] },
+   
+   plugins : {edition:{ctype:'grideditor'}, tb:{ctype:'gridtb', tb:{array:
+   	[
+   	  {title:'增 加', onclick : function(){
+   	  	 g.content.getStoreProvider().createNew(null, true);
+   	  	 g.edition.startEdit(g.content.$(g.content.size()-1).$(0)); 
+   	  	} 
+   	  },
+   	  {title:'保 存', onclick : function(){g.content.getStoreProvider().saveAll();} }
+   	]
+   }}}
+  });
+
+  var win = new CC.ui.Win({
+    title:'Grid演示',
+    showTo:document.body,
+    layout:'card',
+    lyCfg:{items:[g]}
+  });
+
+
+  win.render();
+
+  win.center();
+});
+</script>
