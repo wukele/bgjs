@@ -22,29 +22,31 @@ CC.ready(function(){
    header:
     {
      array:[
-      {title:'姓 名(非空)', editor:{ctype:'text'}, validator:function(v){ if(v=='') return '该值不能为空'; return true;}},
-      {title:'邮 箱(格式要正确)', editor:{ctype:'textarea', minW:100, minH:100}, validator:function(v){ return (!CC.isMail(v))?'请输入正确的邮箱格式':true; }},
-      {title:'性 别(非空)', editor:{ctype:'combo', array:[{title:'第一项', icon:'iconUser'}]}, validator:function(v){ if(v=='') return '该值不能为空'; return true;}},
-      {title:'描 述(长度大于2)', editor:{ctype:'text'}, validator:function(v){ if(v.length<=2) return '长度大于2'; return true;}}
+      {title:'姓 名(非空)', id:'name', editor:{ctype:'text'}, validator:function(v){ if(v=='') return '该值不能为空'; return true;}},
+      {title:'邮 箱(格式要正确)', id:'mail', editor:{ctype:'textarea', minW:100, minH:100}, validator:function(v){ return (!CC.isMail(v))?'请输入正确的邮箱格式':true; }},
+      {title:'性 别(非空)', id:'gender', editor:{ctype:'combo', array:[{title:'第一项', icon:'iconUser'}]}, validator:function(v){ if(v=='') return '该值不能为空'; return true;}},
+      {title:'描 述(长度大于2)', id:'desc', editor:{ctype:'text'}, validator:function(v){ if(v.length<=2) return '长度大于2'; return true;}}
      ]
     },
    
    content : { altCS:'alt-row', storeCfg:{
-   		modifyUrl:'http://localhost/test.txt',
-   		addUrl:'http://localhost/test.txt',
-   		delUrl:'http://localhost/test.txt'
+      modifyUrl:'http://localhost/test.txt',
+      addUrl:'http://localhost/test.txt',
+      delUrl:'http://localhost/test.txt'
    }, array:[{array:[{title:'Rock'}, {title:'javeejy@126.com'}, {title:'男'}, {title:'...'}]}] },
    
-   plugins : {edition:{ctype:'grideditor'}, tb:{ctype:'gridtb', tb:{array:
-   	[
-   	  {title:'增 加', onclick : function(){
-   	  	 g.content.getStoreProvider().createNew(null, true);
-   	  	 g.edition.startEdit(g.content.$(g.content.size()-1).$(0)); 
-   	  	} 
-   	  },
-   	  {title:'保 存', onclick : function(){g.content.getStoreProvider().saveAll();} }
-   	]
-   }}}
+   plugins : [
+    {name:'edition', ctype:'grideditor'},
+    {name:'tb', ctype:'gridtb', tb:{array:
+     [
+      {title:'增 加', onclick : function(){
+         g.content.getStoreProvider().createNew(null, true);
+         g.edition.startEdit(g.content.$(g.content.size()-1).$(0)); 
+        }
+      },
+      {title:'保 存', onclick : function(){g.content.getStoreProvider().saveAll();} }
+     ]
+   }}]
   });
 
   var win = new CC.ui.Win({
