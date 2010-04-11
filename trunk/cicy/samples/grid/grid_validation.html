@@ -30,12 +30,12 @@ CC.ready(function(){
     },
    content : { altCS:'alt-row', array:[{array:[{title:'Rock'}, {title:'javeejy@126.com'}, {title:'男'}, {title:'...'}]}] },
    
-   plugins : {edition:{ctype:'grideditor'}, tb:{ctype:'gridtb', tb:{array:
+   plugins : [{name:'editation', ctype:'grideditor'}, {name:'tb', ctype:'gridtb', tb:{array:
    	[
    	  {title:'增 加', onclick : function(){g.content.getStoreProvider().createNew(null, true);} },
    	  {title:'验 证', onclick : function(){g.content.getValidationProvider().validateAll();} }
    	]
-   }}}
+   }}]
   });
 
   var win = new CC.ui.Win({

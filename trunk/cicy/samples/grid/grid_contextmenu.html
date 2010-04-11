@@ -18,7 +18,7 @@ CC.ready(function(){
   __debug = true;
 
   var g = new CC.ui.Grid({
-   plugins :{edition:{ctype:'grideditor', editable:false}},
+   plugins : [{name:'edition', ctype:'grideditor', editable:false}],
    header:
     {
      array:[
@@ -32,33 +32,33 @@ CC.ready(function(){
   });
 
   var menu = new CC.ui.Menu({
-  	showTo:document.body,
+    showTo:document.body,
     autoRender:true,
-  	setCurrentCell : function(r){this.currentCell = r;return this;},
-  	array :[
-  	
+    setCurrentCell : function(r){this.currentCell = r;return this;},
+    array :[
+    
     {title:'修改该单元', onselect:function(){
-    	  if(this.pCt.currentCell){
-    	    g.edition.editable = true;
-    	    g.edition.startEdit(this.pCt.currentCell);
-    	    this.pCt.setCurrentCell(null);
-    	  }
+        if(this.pCt.currentCell){
+          g.edition.editable = true;
+          g.edition.startEdit(this.pCt.currentCell);
+          this.pCt.setCurrentCell(null);
+        }
       }
     },
     
     {title:'删除该行', onselect:function(){
-    	  if(this.pCt.currentCell){
-    	    g.content.remove(this.pCt.currentCell.pCt);
-    	    this.pCt.setCurrentCell(null);
-    	  }
+        if(this.pCt.currentCell){
+          g.content.remove(this.pCt.currentCell.pCt);
+          this.pCt.setCurrentCell(null);
+        }
       }
     },
 
     {title:'删除选择', id:'delsel', onselect:function(){
-    	  var sel = g.content.getSelectionProvider().getSelection();
-    	  CC.each(sel, function(){
-    	    this.pCt.remove(this);
-    	  });
+        var sel = g.content.getSelectionProvider().getSelection();
+        CC.each(sel, function(){
+          this.pCt.remove(this);
+        });
       }
     }
   ]});
@@ -81,7 +81,7 @@ CC.ready(function(){
   });
   
   var win = new CC.ui.Win({
-    title:'Grid演示',
+    title:'Grid右键菜单',
     showTo:document.body,
     layout:'card',
     lyCfg:{items:[g]}
@@ -90,8 +90,7 @@ CC.ready(function(){
   win.render();
 
   win.center();
-});
-
+  
 function createCellData(cols, rows){
   var rs = [];
   for(var i=0;i<rows;i++){
@@ -103,4 +102,5 @@ function createCellData(cols, rows){
   }
   return rs;
 }
+});
 </script>

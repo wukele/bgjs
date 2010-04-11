@@ -33,11 +33,11 @@ CC.ready(function(){
 	__debug = true;
 
   var g = new CC.ui.Grid({
-   plugins : {
+   plugins : [
    	
-   	edition:{ctype:'grideditor'}, 
+   	{name:'editation', ctype:'grideditor'}, 
    	
-   	tb:{ ctype:'gridtb', tb: {css:'lnt',array:
+   	{name:'tb', ctype:'gridtb', tb: {css:'lnt',array:
    		  [
 					{title:'你好',icon:'iconTabs', qtip:'这是一个可停靠，具有文本和图标的按钮', dockable:true},
 					{icon:'iconFolder', qtip:'文件夹图标'},
@@ -48,7 +48,7 @@ CC.ready(function(){
     		 ]}
      }, 
    	
-   	bigbar : {ctype:'gridtb', installWhen:'beforeaddheader', tb: {ctype:'bigbar', css:'lnb', array:
+   	{name:'bigbar', ctype:'gridtb', installWhen:'beforeaddheader', tb: {ctype:'bigbar', css:'lnb', array:
          [
 					{title:'你好',icon:'iconTabs', qtip:'这是一个可停靠，具有文本和图标的按钮', dockable:true},
 					{icon:'iconFolder', qtip:'文件夹图标'},
@@ -58,7 +58,7 @@ CC.ready(function(){
 					{icon:'iconUser', qtip:'单个图标按钮,无文本'}
     		 ]}
     }
-   },
+   ],
    
    autoFit:true,
    

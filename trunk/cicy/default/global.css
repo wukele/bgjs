@@ -131,7 +131,7 @@ white-space:nowrap;
 .g-btn-over .g-btn-l, .g-btn-dwn .g-btn-l{background-position:-8px -48px;}
 .g-btn-over .g-btn-r, .g-btn-dwn .g-btn-r{background-position:-12px -48px;}
 
-.g-baritem {display:inline;cursor:pointer !important;}
+.g-baritem {float:left;}
 .g-baritem-dwn .g-btn-c, .g-baritem-over .g-btn-c{background-position:0px -1225px;}
 .g-baritem-click .g-btn-c{background-position:0px -1282px;}
 .g-baritem .g-btn-l, .g-baritem .g-btn-r {height:29px;width:4px;}
@@ -380,6 +380,7 @@ _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMe
 .g-clear{padding:0;clear:both;margin:0;}
 
 /** Form */
+.g-ipt-text{line-height:13px;}
 .g-ipt-text,.g-textarea {padding: 2px 3px;border: 1px solid #C0BBB4;}
 .g-ipt-text-hover{border-color:#99E300}
 .g-textarea {overflow:auto !important;overflow-x:auto !important;overflow-y:auto !important;white-space:normal;}
@@ -556,8 +557,8 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-datepicker-field-focus input {background-color:rgb(255,255,204);}
 
 /**Form**/
-.g-formfields{ list-style-type:none; margin:0;padding:0;width:100%;text-align:left;float:left;position:relative;}
-.g-form-ln label.desc {border:medium none;color:#222222;display:block;font-weight:bold;line-height:150%;padding:0 0 2px;}
+.g-formfields{ list-style-type:none; margin:0;padding:0;width:100%;text-align:left;position:relative;}
+.g-form-ln label.desc {border:medium none;color:#222;display:block;font-weight:bold;line-height:150%;padding:0 0 2px;}
 .g-form-hln label.desc {float:left;text-align:right;padding:3px 3px 1px 0;}
 :lang(zh) .g-form-hln label.desc{padding:1px 4px 2px 0;}
 .g-form-ln {display:block;margin:0;padding:4px 5px 2px 9px;width:62%;position:relative;float:left;}
@@ -569,6 +570,6 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-fieldset legend{font-weight:bold;color:#001119;font-size:12px;}
 
 .g-form-mdy  {background-position:left top;background-repeat:no-repeat;}
-.g-form-error {background-position:center bottom;background-repeat:repeat-x;
+.g-form-error {background-position:center bottom !important;background-repeat:repeat-x;
 
 }
