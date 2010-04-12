@@ -1,0 +1,136 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+
+<style></style>
+</head>
+<body>
+</body>
+</html>
+<script>
+
+CC.ready(function(){
+  __debug = true;
+
+  var g = new CC.ui.Grid({
+   plugins : [{name:'edition', ctype:'grideditor', editable:false}],
+   header:{
+     array:[
+      {
+      	title:'&nbsp;',
+      	maxW : 20,
+      	minW : 20,
+      	cellBrush: function(){
+          return '<span class="g-checkbox g-form-el"><img class="chkbk" src="'+CC.Tpl.BLANK_IMG+'"></span>';
+        },
+        brush : function(){
+          return '<span class="g-checkbox g-form-el" title="全选/反选"><img class="chkbk" src="'+CC.Tpl.BLANK_IMG+'"></span>';
+        },
+        //添加全选反选事件
+        onRender : function(){
+          this.superclass.onRender.call(this);
+          this.domEvent('click', function(){
+            var sel = this.selected = !this.selected;
+            this.checkClass('g-check-checked', sel);
+            var sp = this.pCt.pCt.content.getSelectionProvider();
+            sp.selectAll(sel);
+          });
+        }
+      },
+      {title:'第一列', editor:{ctype:'text'}, validator:function(v){ if(v=='') return '不能为空'; return true;}},
+      {title:'第二列', editor:{ctype:'textarea', minW:100, minH:100}},
+      {title:'第三列', editor:{ctype:'combo', array:[{title:'第一项', icon:'iconUser'}]}},
+      {title:'第四列', editor:{ctype:'datepicker'}}
+     ]
+    },
+   content : {
+   	  array:createCellData(5, 30), 
+   	  altCS:'alt-row', 
+   	  selectionProvider:{mode:0},
+   	  events : {
+   	   //监听选择变更事件,更新checkbox状态
+   	   selectchange: [
+   	     {cb : function(current, previous, selProvider){
+   	       current.$(0).checkClass('g-check-checked', selProvider.isSelected( current ), true);
+   	     }}
+   	  ]}
+   }
+  });
+
+  var menu = new CC.ui.Menu({
+    showTo:document.body,
+    autoRender:true,
+    setCurrentCell : function(r){this.currentCell = r;return this;},
+    array :[
+    
+    {title:'修改该单元', onselect:function(){
+        if(this.pCt.currentCell){
+          g.edition.editable = true;
+          g.edition.startEdit(this.pCt.currentCell);
+          this.pCt.setCurrentCell(null);
+        }
+      }
+    },
+    
+    {title:'删除该行', onselect:function(){
+        if(this.pCt.currentCell){
+          g.content.remove(this.pCt.currentCell.pCt);
+          this.pCt.setCurrentCell(null);
+        }
+      }
+    },
+
+    {title:'删除选择', id:'delsel', onselect:function(){
+        var sel = g.content.getSelectionProvider().getSelection();
+        CC.each(sel, function(){
+          this.pCt.remove(this);
+        });
+      }
+    }
+  ]});
+  
+  g.content.domEvent('contextmenu', function(e){
+    var xy = CC.Event.pageXY(e), 
+        el = CC.Event.element(e), 
+        r = g.content.$(el),
+        selsz = g.content.getSelectionProvider().getSelection().length,
+        delM = menu.$('delsel');
+    menu.setCurrentCell(r.$(el));
+    delM.setTitle('删除选择('+selsz+'项)');
+    delM.disable(!selsz);
+    menu.at(xy[0], xy[1]);
+  }, true, null, g.content.ct);
+  
+  //修改完后取消可编辑
+  g.on('editend', function(){
+    this.edition.editable = false;
+  });
+  
+  var win = new CC.ui.Win({
+    title:'Grid右键菜单',
+    showTo:document.body,
+    layout:'card',
+    lyCfg:{items:[g]}
+  });
+  
+  win.render();
+
+  win.center();
+  
+function createCellData(cols, rows){
+  var rs = [];
+  for(var i=0;i<rows;i++){
+    var cs = {array:[]};
+    for(var j=0;j<cols;j++){
+      cs.array.push({title:i+','+j});
+    }
+    rs.push(cs);
+  }
+  return rs;
+}
+});
+</script>
