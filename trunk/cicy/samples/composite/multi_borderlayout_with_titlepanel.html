@@ -45,11 +45,11 @@
 					 	 	   { title: '工作区', panel:
 					 	 	   	 {
 									   ctype:'grid',
-									   plugins : {
+									   plugins : [
 									   	
-									   	edition:{ctype:'grideditor'}, 
+									   	{name:'edition', ctype:'grideditor'}, 
 									   	
-									   	tb:{ ctype:'gridtb', tb: {css:'lnt',array:
+									   	{name:'tb', ctype:'gridtb', tb: {css:'lnt',array:
 									   		  [
 														{title:'你好',icon:'iconTabs', qtip:'这是一个可停靠，具有文本和图标的按钮', dockable:true},
 														{icon:'iconFolder', qtip:'文件夹图标'},
@@ -60,7 +60,7 @@
 									    		 ]}
 									     }, 
 									   	
-									   	bigbar : {ctype:'gridtb', installWhen:'beforeaddheader', tb: {ctype:'bigbar', css:'lnb', array:
+									   	{name:'bigbar', ctype:'gridtb', installWhen:'beforeaddheader', tb: {ctype:'bigbar', css:'lnb', array:
 									         [
 														{title:'你好',icon:'iconTabs', qtip:'这是一个可停靠，具有文本和图标的按钮', dockable:true},
 														{icon:'iconFolder', qtip:'文件夹图标'},
@@ -70,7 +70,7 @@
 														{icon:'iconUser', qtip:'单个图标按钮,无文本'}
 									    		 ]}
 									    }
-									   },
+									   ],
 									   
 									   autoFit:true,
 									   
