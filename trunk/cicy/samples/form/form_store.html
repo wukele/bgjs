@@ -12,68 +12,65 @@
 
 CC.ready(function(){
   
-	var w = new CC.ui.Dialog({
-		title: '库表单控件',
-		showTo: document.body,
-		hidden:true,
-		width:500,
-		height:340,
-		buttons : [{title: '取消'}, {title: '确定', id:'ok'}],
+  var w = new CC.ui.Dialog({
+    title: '库表单控件',
+    showTo: document.body,
+    hidden:true,
+    width:500,
+    height:340,
+    buttons : [{title: '取消'}, {title: '确定', id:'ok'}],
 
-		onok : function(){
-			this.byId('myform').getStoreProvider().save();
-			return false;
-		},
-		
-		array:[
-			{
-				ctype:'form', id:'myform', 
-				storeCls : CC.ui.form.StoreProvider, validationCls:CC.ui.form.ValidationProvider, 
-				storeCfg : {saveUrl : 'http://localhost/test.txt' },
-				events : {
-					//通过监听验证失败事件可以自定义错误提示方式
-				  'validation:failed' : [{
-				  	cb:function(item, errors){
-				  	  CC.Util.ftip(errors[0], '错误' , item);
-				  	}
-				  }],
-				  'store:aftersave' : [{
-				    cb : function(){
-				    	w.setTitle('<b>表单已保存!</b>');
-				    }
-				  }]
-				},
-				array: 
-				 [
-				   {title: '单行文本', hlabel:true, css:'^1c', 
-						array:[{
-							name:'name',
-							ctype:'text',
-						  validator : function(v){
-						  	return v == '' ? '输入不能为空' : true;
-							}
-						}]},
-				   {css:'1c ^c:42', array:
-				   	[
-					    {ctype:'fieldset', css:'^1c', title:'个人信息',
-					    	array:[
-					    	 {ctype:'fieldlayer', array:[
-					    	   {title: '姓名', ctype:'fieldline', hlabel:true, array:[{ctype:'text'}]},
-					    	   {title: '简介', ctype:'fieldline', hlabel:true,array:[{ctype:'textarea'}]}
-					    	  ]
-					    	 }
-					    	]
-					    },
-					    {ctype:'fieldset', css:'^1c $mg:0,5', title:'其它信息',array:[{ctype:'text'},{ctype:'text'}]}
-				    ]
-				   },
-				 {title: '日期选择', array:[{ctype:'datepicker'}]}
-				]
-	    }
-		]
-	});
-	w.render();
-	w.show().center();
-	w.byId('myform').byName('name').focus();
+    onok : function(){
+      this.byId('myform').getStoreProvider().save();
+      return false;
+    },
+    
+    array:[
+      {
+        ctype:'form', id:'myform', 
+        storeProvider : {saveUrl : 'http://localhost/test.txt' },
+        events : {
+          //通过监听验证失败事件可以自定义错误提示方式
+          'validation:failed' : [{
+            cb:function(item, errors){
+              CC.Util.ftip(errors[0], '错误' , item);
+            }
+          }],
+          'store:aftersave' : [{
+            cb : function(){
+              w.setTitle('<b>表单已保存!</b>');
+            }
+          }],
+          'store:beforesave' : [{
+            cb : function(store){
+              CC.Util.alert('当前提交的数据是:<br>' + store.queryString(), '提示');
+              //方便演示,取消提交
+              return false;
+            }
+          }]
+        },
+        array: 
+         [
+           {title: '单行文本', hlabel:true, css:'^1c',
+            array:[{
+              name:'name',
+              ctype:'text',
+              validator : function(v){
+                return v == '' ? '输入不能为空' : true;
+              }
+            }]},
+           {css:'1c ^c:42', array:
+            [
+              {ctype:'fieldset', css:'^1c $mg:0,5', title:'其它信息',array:[{ctype:'text', name:'other_a'},{ctype:'text', name:'other_b'}]}
+            ]
+           },
+         {title: '日期选择', array:[{ctype:'datepicker', name:'date'}]}
+        ]
+      }
+    ]
+  });
+  w.render();
+  w.show().center();
+  w.byId('myform').byName('name').focus();
 });
 </script>
