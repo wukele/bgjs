@@ -29,12 +29,27 @@ CC.ready(function(){
      ]
     },
    
-   content : { altCS:'alt-row', storeProvider:{
+   content : { altCS:'alt-row', 
+   	storeProvider:{
       modifyUrl:'http://localhost/test.txt',
       addUrl:'http://localhost/test.txt',
-      delUrl:'http://localhost/test.txt'
-   }, array:[{array:[{title:'Rock'}, {title:'javeejy@126.com'}, {title:'男'}, {title:'...'}]}] },
-   
+      delUrl:'http://localhost/test.txt',
+      //设定提交模板,每次都提交当前记录的id
+      itemQueryTempl:'rowid={id}',
+    }, 
+	  events : {
+	   'store:beforesave' : [{
+				cb : function(row, isNew, store){
+					alert('行'+row.id+'提交的数据是:\n' + store.queryString(row), '提示');
+					//方便演示,取消提交
+					return false;
+				}
+			}]
+	  },
+	  
+    array:[{id:'123456', array:[{title:'Rock'}, {title:'javeejy@126.com'}, {title:'男'}, {title:'...'}]}] 
+   },
+
    plugins : [
     {name:'edition', ctype:'grideditor'},
     {name:'tb', ctype:'gridtb', tb:{array:
