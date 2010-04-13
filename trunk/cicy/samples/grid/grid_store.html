@@ -44,6 +44,13 @@ CC.ready(function(){
 					//方便演示,取消提交
 					return false;
 				}
+			}],
+	   'store:beforedel' : [{
+				cb : function(row, store){
+					alert('删除行'+row.id+'的数据是:'+store.getDelQuery(row), '提示');
+					//方便演示,取消提交
+					return false;
+				}
 			}]
 	  },
 	  
@@ -59,7 +66,14 @@ CC.ready(function(){
          g.edition.startEdit(g.content.$(g.content.size()-1).$(0)); 
         }
       },
-      {title:'保 存', onclick : function(){g.content.getStoreProvider().saveAll();} }
+      {title:'保 存', onclick : function(){g.content.getStoreProvider().saveAll();} },
+      {title:'删 除', onclick : function(){
+	      	var selectedRow = g.content.getSelectionProvider().selected;
+	      	if(selectedRow){
+	      	  g.content.getStoreProvider().del(selectedRow);
+	      	}
+        } 
+      }
      ]
    }}]
   });
