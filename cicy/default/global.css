@@ -163,7 +163,7 @@ white-space:nowrap;
 .g-titlepanel-hd { background-position:0 -1671px; height:29px; position:relative; width:100%;}
 .g-titlepanel-hd .g-tle { left:29px; position:absolute;line-height:1.9em;}
 .g-titlepanel-hd .g-icoFld, .g-titlepanel-hd .g-icoOpn { left:12px; position:absolute; top:4px;}
-/*CFolder*/
+/*Folder*/
 .g-grp-bdy {cursor:pointer;}
 .g-grp-bdy li {height:23px;position:relative;width:100%;}
 .g-grp-bdy li .g-tle {display:block; height:17px; overflow:hidden; left:40px;position:absolute;top:7px;}
@@ -178,6 +178,14 @@ white-space:nowrap;
 .g-autoscroll-ly .auto-offset{position:relative;background:transparent none;overflow:hidden;width:6000px;zoom:1;}
 
 .auto-lefmov, .auto-rigmov{position:absolute;display:none;z-index:2;}
+
+/**tablize layout*/
+.g-ly-tablize .tblly-td .tblly-sep {color:#CCC;margin-top:-1px;display:inline-block;}
+.g-ly-tablize .tblly-td .lbl{margin: 0 2px;}
+
+/**table layout for form*/
+.g-ly-tbl .tbl-td label.cap{text-align:right;width:120px;display:inline-block;}
+.g-ly-tbl .tbl-td{padding:4px 3px;white-space:nowrap;}
 
 /*tab*/
 .g-tab {background-color:#FFFFFF;background-position:0 -32px;height:33px;position:relative;}
