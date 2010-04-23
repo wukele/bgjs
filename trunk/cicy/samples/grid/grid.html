@@ -37,13 +37,13 @@ CC.ready(function(){
    header:
     {
      array:[
-      {title:'第一列', width:.2, editor:{ctype:'text'}, validator:function(v){ if(v=='') return '不能为空'; return true;}},
-      {title:'第二列', editor:{ctype:'textarea', minW:100, minH:100}},
-      {title:'第三列', editor:{ctype:'combo', array:[{title:'第一项', icon:'iconUser'}]}},
-      {title:'第四列', editor:{ctype:'datepicker'}}
+      {title:'第一列', width:.2},
+      {title:'第二列'},
+      {title:'第三列'},
+      {title:'第四列'}
      ]
     },
-   content : {array:createCellData(4, 50), altCS:'alt-row'}
+   content : {array:createCellData(4, 8), altCS:'alt-row'}
   });
 
   var win = new CC.ui.Win({
