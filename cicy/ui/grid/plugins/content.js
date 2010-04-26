@@ -1,0 +1,287 @@
+/**
+ * @name CC.ui.grid.Content
+ * @class
+ */
+CC.Tpl.def('CC.ui.grid.Content', '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup><tbody id="_ctx"></tbody></table></div>');
+CC.create('CC.ui.grid.Content', CC.ui.Panel, function(father){
+return /**@lends CC.ui.grid.Content#*/{
+
+ itemCls : CC.ui.grid.Row,
+
+ ct : '_ctx',
+
+ useContainerMonitor : true,
+
+ syncWrapper : false,
+
+ clickEvent : 'click',
+
+ selectionProvider : { selectedCS : 'row-select' },
+
+ lyInf : {h:'lead'},
+
+ initComponent : function(){
+    father.initComponent.call(this);
+    this.ctTbl = this.$$('_ct_tbl');
+  },
+
+  initPlugin : function(grid){
+    return true;
+  },
+
+/**
+ * 创建列宽控制器,这里采用 &lt;colgroup&gt;&lt;col /&gt;&lt;/colgroup&gt;控制方式
+ * @private
+ */
+  setupColumnLever : function(){
+    var n, i,
+        levers = [],
+        cs = this.pCt.header.children,
+        len = cs.length,
+        cp = this.dom('_grp');
+
+    // 创建列宽控制点
+    for(i=0;i<len;i++){
+      n = CC.$C('COL');
+      levers[i] = n;
+      cp.appendChild(n);
+    }
+
+    this.levers = levers;
+
+    var cws = this.cacheWidths;
+
+    if(cws){
+      delete this.cacheWidths;
+      for(i=0,len=cws.length;i<len;i++){
+        if(cws[i] !== undefined)
+          CC.fly(levers[i]).setWidth(cws[i]).unfly();
+      }
+    }
+  },
+
+/**
+ * @private
+ */
+  onRender : function(){
+   this.setup();
+   father.onRender.call(this);
+/**
+ * 是否正在批量更新中
+ * @name CC.ui.grid.Content#batchUpdating
+ * @protected
+ */
+   this.batchUpdating = true;
+   this.updateView();
+   this.batchUpdating = false;
+  },
+
+  /**
+   * 用于初始化数据表,数据表结点处于就绪状态,就绪后所有接口方法都能正常调用
+   * @private
+   */
+  setup : function(){
+    this.setupColumnLever();
+    this.setupEvent();
+  },
+
+/**
+ * @private
+ */
+  setupEvent : function(){
+    this.domEvent('scroll' , this.onScroll);
+    this.on('resized', this.onResized);
+  },
+
+/**
+ * @override
+ * @private
+ */
+  bindClickInstaller : function(){
+    this.itemAction(
+             this.clickEvent,
+             this.onRowClick,
+             false,
+             null,
+             this.dom('_ct_tbl')
+    );
+  },
+
+  updateContentWrapTblWidth : function(colWidth, dx){
+    var ctTbl = this.ctTbl;
+    if(ctTbl.width === false){
+      ctTbl.setWidth(colWidth);
+    }else if(dx === false){
+      ctTbl.setWidth(ctTbl.width + colWidth);
+    }else {
+      ctTbl.setWidth(ctTbl.width + dx);
+    }
+  },
+  
+  updateLeversWidth : function(idx, width, dx){
+    if(this.levers){
+      CC.fly(this.levers[idx]).setWidth(width).unfly();
+    }else {
+      var cws = this.cacheWidths;
+      if(!cws){
+        cws = this.cacheWidths = [];
+      }
+      cws[idx] = width;
+    }
+  },
+/**
+ * @override
+ */
+  getScrollor : function(){
+    return this;
+  },
+
+  onAdd : function(c){
+    if(this.altCS && (this.size()%2)){
+      c.addClass(this.altCS);
+    }
+    father.onAdd.apply(this, arguments);
+    if(this.rendered && !this.batchUpdating){
+      this.updateRow(c);
+    }
+  },
+/**
+ * @private
+ */
+  onScroll : function(e){
+    this.pCt.fire('contentscroll', e, parseInt(this.view.scrollLeft, 10) || 0, this);
+  },
+
+/**
+ * 是否禁止本单元的cellclick事件的发送,如果为true,当点击该单元时Grid并不发送cellclick事件,默认未置值
+ * @name CC.ui.grid.Cell#ignoreClick
+ * @property {Boolean} ignoreClick
+ */
+
+/**
+ * 是否禁止本行的itemclick事件的发送,如果为true,当点击该行时Grid并不发送itemclick事件,默认未置值
+ * @name CC.ui.grid.Row#ignoreClick
+ * @property {Boolean} ignoreClick
+ */
+
+ /**
+  * 发送表格cellclick, itemclick事件
+  * @private
+  */
+  onRowClick : function(row, e){
+    if(!this.clickDisabled && !row.ignoreClick){
+      var cell = row.$(e.srcElement || e.target), rt;
+      if(cell && !row.clickDisabled && !cell.ignoreClick){
+        rt = this.pCt.fire('cellclick', cell, e);
+      }
+      if(rt !== false){
+        this.fire('itemclick', row, e);
+        this.pCt.fire('rowclick',  row, e);
+      }
+    }
+  },
+
+  onRowOver : function(r, e){
+    if(this.hoverEvent === true){
+      this.pCt.fire('rowover', r, e);
+    }
+  },
+
+  onRowOut : function(r, e){
+    if(this.hoverEvent === true){
+      this.pCt.fire('rowout', r, e);
+    }
+  },
+
+  onResized : function(w){
+    if(w !== false){
+      //fix ie no scroll event bug
+      if(CC.ie){
+        this.pCt.fire('contentscroll', null, parseInt(this.view.scrollLeft, 10) || 0, this);
+      }
+    }
+  },
+// --- Interface
+/**
+ * @private
+ */
+  gridEventHandlers : {
+
+    aftercolwidthchange : function(idx, col, width, dx){
+      this.updateContentWrapTblWidth(width, dx);
+      this.updateLeversWidth(idx, width, dx);
+    }
+  },
+
+  updateView : function(){
+    var cs = this.pCt.header.children,
+        hl = cs.length,
+        i, rs = this.children,
+        rl = rs.length,
+        bs = [], c;
+
+    for(i=0;i<hl;i++)
+      bs[i] = cs[i].cellBrush;
+
+    for(i=0;i<rl;i++){
+      for(j=0;j<hl;j++){
+        this.updateCell(rs[i].children[j], rs[i].brush || bs[j]);
+      }
+    }
+  },
+
+/**
+ * 当一行数据添加到表格时,调用该方法更新行数据.
+ */
+  updateRow : function(row){
+    var cs = this.pCt.header.children,
+        i, rs = row.children,
+        rl = rs.length;
+
+    for(i=0;i<rl;i++){
+      this.updateCell(rs[i], rs[i].brush || cs[i].cellBrush);
+    }
+  },
+
+/**
+ * 定义更新单元格html方式
+ * @param
+ */
+  updateCell : function(cell, /**@inner*/brush){
+    if(!brush)
+    	brush = cell.brush || this.pCt.header.$(cell.pCt.indexOf(cell)).cellBrush;
+    cell.getTitleNode().innerHTML = brush.call(cell, cell.value===undefined?cell.title:cell.value);
+  },
+/**
+ *
+ */
+  insertAt : function(afIdx, bfIdx){
+
+  },
+/**
+ * 该方法由外部调用,隐藏数据表列
+ */
+  hideCol : function(idx, b){
+
+  },
+
+  getCell : function(i, j){
+    return this.children[i].children[j];
+  },
+
+  getRow : function(i){
+    return this.children[i];
+  },
+
+  dataAt : function(i, j){
+    var c = this.getCell();
+    return c.getValue();
+  },
+
+  textAt : function(i, j){
+    return this.getCell().title;
+  }
+};
+});
+
+CC.ui.def('gridcontent', CC.ui.grid.Content);

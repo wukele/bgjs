@@ -1,0 +1,55 @@
+﻿<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Cicy工具栏</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+  <style>
+  	.page{position:relative;line-height:12px;}
+  </style>
+</head>
+<body></body>
+</html>
+<script type="text/javascript">
+	CC.ready(function(){
+    var win = new CC.ui.Win({
+      title:'工具栏',
+      showTo:document.body,
+      array:[
+         {ctype:'smallbar',
+          //利用table元素布局,控件比较容易对齐
+          layout:'tablize',
+          lyCfg:{
+           items:[
+            { lyInf:{separator:true},title:'你好',icon:'iconTabs', qtip:'这是一个可停靠，具有文本和图标的按钮', dockable:true},
+            { lyInf:{separator:true}, css:'m:0,2px', template:'<span class="page">第<span>1</span>页 <input style="text-align:center;" size="8"/></span>',ctype:'base', clickDisabled:true},
+            {
+                lyInf:{separator:true},
+                css:'m:0,2px',
+                ctype: 'combo',
+                width:120,
+                clickDisabled:true,
+                value: '请选择..',
+                array: [
+                    {title:'disabled item',icon:'iconRef',disabled:true},
+                    {title:'粉红色',icon:'iconUser'},
+                    {title:'蓝色',icon:'iconEdit'},
+                    {title:'清除记录',icon:'iconLeaf'},
+                    {title:'粉红色',icon:'iconTabs'},
+                    {title:'蓝色',icon:'iconUser'},
+                    {title:'清除记录',icon:'iconEdit'}
+                ]
+            },
+            { lyInf:{separator:true},icon:'iconRef',dockable:true, docked:true,  qtip:'点击刷新'},
+            { ctype:'button', title:'确定'}
+           ]
+          }
+          }
+        ]
+    });
+  
+   win.render();
+   win.center();
+});
+</script>
