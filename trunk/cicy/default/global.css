@@ -527,7 +527,8 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-prpty-sp{background:transparent;position:absolute;z-index:8997;width:5px;top:0px;cursor:e-resize;}
 	
 .g-tabMoveSp{background-position:-48px -48px;height:16px;width:16px;position:absolute;z-index:8997;padding:0;margin:0;top:-1em;}
-.g-viewport{position:absolute;top:0;left:0;overflow:hidden;}
+.g-viewport{position:absolute;top:0;left:0;}
+.g-viewport-body {overflow:hidden;}
 .g-framepanel{overflow:auto;}
 
 
