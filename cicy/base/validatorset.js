@@ -1,15 +1,15 @@
-/**
+ï»¿/**
  * @class
  */
 CC.util.Validators = {
   NoEmpty : function(v){
     if(!v || v.trim() == ''){
-      return '¸ÃÏî²»ÄÜÎª¿Õ'
+      return 'è¯¥é¡¹ä¸èƒ½ä¸ºç©º'
     }
     return true;
   },
   
   Mail : function(v){
-    return !CC.isMail(v)?'ÓÊÏä¸ñÊ½²»ÕıÈ·':true;
+    return !CC.isMail(v)?'é‚®ç®±æ ¼å¼ä¸æ­£ç¡®':true;
   }
 };

@@ -1,4 +1,4 @@
-CC.Tpl.def('CC.ui.Dialog.Bottom', '<div class="g-win-bottom"><div class="bottom-wrap"></div></div>');
+﻿CC.Tpl.def('CC.ui.Dialog.Bottom', '<div class="g-win-bottom"><div class="bottom-wrap"></div></div>');
 /**
  * 对话框是一个特殊的窗体，底部具有按钮栏，并且可指定是否模式，即是否有掩层。
  * @extends CC.ui.Win

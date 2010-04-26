@@ -1,4 +1,4 @@
-(function() {
+ï»¿(function() {
 
   var SC = CC.ui.ContainerBase.prototype,
       SP = CC.ui.Panel.prototype,
@@ -10,45 +10,45 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
 
   layoutOnChange : true,
   /**
-   * ¸ÃÖµĞëÓë CSS ÖĞµÄ.auto-marginÖµ±£³ÖÍ¬²½,ÒòÎªÕâÀïmargin²¢²»ÊÇÓÉJS¿ØÖÆ.
-   * ³öÓÚĞÔÄÜ¿¼ÂÇ,ÏÖÔÚ°ÑËü¹Ì¶¨ÏÂÀ´
-   * @property horizonMargin {Number} Ë®Æ½·½Ïò¿ÕÎ»
+   * è¯¥å€¼é¡»ä¸ CSS ä¸­çš„.auto-marginå€¼ä¿æŒåŒæ­¥,å› ä¸ºè¿™é‡Œmarginå¹¶ä¸æ˜¯ç”±JSæ§åˆ¶.
+   * å‡ºäºæ€§èƒ½è€ƒè™‘,ç°åœ¨æŠŠå®ƒå›ºå®šä¸‹æ¥
+   * @property horizonMargin {Number} æ°´å¹³æ–¹å‘ç©ºä½
    * @protected
    */
   horizonMargin: 5,
 
   /**
-   * ¸ÃÖµĞëÓë×ó±ßµ¼º½°´Å¥¿í¶ÈÒ»ÖÂ,³öÓÚĞÔÄÜ¿¼ÂÇ,ÏÖÔÚ°ÑËü¹Ì¶¨ÏÂÀ´
+   * è¯¥å€¼é¡»ä¸å·¦è¾¹å¯¼èˆªæŒ‰é’®å®½åº¦ä¸€è‡´,å‡ºäºæ€§èƒ½è€ƒè™‘,ç°åœ¨æŠŠå®ƒå›ºå®šä¸‹æ¥
    * @property {Number} navLeftWidth
    * @protected
    */
   navLeftWidth: 24,
 
   /**
-   * ¸ÃÖµĞëÓëÓÒ±ßµ¼º½°´Å¥¿í¶ÈÒ»ÖÂ,³öÓÚĞÔÄÜ¿¼ÂÇ,ÏÖÔÚ°ÑËü¹Ì¶¨ÏÂÀ´
+   * è¯¥å€¼é¡»ä¸å³è¾¹å¯¼èˆªæŒ‰é’®å®½åº¦ä¸€è‡´,å‡ºäºæ€§èƒ½è€ƒè™‘,ç°åœ¨æŠŠå®ƒå›ºå®šä¸‹æ¥
    * @property {Number} navLeftWidth
    * @protected
    */
   navRightWidth: 24,
 
 /**
- * ²¼¾Ö¼Óµ½ÈİÆ÷µÄÑùÊ½
+ * å¸ƒå±€åŠ åˆ°å®¹å™¨çš„æ ·å¼
  * @protected
  */
   ctCS : 'g-autoscroll-ly',
 /**
- * µ¼º½°´Å¥µÄdisabledÑùÊ½
+ * å¯¼èˆªæŒ‰é’®çš„disabledæ ·å¼
  * @protected
  */
   disabledLeftNavCS: 'g-disabled auto-lefmov-disabled',
 
 /**
- * µ¼º½°´Å¥µÄdisabledÑùÊ½
+ * å¯¼èˆªæŒ‰é’®çš„disabledæ ·å¼
  * @protected
  */
   disabledRightNavCS: 'g-disabled auto-rigmov-disabled',
 /**
- * µ¼º½°´Å¥ËùÔÚ½áµãµÄÑùÊ½
+ * å¯¼èˆªæŒ‰é’®æ‰€åœ¨ç»“ç‚¹çš„æ ·å¼
  * @protected
  */
   navPanelCS: 'g-mov-tab',
@@ -61,15 +61,15 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
   attach: function(ct){
     father.attach.call(this, ct);
 
-    // ÖØÖÃmargin½áµãÖµ£¬ºöÂÔCSSÉèÖÃµÄÖµ£¬
-    // Ê¹µÃµ±CSSÖµ²»Í¬µÄ²»ÒıÆğ²¼¾ÖµÄ»ìÂÒ
+    // é‡ç½®marginç»“ç‚¹å€¼ï¼Œå¿½ç•¥CSSè®¾ç½®çš„å€¼ï¼Œ
+    // ä½¿å¾—å½“CSSå€¼ä¸åŒçš„ä¸å¼•èµ·å¸ƒå±€çš„æ··ä¹±
     var mg = ct.dom('_margin').style, ms = this.getMargins();
     mg.marginLeft = ms[0] + 'px';
     mg.marginRight = ms[1] + 'px';
 
     this.scrollor = ct.$$('_scrollor');
 
-    //×óÓÒµ¼º½½áµã
+    //å·¦å³å¯¼èˆªç»“ç‚¹
     var lm = this.lefNav = ct.$$('_lefmov'),
         rm = this.rigNav = ct.$$('_rigmov');
 
@@ -98,7 +98,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
   },
 
 /**
- * µã»÷Ê±ÊÇ×óµ¼º½°´Å¥»¹ÊÇÓÒµ¼º½°´Å¥?
+ * ç‚¹å‡»æ—¶æ˜¯å·¦å¯¼èˆªæŒ‰é’®è¿˜æ˜¯å³å¯¼èˆªæŒ‰é’®?
  * @private
  */
   getDirFromEvent : function(e) {
@@ -106,8 +106,8 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
   },
 
 /**
- * ¹ö¶¯ÖÁÊ×¸öÒş²Ø°´Å¥,Ê¹µÃ°´Å¥´¦ÓÚ¿É¼û×´Ì¬
- * @param {String} l »ò r
+ * æ»šåŠ¨è‡³é¦–ä¸ªéšè—æŒ‰é’®,ä½¿å¾—æŒ‰é’®å¤„äºå¯è§çŠ¶æ€
+ * @param {String} l æˆ– r
  */
   scrollToNext : function(dir, /**@inner*/norepeat){
     var nxt = this.getNextHiddenItem(dir);
@@ -124,7 +124,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
   },
 
 /**
- * ½«×ÓÏî¹ö¶¯µ½¿É¼û´¦
+ * å°†å­é¡¹æ»šåŠ¨åˆ°å¯è§å¤„
  * @param {CC.ui.TabItem} tabItem
  */
   scrollItemIntoView : function(item){
@@ -167,7 +167,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
   },
 
 /**
- * »ñµÃTabÈİÆ÷·ÅÖÃÇøÓò¿ÉÊÓ¿í¶È
+ * è·å¾—Tabå®¹å™¨æ”¾ç½®åŒºåŸŸå¯è§†å®½åº¦
  * @private
  */
   getScrollViewWidth : function(){
@@ -290,7 +290,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
  */
   onLayout : function(w){
 
-   if(__debug) console.group('TabItem²¼¾Ö('+this.ct+')');
+   if(__debug) console.group('TabItemå¸ƒå±€('+this.ct+')');
 
    father.onLayout.apply(this, arguments);
    var ct = this.ct,
@@ -302,7 +302,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
   if (CC.ie)
     this.fixIEOnLayout(w);
 
-  // ÊÇ·ñÓÉresizedÒıÆğµÄ
+  // æ˜¯å¦ç”±resizedå¼•èµ·çš„
   if(w !== undefined){
     var dx = false;
 
@@ -313,9 +313,9 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
     this.preWidth = w;
 
     if (dx) {
-      //Èç¹ûÏòÓÒÀ©
+      //å¦‚æœå‘å³æ‰©
       if (dx > 0) {
-        //Èç¹ûÓÒ±ßÓĞÒş²Ø£¬¾¡Á¿ÏÔÊ¾,·ñÔòÏÔÊ¾×ó±ß
+        //å¦‚æœå³è¾¹æœ‰éšè—ï¼Œå°½é‡æ˜¾ç¤º,å¦åˆ™æ˜¾ç¤ºå·¦è¾¹
         if(!this.hasRight())
           this.setScrollLeft(this.getScrollLeft() - dx);
       }
@@ -330,7 +330,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
 
 
 /**
- * ¼ì²éµ¼º½°´Å¥×´Ì¬£¬ÊÇ·ñÓ¦ÏÔÊ¾»ò½ûÓÃ¡£
+ * æ£€æŸ¥å¯¼èˆªæŒ‰é’®çŠ¶æ€ï¼Œæ˜¯å¦åº”æ˜¾ç¤ºæˆ–ç¦ç”¨ã€‚
  */
   checkStatus : function(){
     var ct = this.ct,
@@ -346,14 +346,14 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
 };
 });
 /**
- * ×¢²áµÄCC.ui.tab.TabItemLayout²¼¾Ö
+ * æ³¨å†Œçš„CC.ui.tab.TabItemLayoutå¸ƒå±€
  * @name CC.layout#tabitem
  * @field
  */
 CC.layout.def('tabitem', CC.ui.tab.TabItemLayout);
 
 // html template for tabitem
-CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"><tbody><tr id="_ctx"><td class="tLe" id="_tLe"></td><td class="bdy"><nobr id="_tle" class="g-tle">Ñ¡¿¨1</nobr></td><td class="btn" id="_btnC"><a href="javascript:fGo()" title="¹Ø±Õ" id="_trigger" class="g-ti-btn"></a></td><td class="tRi" id="_tRi"></td></tr></tbody></table>');
+CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"><tbody><tr id="_ctx"><td class="tLe" id="_tLe"></td><td class="bdy"><nobr id="_tle" class="g-tle">é€‰å¡1</nobr></td><td class="btn" id="_btnC"><a href="javascript:fGo()" title="å…³é—­" id="_trigger" class="g-ti-btn"></a></td><td class="tRi" id="_tRi"></td></tr></tbody></table>');
 
 /**
  * @name CC.ui.TabItem
@@ -374,7 +374,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 
     blockMode: 2,
 /**
- * ¼ÓÔØÊ±ÑùÊ½
+ * åŠ è½½æ—¶æ ·å¼
  */
     loadCS: 'g-tabitem-loading',
 
@@ -392,7 +392,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 
 /**
- * Ôö¼Ó°´Å¥
+ * å¢åŠ æŒ‰é’®
  * @param {Object} config
  */
     addButton: function(cfg) {
@@ -406,8 +406,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       return td;
     },
 /**
- * »ñµÃtabItem¶ÔÓ¦µÄÄÚÈİÃæ°å
- * @param {Boolean} autoCreate Èç¹ûÃ»ÓĞ,ÊÇ·ñ×Ô¶¯´´½¨
+ * è·å¾—tabItemå¯¹åº”çš„å†…å®¹é¢æ¿
+ * @param {Boolean} autoCreate å¦‚æœæ²¡æœ‰,æ˜¯å¦è‡ªåŠ¨åˆ›å»º
  * @return {CC.ui.ContainerBase}
  */
     getContentPanel: function(autoCreate) {
@@ -418,13 +418,13 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
         this.setContentPanel(p);
       }
       
-        //Èç¹ûpanelÎ´¼ÓÈëtab µÄ contentPanel,¼ÓÈëÖ®
+        //å¦‚æœpanelæœªåŠ å…¥tab çš„ contentPanel,åŠ å…¥ä¹‹
       if(p && !p.pCt){
         if((ct = this.pCt) && (tct = ct.getContentPanel())){
         	tct.layout.add(p);
         }
 			/**
-			 * tab item Ïú»ÙÊ±ÊÇ·ñÁ¬Í¬¶ÔÓ¦µÄPanelÒ»ÆğÏú»Ù, µ±tabitem.panel±»×Ô¶¯¼ÓÈëtab.contentPanelÃæ°åÊ±,Èç¹û¸ÃÖµÎ´ÉèÖÃ,ÔòÖÃÎªtrue.
+			 * tab item é”€æ¯æ—¶æ˜¯å¦è¿åŒå¯¹åº”çš„Panelä¸€èµ·é”€æ¯, å½“tabitem.panelè¢«è‡ªåŠ¨åŠ å…¥tab.contentPanelé¢æ¿æ—¶,å¦‚æœè¯¥å€¼æœªè®¾ç½®,åˆ™ç½®ä¸ºtrue.
 			 * @type Boolean
 			 */
         if(this.syncPanelDestory === undefined)
@@ -434,20 +434,20 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       return p;
     },
 /**
- * ÉèÖÃTabItem¶ÔÓ¦µÄÄÚÈİÃæ°å,ÉèÖÃºó,panelÓĞÒ»¸öbindingTabItemÊôĞÔÖ¸Ïò¸ÃTabItem
- * @param {CC.ContainerBase} contentPanel ÄÚÈİÃæ°å,¿ÉÒÔÊÇCC.ui.IFramePanel»òÆäËüÈİÆ÷
+ * è®¾ç½®TabItemå¯¹åº”çš„å†…å®¹é¢æ¿,è®¾ç½®å,panelæœ‰ä¸€ä¸ªbindingTabItemå±æ€§æŒ‡å‘è¯¥TabItem
+ * @param {CC.ContainerBase} contentPanel å†…å®¹é¢æ¿,å¯ä»¥æ˜¯CC.ui.IFramePanelæˆ–å…¶å®ƒå®¹å™¨
  * @return this
  */
     setContentPanel : function(p){
       if(this.panel)
         delete this.panel.bindingTabItem;
 
-      // Î´ÊµÀı»¯,ÊµÀı»¯Ö®,²¢²»¼±ÓÚÌí¼Óµ½tabµÄcontentPanelÖĞ,ÒòÎªcontentPanel¿ÉÄÜÎ´´´½¨
+      // æœªå®ä¾‹åŒ–,å®ä¾‹åŒ–ä¹‹,å¹¶ä¸æ€¥äºæ·»åŠ åˆ°tabçš„contentPanelä¸­,å› ä¸ºcontentPanelå¯èƒ½æœªåˆ›å»º
       if(!p.cacheId)
       	p = CC.ui.instance(p);
             
       this.panel = p;
-      //PanelÖ¸ÏòTABÏîµÄÒıÓÃ
+      //PanelæŒ‡å‘TABé¡¹çš„å¼•ç”¨
       p.bindingTabItem = this;
       return this;
     },
@@ -475,11 +475,11 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       //close event.
       this.domEvent('click', this.onClsClick, true, null, cls.view)
           .domEvent('dblclick', this.onClsClick, true);
-      //²»Ó°Ïì¸¸ÈİÆ÷mousedownÊÂ¼ş.
+      //ä¸å½±å“çˆ¶å®¹å™¨mousedownäº‹ä»¶.
       cls.view.onmousedown = CC.Event.noUp;
     },
 /**
- * ÉèÖÃÊÇ·ñ¿É¹Ø±Õ
+ * è®¾ç½®æ˜¯å¦å¯å…³é—­
  * @param {Boolean}
  */
     setCloseable: function(b) {
@@ -492,25 +492,25 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       return this;
     },
 /**
- * Èç¹ûÔÊĞí×Ô¶¯´´½¨ÄÚÈİÃæ°å,loadTypeÉèÖÃ´´½¨µÄÄÚÈİÃæ°å¼ÓÔØµÄÄÚÈİ,Ä¬ÈÏÎªhtml
- * Õâ¸öloadType½«ÉèÖÃÃæ°åµÄconnectionProvider.loadType.
+ * å¦‚æœå…è®¸è‡ªåŠ¨åˆ›å»ºå†…å®¹é¢æ¿,loadTypeè®¾ç½®åˆ›å»ºçš„å†…å®¹é¢æ¿åŠ è½½çš„å†…å®¹,é»˜è®¤ä¸ºhtml
+ * è¿™ä¸ªloadTypeå°†è®¾ç½®é¢æ¿çš„connectionProvider.loadType.
  * @name CC.ui.TabItem#loadType
  * @property {String} loadType
  */
 
 /**
- * ¼ÓÔØÏîÃæ°åÄÚÈİ
+ * åŠ è½½é¡¹é¢æ¿å†…å®¹
  * @return this
  */
 
     loadContent : function(reload){
       var p = this.getContentPanel(true);
-      // ÉèÖÃÄ¬ÈÏ·µ»ØÓ¦ÓÃhtmlÄÚÈİ
+      // è®¾ç½®é»˜è®¤è¿”å›åº”ç”¨htmlå†…å®¹
       p.getConnectionProvider().loadType = this.loadType||'html';
 
       var cp = p.getConnectionProvider(), ind = cp.indicator;
       if (!ind) {
-          //×Ô¶¨Loading±êÊ¶
+          //è‡ªå®šLoadingæ ‡è¯†
           ind = cp.getIndicator({
             markIndicator: this.onIndicatorStart,
             stopIndicator: this.onIndicatorStop
@@ -524,16 +524,16 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 
     /**
-     * TabItemÄÚÈİÃæ°å¼ÓÔØÊ±ÑùÊ½ÉèÖÃ,ÕâÀïÖ÷ÒªÔÚTabItemÉÏÏÔÊ¾Ò»¸öloadingÍ¼±ê.
+     * TabItemå†…å®¹é¢æ¿åŠ è½½æ—¶æ ·å¼è®¾ç½®,è¿™é‡Œä¸»è¦åœ¨TabItemä¸Šæ˜¾ç¤ºä¸€ä¸ªloadingå›¾æ ‡.
      */
     onIndicatorStart: function() {
       var item = this.target.bindingTabItem;
-      //´ËÊ±µÄthisÎªloading indicator.
+      //æ­¤æ—¶çš„thisä¸ºloading indicator.
       item.addClass(item.loadCS);
     },
 
     onIndicatorStop: function() {
-      //´ËÊ±µÄthisÎªloading indicator.
+      //æ­¤æ—¶çš„thisä¸ºloading indicator.
       var tg = this.target,
           item = tg.bindingTabItem;
       if (item) {
@@ -582,17 +582,17 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     itemCls: CC.ui.TabItem,
 
 /**
- * ×ÓÏîÑ¡ÔñÊ±ÊÇ·ñ×Ô¶¯¼ÓÔØ×ÓÏîÄÚÈİ, Ä¬ÈÏÎªtrue
+ * å­é¡¹é€‰æ‹©æ—¶æ˜¯å¦è‡ªåŠ¨åŠ è½½å­é¡¹å†…å®¹, é»˜è®¤ä¸ºtrue
  */
     autoLoad: true,
 /**
- * µ±¹Ø±Õ×ÓÏîÊ±ÊÇ·ñÏú»Ù×ÓÏî,Ä¬ÈÏÎªfalse, ×ÓÏîÒ²¿ÉÒÔÉèÖÃtabItem.destoryOnClose¸²¸ÇÉèÖÃ.
+ * å½“å…³é—­å­é¡¹æ—¶æ˜¯å¦é”€æ¯å­é¡¹,é»˜è®¤ä¸ºfalse, å­é¡¹ä¹Ÿå¯ä»¥è®¾ç½®tabItem.destoryOnCloseè¦†ç›–è®¾ç½®.
  * @type Boolean
  */
     destoryItemOnclose: false,
 
     /**
-     * Ö÷ÒªÓÃÓÚTabItemLayout²¼¾Ö
+     * ä¸»è¦ç”¨äºTabItemLayoutå¸ƒå±€
      */
     lyCfg: {
 
@@ -601,13 +601,13 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       horizonMargin: 5,
 
       /**
-         * ¸ÃÖµĞëÓë×ó±ßµ¼º½°´Å¥¿í¶ÈÒ»ÖÂ,³öÓÚĞÔÄÜ¿¼ÂÇ,ÏÖÔÚ°ÑËü¹Ì¶¨ÏÂÀ´¡£
+         * è¯¥å€¼é¡»ä¸å·¦è¾¹å¯¼èˆªæŒ‰é’®å®½åº¦ä¸€è‡´,å‡ºäºæ€§èƒ½è€ƒè™‘,ç°åœ¨æŠŠå®ƒå›ºå®šä¸‹æ¥ã€‚
          * @property {Number} navLeftWidth
          */
       navLeftWidth: 24,
 
       /**
-         * ¸ÃÖµĞëÓëÓÒ±ßµ¼º½°´Å¥¿í¶ÈÒ»ÖÂ,³öÓÚĞÔÄÜ¿¼ÂÇ,ÏÖÔÚ°ÑËü¹Ì¶¨ÏÂÀ´¡£
+         * è¯¥å€¼é¡»ä¸å³è¾¹å¯¼èˆªæŒ‰é’®å®½åº¦ä¸€è‡´,å‡ºäºæ€§èƒ½è€ƒè™‘,ç°åœ¨æŠŠå®ƒå›ºå®šä¸‹æ¥ã€‚
          * @property {Number} navLeftWidth
          */
       navRightWidth: 24
@@ -641,7 +641,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 
     /**
-     * ¹Ø±ÕÖ¸¶¨TabItem,µ±Ö»ÓĞÒ»¸öTabItemÊ±ºöÂÔ.
+     * å…³é—­æŒ‡å®šTabItem,å½“åªæœ‰ä¸€ä¸ªTabItemæ—¶å¿½ç•¥.
      */
     close: function(item) {
       item = this.$(item);
@@ -657,7 +657,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 
 /**
- * »ñµÃÄÚÈİÃæ°å
+ * è·å¾—å†…å®¹é¢æ¿
  */
     getContentPanel : function(){
       var cp = this.contentPanel;
@@ -676,8 +676,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       }
     },
 
-    //ÊÇ·ñÏÔÊ¾Ö¸¶¨µÄTabItem,
-    //²ÎÊıa¿ÉÎªTabItemÊµÀıÒ²¿ÉÎªTabItemµÄid,bÎªtrue»òfalse.
+    //æ˜¯å¦æ˜¾ç¤ºæŒ‡å®šçš„TabItem,
+    //å‚æ•°aå¯ä¸ºTabItemå®ä¾‹ä¹Ÿå¯ä¸ºTabItemçš„id,bä¸ºtrueæˆ–false.
     displayItem: function(a, b) {
       a = this.$(a);
       //Cann't change this attribute.
@@ -690,7 +690,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       a.display(b);
 
       var p = this.selectionProvider;
-      //ÇĞ»»ÏÂÒ»¸öTabItem
+      //åˆ‡æ¢ä¸‹ä¸€ä¸ªTabItem
       if (!b && p.selected === a) {
         if(p.tracker.size()){
           var it = p.tracker.pop();
@@ -723,7 +723,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       }
     },
 
-    //·µ»ØÏÔÊ¾µÄTabItem¸öÊı.
+    //è¿”å›æ˜¾ç¤ºçš„TabItemä¸ªæ•°.
     getDisc: function() {
       var cnt = 0;
       var chs = this.children;

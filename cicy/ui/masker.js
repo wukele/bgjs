@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @name CC.ui.Mask
- * @class ÈİÆ÷¿Ø¼şÕÚÑÚ²ã
+ * @class å®¹å™¨æ§ä»¶é®æ©å±‚
  * @extends CC.Base
  */
 CC.create('CC.ui.Mask', CC.Base, /**@lends CC.ui.Mask#*/{
@@ -10,13 +10,13 @@ CC.create('CC.ui.Mask', CC.Base, /**@lends CC.ui.Mask#*/{
   template : 'div',
 
 /**
- * µã»÷²ãÊ±ÏìÓ¦»Øµ÷
+ * ç‚¹å‡»å±‚æ—¶å“åº”å›è°ƒ
  * @type function
  */
   onActive : null,
 
 /**
- * @property {CC.Base} target Ä¿±êÈİÆ÷
+ * @property {CC.Base} target ç›®æ ‡å®¹å™¨
  */
 
   initComponent : function(){
@@ -36,7 +36,7 @@ CC.create('CC.ui.Mask', CC.Base, /**@lends CC.ui.Mask#*/{
   },
 
 /**
- * °ó¶¨Ä¿±êÈİÆ÷
+ * ç»‘å®šç›®æ ‡å®¹å™¨
  */
   attach : function(target){
 
@@ -64,7 +64,7 @@ CC.create('CC.ui.Mask', CC.Base, /**@lends CC.ui.Mask#*/{
   },
 
 /**
- * ½â³ı°ó¶¨
+ * è§£é™¤ç»‘å®š
  */
   detach : function(){
     var t = this.target;

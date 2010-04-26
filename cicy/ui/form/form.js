@@ -1,4 +1,4 @@
-(function(){
+﻿(function(){
 var spr;
 var CC = window.CC;
 var Bx = CC.Base;

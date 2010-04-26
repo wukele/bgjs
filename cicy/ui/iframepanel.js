@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * @name CC.util.IFrameConnectionProvider
  * @class
  * @extends CC.util.ConnectionProvider
@@ -6,7 +6,7 @@
 CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@lends CC.util.IFrameConnectionProvider#*/{
 
 /**
- * ÊÇ·ñ¼àÌıIFRAME¼ÓÔØÊÂ¼ş,Ä¬ÈÏÎªtrue
+ * æ˜¯å¦ç›‘å¬IFRAMEåŠ è½½äº‹ä»¶,é»˜è®¤ä¸ºtrue
  * @type Boolean
  */
   traceLoad : true,
@@ -15,7 +15,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
   indicatorDisabled : true,
 
 /**
- * Ä¬ÈÏ²»´¦Àí
+ * é»˜è®¤ä¸å¤„ç†
  */
   defaultLoadSuccess : fGo,
   
@@ -53,7 +53,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
           t.fire('open', this, evt);
       break;
       //
-      //µ±ÓÃ»§ÊÖ¶¯Ë¢ĞÂFRAMEÊ±¸ÃÊÂ¼şÒ²»á·¢ËÍ
+      //å½“ç”¨æˆ·æ‰‹åŠ¨åˆ·æ–°FRAMEæ—¶è¯¥äº‹ä»¶ä¹Ÿä¼šå‘é€
       //case 'interactive': //IE
       case 'load': //Gecko, Opera
       case 'complete': //IE
@@ -102,15 +102,15 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
 
 CC.Tpl.def('CC.ui.IFramePanel', '<iframe class="g-framepanel" frameBorder="no" scrolling="auto" hideFocus=""></iframe>');
 /**
- * IFRAMEÃæ°å·â×°
+ * IFRAMEé¢æ¿å°è£…
  * @name CC.ui.IFramePanel
  * @class
  * @extends  CC.ui.Panel
  */
 CC.create('CC.ui.IFramePanel', CC.ui.Panel, /**@lends CC.ui.IFramePanel#*/{
 /**
- * ÊÇ·ñ¸ú×ÙIFramePanel¸¸ÈİÆ÷¿í¸ß¸Ä±äÒÔ±ãµ÷Õû×ÔÉí¿í¸ß,Ä¬ÈÏÖµÎªfalse,
- * Í¨³£²¢²»ĞèÒª¸ÃÏî,IFramePanelÍùÍùÊÇÍ¨¹ı¸¸ÈİÆ÷µÄ²¼¾Ö¹ÜÀíÆ÷À´µ÷ÕûËüµÄ´óĞ¡.
+ * æ˜¯å¦è·Ÿè¸ªIFramePanelçˆ¶å®¹å™¨å®½é«˜æ”¹å˜ä»¥ä¾¿è°ƒæ•´è‡ªèº«å®½é«˜,é»˜è®¤å€¼ä¸ºfalse,
+ * é€šå¸¸å¹¶ä¸éœ€è¦è¯¥é¡¹,IFramePanelå¾€å¾€æ˜¯é€šè¿‡çˆ¶å®¹å™¨çš„å¸ƒå±€ç®¡ç†å™¨æ¥è°ƒæ•´å®ƒçš„å¤§å°.
  * @type Boolean
  */
   traceResize : false,
@@ -130,22 +130,22 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, /**@lends CC.ui.IFramePanel#*/{
     }
   },
 /**
- * »ñµÃiframe html½áµã
+ * è·å¾—iframe htmlç»“ç‚¹
  */
   getFrameEl : function(){
     return this.view;
   },
 
   //
-  // ÊµÀı»¯Ê±¿ÉÖØĞ´¸Ã·½·¨,ÒÔ×Ô¶¨ÒåIFRAME¿í¸ß.
+  // å®ä¾‹åŒ–æ—¶å¯é‡å†™è¯¥æ–¹æ³•,ä»¥è‡ªå®šä¹‰IFRAMEå®½é«˜.
   //
   onContainerResize : function(a,b,c,d){
     this.setSize(a, b);
   },
 
   /**
-   * ¸ù¾İ½áµãid·µ»ØIFrameÒ³ÃæÄÚÔªËØdom½áµã.
-   * ×¢:±ØĞëÔÚIFrame¼ÓÔØÍê³Éºó²Å¿ÉÕı³£·ÃÎÊ.
+   * æ ¹æ®ç»“ç‚¹idè¿”å›IFrameé¡µé¢å†…å…ƒç´ domç»“ç‚¹.
+   * æ³¨:å¿…é¡»åœ¨IFrameåŠ è½½å®Œæˆåæ‰å¯æ­£å¸¸è®¿é—®.
    * @function
    * @return {DOMElement}
    */

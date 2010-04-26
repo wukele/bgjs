@@ -1,4 +1,4 @@
-CC.create('CC.ui.grid.ContentValidation', CC.util.ValidationProvider, {
+﻿CC.create('CC.ui.grid.ContentValidation', CC.util.ValidationProvider, {
 	
 /**@override */
   decorateValidation : fGo,
@@ -19,7 +19,7 @@ CC.create('CC.ui.grid.ContentValidation', CC.util.ValidationProvider, {
   	    self = this;
   	//
   	row.each(function(){
-  		// ֻ��֤�޸Ĺ���
+  		// 只验证修改过的
   		if(n || this.modified){
 	  		if(self.validateCell(this, cols[idx].validator)===false && r === true){
 	  			r = false;

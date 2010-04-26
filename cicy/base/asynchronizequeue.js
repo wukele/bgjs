@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @name CC.util.AsynchronizeQueue
  * @class
  */

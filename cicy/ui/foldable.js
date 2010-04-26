@@ -1,4 +1,4 @@
-CC.Tpl.def('CC.ui.Foldable', '<div class="g-foldable"><div class="g-foldablewrap"><b title="隐藏" id="_trigger" class="icos icoCls"></b><div id="_tle"></div></div></div>');
+锘緾C.Tpl.def('CC.ui.Foldable', '<div class="g-foldable"><div class="g-foldablewrap"><b title="闅愯棌" id="_trigger" class="icos icoCls"></b><div id="_tle"></div></div></div>');
 /**
  * @name CC.ui.Foldable
  * @class
@@ -11,7 +11,7 @@ CC.create('CC.ui.Foldable', CC.Base, /**@lends CC.ui.Foldable#*/{
 
     unselectable: true,
   /**
-   * @property nodeBlockMode 指定收缩结点的displayMode:''或block
+   * @property nodeBlockMode 鎸囧畾鏀剁缉缁撶偣鐨刣isplayMode:''鎴朾lock
    */
   //nodeBlockMode:1,
     initComponent: function(){
@@ -29,7 +29,7 @@ CC.create('CC.ui.Foldable', CC.Base, /**@lends CC.ui.Foldable#*/{
     foldView: function(b){
         var f = CC.fly(this.foldNode ? this.target.dom(this.foldNode) : this.target.ct || this.target);
         //
-        // b如果用在domEvent的回调中,就是Event对象!
+        // b濡傛灉鐢ㄥ湪domEvent鐨勫洖璋冧腑,灏辨槸Event瀵硅薄!
         //
         if (b !== true && b !== false)
             b = !f.display();
@@ -43,7 +43,7 @@ CC.create('CC.ui.Foldable', CC.Base, /**@lends CC.ui.Foldable#*/{
         f.display(b).unfly();
         if (this.target.shadow)
             this.target.shadow.reanchor();
-        this.dom('_trigger').title = b ? '隐藏' : '展开';
+        this.dom('_trigger').title = b ? '闅愯棌' : '灞曞紑';
         this.checkClass(this.clsGroupCS, !b);
         this.expanded = b;
         this.fire('expanded', this, b);

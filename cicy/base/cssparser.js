@@ -1,14 +1,14 @@
-//~@base/CssParser.js
+ï»¿//~@base/CssParser.js
 (function(){
 var C = {
-//1c, Õ¼¿íÒ»ÁĞ, ¼´width:95%
+//1c, å å®½ä¸€åˆ—, å³width:95%
   '1c':['width','95%'],
-//2c, Õ¼¿íÁ½ÁĞ, ¼´width:45%
+//2c, å å®½ä¸¤åˆ—, å³width:45%
   '2c':['width','45%'],
   '3c':['width','30%'],
   '4c':['width','20%'],
   '5c':['width','10%'],
-//c:5 Îª width = 5*10 + '%',½á¹ûÎªwidth=50%
+//c:5 ä¸º width = 5*10 + '%',ç»“æœä¸ºwidth=50%
   'c' :function(c,v){c.view.style.width = v + '%'},
   'w' :function(c,v){c.view.style.width = v;},
   'h' :function(c,v){c.view.style.height = v;},
@@ -41,7 +41,7 @@ var C = {
    
   'z'  :function(c, v){c.view.style.zIndex = v;},
    
-/**³£ÓÃÓÚ²¼¾ÖBorderÉèÖÃ*/
+/**å¸¸ç”¨äºå¸ƒå±€Borderè®¾ç½®*/
   'lnl':['borderLeft',  '1px solid #CCC'],
   'lnt':['borderTop',   '1px solid #CCC'],
   'lnb':['borderBottom','1px solid #CCC'],
@@ -69,11 +69,11 @@ var S = /\s+/, B  = CC.borderBox, inst;
 /**
  * @name CC.util.CssParser
  * @class
- * CssParser¶ÔÓÚÀÁµÃĞ´CSS»òĞèÒªÓÃ½Å±¾¿ØÖÆcssµÄ¿ª·¢ÈËÔ±À´Ëµ,ÊÇ¸öºÃ¹¤¾ß.
- * Ëü¿ÉÒÔÒÔÒ»ÖÖ·Ç³£¼òµ¥µÄ·½Ê½Ğ´ÔªËØµÄinline css style.
+ * CssParserå¯¹äºæ‡’å¾—å†™CSSæˆ–éœ€è¦ç”¨è„šæœ¬æ§åˆ¶cssçš„å¼€å‘äººå‘˜æ¥è¯´,æ˜¯ä¸ªå¥½å·¥å…·.
+ * å®ƒå¯ä»¥ä»¥ä¸€ç§éå¸¸ç®€å•çš„æ–¹å¼å†™å…ƒç´ çš„inline css style.
  * @example
    parser.parse(comp, 'pa l:5 t:10 ofh ac w:25 $pd:5,3');
-   ÉÏÃæÕâ¾ä½«Ó¦ÓÃcompÒÔÏÂÑùÊ½:
+   ä¸Šé¢è¿™å¥å°†åº”ç”¨compä»¥ä¸‹æ ·å¼:
    {
     position:absolute;
     left:5px;
@@ -81,22 +81,22 @@ var S = /\s+/, B  = CC.borderBox, inst;
     overflow:hidden;
     text-align:center;
     width:25px;
-    ¶ÔÓÚborder boxä¯ÀÀÆ÷Ó¦ÓÃ
+    å¯¹äºborder boxæµè§ˆå™¨åº”ç”¨
     padding:5px 3px;
    }
-   CC.BaseµÄcset·½·¨ÒÑÄÚÇ¶CSS Parser½âÎö,ÒÔÉÏ¿ÉÖ±½Óµ÷ÓÃ
+   CC.Baseçš„csetæ–¹æ³•å·²å†…åµŒCSS Parserè§£æ,ä»¥ä¸Šå¯ç›´æ¥è°ƒç”¨
    comp.parse('pa l:5 t:10 oh tc w:25 $p:5,3');
-ÏµÍ³×Ô´øµÄ¹æÔòÎª:
+ç³»ç»Ÿè‡ªå¸¦çš„è§„åˆ™ä¸º:
 <pre>
 {
-//1c, Õ¼¿íÒ»ÁĞ, ¼´width:95%
+//1c, å å®½ä¸€åˆ—, å³width:95%
   '1c':['width','95%'],
-//2c, Õ¼¿íÁ½ÁĞ, ¼´width:45%
+//2c, å å®½ä¸¤åˆ—, å³width:45%
   '2c':['width','45%'],
   '3c':['width','30%'],
   '4c':['width','20%'],
   '5c':['width','10%'],
-//c:5 Îª width = 5*10 + '%',½á¹ûÎªwidth=50%
+//c:5 ä¸º width = 5*10 + '%',ç»“æœä¸ºwidth=50%
   'c' :function(c,v){c.view.style.width = v + '%'},
   'w' :function(c,v){c.view.style.width = v;},
   'h' :function(c,v){c.view.style.height = v;},
@@ -156,9 +156,9 @@ CC.util.CssParser = function(){};
 
 CC.extendIf(CC.util.CssParser.prototype, /**@lends CC.util.CssParser#*/{
 /**
- * ¶¨Òå¹æÔò
- * @param {String|Object} key µ±ÎªObjectÀàĞÍÊ±ÅúÁ¿¶¨Òå¹æÔò
- * @param  {Object} value ¿ÉÒÔÊÇÒ»¸öÊôÉú¼¯µÄObject, Ò²¿ÉÒÔÊÇcssÊôĞÔ×éºÏµÄÊı×é[attrName, attrValue],»¹¿ÉÒÔÊÇÒ»¸öº¯Êı,¸Ãº¯Êı²ÎÊıÎª function(component, value){},ÆäÖĞcomponentÎªÓ¦ÓÃÑùÊ½µÄ¿Ø¼ş,valueÎªµ±Ç°½âÎöµÃ³öµÄÖµ,Î´ÉèÖÃÔòÎª¿Õ.
+ * å®šä¹‰è§„åˆ™
+ * @param {String|Object} key å½“ä¸ºObjectç±»å‹æ—¶æ‰¹é‡å®šä¹‰è§„åˆ™
+ * @param  {Object} value å¯ä»¥æ˜¯ä¸€ä¸ªå±ç”Ÿé›†çš„Object, ä¹Ÿå¯ä»¥æ˜¯csså±æ€§ç»„åˆçš„æ•°ç»„[attrName, attrValue],è¿˜å¯ä»¥æ˜¯ä¸€ä¸ªå‡½æ•°,è¯¥å‡½æ•°å‚æ•°ä¸º function(component, value){},å…¶ä¸­componentä¸ºåº”ç”¨æ ·å¼çš„æ§ä»¶,valueä¸ºå½“å‰è§£æå¾—å‡ºçš„å€¼,æœªè®¾ç½®åˆ™ä¸ºç©º.
  @example
    parser.def('fl', ['float', 'left']);
    parser.def('bdred', {border:'1px red'});
@@ -181,7 +181,7 @@ CC.extendIf(CC.util.CssParser.prototype, /**@lends CC.util.CssParser#*/{
   },
 /**
  * @param {CC.Base}
- * @param {String} pattern ÑùÊ½
+ * @param {String} pattern æ ·å¼
  */
   parse : function(ct, cs){
     var cf, r,
@@ -275,7 +275,7 @@ CC.extendIf(CC.util.CssParser.prototype, /**@lends CC.util.CssParser#*/{
   }
 });
 /**
- * »ñµÃÈ«¾ÖCSS½âÎöÆ÷
+ * è·å¾—å…¨å±€CSSè§£æå™¨
  */
 CC.util.CssParser.getParser = function(){
   if(!inst)

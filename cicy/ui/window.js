@@ -1,4 +1,4 @@
-/**
+﻿/**
  * window控件
  * @name CC.ui.Win
  * @class

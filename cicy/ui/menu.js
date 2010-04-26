@@ -1,4 +1,4 @@
-(function(){
+ï»¿(function(){
 
 var CC = window.CC;
 var Event = CC.Event;
@@ -17,11 +17,11 @@ CC.Tpl.def('CC.ui.Menu', '<div class="g-panel g-menu"><div id="_wrap" class="g-p
 CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
 /**@lends CC.ui.menu.MenuSelectionProvider#*/{
 /**
- * ÎŞÂÛÑ¡ÖĞÓë·ñ¶¼Ç¿ÆÈÑ¡Ôñ
+ * æ— è®ºé€‰ä¸­ä¸å¦éƒ½å¼ºè¿«é€‰æ‹©
  */
   forceSelect : true,
 /**
- * È¡ÏûĞŞÊÎÑ¡ÔñµÄÑùÊ½
+ * å–æ¶ˆä¿®é¥°é€‰æ‹©çš„æ ·å¼
  */
   selectedCS : false,
 
@@ -67,7 +67,7 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
  },
 
 /**
- * Õ¹¿ª²Ëµ¥µ±Ç°Ïî»ò¼¤»îµÚÒ»¸öÄÜ¼¤»îµÄ²Ëµ¥Ïî
+ * å±•å¼€èœå•å½“å‰é¡¹æˆ–æ¿€æ´»ç¬¬ä¸€ä¸ªèƒ½æ¿€æ´»çš„èœå•é¡¹
  * @private
  */
   tryActive : function(menu, exp){
@@ -161,41 +161,41 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
   }
 });
 /**
- * ²Ëµ¥Ïî±»Ìí¼Óµ½²Ëµ¥ÖĞ,Ëü¿ÉÒÔ±»¼¤»î,¼¤»îºóµÄ²Ëµ¥¿É·½±ã¼üÅÌµ¼º½,
- * ²Ëµ¥Ïî¿É¸½ÓĞ×Ó²Ëµ¥,²Ëµ¥ÏîÓĞ¶àÖÖ×´Ì¬,Ã¿ÖÖ×´Ì¬¿ÉÓĞ²»Í¬µÄCSSÑùÊ½:
- * <li>normal(deactive) -- ³£Ì¬
- * <li>active  -- ¼¤»î
- * <li>sub menu expanded -- ×ÓÏîÕ¹¿ª
+ * èœå•é¡¹è¢«æ·»åŠ åˆ°èœå•ä¸­,å®ƒå¯ä»¥è¢«æ¿€æ´»,æ¿€æ´»åçš„èœå•å¯æ–¹ä¾¿é”®ç›˜å¯¼èˆª,
+ * èœå•é¡¹å¯é™„æœ‰å­èœå•,èœå•é¡¹æœ‰å¤šç§çŠ¶æ€,æ¯ç§çŠ¶æ€å¯æœ‰ä¸åŒçš„CSSæ ·å¼:
+ * <li>normal(deactive) -- å¸¸æ€
+ * <li>active  -- æ¿€æ´»
+ * <li>sub menu expanded -- å­é¡¹å±•å¼€
  * @name CC.ui.MenuItem
- * @class ²Ëµ¥Ïî
+ * @class èœå•é¡¹
  * @extends CC.Base
  */
 CC.create('CC.ui.MenuItem', CC.Base, function(superclass){
 return {/**@lends CC.ui.MenuItem# */
 
 /**
- * ×Ó²Ëµ¥
+ * å­èœå•
  * @type CC.ui.Menu
  */
   subMenu: null,
 
 /**
- * Èç¹û²Ëµ¥Ïî´æÔÚ×Ó²Ëµ¥,¸½¼Óµ½²Ëµ¥ÏîÉÏµÄÑùÊ½
+ * å¦‚æœèœå•é¡¹å­˜åœ¨å­èœå•,é™„åŠ åˆ°èœå•é¡¹ä¸Šçš„æ ·å¼
  * @type String
  */
   subCS : 'sub-x',
 
 /**
  * @private
- * ¼¤»î²Ëµ¥Ïî
- * ÒªÉèÖÃ¼¤»î²Ëµ¥ÏîÑùÊ½,¿ÉÉèÖÃ¸¸²ã²Ëµ¥µÄactiveCSÊôĞÔ
- * @param {Boolean} expand ¼¤»îÊ±ÊÇ·ñÕ¹¿ª×Ó²Ëµ¥
+ * æ¿€æ´»èœå•é¡¹
+ * è¦è®¾ç½®æ¿€æ´»èœå•é¡¹æ ·å¼,å¯è®¾ç½®çˆ¶å±‚èœå•çš„activeCSå±æ€§
+ * @param {Boolean} expand æ¿€æ´»æ—¶æ˜¯å¦å±•å¼€å­èœå•
  */
   active : function(expand){
     if(!this.disabled){
       var c = this.pCt, o = c.onItem;
       if(o !== this) {
-        //Ã¿´ÎÖ»ÔÊĞíÒ»¸ö¼¤»î
+        //æ¯æ¬¡åªå…è®¸ä¸€ä¸ªæ¿€æ´»
         if(o)
           o.deactive(true);
 
@@ -212,7 +212,7 @@ return {/**@lends CC.ui.MenuItem# */
         this.decorateActive(true);
       }
 
-      //¼¤»îÏîÊ±ÒÆ½¹
+      //æ¿€æ´»é¡¹æ—¶ç§»ç„¦
       c.focus();
       if(this.subMenu)
         this.showMenu(expand);
@@ -256,7 +256,7 @@ return {/**@lends CC.ui.MenuItem# */
   },
 
 /**
- * µ±Ñ¡Ôñ²Ëµ¥ºóµ÷ÓÃ
+ * å½“é€‰æ‹©èœå•åè°ƒç”¨
  * @private
  */
   handleClick : function(e){
@@ -274,7 +274,7 @@ return {/**@lends CC.ui.MenuItem# */
   },
 
 /**
- * ÏÔÊ¾/Òş²Ø×ÓÏî²Ëµ¥
+ * æ˜¾ç¤º/éšè—å­é¡¹èœå•
  * @param b {Boolean} true|false
  */
   showMenu : function(b){
@@ -290,7 +290,7 @@ return {/**@lends CC.ui.MenuItem# */
           this.decorateExpand(true);
           m.setZ((c.getZ()||8888)+2);
 
-          //ÏòÏÂÕ¹¿ª »ò ÏòÓÒÕ¹¿ª
+          //å‘ä¸‹å±•å¼€ æˆ– å‘å³å±•å¼€
           c.menubar ? m.anchorPos(this, 'lb', 'hr', null, true, true) :
                       m.anchorPos(this, 'rt', 'vd', null, true, true);
           m.focus(0);
@@ -307,7 +307,7 @@ return {/**@lends CC.ui.MenuItem# */
   },
 
 /**
- * °ó¶¨×Ó²Ëµ¥
+ * ç»‘å®šå­èœå•
  */
   bindMenu : function(menu){
     menu.pItem = this;
@@ -321,7 +321,7 @@ return {/**@lends CC.ui.MenuItem# */
   },
 
 /**
- * ½â³ı×Ó²Ëµ¥
+ * è§£é™¤å­èœå•
  */
   unbind : function(){
     var m = this.subMenu;
@@ -361,9 +361,9 @@ return {/**@lends CC.ui.MenuItem# */
 });
 
 /**
- * Ä¬ÈÏÌí¼ÓÔÚdocument.bodyÖĞ,²Ëµ¥°´¼üµ¼º½¹¦ÄÜÓÉCC.ui.menu.MenuSelectionProviderÌá¹©.
+ * é»˜è®¤æ·»åŠ åœ¨document.bodyä¸­,èœå•æŒ‰é”®å¯¼èˆªåŠŸèƒ½ç”±CC.ui.menu.MenuSelectionProvideræä¾›.
  * @name CC.ui.Menu
- * @class ²Ëµ¥
+ * @class èœå•
  * @extends CC.ui.Panel
  */
 CC.create('CC.ui.Menu', CC.ui.Panel, function(superclass) {
@@ -371,22 +371,22 @@ return /**@lends CC.ui.Menu#*/{
 
   hidden : true,
 /**
- * Ä¬ÈÏ¿í¶ÈÉèÎª115px
+ * é»˜è®¤å®½åº¦è®¾ä¸º115px
  */
   width : 115,
 /**
- * ¸¸²Ëµ¥Ïî,Èç¹û´æÔÚ
+ * çˆ¶èœå•é¡¹,å¦‚æœå­˜åœ¨
  * @type CC.ui.MenuItem
  */
   pItem: null,
 
 /**
- * ²Ëµ¥Ïî¼¤»îÊ±CSSÑùÊ½
+ * èœå•é¡¹æ¿€æ´»æ—¶CSSæ ·å¼
  */
   activeCS :  'itemOn',
 
 /**
- * µ±×Ó²Ëµ¥ÏÔÊ¾Ê±,¸½¼Óµ½²Ëµ¥ÏîÉÏµÄÑùÊ½
+ * å½“å­èœå•æ˜¾ç¤ºæ—¶,é™„åŠ åˆ°èœå•é¡¹ä¸Šçš„æ ·å¼
  * @type String
  */
   expandCS : 'subHover',
@@ -397,7 +397,7 @@ return /**@lends CC.ui.Menu#*/{
 
 /**
  * @private
- * µ±Ç°¼¤»î²Ëµ¥Ïî
+ * å½“å‰æ¿€æ´»èœå•é¡¹
  */
   onItem: null,
 
@@ -410,7 +410,7 @@ return /**@lends CC.ui.Menu#*/{
   menubarCS : 'g-menu-bar',
 
 /**
- * ·Ö¸ôÌõ½áµãÑùÊ½
+ * åˆ†éš”æ¡ç»“ç‚¹æ ·å¼
  * @type String
  */
   separatorCS : 'g-menu-separator',
@@ -430,11 +430,11 @@ return /**@lends CC.ui.Menu#*/{
       delete this.array;
     }
 
-    //³·Ïû²Ëµ¥ÄÚµÄonclickÊÂ¼şÉÏ´«
-    //Ä¬ÈÏÎª²»ÏÔÊ¾
+    //æ’¤æ¶ˆèœå•å†…çš„onclickäº‹ä»¶ä¸Šä¼ 
+    //é»˜è®¤ä¸ºä¸æ˜¾ç¤º
     this.noUp();
 
-    //ÈİÆ÷ÉÏ¼àÌı×ÓÏîmouseover/mouseout
+    //å®¹å™¨ä¸Šç›‘å¬å­é¡¹mouseover/mouseout
     this.itemAction('mouseover', this.mouseoverCallback, true);
     this.itemAction('mouseout', this.mouseoutCallback, true);
   }
@@ -470,8 +470,8 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * °Ñ×Ó²Ëµ¥menuÌí¼Óµ½tarÏîÉÏ,tar¿ÉÎªÒ»¸öindex,»òÒ»¸öMenuItem¶ÔÏó,»¹¿ÉÎªMenuItemµÄid
- * ¸½¼Ó×Ó²Ëµ¥Ê±Òª°´´Ó×îÏÈÖÁ×îºó¸½¼Ó,ÕâÑùÊÂ¼ş²Å»á±»¸¸²Ëµ¥½ÓÊÕ
+ * æŠŠå­èœå•menuæ·»åŠ åˆ°taré¡¹ä¸Š,tarå¯ä¸ºä¸€ä¸ªindex,æˆ–ä¸€ä¸ªMenuItemå¯¹è±¡,è¿˜å¯ä¸ºMenuItemçš„id
+ * é™„åŠ å­èœå•æ—¶è¦æŒ‰ä»æœ€å…ˆè‡³æœ€åé™„åŠ ,è¿™æ ·äº‹ä»¶æ‰ä¼šè¢«çˆ¶èœå•æ¥æ”¶
  */
   attach: function(menu, tar) {
     tar = this.$(tar);
@@ -498,7 +498,7 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * ³·Ïû²Ëµ¥ÏîÉÏµÄ×Ó²Ëµ¥
+ * æ’¤æ¶ˆèœå•é¡¹ä¸Šçš„å­èœå•
  * @param {Number|CC.ui.MenuItem} targetItem
  */
   detach: function(tar) {
@@ -508,7 +508,7 @@ return /**@lends CC.ui.Menu#*/{
   ,
 
 /**
- * »ñµÃ×î¶¥²ã²Ëµ¥
+ * è·å¾—æœ€é¡¶å±‚èœå•
  * @return {CC.ui.Menu}
  */
   getRoot : function(){
@@ -519,7 +519,7 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * Òş²ØËùÓĞ¹ØÁª²Ëµ¥
+ * éšè—æ‰€æœ‰å…³è”èœå•
  */
   hideAll : function(){
     var r = this.getRoot();
@@ -544,12 +544,12 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * ¿ÉÖØĞ´¸Ã·½·¨Ìí¼ÓÆäËü¿Ø¼şµÄÒ»Ğ©ÑùÊ½
+ * å¯é‡å†™è¯¥æ–¹æ³•æ·»åŠ å…¶å®ƒæ§ä»¶çš„ä¸€äº›æ ·å¼
  */
   onDisplay : fGo,
 
 /**
- * ÊÇ·ñ×Ô¶¯Õ¹¿ª×Ó²Ëµ¥
+ * æ˜¯å¦è‡ªåŠ¨å±•å¼€å­èœå•
  * @private
  */
   setAutoExpand : function(b){
@@ -557,23 +557,23 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * Ìí¼Ó·Ö¸ôÌõ
+ * æ·»åŠ åˆ†éš”æ¡
  */
   addSeparator : function(){
     this._addNode(CC.ui.Menu.Separator.view.cloneNode(true));
   },
 
 /**
- * ÔÚÖ¸¶¨×ø±ê»ò¿Ø¼şÏÂÏÔÊ¾²Ëµ¥
+ * åœ¨æŒ‡å®šåæ ‡æˆ–æ§ä»¶ä¸‹æ˜¾ç¤ºèœå•
  * @param {CC.Base|Number} x
  * @param {Number|Boolean} y
  * @param {Boolean} contexted
  * @example
-   //ÔÚÖ¸¶¨×ø±êÏÔÊ¾²Ëµ¥
+   //åœ¨æŒ‡å®šåæ ‡æ˜¾ç¤ºèœå•
    menu.at(110, 120);
-   //ÔÚÖ¸¶¨¿Ø¼şÏÂÏÔÊ¾²Ëµ¥
+   //åœ¨æŒ‡å®šæ§ä»¶ä¸‹æ˜¾ç¤ºèœå•
    menu.at(text);
-   //ÔÚÖ¸¶¨×ø±êÏÔÊ¾²Ëµ¥,²¢ÇÒµã»÷²Ëµ¥Íâ²¿Ê±È¡ÏûÒş²Ø
+   //åœ¨æŒ‡å®šåæ ‡æ˜¾ç¤ºèœå•,å¹¶ä¸”ç‚¹å‡»èœå•å¤–éƒ¨æ—¶å–æ¶ˆéšè—
    menu.at(110,120,false);
  */
   at : function(a,b){
@@ -618,7 +618,7 @@ CC.create('CC.ui.Menubar', CC.ui.Menu, {
       this.onItem.deactive(true);
     this.getSelectionProvider().select(null);
     this.setAutoExpand(false);
-    //ÎŞĞèÒş²Ø
+    //æ— éœ€éšè—
     return false;
   },
 

@@ -1,19 +1,19 @@
-//~@base/connectionprovider.js
+ï»¿//~@base/connectionprovider.js
 /**
- * Îª¿Ø¼şÌá¹©Êı¾İ¼ÓÔØ¹¦ÄÜ
- * Õâ¸öÀàÖ÷ÒªÓÃÓÚÇÅ½ÓCC.AjaxÓëCC.ui.ContainerBase.
+ * ä¸ºæ§ä»¶æä¾›æ•°æ®åŠ è½½åŠŸèƒ½
+ * è¿™ä¸ªç±»ä¸»è¦ç”¨äºæ¡¥æ¥CC.Ajaxä¸CC.ui.ContainerBase.
  * @name CC.util.ConnectionProvider
  * @class
  */
 
 CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionProvider#*/{
 /**
- * ÊÇ·ñ½ûÓÃÖ¸Ê¾Æ÷,Ä¬ÈÏfalse
+ * æ˜¯å¦ç¦ç”¨æŒ‡ç¤ºå™¨,é»˜è®¤false
  */
   indicatorDisabled : false,
 /**
- * Á¬½ÓÆ÷ÉèÖÃ,Á¬½ÓÆ÷±£´æµ±Ç°Ä¬ÈÏµÄÁ¬½ÓÆ÷connectorÅäÖÃĞÅÏ¢,
- * Ã¿´ÎÁ¬½ÓÊ±¶¼ÒÔ¸ÃÅäÖÃĞÅÏ¢ÓëĞÂµÄÅäÖÃ½áºÏ·¢³öÁ¬½Ó.
+ * è¿æ¥å™¨è®¾ç½®,è¿æ¥å™¨ä¿å­˜å½“å‰é»˜è®¤çš„è¿æ¥å™¨connectoré…ç½®ä¿¡æ¯,
+ * æ¯æ¬¡è¿æ¥æ—¶éƒ½ä»¥è¯¥é…ç½®ä¿¡æ¯ä¸æ–°çš„é…ç½®ç»“åˆå‘å‡ºè¿æ¥.
  * @example
    var provider = new CC.util.ConnectionProvider(target, {
     indicatorDisabled : true,
@@ -25,7 +25,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
    });
 
    provider.connect('http://www.server.com/new',
-    //ÕâÀïµÄÅäÖÃÊôĞÔ½«»á¸²¸Çprovider.ajaxCfgÔ­ÓĞÊôĞÔ
+    //è¿™é‡Œçš„é…ç½®å±æ€§å°†ä¼šè¦†ç›–provider.ajaxCfgåŸæœ‰å±æ€§
     {
       success : function(){},
       ...
@@ -48,33 +48,33 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 /**
  * @name CC.util.ConnectionProvider#loadType
  * @property {String} loadType
- * Ö¸Ã÷·µ»ØÊı¾İµÄÀàĞÍ,³É¹¦¼ÓÔØÊı¾İºóÄ¬ÈÏµÄ´¦Àíº¯Êı½«¸ù¾İ¸ÃÀàĞÍÖ´ĞĞ
- * ÏàÓ¦µÄ²Ù×÷,±»Ö§³ÖµÄÀàĞÍÓĞÈçÏÂÁ½ÖÖ
- * <li>html,·µ»ØµÄHTML½«±»¼ÓÔØµ½target.wrapperÖĞ
- * <li>json,·µ»ØµÄÊı¾İ×ª»»³Éjson,²¢Í¨¹ıtarget.fromArray¼ÓÔØ×ÓÏî
- * Èç¹ûÎ´Ö¸¶¨,°´jsonÀàĞÍ´¦Àí
+ * æŒ‡æ˜è¿”å›æ•°æ®çš„ç±»å‹,æˆåŠŸåŠ è½½æ•°æ®åé»˜è®¤çš„å¤„ç†å‡½æ•°å°†æ ¹æ®è¯¥ç±»å‹æ‰§è¡Œ
+ * ç›¸åº”çš„æ“ä½œ,è¢«æ”¯æŒçš„ç±»å‹æœ‰å¦‚ä¸‹ä¸¤ç§
+ * <li>html,è¿”å›çš„HTMLå°†è¢«åŠ è½½åˆ°target.wrapperä¸­
+ * <li>json,è¿”å›çš„æ•°æ®è½¬æ¢æˆjson,å¹¶é€šè¿‡target.fromArrayåŠ è½½å­é¡¹
+ * å¦‚æœæœªæŒ‡å®š,æŒ‰jsonç±»å‹å¤„ç†
  * @see #defaultLoadSuccess
  */
 /**
- * ³É¹¦·µ»ØºóÖ´ĞĞ,Ä¬ÈÏÊÇ¸ù¾İ·µ»ØÊı¾İÀàĞÍ(loadType)Ö´ĞĞÏàÓ¦²Ù×÷,
- * Èç¹ûÒª×Ô¶¨Òå´¦Àí·µ»ØµÄÊı¾İ,¿É¶¨ÒåÔÚÁ¬½ÓÊ±´«µİsuccess·½·¨»òÖØĞ´±¾·½·¨
+ * æˆåŠŸè¿”å›åæ‰§è¡Œ,é»˜è®¤æ˜¯æ ¹æ®è¿”å›æ•°æ®ç±»å‹(loadType)æ‰§è¡Œç›¸åº”æ“ä½œ,
+ * å¦‚æœè¦è‡ªå®šä¹‰å¤„ç†è¿”å›çš„æ•°æ®,å¯å®šä¹‰åœ¨è¿æ¥æ—¶ä¼ é€’successæ–¹æ³•æˆ–é‡å†™æœ¬æ–¹æ³•
  * @param {CC.Ajax} j
  * @see #loadType
  * @example
    var ct = new CC.ui.ContainerBase({
     connectionProvider : {loadType:'json'}
    });
-   //¼ÓÔØjson
+   //åŠ è½½json
    ct.getConnectionProvider().connect('http://server/getChildrenData');
 
-   //¼ÓÔØhtmlµ½ÈİÆ÷
+   //åŠ è½½htmlåˆ°å®¹å™¨
    ct.connectionProvider.loadType = 'html';
    ct.connectionProvider.connect('http://server/htmls/');
 
-   //»ò×Ô¶¨Òå¼ÓÔØ
+   //æˆ–è‡ªå®šä¹‰åŠ è½½
    ct.getConnectionProvider().connect('http://server/..', {
      success : function(j){
-      //thisÄ¬ÈÏÊÇconnectionProvider
+      //thisé»˜è®¤æ˜¯connectionProvider
       alert(this.loadType);
       alert(j.getText());
      }
@@ -101,8 +101,8 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
   },
 
 /**
- * »ñµÃÁ¬½ÓÖ¸Ê¾Æ÷
- * LoadingÀàÑ°ÕÒÂ·¾¶ this.indicatorCls -> target ct.indicatorCls -> CC.ui.Loading
+ * è·å¾—è¿æ¥æŒ‡ç¤ºå™¨
+ * Loadingç±»å¯»æ‰¾è·¯å¾„ this.indicatorCls -> target ct.indicatorCls -> CC.ui.Loading
  */
   getIndicator : function(opt){
     if(this.indicator)
@@ -123,13 +123,13 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
     return it;
   },
 /**
- * Á¬½Ó·şÎñÆ÷, success²Ù×÷Èç¹ûÎ´ÔÚÅäÖÃÖĞÖ¸¶¨,Ä¬ÈÏµ÷ÓÃµ±Ç°ConnectionProviderÀàµÄdefaultLoadSuccess·½·¨
- * Èç¹ûµ±Ç°Î´Ö¸¶¨ÌáÊ¾Æ÷,µ÷ÓÃgetIndicator·½·¨ÊµÀı»¯Ò»¸öÌáÊ¾Æ÷;
- * Èç¹ûÉÏÒ»¸öÕıÇóÕıÃ¦,ÖÕÖ¹ÉÏÒ»¸öÇëÇóÔÙÁ¬½Ó;
- * µ±Ç°°ó¶¨ÈİÆ÷½«¶©ÔÄÇëÇó¹ı³ÌÖĞÓÃµ½µÄAjaxÀàµÄËùÓĞÏûÏ¢;
- * indicator cfg ÅäÖÃĞÅÏ¢´Ó this.indicatorCfg -> target ct.indicatorCfg»ñµÃ
- * @param {String} url, Î´Ö¸¶¨Ê±ÓÃthis.url
- * @param {Object} cfg ÅäÖÃAjaxÀàµÄÅäÖÃĞÅÏ¢, ²Î¿¼ĞÅÏ¢:cfg.url = url, cfg.caller = this
+ * è¿æ¥æœåŠ¡å™¨, successæ“ä½œå¦‚æœæœªåœ¨é…ç½®ä¸­æŒ‡å®š,é»˜è®¤è°ƒç”¨å½“å‰ConnectionProviderç±»çš„defaultLoadSuccessæ–¹æ³•
+ * å¦‚æœå½“å‰æœªæŒ‡å®šæç¤ºå™¨,è°ƒç”¨getIndicatoræ–¹æ³•å®ä¾‹åŒ–ä¸€ä¸ªæç¤ºå™¨;
+ * å¦‚æœä¸Šä¸€ä¸ªæ­£æ±‚æ­£å¿™,ç»ˆæ­¢ä¸Šä¸€ä¸ªè¯·æ±‚å†è¿æ¥;
+ * å½“å‰ç»‘å®šå®¹å™¨å°†è®¢é˜…è¯·æ±‚è¿‡ç¨‹ä¸­ç”¨åˆ°çš„Ajaxç±»çš„æ‰€æœ‰æ¶ˆæ¯;
+ * indicator cfg é…ç½®ä¿¡æ¯ä» this.indicatorCfg -> target ct.indicatorCfgè·å¾—
+ * @param {String} url, æœªæŒ‡å®šæ—¶ç”¨this.url
+ * @param {Object} cfg é…ç½®Ajaxç±»çš„é…ç½®ä¿¡æ¯, å‚è€ƒä¿¡æ¯:cfg.url = url, cfg.caller = this
  */
   connect : function(url, cfg){
     var afg = this.ajaxCfg;
@@ -145,7 +145,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 
     if (!afg.success){
       if(afg.caller !== this)
-        throw 'Èç¹ûÊ¹ÓÃÄ¬ÈÏ´¦Àí,ajaxCfgµÄcallerĞëÎªµ±Ç°µÄconnection provider';
+        throw 'å¦‚æœä½¿ç”¨é»˜è®¤å¤„ç†,ajaxCfgçš„calleré¡»ä¸ºå½“å‰çš„connection provider';
       afg.success = this.defaultLoadSuccess;
     }
 
@@ -161,7 +161,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
   },
 
 /**
- * »ñµÃÁ¬½ÓÆ÷,¸ÃÁ¬½ÓÆ÷Ö»Ìá¹©Êı¾İ¼ÓÔØ¹¦ÄÜ,Ä¬ÈÏÓÃCC.AjaxÀà×÷ÎªÁ¬½ÓÆ÷.
+ * è·å¾—è¿æ¥å™¨,è¯¥è¿æ¥å™¨åªæä¾›æ•°æ®åŠ è½½åŠŸèƒ½,é»˜è®¤ç”¨CC.Ajaxç±»ä½œä¸ºè¿æ¥å™¨.
  * @return {CC.Ajax}
  */
   getConnector : function(){
@@ -169,15 +169,15 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
   },
 
 /**
- * °ó¶¨Á¬½ÓÆ÷
- * Á¬½ÓÆ÷½Ó¿ÚÎª
+ * ç»‘å®šè¿æ¥å™¨
+ * è¿æ¥å™¨æ¥å£ä¸º
   <pre>
   function(config){
-    //ÖÕÖ¹µ±Ç°Á¬½Ó
+    //ç»ˆæ­¢å½“å‰è¿æ¥
     abort : fGo,
-    //¶©ÔÄÁ¬½ÓÊÂ¼ş
+    //è®¢é˜…è¿æ¥äº‹ä»¶
     to : fGo(subsciber),
-    //Á¬½Ó
+    //è¿æ¥
     connect : fGo
   }
   </pre>
@@ -193,7 +193,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
     a.connect();
   },
 /**
- * ´´½¨²¢·µ»ØÁ¬½ÓÆ÷
+ * åˆ›å»ºå¹¶è¿”å›è¿æ¥å™¨
  * @protected
  */
   createConnector : function(cfg){
@@ -204,17 +204,17 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 
 /**
  * @name CC.ui.ContainerBase#getConnectionProvider
- * »ñµÃÈİÆ÷Á¬½ÓÆ÷.
- * Èç¹ûÎ´Ö¸¶¨ÈİÆ÷µÄÁ¬½ÓÆ÷,¿ÉÍ¨¹ı´«¹ı²ÎÊıclsÖ¸¶¨Á¬½ÓÆ÷Àà,
- * ÓÃÓÚÊµÀı»¯µÄÁ¬½ÓÆ÷ÀàËÑÑ°¹ı³ÌÎª cls -> ct.connectionCls -> CC.util.ConnectionProvider;
- * Á¬½ÓÆ÷ÅäÖÃĞÅÏ¢¿É´æ·ÅÔÚct.connectionProviderÖĞ, Á¬½ÓÆ÷ÊµÀı»¯ºó½«ÒÆ³ı¸ÃÊôĞÔ;
- * Éú³ÉÁ¬½ÓÆ÷ºó¿ÉÖ±½ÓÍ¨¹ıct.connectionProvider·ÃÎÊÁ¬½ÓÆ÷;
- * @param {CC.util.ConnectionProvider} [cls] Ê¹ÓÃÖ¸¶¨Á¬½ÓÆ÷Àà³õÊ¼»¯
+ * è·å¾—å®¹å™¨è¿æ¥å™¨.
+ * å¦‚æœæœªæŒ‡å®šå®¹å™¨çš„è¿æ¥å™¨,å¯é€šè¿‡ä¼ è¿‡å‚æ•°clsæŒ‡å®šè¿æ¥å™¨ç±»,
+ * ç”¨äºå®ä¾‹åŒ–çš„è¿æ¥å™¨ç±»æœå¯»è¿‡ç¨‹ä¸º cls -> ct.connectionCls -> CC.util.ConnectionProvider;
+ * è¿æ¥å™¨é…ç½®ä¿¡æ¯å¯å­˜æ”¾åœ¨ct.connectionProviderä¸­, è¿æ¥å™¨å®ä¾‹åŒ–åå°†ç§»é™¤è¯¥å±æ€§;
+ * ç”Ÿæˆè¿æ¥å™¨åå¯ç›´æ¥é€šè¿‡ct.connectionProviderè®¿é—®è¿æ¥å™¨;
+ * @param {CC.util.ConnectionProvider} [cls] ä½¿ç”¨æŒ‡å®šè¿æ¥å™¨ç±»åˆå§‹åŒ–
  */
 
 //~@base/selectionprovider.js
 /**
- * ÎªÈİÆ÷Ìá¹©×ÓÏîÑ¡Ôñ¹¦ÄÜ,×ÓÏîÊÇ·ñÑ¡ÔñµÄ¼ì²âÊÇÒ»¸ö -- ÓÉ×ÓÏîÑùÊ½×´Ì¬×÷Ïòµ¼µÄÊµÊ±¼ì²â.
+ * ä¸ºå®¹å™¨æä¾›å­é¡¹é€‰æ‹©åŠŸèƒ½,å­é¡¹æ˜¯å¦é€‰æ‹©çš„æ£€æµ‹æ˜¯ä¸€ä¸ª -- ç”±å­é¡¹æ ·å¼çŠ¶æ€ä½œå‘å¯¼çš„å®æ—¶æ£€æµ‹.
  * @name CC.util.SelectionProvider
  * @class
  */

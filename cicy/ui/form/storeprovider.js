@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * @name CC.ui.form.StoreProvider
  * @class
  * @super CC.util.StoreProvider
@@ -6,7 +6,7 @@
 CC.create('CC.ui.form.StoreProvider', CC.util.StoreProvider, function(father){
 return /**@lends CC.ui.form.StoreProvider#*/{
 /**
- * µ÷ÓÃCC.formQuery »ñµÃÌá½»Êı¾İ
+ * è°ƒç”¨CC.formQuery è·å¾—æäº¤æ•°æ®
  * @override
  */
   queryString : function(){
@@ -15,7 +15,7 @@ return /**@lends CC.ui.form.StoreProvider#*/{
   },
 
 /**
- * ±£´æÊ±Ìá½»Õû¸ö±íµ¥Êı¾İ
+ * ä¿å­˜æ—¶æäº¤æ•´ä¸ªè¡¨å•æ•°æ®
  * @override
  */
   save : function(){
@@ -25,7 +25,7 @@ return /**@lends CC.ui.form.StoreProvider#*/{
     }
   },
 /**
- * ºöÂÔaddUrlÓëmodifyUrl,Í³Ò»ÀûÓÃsaveUrlÌá½»
+ * å¿½ç•¥addUrlä¸modifyUrl,ç»Ÿä¸€åˆ©ç”¨saveUrlæäº¤
  * @override
  */
   getSaveUrl : function(){

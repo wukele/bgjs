@@ -1,4 +1,4 @@
-(function(){
+﻿(function(){
 	var Slice = Array.prototype.slice;
 /**
  * @name String

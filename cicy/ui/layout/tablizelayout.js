@@ -1,4 +1,4 @@
-CC.create('CC.layout.TablizeLayout', CC.layout.Layout, {
+﻿CC.create('CC.layout.TablizeLayout', CC.layout.Layout, {
 
   attach : function(ct){
   	var self = this;

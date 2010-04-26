@@ -1,9 +1,9 @@
-/**
- * ¿âdrag & dropĞ§¹ûÊµÏÖ
- * drag & dropÊµÏÖÓĞÁ½ÖÖ·½·¨,
- * <li>»ùÓÚ¿Õ¼ä»®·Ö¼ì²â
- * <li>Ò»ÖÖ»ùÓÚä¯ÀÀÆ÷×ÔÉíµÄmouse over + mouse out¼ì²â
- * ÕâÀï²ÉÓÃµÚÒ»ÖÖ
+ï»¿/**
+ * åº“drag & dropæ•ˆæœå®ç°
+ * drag & dropå®ç°æœ‰ä¸¤ç§æ–¹æ³•,
+ * <li>åŸºäºç©ºé—´åˆ’åˆ†æ£€æµ‹
+ * <li>ä¸€ç§åŸºäºæµè§ˆå™¨è‡ªèº«çš„mouse over + mouse outæ£€æµ‹
+ * è¿™é‡Œé‡‡ç”¨ç¬¬ä¸€ç§
  * @class
  * @name CC.util.dd
  */
@@ -19,40 +19,40 @@ var E = CC.Event,
 
     M = _w.Math,
 
-    //Î»ÓÚÉÏ·½µÄ¿Ø¼ş
+    //ä½äºä¸Šæ–¹çš„æ§ä»¶
     onEl = null,
 
-    //ÍÏ¶¯ÖĞµÄ¿Ø¼ş
+    //æ‹–åŠ¨ä¸­çš„æ§ä»¶
     dragEl = null,
 
-    //ÍÏ¶¯¿ªÊ¼Ê±Êó±êÎ»ÖÃ
+    //æ‹–åŠ¨å¼€å§‹æ—¶é¼ æ ‡ä½ç½®
     IXY,
 
-    //µ±Ç°Êó±êÎ»ÖÃ
+    //å½“å‰é¼ æ ‡ä½ç½®
     PXY,
 
-    //Êó±êÀë³õÊ¼Î»ÖÃÆ«ÒÆÁ¿
+    //é¼ æ ‡ç¦»åˆå§‹ä½ç½®åç§»é‡
     DXY = [0,0],
 
-    //¿ªÊ¼Ê±ÍÏ¶¯ÔªËØÎ»ÖÃ
+    //å¼€å§‹æ—¶æ‹–åŠ¨å…ƒç´ ä½ç½®
     IEXY,
 
-    //ÊÇ·ñÍÏ¶¯ÖĞ
+    //æ˜¯å¦æ‹–åŠ¨ä¸­
     ing = false,
 
-    //µ±Ç°ÍÏ¶¯compoentËùÔÚÓò
+    //å½“å‰æ‹–åŠ¨compoentæ‰€åœ¨åŸŸ
     zoom,
 
-    //¼Ä´æµã
+    //å¯„å­˜ç‚¹
     P = new CC.util.d2d.Point,
 
-    //¼Ä´æComponentRect
+    //å¯„å­˜ComponentRect
     R,
 
-    //ÍÏ·ÅÊÂ¼şÊÇ·ñÒÑ°ó¶¨,±ÜÃâÖØ¸´°ó¶¨
+    //æ‹–æ”¾äº‹ä»¶æ˜¯å¦å·²ç»‘å®š,é¿å…é‡å¤ç»‘å®š
     binded = false,
 
-    //ÍÏ·Å¿Ø¼şÊÇ·ñÎ»ÓÚµ±Ç°ÓòÖĞ
+    //æ‹–æ”¾æ§ä»¶æ˜¯å¦ä½äºå½“å‰åŸŸä¸­
     ownZoom = false,
 
     //[MAX_DX,MIN_DX,MAX_DY,MIN_DY]
@@ -66,7 +66,7 @@ var E = CC.Event,
 
 /**
  * @name CC.Base#draggable
- * @property {Boolean} draggable ÊÇ·ñÔÊĞíÍÏ¶¯¹¦ÄÜ,¸ÃÖµÖ»ÓĞÔÚÒÑ°²×°ÍÏ¶¯¹¦ÄÜÇé¿öÏÂ²ÅÉúĞ§
+ * @property {Boolean} draggable æ˜¯å¦å…è®¸æ‹–åŠ¨åŠŸèƒ½,è¯¥å€¼åªæœ‰åœ¨å·²å®‰è£…æ‹–åŠ¨åŠŸèƒ½æƒ…å†µä¸‹æ‰ç”Ÿæ•ˆ
  */
 
     function before(e){
@@ -74,7 +74,7 @@ var E = CC.Event,
         IXY = PXY = E.pageXY(e);
         IEXY = this.absoluteXY();
         dragEl = this;
-        if(__debug) console.group("ÍÏ·Å"+this);
+        if(__debug) console.group("æ‹–æ”¾"+this);
         if(__debug) console.log('beforedrag');
         if(this.beforedrag(e)!==false && this.fire('beforedrag', e) !== false){
           //doc.ondragstart = E.noUp;
@@ -93,7 +93,7 @@ var E = CC.Event,
               }
               zoom.update();
             }
-            if(__debug && zoom) console.log('µ±Ç°zoom:',this.dragZoom||zoom);
+            if(__debug && zoom) console.log('å½“å‰zoom:',this.dragZoom||zoom);
           }
         }
       }
@@ -132,31 +132,31 @@ var E = CC.Event,
       }
 
       if(dragEl.drag(e, onEl) !== false && zoom){
-        //ÇøÓò¼ì²â
+        //åŒºåŸŸæ£€æµ‹
         R = zoom.isEnter(P);
 
         if(R && R.comp !== dragEl) {
           if(onEl !== R.comp){
-            //Ê×´Î½øÈë,¼ì²âÖ®Ç°
+            //é¦–æ¬¡è¿›å…¥,æ£€æµ‹ä¹‹å‰
             if(onEl !== null){
               onEl.sbout(dragEl, e);
-              if(__debug) console.log('Àë¿ªÄ¿±ê:',onEl);
+              if(__debug) console.log('ç¦»å¼€ç›®æ ‡:',onEl);
             }
             onEl = R.comp;
             if(!onEl.disabled){
               onEl.sbover(dragEl, e);
-              if(__debug) console.log('½øÈëÄ¿±ê:',onEl);
+              if(__debug) console.log('è¿›å…¥ç›®æ ‡:',onEl);
             }else {
               onEl = null;
             }
           }
-          //Ä¿±êÄÚÒÆ¶¯
+          //ç›®æ ‡å†…ç§»åŠ¨
           if(onEl)
             onEl.sbmove(dragEl, e);
         }else{
           if(onEl!== null){
             onEl.sbout(dragEl, e);
-            if(__debug) console.log('Àë¿ªÄ¿±ê:',onEl);
+            if(__debug) console.log('ç¦»å¼€ç›®æ ‡:',onEl);
             onEl = null;
           }
         }
@@ -169,15 +169,15 @@ var E = CC.Event,
         e = e || _w.E;
         if(binded){
           //doc.ondragstart = null;
-          //Çå¿ÕÈ«¾Ö¼àÌıÆ÷
+          //æ¸…ç©ºå…¨å±€ç›‘å¬å™¨
           E.un(doc, "mouseup", arguments.callee);
           E.un(doc, "mousemove", drag);
           E.un(doc, "selectstart", noSelect);
           if(ing){
-            //Èç¹ûÔÚÍÏ¶¯¹ı³ÌÖĞËÉ¿ªÊó±ê
+            //å¦‚æœåœ¨æ‹–åŠ¨è¿‡ç¨‹ä¸­æ¾å¼€é¼ æ ‡
             if(onEl !== null){
               onEl.sbdrop(dragEl, e);
-              if(__debug) console.log(dragEl.toString(), '¶ªÔÚ', onEl.toString(),'ÉÏÃæ');
+              if(__debug) console.log(dragEl.toString(), 'ä¸¢åœ¨', onEl.toString(),'ä¸Šé¢');
             }
             dragEl.dragend(e);
             ing = false;
@@ -186,7 +186,7 @@ var E = CC.Event,
           binded = false;
           onEl = null;
           if(zoom){
-            //ÖØĞÂ½«×Ô¼º·ÅÈëÓò
+            //é‡æ–°å°†è‡ªå·±æ”¾å…¥åŸŸ
             if(ownZoom){
               ownZoom.add(dragEl.ownRect);
               ownZoom = false;
@@ -206,21 +206,21 @@ var E = CC.Event,
 
 
 /**
- * Drag & Drop ¹ÜÀíÆ÷
+ * Drag & Drop ç®¡ç†å™¨
  * @name CC.util.dd.Mgr
  * @class
  */
   var mgr = CC.util.dd.Mgr = /**@lends CC.util.dd.Mgr*/{
 /**
- * ¾ØÓò»º´æ
+ * çŸ©åŸŸç¼“å­˜
  * @protected
  */
         zmCache : {root:new CC.util.d2d.RectZoom()},
 
 /**
- * ·µ»Ø¾ØÓò
- * @param {String} name ¾ØÓòÃû³Æ
- * @param {String} parent ¸¸²ã¾ØÓò,Èç¹û¸Ã²ÎÊıÎª·Ç¿Õ,²¢ÇÒnameÓòÎ´´æÔÚ,Ôò´´½¨Ò»¸öĞÂÓò²¢·µ»Ø¸ÃÓò
+ * è¿”å›çŸ©åŸŸ
+ * @param {String} name çŸ©åŸŸåç§°
+ * @param {String} parent çˆ¶å±‚çŸ©åŸŸ,å¦‚æœè¯¥å‚æ•°ä¸ºéç©º,å¹¶ä¸”nameåŸŸæœªå­˜åœ¨,åˆ™åˆ›å»ºä¸€ä¸ªæ–°åŸŸå¹¶è¿”å›è¯¥åŸŸ
  * @return {CC.util.d2d.RectZoom}
  */
         $ : function(k, p){
@@ -242,12 +242,12 @@ var E = CC.Event,
           return z;
         },
 /**
- * ÉèÖÃÍÏ·ÅÇøÓò´óĞ¡,ÔÚX·½ÏòÉÏ,×îĞ¡µÄdelta xÓë×î´óµÄdelta x,
- * ÔÚY·½ÏòÉÏ,×îĞ¡µÄdelta yÓë×î´óµÄdelta y, ËùÒÔÊı×éÊı¾İÎª
+ * è®¾ç½®æ‹–æ”¾åŒºåŸŸå¤§å°,åœ¨Xæ–¹å‘ä¸Š,æœ€å°çš„delta xä¸æœ€å¤§çš„delta x,
+ * åœ¨Yæ–¹å‘ä¸Š,æœ€å°çš„delta yä¸æœ€å¤§çš„delta y, æ‰€ä»¥æ•°ç»„æ•°æ®ä¸º
  * [max_delta_x, min_delta_x, max_delta_y, min_delta_y],
- * ÉèÖÃÍÏ¶¯ÇøÓòºó,³¬³öÇøÓòµÄĞĞÎª½«±»ºöÂÔ,Ò²¾ÍÊÇ²¢²»»Øµ÷
- * component.drag·½·¨,ËùÒÔ,ÔÚdrag·½·¨ÄÚµÄ²Ù×÷¶¼ÊÇ°²È«µÄ.
- * ÊÜÏŞÇøÓòÔÚÍÏ·Å½áÊøºóÇå¿Õ.
+ * è®¾ç½®æ‹–åŠ¨åŒºåŸŸå,è¶…å‡ºåŒºåŸŸçš„è¡Œä¸ºå°†è¢«å¿½ç•¥,ä¹Ÿå°±æ˜¯å¹¶ä¸å›è°ƒ
+ * component.dragæ–¹æ³•,æ‰€ä»¥,åœ¨dragæ–¹æ³•å†…çš„æ“ä½œéƒ½æ˜¯å®‰å…¨çš„.
+ * å—é™åŒºåŸŸåœ¨æ‹–æ”¾ç»“æŸåæ¸…ç©º.
  * @type Array
  */
         setBounds : function(arr){
@@ -256,23 +256,23 @@ var E = CC.Event,
         },
 
 /**
- * »ñµÃÊÜÏŞÇøÓò
+ * è·å¾—å—é™åŒºåŸŸ
  * @return {Array} [MAX_DX,MIN_DX,MAX_DY,MIN_DY]
  */
         getBounds : function(){
           return bounds;
         },
 /**
- * ·µ»Ø¸ùÓò
+ * è¿”å›æ ¹åŸŸ
  * @return {CC.util.d2d.RectZoom}
  */
         getRoot : function(){
           return this.zmCache.root;
         },
 /**
- * ´ÓÓòÁ´ÖĞÒÆ³ıÃû³ÆÎªnameµÄÓò
+ * ä»åŸŸé“¾ä¸­ç§»é™¤åç§°ä¸ºnameçš„åŸŸ
  * @param {String} name
- * @return {CC.util.d2d.RectZoom} ·µ»ØÒÆ³ıµÄÓò
+ * @return {CC.util.d2d.RectZoom} è¿”å›ç§»é™¤çš„åŸŸ
  */
         remove : function(k){
          var z = this.zmCache[k];
@@ -284,9 +284,9 @@ var E = CC.Event,
         },
 
 /**
- * ½«¿Ø¼ş¼ÓÈënameÓò
- * @param {CC.Base} ¿Ø¼ş
- * @param {String} name ¾ØÓòÃû
+ * å°†æ§ä»¶åŠ å…¥nameåŸŸ
+ * @param {CC.Base} æ§ä»¶
+ * @param {String} name çŸ©åŸŸå
  * @return this
  */
         addComp : function(comp, k){
@@ -295,9 +295,9 @@ var E = CC.Event,
           return this;
         },
 /**
- * ¿Ø¼şÒÆ³öÓò
- * @param {CC.Base} ¿Ø¼ş
- * @param {String} name ¾ØÓòÃû
+ * æ§ä»¶ç§»å‡ºåŸŸ
+ * @param {CC.Base} æ§ä»¶
+ * @param {String} name çŸ©åŸŸå
  * @return this
  */
         removeComp : function(comp, k){
@@ -314,14 +314,14 @@ var E = CC.Event,
         },
 
 /**
- * »ñµÃ¶ÔÏóÍÏ¶¯¿ªÊ¼Ê±Êó±ê×ø±ê
+ * è·å¾—å¯¹è±¡æ‹–åŠ¨å¼€å§‹æ—¶é¼ æ ‡åæ ‡
  * @return {Array} [x, y]
  */
         getIMXY : function(){
           return IXY;
         },
 /**
- * »ñµÃ¶ÔÏóÍÏ¶¯¿ªÊ¼Ê±¶ÔÏó×ø±ê
+ * è·å¾—å¯¹è±¡æ‹–åŠ¨å¼€å§‹æ—¶å¯¹è±¡åæ ‡
  * @return {Array} [x,y]
  */
         getIEXY : function(){
@@ -329,28 +329,28 @@ var E = CC.Event,
         },
 
 /**
- * »ñµÃ×ÔÊó±êÍÏ¶¯ÆğÖÁ½ñµÄx,y·½ÏòÆ«ÒÆÁ¿
+ * è·å¾—è‡ªé¼ æ ‡æ‹–åŠ¨èµ·è‡³ä»Šçš„x,yæ–¹å‘åç§»é‡
  * @return {Array} [dx, dy]
  */
         getDXY : function(){
           return DXY;
         },
 /**
- * »ñµÃµ±Ç°Êó±êÎ»ÖÃ
+ * è·å¾—å½“å‰é¼ æ ‡ä½ç½®
  * @return {Array} [x,y]
  */
         getXY : function(){
           return PXY;
         },
 /**
- * »ñµÃµ±Ç°ÍÏ¶¯µÄ¶ÔÏó
+ * è·å¾—å½“å‰æ‹–åŠ¨çš„å¯¹è±¡
  * @return {CC.Base}
  */
         getSource : function(){
           return dragEl;
         },
 /**
- * »ñµÃµ±Ç°Î»ÕıÏÂ·½µÄ¶ÔÏó,Èç¹ûÎŞ,·µ»Ønull
+ * è·å¾—å½“å‰ä½æ­£ä¸‹æ–¹çš„å¯¹è±¡,å¦‚æœæ— ,è¿”å›null
  * @return {CC.Base}
  */
         getTarget : function(){
@@ -358,7 +358,7 @@ var E = CC.Event,
         },
 
 /**
- * ¸üĞÂµ±Ç°ÍÏ¶¯zoom
+ * æ›´æ–°å½“å‰æ‹–åŠ¨zoom
  * @return this
  */
     update : function(){
@@ -368,13 +368,13 @@ var E = CC.Event,
     },
 
 /**
- * ¸ø¿Ø¼ş°²×°¿ÉÍÏ¶¯¹¦ÄÜ,°²×°ºó¿Ø¼şcomponent¾ßÓĞ
+ * ç»™æ§ä»¶å®‰è£…å¯æ‹–åŠ¨åŠŸèƒ½,å®‰è£…åæ§ä»¶componentå…·æœ‰
  * component.draggable = true;
- * Èç¹û²¢²»Ïë¿Ø¼şview½áµã´¥·¢ÍÏ¶¯ÊÂ¼ş,¿ÉÉèÖÃcomponent.dragNode
- * Ö¸¶¨´¥·¢½áµã.
+ * å¦‚æœå¹¶ä¸æƒ³æ§ä»¶viewç»“ç‚¹è§¦å‘æ‹–åŠ¨äº‹ä»¶,å¯è®¾ç½®component.dragNode
+ * æŒ‡å®šè§¦å‘ç»“ç‚¹.
  * @param {CC.Base} component
- * @param {Boolean} install °²×°»òÈ¡Ïû°²×°
- * @param {HTMLElement} ´¥·¢ÊÂ¼şµÄ½áµã,ÈçÎŞÔò²ÉÓÃc.dragNode
+ * @param {Boolean} install å®‰è£…æˆ–å–æ¶ˆå®‰è£…
+ * @param {HTMLElement} è§¦å‘äº‹ä»¶çš„ç»“ç‚¹,å¦‚æ— åˆ™é‡‡ç”¨c.dragNode
  */
         installDrag : function(c, b, dragNode){
           if(b===undefined || b){
@@ -387,14 +387,14 @@ var E = CC.Event,
         },
 
 /**
- * ÊÇ·ñÍÏ·ÅÖĞ
+ * æ˜¯å¦æ‹–æ”¾ä¸­
  * @return {Boolean}
  */
         isDragging : function(){
           return ing;
         },
 /**
- * µ±¿Ø¼şĞèÒªresizeÊ±µ÷ÓÃ,¿ÉÒÔ´´½¨resizeÏà¹ØµÄÑÚ²ãºÍÓ³Ïñ,·ÀÖ¹ÆäËü¸ÉÈÅresizeµÄÒòËØ,Èçiframe
+ * å½“æ§ä»¶éœ€è¦resizeæ—¶è°ƒç”¨,å¯ä»¥åˆ›å»ºresizeç›¸å…³çš„æ©å±‚å’Œæ˜ åƒ,é˜²æ­¢å…¶å®ƒå¹²æ‰°resizeçš„å› ç´ ,å¦‚iframe
  * @name CC.util.dd.Mgr.resizeHelper
  * @class
  */
@@ -405,15 +405,15 @@ var E = CC.Event,
 
           maskerCS : 'g-resize-mask',
 /**
- * @property {CC.Base} layer Ó³Ïñ²ã,Ö»¶Á,µ±µ÷ÓÃapplyLayer·½·¨ºó¿ÉÖ±½ÓÒıÓÃ
+ * @property {CC.Base} layer æ˜ åƒå±‚,åªè¯»,å½“è°ƒç”¨applyLayeræ–¹æ³•åå¯ç›´æ¥å¼•ç”¨
  */
 
 /**
- * @property {CC.Base} masker Ò³ÃæÑÚ²ã,Ö»¶Á,µ±µ÷ÓÃapplyMasker·½·¨ºó¿ÉÖ±½ÓÒıÓÃ
+ * @property {CC.Base} masker é¡µé¢æ©å±‚,åªè¯»,å½“è°ƒç”¨applyMaskeræ–¹æ³•åå¯ç›´æ¥å¼•ç”¨
  */
 
 /**
- * ÔÚresize¿ªÊ¼»ò½áÊøÊ±µ÷ÓÃ
+ * åœ¨resizeå¼€å§‹æˆ–ç»“æŸæ—¶è°ƒç”¨
  * @param {Boolean} apply
  */
           applyResize : function(b){
@@ -422,7 +422,7 @@ var E = CC.Event,
             this.applyMasker(b);
           },
 /**
- * ÊÇ·ñÓ¦ÓÃÓ³Ïñ²ã
+ * æ˜¯å¦åº”ç”¨æ˜ åƒå±‚
  */
           applyLayer : function(b){
             var y = this.layer;
@@ -439,9 +439,9 @@ var E = CC.Event,
             y.display(b);
           },
 /**
- * ´´½¨»òÒÆ³ıÒ³ÃæÑÚ²ã,ÔÚresizeÍÏ¶¯²Ù×÷¿ªÊ¼Ê±,´´½¨Ò»¸öÒ³ÃæÑÚ²ã,
- * ÒÔ·ÀÖ¹ÊÜiframe»òÆäËüÒòËØÓ°Ïìresize
- * @param {Boolean} cor ´´½¨»òÒÆ³ıÒ³ÃæÑÚ²ã
+ * åˆ›å»ºæˆ–ç§»é™¤é¡µé¢æ©å±‚,åœ¨resizeæ‹–åŠ¨æ“ä½œå¼€å§‹æ—¶,åˆ›å»ºä¸€ä¸ªé¡µé¢æ©å±‚,
+ * ä»¥é˜²æ­¢å—iframeæˆ–å…¶å®ƒå› ç´ å½±å“resize
+ * @param {Boolean} cor åˆ›å»ºæˆ–ç§»é™¤é¡µé¢æ©å±‚
  */
           applyMasker : function(b){
             var r = this.masker;
@@ -466,18 +466,18 @@ var E = CC.Event,
   CC.extendIf(CC.Base.prototype,/**@lends CC.Base.prototype*/ {
 /**
 * @name CC.Base#dragNode
-* @property {String|HTMLElement} dragNode ´¥·¢¿Ø¼şÍÏ¶¯¿ªÊ¼µÄ½áµã»ò½áµãID
+* @property {String|HTMLElement} dragNode è§¦å‘æ§ä»¶æ‹–åŠ¨å¼€å§‹çš„ç»“ç‚¹æˆ–ç»“ç‚¹ID
 */
 
 /**
 * @name CC.Base#dragZoom
-* @property {String} dragZoom ÉèÖÃ»ò»ñÈ¡¿Ø¼şÄ¿±êÍÏ·ÅÇøÓòÃû³Æ(×é)
-* Ö»ÓĞ¿Ø¼şÒÑ°²×°ÍÏ¶¯¹¦ÄÜ¸ÃÉèÖÃ²ÅÉúĞ§
+* @property {String} dragZoom è®¾ç½®æˆ–è·å–æ§ä»¶ç›®æ ‡æ‹–æ”¾åŒºåŸŸåç§°(ç»„)
+* åªæœ‰æ§ä»¶å·²å®‰è£…æ‹–åŠ¨åŠŸèƒ½è¯¥è®¾ç½®æ‰ç”Ÿæ•ˆ
 * @see #installDrag
 */
 
 /**
-* ÊÇ·ñ°²×°½áµãÍÏ·ÅĞ§¹û
+* æ˜¯å¦å®‰è£…ç»“ç‚¹æ‹–æ”¾æ•ˆæœ
 * @function
 * @param {Boolean} true | false
 */
@@ -486,7 +486,7 @@ var E = CC.Event,
       return this;
     },
 /**
-* »ñµÃdrag & drop ¹ÜÀíÆ÷
+* è·å¾—drag & drop ç®¡ç†å™¨
 * @return {CC.util.dd.Mgr}
 */
     getDDProvider : function(){
@@ -494,57 +494,57 @@ var E = CC.Event,
     },
 
 /**
- * Èç¹ûÒÑ°²×°ÍÏ·Å,
- * º¯ÊıÔÚÊó±ê°´ÏÂÊ±´¥·¢
+ * å¦‚æœå·²å®‰è£…æ‹–æ”¾,
+ * å‡½æ•°åœ¨é¼ æ ‡æŒ‰ä¸‹æ—¶è§¦å‘
  * @type function
  */
     beforedrag : fGo,
 /**
- * Èç¹ûÒÑ°²×°ÍÏ·Å
- * ÍÏ¶¯¿ªÊ¼Ê±´¥·¢
+ * å¦‚æœå·²å®‰è£…æ‹–æ”¾
+ * æ‹–åŠ¨å¼€å§‹æ—¶è§¦å‘
  * @type function
  */
     dragstart : fGo,
 /**
- * Èç¹ûÒÑ°²×°ÍÏ·Å,
- * º¯ÊıÔÚÊó±êËÉ¿ªÊ±´¥·¢,ÍÏ¶¯Ôø¾­·¢Éú¹ı
+ * å¦‚æœå·²å®‰è£…æ‹–æ”¾,
+ * å‡½æ•°åœ¨é¼ æ ‡æ¾å¼€æ—¶è§¦å‘,æ‹–åŠ¨æ›¾ç»å‘ç”Ÿè¿‡
  * @type function
  */
     dragend : fGo,
 /**
- * Èç¹ûÒÑ°²×°ÍÏ·Å,
- * º¯ÊıÔÚÊó±êËÉ¿ªÊ±´¥·¢,ÍÏ¶¯²»Ò»¶¨·¢Éú¹ı
+ * å¦‚æœå·²å®‰è£…æ‹–æ”¾,
+ * å‡½æ•°åœ¨é¼ æ ‡æ¾å¼€æ—¶è§¦å‘,æ‹–åŠ¨ä¸ä¸€å®šå‘ç”Ÿè¿‡
  * @type function
  */
     afterdrag : fGo,
 /**
- * Èç¹ûÒÑ°²×°ÍÏ·Å,
- * º¯ÊıÔÚÊó±êÍÏ¶¯Ê±´¥·¢
+ * å¦‚æœå·²å®‰è£…æ‹–æ”¾,
+ * å‡½æ•°åœ¨é¼ æ ‡æ‹–åŠ¨æ—¶è§¦å‘
  * @type function
  */
     drag : fGo,
 
 /**
- * Èç¹ûÒÑ¼ÓÈëÍÏ·Å×é,
- * º¯ÊıÔÚÄ¿±ê½øÈëÊ±´¥·¢
+ * å¦‚æœå·²åŠ å…¥æ‹–æ”¾ç»„,
+ * å‡½æ•°åœ¨ç›®æ ‡è¿›å…¥æ—¶è§¦å‘
  * @type function
  */
     sbover : fGo,
 /**
- * Èç¹ûÒÑ¼ÓÈëÍÏ·Å×é,
- * º¯ÊıÔÚÄ¿±êÀë¿ªÊ±´¥·¢
+ * å¦‚æœå·²åŠ å…¥æ‹–æ”¾ç»„,
+ * å‡½æ•°åœ¨ç›®æ ‡ç¦»å¼€æ—¶è§¦å‘
  * @type function
  */
     sbout : fGo,
 /**
- * Èç¹ûÒÑ¼ÓÈëÍÏ·Å×é,
- * º¯ÊıÔÚÄ¿±ê¶ªÏÂÊ±´¥·¢
+ * å¦‚æœå·²åŠ å…¥æ‹–æ”¾ç»„,
+ * å‡½æ•°åœ¨ç›®æ ‡ä¸¢ä¸‹æ—¶è§¦å‘
  * @type function
  */
     sbdrop : fGo,
 /**
- * Èç¹ûÒÑ¼ÓÈëÍÏ·Å×é,
- * º¯ÊıÔÚÄ¿±êÒÆ¶¯Ê±´¥·¢
+ * å¦‚æœå·²åŠ å…¥æ‹–æ”¾ç»„,
+ * å‡½æ•°åœ¨ç›®æ ‡ç§»åŠ¨æ—¶è§¦å‘
  * @type function
  */
     sbmove : fGo

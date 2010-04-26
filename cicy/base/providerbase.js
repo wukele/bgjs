@@ -1,4 +1,4 @@
-(function(){
+﻿(function(){
 var ccxp = CC.ui.ContainerBase.prototype;
 
 //~@base/providers.js

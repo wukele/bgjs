@@ -1,13 +1,13 @@
-(function(){
+ï»¿(function(){
 
 var CC = window.CC;
 var PR = CC.Base.prototype;
 
 /**
- * ÒõÓ°Àà
- * ÒõÓ°ÀàĞëÔÚÎÄµµ´´½¨ºó(DOM Ready)Éú³É.
+ * é˜´å½±ç±»
+ * é˜´å½±ç±»é¡»åœ¨æ–‡æ¡£åˆ›å»ºå(DOM Ready)ç”Ÿæˆ.
  * @name CC.ui.Shadow
- * @class ÒõÓ°Àà
+ * @class é˜´å½±ç±»
  * @extends CC.Base
  */
 CC.Tpl.def('CC.ui.Shadow' , CC.ie6 ? '<div class="g-dxshadow"></div>' : '<div class="g-shadow" style="display:none;"><div class="g-shadow-t" id="_t"></div><div class="g-shadow-lt" id="_lt"></div><div class="g-shadow-rt" id="_rt"></div><div class="g-shadow-l" id="_l"></div><div class="g-shadow-lb" id="_lb"></div><div class="g-shadow-r" id="_r"></div><div class="g-shadow-rb" id="_rb"></div><div class="g-shadow-b" id="_b"></div></div>');
@@ -16,34 +16,34 @@ CC.create('CC.ui.Shadow', CC.Base,
 /**@lends CC.ui.Shadow.prototype*/
 {
 /**
- * @property {Number} [inpactW=8] ÒõÓ°¿í¶ÈÏà¹Ø²ÎÊı
+ * @property {Number} [inpactW=8] é˜´å½±å®½åº¦ç›¸å…³å‚æ•°
  */
   inpactW : 8,
 /**
- * @property {Number} [inpactH=0] ÒõÓ°¸ß¶ÈÏà¹Ø²ÎÊı
+ * @property {Number} [inpactH=0] é˜´å½±é«˜åº¦ç›¸å…³å‚æ•°
  */
   inpactH : 0,
 /**
- * @property {Number} [inpactX=-4] ÒõÓ°x·½ÏòÎ»ÒÆÏà¹Ø²ÎÊı
+ * @property {Number} [inpactX=-4] é˜´å½±xæ–¹å‘ä½ç§»ç›¸å…³å‚æ•°
  */
   inpactX : -4,
 /**
- * @property {Number} [inpactY=8] ÒõÓ°y·½ÏòÎ»ÒÆÏà¹Ø²ÎÊı
+ * @property {Number} [inpactY=8] é˜´å½±yæ–¹å‘ä½ç§»ç›¸å…³å‚æ•°
  */
   inpactY : 4,
 /**
- * @property {Number} [shadowWidth=8] ÒõÓ°±ßÑØ¿í¶È,¸ÃÖµÖ»¶ÔIEÓĞĞ§
+ * @property {Number} [shadowWidth=8] é˜´å½±è¾¹æ²¿å®½åº¦,è¯¥å€¼åªå¯¹IEæœ‰æ•ˆ
  */
   shadowWidth : 6,
 
   /**
-   * ±ä»»ÒıÆğµÄÆ«ÒÆÁ¿, ×¨ÎªIE6²ÉÓÃµÄÂË¾µÉèÖÃ,·ÇIE6Ê±ºöÂÔ¸ÃÖµ,Ä¬ÈÏÎª4, ²Î¼ûCSSÂË¾µÖĞBlur(pixelradius).
+   * å˜æ¢å¼•èµ·çš„åç§»é‡, ä¸“ä¸ºIE6é‡‡ç”¨çš„æ»¤é•œè®¾ç½®,éIE6æ—¶å¿½ç•¥è¯¥å€¼,é»˜è®¤ä¸º4, å‚è§CSSæ»¤é•œä¸­Blur(pixelradius).
    * @property {Number}
    * @private
    */
   offset : 4,
 /**
- * @property {Boolean} [hidden=true] Ä¬ÈÏÒş²Ø
+ * @property {Boolean} [hidden=true] é»˜è®¤éšè—
  */
   hidden : true,
 
@@ -51,13 +51,13 @@ CC.create('CC.ui.Shadow', CC.Base,
   initComponent : function(){
 /**
  * @name CC.ui.Shadow#showTo
- * @property {DOMElement} [showTo=document.body] Ä¬ÈÏÏÔÊ¾ÔÚdocument.bodyÖĞ
+ * @property {DOMElement} [showTo=document.body] é»˜è®¤æ˜¾ç¤ºåœ¨document.bodyä¸­
  */
 
     PR.initComponent.call(this);
 /**
  * @name CC.ui.Shadow#target
- * @property {CC.Base} [target] ÒõÓ°¸½¼ÓµÄÄ¿±ê¿Ø¼ş
+ * @property {CC.Base} [target] é˜´å½±é™„åŠ çš„ç›®æ ‡æ§ä»¶
  */
     if(this.target)
         this.attach(this.target);
@@ -70,8 +70,8 @@ CC.create('CC.ui.Shadow', CC.Base,
     }
   },
 /**
- * ½«ÒõÓ°¹ØÁªµ½Ä¿±ê¿Ø¼ş.
- * @param {CC.Base} target ÒõÓ°¸½¼ÓµÄÄ¿±ê¿Ø¼ş
+ * å°†é˜´å½±å…³è”åˆ°ç›®æ ‡æ§ä»¶.
+ * @param {CC.Base} target é˜´å½±é™„åŠ çš„ç›®æ ‡æ§ä»¶
  * @return this
  */
   attach : function(target){
@@ -82,7 +82,7 @@ CC.create('CC.ui.Shadow', CC.Base,
                    .on('reposed', this.reanchor, this);
     }
     this.setZ((this.target.fastStyle('zIndex') || 1)-1);
-    //×¨ÃÅÕë¶Ô²»Ö§³ÖPNGÍ¼Æ¬µÄIE6
+    //ä¸“é—¨é’ˆå¯¹ä¸æ”¯æŒPNGå›¾ç‰‡çš„IE6
     if(CC.ie6){
       this._ie6OffDt = Math.floor(this.offset/2);
       this.view.style.filter="progid:DXImageTransform.Microsoft.alpha(opacity=50) progid:DXImageTransform.Microsoft.Blur(pixelradius="+this.offset+")";
@@ -91,7 +91,7 @@ CC.create('CC.ui.Shadow', CC.Base,
   },
 
 /**
- * ³·ÏûÒõÓ°ÓëÄ¿±ê¿Ø¼şµÄ¹ØÁª.
+ * æ’¤æ¶ˆé˜´å½±ä¸ç›®æ ‡æ§ä»¶çš„å…³è”.
  * @return this
  */
   detach : function(){
@@ -105,7 +105,7 @@ CC.create('CC.ui.Shadow', CC.Base,
   },
 
 /**
- * µ÷ÕûÒõÓ°´óĞ¡.
+ * è°ƒæ•´é˜´å½±å¤§å°.
  * @private
  */
   setRightSize : CC.ie6?
@@ -126,7 +126,7 @@ CC.create('CC.ui.Shadow', CC.Base,
         this.setHeight(b);
       }
     }
-    //ĞŞÕıIE²»ÄÜÍ¬Ê±ÉèÖÃtop, bottomµÄÎÊÌâ,ÉèÖÃ¾ßÌå¸ß¶È
+    //ä¿®æ­£IEä¸èƒ½åŒæ—¶è®¾ç½®top, bottomçš„é—®é¢˜,è®¾ç½®å…·ä½“é«˜åº¦
     if(CC.ie){
       var f = CC.fly(this.shadowR), d = this.shadowWidth*2, e;
       if(b !== false){
@@ -146,7 +146,7 @@ CC.create('CC.ui.Shadow', CC.Base,
     }
   },
 /**
- * ¶¨Î»ÒõÓ°.
+ * å®šä½é˜´å½±.
  * @private
  */
   setRightPos : CC.ie6?
@@ -159,7 +159,7 @@ CC.create('CC.ui.Shadow', CC.Base,
       this.setXY(pos[0]+this.inpactX, pos[1]+this.inpactY - 1);
     },
 /**
- * ¸üĞÂÖÁµ±Ç°×´Ì¬,µ±ÒõÓ°´óĞ¡»òÎ»ÖÃÓëÄ¿±ê²»Ò»ÖÂÊ±µ÷ÓÃ.
+ * æ›´æ–°è‡³å½“å‰çŠ¶æ€,å½“é˜´å½±å¤§å°æˆ–ä½ç½®ä¸ç›®æ ‡ä¸ä¸€è‡´æ—¶è°ƒç”¨.
  * @return this
  */
   reanchor : function(){
@@ -174,7 +174,7 @@ CC.create('CC.ui.Shadow', CC.Base,
   },
 
   /**
-   * Ö»ÓĞtargetÏÔÊ¾Ê±²ÅÏÔÊ¾ÒõÓ°,·ñÔòºöÂÔ.
+   * åªæœ‰targetæ˜¾ç¤ºæ—¶æ‰æ˜¾ç¤ºé˜´å½±,å¦åˆ™å¿½ç•¥.
    * @override
    */
   display : function(b){

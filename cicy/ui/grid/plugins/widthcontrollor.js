@@ -1,5 +1,5 @@
-/**
- * Ò»¸öÁĞ¿íµ÷ÕûµÄ²å¼ş
+ï»¿/**
+ * ä¸€ä¸ªåˆ—å®½è°ƒæ•´çš„æ’ä»¶
  */
 CC.create('CC.ui.grid.plugins.ColumnWidthControler', null, {
 
@@ -39,7 +39,7 @@ CC.create('CC.ui.grid.plugins.ColumnWidthControler', null, {
      hd.each(function(){
        cw = this.width;
        if(cw !== false){
-         //Ğ¡Êı,°´°Ù·Ö±È¼Æ
+         //å°æ•°,æŒ‰ç™¾åˆ†æ¯”è®¡
          if(cw < 1){
            cw = Math.floor(w * cw);
          }

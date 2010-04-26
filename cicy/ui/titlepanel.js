@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * @class
  * @name CC.ui.TitlePanel
  * @extends CC.ui.Panel
@@ -14,10 +14,10 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
 
         minH : 29,
 
-/**foldNodeÕ¹¿ªÊ±ÑùÊ½*/
+/**foldNodeå±•å¼€æ—¶æ ·å¼*/
         openCS : 'g-icoOpn',
 
-/**foldNodeÕÛµşÊ±ÑùÊ½*/
+/**foldNodeæŠ˜å æ—¶æ ·å¼*/
         clsCS  : 'g-icoFld',
 
         foldNode : '_btnFN',
@@ -39,21 +39,21 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
           return [29 , 0, 0, 0, 29, 0];
         },
 
-/**µã»÷ÊÕËõÍ¼±êÊ±´¥·¢,¿ÉÖØĞ´×Ô¶¨*/
+/**ç‚¹å‡»æ”¶ç¼©å›¾æ ‡æ—¶è§¦å‘,å¯é‡å†™è‡ªå®š*/
         onTriggerClick: function() {
             var v = !this.wrapper.hidden;
             this.collapse(v, true);
         },
 /**
- * ±êÌâµã»÷Ê±´¥·¢,Ä¬ÈÏÖ´ĞĞËõ·ÅÃæ°å
+ * æ ‡é¢˜ç‚¹å‡»æ—¶è§¦å‘,é»˜è®¤æ‰§è¡Œç¼©æ”¾é¢æ¿
  */
         onTitleClick : function(){
           this.onTriggerClick();
         },
 /**
- * ÊÕËõ/Õ¹¿ªÄÚÈİÃæ°å
+ * æ”¶ç¼©/å±•å¼€å†…å®¹é¢æ¿
  * @param {Boolean} collapsed
- * @param {Boolean} notifyParentLayout ÊÇ·ñÍ¨Öª¸¸ÈİÆ÷µÄ²¼¾Ö¹ÜÀíÆ÷,Èç¹û²¼¾Ö¹ÜÀíÆ÷´æÔÚcollapse·½·¨£¬µ÷ÓÃ¸Ã·½·¨ÕÛµş¿Ø¼ş£¬·ñÔòÖ±½Óµ÷ÓÃdoLayout²¼¾Ö.
+ * @param {Boolean} notifyParentLayout æ˜¯å¦é€šçŸ¥çˆ¶å®¹å™¨çš„å¸ƒå±€ç®¡ç†å™¨,å¦‚æœå¸ƒå±€ç®¡ç†å™¨å­˜åœ¨collapseæ–¹æ³•ï¼Œè°ƒç”¨è¯¥æ–¹æ³•æŠ˜å æ§ä»¶ï¼Œå¦åˆ™ç›´æ¥è°ƒç”¨doLayoutå¸ƒå±€.
  */
         collapse : function(b, layout) {
             this.attr(this.foldNode, 'className', b ? this.openCS : this.clsCS);

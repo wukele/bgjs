@@ -1,22 +1,22 @@
-/**
+ï»¿/**
  * Javascript Utility for web development.
- * ·´À¡ : www.bgscript.com/forum
+ * åé¦ˆ : www.bgscript.com/forum
  * @author Rock - javeejy@126.com
- * www.bgscript.com ? 2010 - ¹¹½¨×ÔÓÉµÄWEBÓ¦ÓÃ
+ * www.bgscript.com ? 2010 - æ„å»ºè‡ªç”±çš„WEBåº”ç”¨
  */
 //~@base/base.js
 /**
- * @fileOverview ¶¨Òå¿â¹¦ÄÜº¯ÊıºÍ¿Ø¼ş»ùÀà(ÔªËØ·â×°Àà).
+ * @fileOverview å®šä¹‰åº“åŠŸèƒ½å‡½æ•°å’Œæ§ä»¶åŸºç±»(å…ƒç´ å°è£…ç±»).
  * @author <a href="mailto:javeejy@126.com">Rock</a>
  * @version 1.0.1
  */
 
 
 /**
- * ¿Õº¯Êı,Ê²Ã´Ò²²»¸É,ÏóÕ÷ÒâÒå¾Ó¶à.
- * ¿Õµ÷ÓÃÓĞÊ²Ã´ÓÃ?
- * ³£¼ûµÄ¾ÍÓĞÔÚÒ»¸ö³¬Á´½ÓÖĞ,
- * Æä´Îµ±Ò»¸öÀàÎ´ÊµÏÖËüµÄÄ³¸ö·½·¨,µ«ÆäËüÀàÓÖ¿ÉÄÜµ÷ÓÃµ½¸Ã·½·¨Ê±,ÎªÁË±ÜÃânullµ÷ÓÃ,¾Í¿É°ÑÕâ·½·¨ÉèÎªfGo.
+ * ç©ºå‡½æ•°,ä»€ä¹ˆä¹Ÿä¸å¹²,è±¡å¾æ„ä¹‰å±…å¤š.
+ * ç©ºè°ƒç”¨æœ‰ä»€ä¹ˆç”¨?
+ * å¸¸è§çš„å°±æœ‰åœ¨ä¸€ä¸ªè¶…é“¾æ¥ä¸­,
+ * å…¶æ¬¡å½“ä¸€ä¸ªç±»æœªå®ç°å®ƒçš„æŸä¸ªæ–¹æ³•,ä½†å…¶å®ƒç±»åˆå¯èƒ½è°ƒç”¨åˆ°è¯¥æ–¹æ³•æ—¶,ä¸ºäº†é¿å…nullè°ƒç”¨,å°±å¯æŠŠè¿™æ–¹æ³•è®¾ä¸ºfGo.
  * @function
  * @example
    &lt;a href=&quot;Javascript:fGo()&quot; onclick=&quot;funcToRun()&quot;&gt;&lt;/a&gt;
@@ -24,7 +24,7 @@
 function fGo(){};
 
 /**
- * µ÷ÊÔ¿ª¹Ø,Ä¬ÈÏfalse,¿ÉÔÚFirefoxÏÂµÄfirebug¿ØÖÆÌ¨ÊäÈë__debug=true|falseÇĞ»»¿ª¹Ø.
+ * è°ƒè¯•å¼€å…³,é»˜è®¤false,å¯åœ¨Firefoxä¸‹çš„firebugæ§åˆ¶å°è¾“å…¥__debug=true|falseåˆ‡æ¢å¼€å…³.
  *@global
  *@name __debug
  */
@@ -39,7 +39,7 @@ if(!window.__debug)
     /**@inner*/
     ua = navigator.userAgent.toLowerCase(),
 
-    /**²úÉúÈ«¾ÖÒ»¸öÎ¨Ò»ID, ²Î¼ûCC.uniqueID().
+    /**äº§ç”Ÿå…¨å±€ä¸€ä¸ªå”¯ä¸€ID, å‚è§CC.uniqueID().
       * @inner
       */
     uniqueId = 0,
@@ -48,7 +48,7 @@ if(!window.__debug)
 
     undefined,
 
-    //ä¯ÀÀÆ÷¼ì²â, thanks ExtJS here
+    //æµè§ˆå™¨æ£€æµ‹, thanks ExtJS here
     isStrict = document.compatMode === "CSS1Compat",
     isQuirks = document.compatMode === "BackCompat",
     isOpera = ua.indexOf("opera") > -1,
@@ -58,11 +58,11 @@ if(!window.__debug)
     isIE7 = !isOpera && ua.indexOf("msie 7") > -1,
     isIE6 = !isOpera && ua.indexOf("msie 6") > -1,
     isGecko = !isSafari && ua.indexOf("gecko") > -1,
-    //ÓÅÏÈ¼ì²âBackCompat,ÒòÎª
-    //¼ÙÈçÒÔºócompatMode¸Ä±ä,Ò²ÊÇ·ÇºĞÄ£ĞÍ
+    //ä¼˜å…ˆæ£€æµ‹BackCompat,å› ä¸º
+    //å‡å¦‚ä»¥åcompatModeæ”¹å˜,ä¹Ÿæ˜¯éç›’æ¨¡å‹
     isBorderBox = (isIE && !isStrict) || (!isIE && !isStrict),
-    /**ÊÇ·ñºÏ·¨EMAIL×Ö·û´®.
-     * ²Î¼û CC.isMail().
+    /**æ˜¯å¦åˆæ³•EMAILå­—ç¬¦ä¸².
+     * å‚è§ CC.isMail().
      * @inner
      */
     mailReg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
@@ -70,15 +70,15 @@ if(!window.__debug)
     
     Slice = Array.prototype.slice;
 
-    // ĞŞ¸´ÔÚIEµÄÒ»Ğ©°æ±¾ÖĞÍ¨¹ıCSS¸Ä±äÔªËØ±³¾°Í¼Æ¬»á³öÏÖÖØĞÂÇëÇóÉÁË¸ÏÖÏó,IE6ÓÌÎªÃ÷ÏÔ.
+    // ä¿®å¤åœ¨IEçš„ä¸€äº›ç‰ˆæœ¬ä¸­é€šè¿‡CSSæ”¹å˜å…ƒç´ èƒŒæ™¯å›¾ç‰‡ä¼šå‡ºç°é‡æ–°è¯·æ±‚é—ªçƒç°è±¡,IE6çŠ¹ä¸ºæ˜æ˜¾.
     if(isIE && !isIE7){
         try{
             document.execCommand("BackgroundImageCache", false, true);
         }catch(e){}
     }
    /**
-    * ¸Ã·½·¨ÔÚ´´½¨ĞÂÀàÊ±±»µ÷ÓÃ,ÒÀ´ÎÖ´ĞĞ¸¸Àà¹¹Ôìº¯ÊıÒÔ¸ø×ÓÀàÌí¼Ó¸¸ÀàÊôĞÔ.
-    * ²Î¼û CC.create()
+    * è¯¥æ–¹æ³•åœ¨åˆ›å»ºæ–°ç±»æ—¶è¢«è°ƒç”¨,ä¾æ¬¡æ‰§è¡Œçˆ¶ç±»æ„é€ å‡½æ•°ä»¥ç»™å­ç±»æ·»åŠ çˆ¶ç±»å±æ€§.
+    * å‚è§ CC.create()
     * @inner
     */
     function applyCustructors(obj, superclass, cts){
@@ -95,30 +95,30 @@ if(!window.__debug)
     }
     
     /**
-     * CC, CicyËõĞ´,ËùÓĞÀà°ü¸ùÄ¿Â¼.
+     * CC, Cicyç¼©å†™,æ‰€æœ‰ç±»åŒ…æ ¹ç›®å½•.
      * @name CC
-     * @class ËùÓĞÀà°ü¸ùÄ¿Â¼
+     * @class æ‰€æœ‰ç±»åŒ…æ ¹ç›®å½•
      */
     var CC =
        /**@lends CC*/
     {
-        /**@property version µ±Ç°°æ±¾ºÅ*/
+        /**@property version å½“å‰ç‰ˆæœ¬å·*/
         version : '2010.4',
 
         /**
-         * ¸ù¾İ½áµãIDÖµ·µ»Ø¸ÃDOM½áµã.
-         * ¸Ã±éÀúÎª¹ã¶ÈÓÅÏÈ
-         * Èç¹ûÖ»ÓĞÒ»¸ö²ÎÊı,·µ»ØidÏàÍ¬µÄ½áµã(Ö»Ò»¸ö).
-         * Èç var objDiv = CC.$('idDiv');
-         * µ±²ÎÊıÎª2Ê±, ·µ»Ø°üº¬ÔÚ¸¸½áµãÖĞµÄÊôĞÔidº¢×Ó½áµã,º¢×Ó½áµã¿ÉÔÚÉî²ã,idÔÚ¸¸½áµãÖĞĞèÎ¨Ò».
-         * Èç var objDiv = CC.$('idOfAncestor', 'idOfChild');
-         *@param {String|DOMElement} a id ½áµãID,Ö±½ÓÒ»¸öDOMÒ²Ã»¹ØÏµ
-         *@param {DOMElement} b ¸¸½áµã,Èç¹û¸ÃÖµÖ¸¶¨,½«ÔÚ¸Ã½áµãÏÂ²éÕÒ
-         *@returns {DOMElement} ¶ÔÓ¦IDµÄ½áµã,Èç¹û²»´æÔÚ·µ»Ønull
+         * æ ¹æ®ç»“ç‚¹IDå€¼è¿”å›è¯¥DOMç»“ç‚¹.
+         * è¯¥éå†ä¸ºå¹¿åº¦ä¼˜å…ˆ
+         * å¦‚æœåªæœ‰ä¸€ä¸ªå‚æ•°,è¿”å›idç›¸åŒçš„ç»“ç‚¹(åªä¸€ä¸ª).
+         * å¦‚ var objDiv = CC.$('idDiv');
+         * å½“å‚æ•°ä¸º2æ—¶, è¿”å›åŒ…å«åœ¨çˆ¶ç»“ç‚¹ä¸­çš„å±æ€§idå­©å­ç»“ç‚¹,å­©å­ç»“ç‚¹å¯åœ¨æ·±å±‚,idåœ¨çˆ¶ç»“ç‚¹ä¸­éœ€å”¯ä¸€.
+         * å¦‚ var objDiv = CC.$('idOfAncestor', 'idOfChild');
+         *@param {String|DOMElement} a id ç»“ç‚¹ID,ç›´æ¥ä¸€ä¸ªDOMä¹Ÿæ²¡å…³ç³»
+         *@param {DOMElement} b çˆ¶ç»“ç‚¹,å¦‚æœè¯¥å€¼æŒ‡å®š,å°†åœ¨è¯¥ç»“ç‚¹ä¸‹æŸ¥æ‰¾
+         *@returns {DOMElement} å¯¹åº”IDçš„ç»“ç‚¹,å¦‚æœä¸å­˜åœ¨è¿”å›null
          *@example
-           //½á¹ûÎªtrue
+           //ç»“æœä¸ºtrue
            alert(CC.$('idDIV')==document.getElementById('idDIV'));
-           //ÔÚ½áµãoDivÖĞÑ°ÕÒidÎªchildDivµÄ½áµã
+           //åœ¨ç»“ç‚¹oDivä¸­å¯»æ‰¾idä¸ºchildDivçš„ç»“ç‚¹
            CC.$('childDiv',oDiv);
          */
         $: function(a,b) {
@@ -152,8 +152,8 @@ if(!window.__debug)
         }
         ,
         /**
-         * ±éÀú¿ÉÒÔÃ¶¾ÙµÄ¶ÔÏó.
-         *@param {Object} object ¿ÉÃ¶ĞËµÄ¶ÔÏó,Èç¹ûÎªÊı×é»òargumentsÊ±±éÀúÏÂ±êÊı¾İ,ÎªÆÕÍ¨¶ÔÏóÊ±±éÀú¶ÔÏóËùÓĞÊôĞÔ.
+         * éå†å¯ä»¥æšä¸¾çš„å¯¹è±¡.
+         *@param {Object} object å¯æšå…´çš„å¯¹è±¡,å¦‚æœä¸ºæ•°ç»„æˆ–argumentsæ—¶éå†ä¸‹æ ‡æ•°æ®,ä¸ºæ™®é€šå¯¹è±¡æ—¶éå†å¯¹è±¡æ‰€æœ‰å±æ€§.
          *@param {Function} callback
          *@param args
          *@example
@@ -184,15 +184,15 @@ if(!window.__debug)
         },
 
         /**
-         * ÑØÉÏ²ã¶ÔÏóÄ³ÊôĞÔ±éÀú.
+         * æ²¿ä¸Šå±‚å¯¹è±¡æŸå±æ€§éå†.
          * @param {Object} obj
          * @param {String} nextAttr
          * @param {Function} callback
-         * @return Èç¹ûcallbackÓĞ·µ»ØÖµ,ÔòÖĞ¶Ïµ±Ç°±éÀú·µ»Ø¸ÃÖµ.
+         * @return å¦‚æœcallbackæœ‰è¿”å›å€¼,åˆ™ä¸­æ–­å½“å‰éå†è¿”å›è¯¥å€¼.
          * @example
 
          CC.eachH(element, 'parentNode', function(){
-            alert('µ±Ç°¼¶¸¸½áµãÎª:'+ this);
+            alert('å½“å‰çº§çˆ¶ç»“ç‚¹ä¸º:'+ this);
             if(this === document.body)
               return false;
          });
@@ -210,8 +210,8 @@ if(!window.__debug)
         }
         ,
         /**
-         * ¸´ÖÆsrc¶ÔÏóÊôĞÔµ½des¶ÔÏóÖĞ,des¶ÔÏóÖĞÏàÍ¬Ãû³ÆµÄÊôĞÔ±»¸²¸Ç.
-         * @return Èç¹ûdesÎª¿Õ,·µ»ØsrcÊôĞÔ¸±±¾,·ñÔò·µ»Ødes
+         * å¤åˆ¶srcå¯¹è±¡å±æ€§åˆ°deså¯¹è±¡ä¸­,deså¯¹è±¡ä¸­ç›¸åŒåç§°çš„å±æ€§è¢«è¦†ç›–.
+         * @return å¦‚æœdesä¸ºç©º,è¿”å›srcå±æ€§å‰¯æœ¬,å¦åˆ™è¿”å›des
          */
         extend: function(des, src) {
             if (!des) {
@@ -226,12 +226,12 @@ if(!window.__debug)
         }
         ,
         /**
-         * ½«Ô­¶ÔÏóËùÓĞÊôĞÔ¸´ÖÆµ½Ä¿±ê¶ÔÏóÖĞ,Èç¹ûÄ¿±ê¶ÔÏó´æÔÚ¸ÃÊôĞÔ,²¢²»½øĞĞ¸²¸Ç.
-         * ¸Ã·½·¨ÊÇÓÃfor..in..±éÀú¶ÔÏóÊôĞÔµÄ.
-         * @param {Object} des Ä¿±ê¶ÔÏó
-         * @param {Object} src Ô´¶ÔÏó
+         * å°†åŸå¯¹è±¡æ‰€æœ‰å±æ€§å¤åˆ¶åˆ°ç›®æ ‡å¯¹è±¡ä¸­,å¦‚æœç›®æ ‡å¯¹è±¡å­˜åœ¨è¯¥å±æ€§,å¹¶ä¸è¿›è¡Œè¦†ç›–.
+         * è¯¥æ–¹æ³•æ˜¯ç”¨for..in..éå†å¯¹è±¡å±æ€§çš„.
+         * @param {Object} des ç›®æ ‡å¯¹è±¡
+         * @param {Object} src æºå¯¹è±¡
          * @see CC#extend
-         * @return {Object} ·µ»ØÄ¿±ê¶ÔÏó,Èç¹ûÄ¿±êÎª¿Õ,·µ»ØÒ»¸öĞÂ¶ÔÏó
+         * @return {Object} è¿”å›ç›®æ ‡å¯¹è±¡,å¦‚æœç›®æ ‡ä¸ºç©º,è¿”å›ä¸€ä¸ªæ–°å¯¹è±¡
          */
         extendIf : function(des, src) {
           if(!des)
@@ -246,11 +246,11 @@ if(!window.__debug)
           return des;
         },
         /**
-         * ´´½¨Àà·½·¨
-         * @param {String} ns ÀàÃû,¿É´øÓĞÃüÃû¿Õ¼ä
-         * @param {Object} base ¸¸Àà
-         * @param {Object|Function} set ÀàÊôĞÔ¼¯,Èç¹ûÎªÒ»¸öº¯Êı,·µ»ØÀàÊôĞÔ¶ÔÏó.
-         * @return {Object} ĞÂÀà
+         * åˆ›å»ºç±»æ–¹æ³•
+         * @param {String} ns ç±»å,å¯å¸¦æœ‰å‘½åç©ºé—´
+         * @param {Object} base çˆ¶ç±»
+         * @param {Object|Function} set ç±»å±æ€§é›†,å¦‚æœä¸ºä¸€ä¸ªå‡½æ•°,è¿”å›ç±»å±æ€§å¯¹è±¡.
+         * @return {Object} æ–°ç±»
          */
         create: function() {
           var clazz = (function() {
@@ -305,8 +305,8 @@ if(!window.__debug)
         }
         ,
         /**
-         * »ñµÃÒ»¸öXMLHttpRequestÀàÊµÀı.
-         * @return {XMLHttpRequest} XMLHttpRequest ÊµÀı
+         * è·å¾—ä¸€ä¸ªXMLHttpRequestç±»å®ä¾‹.
+         * @return {XMLHttpRequest} XMLHttpRequest å®ä¾‹
          */
         ajaxRequest: function() {
             try {
@@ -332,7 +332,7 @@ if(!window.__debug)
         }
         ,
         /**
-         * »ñµÃ»òÉèÖÃ¶ÔÏóÈÎÒâ²ã´ÎÊôĞÔ.
+         * è·å¾—æˆ–è®¾ç½®å¯¹è±¡ä»»æ„å±‚æ¬¡å±æ€§.
          * @example
            var obj = {name:'xiaoming', car : {color:'black'}};
            //set
@@ -358,13 +358,13 @@ if(!window.__debug)
         }
         ,
         /**
-         * ·µ»Ø¶ÔÏó²éÑ¯×Ö·û´®±íÊ¾ĞÎÊ½.
+         * è¿”å›å¯¹è±¡æŸ¥è¯¢å­—ç¬¦ä¸²è¡¨ç¤ºå½¢å¼.
          * @param {Object} obj
-         * @return ¶ÔÏóµÄ²éÑ¯×Ö·û´®±íÊ¾ĞÎÊ½
+         * @return å¯¹è±¡çš„æŸ¥è¯¢å­—ç¬¦ä¸²è¡¨ç¤ºå½¢å¼
          * @example
            var obj = {name:'rock', age:'25'};
 
-           //ÏÔÊ¾ name=rock&age=25
+           //æ˜¾ç¤º name=rock&age=25
            alert(CC.queryString(obj));
          */
         queryString : function(obj) {
@@ -392,9 +392,9 @@ if(!window.__debug)
             return arr.join("");
         },
         /**
-         * »ñµÃÒ»¸ö±íµ¥ËùÓĞ±íµ¥ÔªËØµÄÊı¾İ,²¢·µ»Ø±íµ¥µÄ²éÑ¯×Ö·û´®±íÊ¾.
-         * @param {FormElement|String} f form»òformµÄid
-         * @return {String} ËùÓĞ±íµ¥ÔªËØµÄ²éÑ¯×Ö·û´®±íÊ¾
+         * è·å¾—ä¸€ä¸ªè¡¨å•æ‰€æœ‰è¡¨å•å…ƒç´ çš„æ•°æ®,å¹¶è¿”å›è¡¨å•çš„æŸ¥è¯¢å­—ç¬¦ä¸²è¡¨ç¤º.
+         * @param {FormElement|String} f formæˆ–formçš„id
+         * @return {String} æ‰€æœ‰è¡¨å•å…ƒç´ çš„æŸ¥è¯¢å­—ç¬¦ä¸²è¡¨ç¤º
          * @example
            &lt;form id=&quot;f&quot;&gt;
              &lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;rock&quot;/&gt;
@@ -432,54 +432,54 @@ if(!window.__debug)
         }
         ,
 /**
- * ±íµ¥ÑéÖ¤º¯Êı.
+ * è¡¨å•éªŒè¯å‡½æ•°.
  * @example
 
-//ÃÜÂë³¤¶È>=6
+//å¯†ç é•¿åº¦>=6
 function checkPassword(v) {
   return v.length >= 6;
 }
 
-//Á½´ÎÃÜÂëÒªÏàÍ¬
+//ä¸¤æ¬¡å¯†ç è¦ç›¸åŒ
 function isTheSame(v, obj, form) {
   return form ? form.password.value == v: CC.$('password').value == v;
 }
 
-//³ö´íÊ±×Ô¶¨»Øµ÷
+//å‡ºé”™æ—¶è‡ªå®šå›è°ƒ
 function myCallback(msg, obj, form) {
-  alert("³ö´íÏÔÊ¾µÄÏûÏ¢ÊÇ:" + msg + " - ÔªËØ:" +
-          obj.name + ",ËùÔÚform:" + (form ? form.id: 'ÎŞ'));
+  alert("å‡ºé”™æ˜¾ç¤ºçš„æ¶ˆæ¯æ˜¯:" + msg + " - å…ƒç´ :" +
+          obj.name + ",æ‰€åœ¨form:" + (form ? form.id: 'æ— '));
 }
 
-//´æÔÚFormµÄÀı×Ó
+//å­˜åœ¨Formçš„ä¾‹å­
 function testForm() {
   var result = CC.validate('testForm',
-     ['username', 'ÇëÊäÈëÓÃ»§Ãû¡£'],
-     ['mail', 'ÓÊÏä¸ñÊ½²»ÕıÈ·¡£', isMail],
-     ['password', 'ÃÜÂë³¤¶È´óÓÚ»òµÈÓÚ6¡£', checkPassword],
-     //ÍêÕûµÄÅäÖÃÊ¾Àı
-     ['password2', 'Á½´ÎÃÜÂë²»Ò»ÖÂ¡£', isTheSame,
+     ['username', 'è¯·è¾“å…¥ç”¨æˆ·åã€‚'],
+     ['mail', 'é‚®ç®±æ ¼å¼ä¸æ­£ç¡®ã€‚', isMail],
+     ['password', 'å¯†ç é•¿åº¦å¤§äºæˆ–ç­‰äº6ã€‚', checkPassword],
+     //å®Œæ•´çš„é…ç½®ç¤ºä¾‹
+     ['password2', 'ä¸¤æ¬¡å¯†ç ä¸ä¸€è‡´ã€‚', isTheSame,
         {nofocus: false,callback: myCallback,ignoreNull: false}
      ],
      {queryString: true});
 
-  if (result !== false) alert("¹§Ï²£¬Í¨¹ıÑéÖ¤!Ìá½»µÄ×Ö·û´®ÊÇ:" + result);
+  if (result !== false) alert("æ­å–œï¼Œé€šè¿‡éªŒè¯!æäº¤çš„å­—ç¬¦ä¸²æ˜¯:" + result);
 
   return result;
 }
-//ÎŞFormµÄÀı×Ó.
+//æ— Formçš„ä¾‹å­.
 function testNoForm() {
-  var result = CC.validate( //¼ÈÈ»Ã»formÁË,ÕâÀï²»±Ø´æÈëform id×÷ÎªµÚÒ»¸ö²ÎÊı.
-   ['username', 'ÇëÊäÈëÓÃ»§Ãû¡£'],
-   ['mail', 'ÓÊÏä¸ñÊ½²»ÕıÈ·¡£', CC.isMail],
-   ['password', 'ÃÜÂë³¤¶È´óÓÚ»òµÈÓÚ6¡£', checkPassword],
-   ['password2', 'Á½´ÎÃÜÂë²»Ò»ÖÂ¡£', isTheSame,
+  var result = CC.validate( //æ—¢ç„¶æ²¡formäº†,è¿™é‡Œä¸å¿…å­˜å…¥form idä½œä¸ºç¬¬ä¸€ä¸ªå‚æ•°.
+   ['username', 'è¯·è¾“å…¥ç”¨æˆ·åã€‚'],
+   ['mail', 'é‚®ç®±æ ¼å¼ä¸æ­£ç¡®ã€‚', CC.isMail],
+   ['password', 'å¯†ç é•¿åº¦å¤§äºæˆ–ç­‰äº6ã€‚', checkPassword],
+   ['password2', 'ä¸¤æ¬¡å¯†ç ä¸ä¸€è‡´ã€‚', isTheSame,
         {nofocus: false, callback: myCallback, ignoreNull: false}
    ],
-  //º¯Êı×îºóÒ»¸ö²ÎÊı
+  //å‡½æ•°æœ€åä¸€ä¸ªå‚æ•°
   { queryString: true});
 
-  if (result !== false) alert("¹§Ï²£¬Í¨¹ıÑéÖ¤!Ìá½»µÄ×Ö·û´®ÊÇ:" + result);
+  if (result !== false) alert("æ­å–œï¼Œé€šè¿‡éªŒè¯!æäº¤çš„å­—ç¬¦ä¸²æ˜¯:" + result);
 
   return result;
 }
@@ -488,12 +488,12 @@ function testNoForm() {
         validate: function() {
           var args = CC.$A(arguments),
           form = null;
-          //formÈç¹û²»Îª¿ÕÔªËØ,Ó¦ÖÃÓÚµÚÒ»¸ö²ÎÊıÖĞ.
+          //formå¦‚æœä¸ä¸ºç©ºå…ƒç´ ,åº”ç½®äºç¬¬ä¸€ä¸ªå‚æ•°ä¸­.
           if (!CC.isArray(args[0])) {
             form = CC.$(args[0]);
             args.remove(0);
           }
-          //Èç¹û´æÔÚÉèÖÃÏî,Ó¦ÖÃÓÚ×îºóÒ»¸ö²ÎÊıÖĞ.
+          //å¦‚æœå­˜åœ¨è®¾ç½®é¡¹,åº”ç½®äºæœ€åä¸€ä¸ªå‚æ•°ä¸­.
           //cfg.queryString = true|false;
           //cfg.callback = function
           //cfg.ignoreNull
@@ -502,30 +502,30 @@ function testNoForm() {
           var queryStr = b.queryString;
           var result = queryStr ? '': {};
           CC.each(args, function(i, v) {
-            //Èç¹ûÔÚfomrÖĞ²»´æÔÚ¸ÃnameÔªËØ,¾Íµ±idÀ´»ñµÃ
+            //å¦‚æœåœ¨fomrä¸­ä¸å­˜åœ¨è¯¥nameå…ƒç´ ,å°±å½“idæ¥è·å¾—
             var obj = v[0].tagName ? v[0] : form ? form[v[0]] : CC.$(v[0]);
             //if(__debug) console.log('checking field:',v, 'current value:'+obj.value);
             var value = obj.value, msg = v[1], d = typeof v[2] === 'function' ? v[3]:v[2];
-            //Ñ¡Ïî
+            //é€‰é¡¹
             if(!d || typeof d != 'object')
               d = b;
 
-            //ÊÇ·ñºöÂÔ¿Õ
+            //æ˜¯å¦å¿½ç•¥ç©º
             if (!d.ignoreNull &&
             (value == '' || value == null)) {
-              //Èç¹û²»´æÔÚ»Øµ÷º¯Êı,¾Íµ÷ÓÃalertÀ´ÏÔÊ¾´íÎóĞÅÏ¢
+              //å¦‚æœä¸å­˜åœ¨å›è°ƒå‡½æ•°,å°±è°ƒç”¨alertæ¥æ˜¾ç¤ºé”™è¯¯ä¿¡æ¯
               if (!d.callback)
                 CC.alert(msg, obj, form);
-              //Èç¹û´æÔÚ»Øµ÷,×¢Òâ´«µİµÄÈı¸ö²ÎÊı
-              //msg:ÏûÏ¢,obj:¸Ã½áµã,form:¶ÔÓ¦µÄ±íµ¥,Èç¹û´æÔÚµÄ»°
+              //å¦‚æœå­˜åœ¨å›è°ƒ,æ³¨æ„ä¼ é€’çš„ä¸‰ä¸ªå‚æ•°
+              //msg:æ¶ˆæ¯,obj:è¯¥ç»“ç‚¹,form:å¯¹åº”çš„è¡¨å•,å¦‚æœå­˜åœ¨çš„è¯
               else d.callback(msg, obj, form);
-              //³ö´íºóÊÇ·ñ¾Û¼¯
+              //å‡ºé”™åæ˜¯å¦èšé›†
               if (!d.nofocus)
                 obj.focus();
               result = false;
               return false;
             }
-            //×Ô¶¨ÒåÑéÖ¤·½·¨
+            //è‡ªå®šä¹‰éªŒè¯æ–¹æ³•
             if (typeof v[2] === 'function') {
               var ret = v[2](value, obj, form);
               var pass = (ret !== false);
@@ -536,7 +536,7 @@ function testNoForm() {
 
               if (!pass) {
                 if (!d.callback) CC.alert(msg, obj, form);
-                //Í¬ÉÏ
+                //åŒä¸Š
                 else d.callback(msg, obj, form);
 
                 if (!d.nofocus)
@@ -545,37 +545,37 @@ function testNoForm() {
                 return false;
               }
             }
-            //Èç¹û²»ÉèÖÃqueryString²¢Í¨¹ıÑéÖ¤,²»´æÔÚform,¾Í·µ»ØÒ»¸ö¶ÔÏó,¸Ã¶ÔÏó°üº¬ĞÎÈç{elementName|elementId:value}µÄÊı¾İ.
+            //å¦‚æœä¸è®¾ç½®queryStringå¹¶é€šè¿‡éªŒè¯,ä¸å­˜åœ¨form,å°±è¿”å›ä¸€ä¸ªå¯¹è±¡,è¯¥å¯¹è±¡åŒ…å«å½¢å¦‚{elementName|elementId:value}çš„æ•°æ®.
             if (queryStr && !form) {
               result += (result == '') ? ((typeof obj.name === 'undefined' || obj.name==='') ? obj.id : obj.name) + '=' + value: '&' + v[0] + '=' + value;
             } else if (!form) {
               result[v[0]] = value;
             }
           });
-          //Èç¹ûÉèÖÃµÄqueryString:true²¢Í¨¹ıÑéÖ¤,¾Í·µ»ØformµÄÌá½»×Ö·û´®.
+          //å¦‚æœè®¾ç½®çš„queryString:trueå¹¶é€šè¿‡éªŒè¯,å°±è¿”å›formçš„æäº¤å­—ç¬¦ä¸².
           if (result !== false && form && queryStr)
             result = CC.formQuery(form);
           return result;
         }
         ,
         /**
-         * »ñµÃÒ»¸öÈ«¾ÖÎ¨Ò»µÄID.
-         * @return {Number} È«¾ÖÎ¨Ò»ID
+         * è·å¾—ä¸€ä¸ªå…¨å±€å”¯ä¸€çš„ID.
+         * @return {Number} å…¨å±€å”¯ä¸€ID
          */
         uniqueID: function() {
             return uniqueId++;
         }
         ,
         /**
-         * Ó¦ÓÃ¶ÔÏóÌæ»»Ä£°åÄÚÈİ.
-         * @param {Object} obj Êı¾İ¶ÔÏó
-         * @param {String} str Ä£°å×Ö·û´®
-         * @param {undefined|Number} [st] ¿ØÖÆ¿ª²¢ undefined »ò 0 »ò 1 »òÆäËü
-         * @param {Boolean} [urlencode] ÊÇ·ñÓÃencodeURIComponent·½·¨½øĞĞ±àÂë
+         * åº”ç”¨å¯¹è±¡æ›¿æ¢æ¨¡æ¿å†…å®¹.
+         * @param {Object} obj æ•°æ®å¯¹è±¡
+         * @param {String} str æ¨¡æ¿å­—ç¬¦ä¸²
+         * @param {undefined|Number} [st] æ§åˆ¶å¼€å¹¶ undefined æˆ– 0 æˆ– 1 æˆ–å…¶å®ƒ
+         * @param {Boolean} [urlencode] æ˜¯å¦ç”¨encodeURIComponentæ–¹æ³•è¿›è¡Œç¼–ç 
          * @return {String}
          * @example
            CC.templ({name:'Rock'},'&#60;html&#62;&#60;title&#62;{name}&#60;/title&#62;&#60;/html&#62;');
-           st:0,1:Î´ÕÒµ½ÊôĞÔÊÇÊÇ·ñ±£Áô
+           st:0,1:æœªæ‰¾åˆ°å±æ€§æ˜¯æ˜¯å¦ä¿ç•™
          */
         templ : function(obj, str, st, urlencode) {
             return str.replace(/\{([\w_$]+)\}/g,function(c,$1){
@@ -594,7 +594,7 @@ function testNoForm() {
         },
 
         /**
-         * ÊÇ·ñÎªÒ»¸öº¯Êı(·½·¨).
+         * æ˜¯å¦ä¸ºä¸€ä¸ªå‡½æ•°(æ–¹æ³•).
          * @param {Object} obj
          * @return {Boolean}
          */
@@ -603,21 +603,21 @@ function testNoForm() {
         }
         ,
         /**
-         * ÊÇ·ñÎª×Ö·û´®.
+         * æ˜¯å¦ä¸ºå­—ç¬¦ä¸².
          */
         isString: function(obj) {
             return obj instanceof String || typeof obj === "string";
         }
         ,
         /**
-         * ÊÇ·ñÎªArrayÊµÀı.
+         * æ˜¯å¦ä¸ºArrayå®ä¾‹.
          */
         isArray: function(obj) {
             return obj instanceof Array;
         }
         ,
         /**
-         * ÊÇ·ñÎªÒ»¸öÈÕÆÚ¶ÔÏó.
+         * æ˜¯å¦ä¸ºä¸€ä¸ªæ—¥æœŸå¯¹è±¡.
          */
         isDate: function(obj) {
             return obj instanceof Date;
@@ -625,25 +625,25 @@ function testNoForm() {
 
         ,
         /**
-         * ÏµÍ³¶Ô»°¿ò.
-         * @param {Object} msg ÏÔÊ¾µÄÏûÏ¢
+         * ç³»ç»Ÿå¯¹è¯æ¡†.
+         * @param {Object} msg æ˜¾ç¤ºçš„æ¶ˆæ¯
          */
         alert: function(msg) {
             alert(msg);
         }
         ,
         /**
-         * ÏµÍ³Ğ¡ÌáÊ¾.
+         * ç³»ç»Ÿå°æç¤º.
          */
         tip: function(msg, title, proxy, timeout, getFocus) {
             alert(msg);
         }
         ,
         /**
-         * ÒÆ³ı²¢·µ»Ø¶ÔÏóÊôĞÔ,¸Ã·½·¨ÀûÓÃdeleteÉ¾³ı¶ÔÏóÊôĞÔ,²¢·µ»Ø¸ÃÊôĞÔÖµ.
-         * @param {Object} obj ÒªÒÆ³ıµÄÊôĞÔËùÔÚµÄ¶ÔÏó
-         * @param {String} attrName ÊôĞÔÃû³Æ
-         * @return {Object} ÒÆ³ıÊôĞÔµÄÖµ,Èç¹û²»´æÔÚ,·µ»Øundefined
+         * ç§»é™¤å¹¶è¿”å›å¯¹è±¡å±æ€§,è¯¥æ–¹æ³•åˆ©ç”¨deleteåˆ é™¤å¯¹è±¡å±æ€§,å¹¶è¿”å›è¯¥å±æ€§å€¼.
+         * @param {Object} obj è¦ç§»é™¤çš„å±æ€§æ‰€åœ¨çš„å¯¹è±¡
+         * @param {String} attrName å±æ€§åç§°
+         * @return {Object} ç§»é™¤å±æ€§çš„å€¼,å¦‚æœä¸å­˜åœ¨,è¿”å›undefined
          */
         delAttr : function(obj, attrName) {
           var t = obj[attrName];
@@ -653,9 +653,9 @@ function testNoForm() {
         },
 
         /**
-         * Ìí¼ÓÔªËØÑùÊ½Àà.
+         * æ·»åŠ å…ƒç´ æ ·å¼ç±».
          * @param {DOMElement} o
-         * @param {String} s cssÀàÃû
+         * @param {String} s cssç±»å
          * @see CC#delClass
          * @see CC#addClassIf
          * @example
@@ -668,9 +668,9 @@ function testNoForm() {
         }
         ,
         /**
-         * Èç¹ûÔªËØÎ´´æÔÚ¸ÃÑùÊ½Àà,Ìí¼ÓÔªËØÑùÊ½Àà,·ñÔòºöÂÔ.
+         * å¦‚æœå…ƒç´ æœªå­˜åœ¨è¯¥æ ·å¼ç±»,æ·»åŠ å…ƒç´ æ ·å¼ç±»,å¦åˆ™å¿½ç•¥.
          * @param {DOMElement} o
-         * @param {String} s cssÀàÃû
+         * @param {String} s cssç±»å
          * @see CC#addClass
          * @example
            CC.addClassIf(oDiv, 'cssName');
@@ -684,9 +684,9 @@ function testNoForm() {
         },
 
         /**
-         * É¾³ıÔªËØÑùÊ½Àà.
+         * åˆ é™¤å…ƒç´ æ ·å¼ç±».
          * @param {DOMElement} o
-         * @param {String} s cssÀàÃû
+         * @param {String} s cssç±»å
          * @see CC#addClass
          * @example
            CC.delClass(oDiv, 'cssName');
@@ -696,9 +696,9 @@ function testNoForm() {
         }
         ,
         /**
-         * ²âÊÔÔªËØÊÇ·ñ´æÔÚÖ¸¶¨ÑùÊ½Àà.
+         * æµ‹è¯•å…ƒç´ æ˜¯å¦å­˜åœ¨æŒ‡å®šæ ·å¼ç±».
          * @param {DOMElement} o
-         * @param {String} s cssÀàÃû
+         * @param {String} s cssç±»å
          * @return {Boolean}
          * @example
            CC.hasClass(oDiv, 'cssName');
@@ -707,10 +707,10 @@ function testNoForm() {
             return s && (' ' + o.className + ' ').indexOf(' ' + s + ' ') != -1;
         },
         /**
-         * Ìæ»»ÔªËØÑùÊ½Àà.
+         * æ›¿æ¢å…ƒç´ æ ·å¼ç±».
          * @param {DOMElement} o
-         * @param {String} oldSty ÒÑ´æÔÚµÄCSSÀàÃû
-         * @param {String} newSty ĞÂµÄCSSÀàÃû
+         * @param {String} oldSty å·²å­˜åœ¨çš„CSSç±»å
+         * @param {String} newSty æ–°çš„CSSç±»å
          * @example
            CC.switchClass(oDiv, 'mouseoverCss', 'mouseoutCss');
          */
@@ -720,9 +720,9 @@ function testNoForm() {
         }
         ,
         /**
-         * ÖØÖÃÔªËØÑùÊ½Àà.
+         * é‡ç½®å…ƒç´ æ ·å¼ç±».
          * @param {DOMElement} o
-         * @param {String} s CSSÀàÃû
+         * @param {String} s CSSç±»å
          * @example
            CC.switchClass(oDiv, 'mouseoverCss', 'mouseoutCss');
          */
@@ -730,17 +730,17 @@ function testNoForm() {
             o.className = s;
         },
         /**
-         * »ñµÃ»òÉèÖÃÔªËØstyle.displayÊôĞÔ.
-         * ÒÔstyle.display·½Ê½ÉèÖÃÔªËØÊÇ·ñ¿É¼û.
-         * @param {DOMElement} v dom½áµã
-         * @param {Boolean} [b] ÉèÖÃÊÇ·ñ¿É¼û
-         * @param {Boolean} [inline] inlineÎªtrueÊ±½«displayÉèÎª¿Õ,¶ø²»ÊÇblock
+         * è·å¾—æˆ–è®¾ç½®å…ƒç´ style.displayå±æ€§.
+         * ä»¥style.displayæ–¹å¼è®¾ç½®å…ƒç´ æ˜¯å¦å¯è§.
+         * @param {DOMElement} v domç»“ç‚¹
+         * @param {Boolean} [b] è®¾ç½®æ˜¯å¦å¯è§
+         * @param {Boolean} [inline] inlineä¸ºtrueæ—¶å°†displayè®¾ä¸ºç©º,è€Œä¸æ˜¯block
          * @example
-           //²âÊÔÔªËØÊÇ·ñ¿É¼û
+           //æµ‹è¯•å…ƒç´ æ˜¯å¦å¯è§
            alert( CC.display(div) );
-           //ÉèÖÃÔªËØ¿É¼û,Ä£Ê½Îªblock
+           //è®¾ç½®å…ƒç´ å¯è§,æ¨¡å¼ä¸ºblock
            CC.display(div, true);
-           //ÉèÖÃÔªËØ¿É¼û,Ä£Ê½Îªinline
+           //è®¾ç½®å…ƒç´ å¯è§,æ¨¡å¼ä¸ºinline
            CC.display(div, true, true);
          */
         display: function(v, b, inline) {
@@ -752,13 +752,13 @@ function testNoForm() {
         }
         ,
         /**
-         * ²âÊÔ»òÉèÖÃÔªËØÊÇ¿ÉÓÃ.
+         * æµ‹è¯•æˆ–è®¾ç½®å…ƒç´ æ˜¯å¯ç”¨.
          * @param {DOMElement} v
          * @param {Boolean} [b]
          * @example
-           //½ûÓÃÔªËØ
+           //ç¦ç”¨å…ƒç´ 
            CC.disable(div, true);
-           //²âÊÔÔªËØÊÇ·ñ¿ÉÓÃ.
+           //æµ‹è¯•å…ƒç´ æ˜¯å¦å¯ç”¨.
            var b = CC.disable(div);
          */
         disable: function(v, b) {
@@ -769,7 +769,7 @@ function testNoForm() {
         }
         ,
 /**
- * ÔÚoSelfºóÃæ²åÈëoNew½áµã.
+ * åœ¨oSelfåé¢æ’å…¥oNewç»“ç‚¹.
  * @param {DOMElement} oSelf
  * @param {DOMElement} oNew
  * @return {DOMElement} oNew
@@ -784,7 +784,7 @@ function testNoForm() {
             return oNew;
         },
 /**
- * ²âÊÔÊÇ·ñÎªÊı×Ö
+ * æµ‹è¯•æ˜¯å¦ä¸ºæ•°å­—
  * @param {Object} ob
  * @return {Boolean}
  */
@@ -793,7 +793,7 @@ function testNoForm() {
         }
         ,
 /**
- * ²âÊÔ×Ö·û´®ÊÇ·ñÎªÓÊÏä¸ñÊ½.
+ * æµ‹è¯•å­—ç¬¦ä¸²æ˜¯å¦ä¸ºé‚®ç®±æ ¼å¼.
  * @param {String} strMail
  * @return {Boolean}
  */
@@ -802,10 +802,10 @@ function testNoForm() {
         },
 
 /**
- * ·µ»ØÈÕÆÚµÄ¸ñÊ½»¯×Ö·û´®.
+ * è¿”å›æ—¥æœŸçš„æ ¼å¼åŒ–å­—ç¬¦ä¸².
  * @param {Date} date
- * @param {String} ¸ñÊ½, mm/dd/yy»òdd/mm/yy»òyy/mm/dd,ÖĞ¼ä·Ö¸ô·û²»ÏŞ¶¨
- * @return {String} ÈÕÆÚµÄ¸ñÊ½»¯×Ö´®·û
+ * @param {String} æ ¼å¼, mm/dd/yyæˆ–dd/mm/yyæˆ–yy/mm/dd,ä¸­é—´åˆ†éš”ç¬¦ä¸é™å®š
+ * @return {String} æ—¥æœŸçš„æ ¼å¼åŒ–å­—ä¸²ç¬¦
  * @see CC#dateParse
  */
         dateFormat: function(date, fmt) {
@@ -839,10 +839,10 @@ function testNoForm() {
        }
        ,
 /**
- * ·µÈÕÆÚµÄ¸ñÊ½»¯×Ö·û´®Ëù±íÊ¾µÄÈÕÆÚ¶ÔÏó.
- * @param {String} str ÈÕÆÚµÄ¸ñÊ½»¯×Ö·û´®,Èç2009/02/15
- * @param {String} ¸ñÊ½, mm/dd/yy»òdd/mm/yy»òyy/mm/dd,ÖĞ¼ä·Ö¸ô·û²»ÏŞ¶¨
- * @return {Date} ¸ñÊ½»¯×Ö·û´®Ëù±íÊ¾µÄÈÕÆÚ¶ÔÏó
+ * è¿”æ—¥æœŸçš„æ ¼å¼åŒ–å­—ç¬¦ä¸²æ‰€è¡¨ç¤ºçš„æ—¥æœŸå¯¹è±¡.
+ * @param {String} str æ—¥æœŸçš„æ ¼å¼åŒ–å­—ç¬¦ä¸²,å¦‚2009/02/15
+ * @param {String} æ ¼å¼, mm/dd/yyæˆ–dd/mm/yyæˆ–yy/mm/dd,ä¸­é—´åˆ†éš”ç¬¦ä¸é™å®š
+ * @return {Date} æ ¼å¼åŒ–å­—ç¬¦ä¸²æ‰€è¡¨ç¤ºçš„æ—¥æœŸå¯¹è±¡
  * @see CC#dateFormat
  */
        dateParse : function(str, fmt){
@@ -864,11 +864,11 @@ function testNoForm() {
         return new Date(arr.join(sep));
        },
 /**
- * Ôö¼ÓÈÕÆÚµÄÄ³¸ö×Ö¶ÎÖµ.
- * @param {String} field year|month|dayÖĞµÄÒ»¸ö
+ * å¢åŠ æ—¥æœŸçš„æŸä¸ªå­—æ®µå€¼.
+ * @param {String} field year|month|dayä¸­çš„ä¸€ä¸ª
  * @param {Date} date
- * @param {Number} delta ÔöÁ¿
- * @return {Date} ÖµÔö¼ÓºóµÄĞÂÈÕÆÚ
+ * @param {Number} delta å¢é‡
+ * @return {Date} å€¼å¢åŠ åçš„æ–°æ—¥æœŸ
  */
         addDate: function(field, date, delta) {
             var newDate = null;
@@ -886,14 +886,14 @@ function testNoForm() {
             return newDate;
         },
 /**
- * ´´½¨Ò»¸öDOMÔªËØ.
- * @param {String|Object} Îª×Ö·û´®Ê±,´«µİtagName,Îª¶ÔÏóÊ±,´«µİÊôĞÔ¼¯.
+ * åˆ›å»ºä¸€ä¸ªDOMå…ƒç´ .
+ * @param {String|Object} ä¸ºå­—ç¬¦ä¸²æ—¶,ä¼ é€’tagName,ä¸ºå¯¹è±¡æ—¶,ä¼ é€’å±æ€§é›†.
  * @param {Document} document
- * @return {DOMElement} ĞÂ´´½¨µÄDOM½áµã
+ * @return {DOMElement} æ–°åˆ›å»ºçš„DOMç»“ç‚¹
  * @example
-   //¼òµ¥·½Ê½´´½¨Ò»¸öDIV½áµã.
+   //ç®€å•æ–¹å¼åˆ›å»ºä¸€ä¸ªDIVç»“ç‚¹.
    var div = CC.$C('DIV');
-   //ÒÔÊôĞÔ¼¯´´½¨Ò»¸öDIV½áµã.
+   //ä»¥å±æ€§é›†åˆ›å»ºä¸€ä¸ªDIVç»“ç‚¹.
    var div = CC.$C({
      tagName:'DIV',
      innerHTML : 'This div is created from function C.$C!',
@@ -912,8 +912,8 @@ function testNoForm() {
             return b;
         }
 /**
- * document.getElementsByNameµÄ¿ìËÙµ÷ÓÃ.
- * @param name DOMÔªËØµÄname
+ * document.getElementsByNameçš„å¿«é€Ÿè°ƒç”¨.
+ * @param name DOMå…ƒç´ çš„name
  * @return {DOMCollection}
  */
         ,
@@ -921,9 +921,9 @@ function testNoForm() {
             return document.getElementsByName(name);
         },
 /**
- * dom.getElementsByTagNameµÄ¿ìËÙµ÷ÓÃ.
- * @param {String} tagName ±êÇ©Ãû
- * @param {DOMElement} [dom] ÔÚ¸Ã±êÇ©ÏÂ²éÕÒ,Î´ÉèÖÃÊ±Îªdocument
+ * dom.getElementsByTagNameçš„å¿«é€Ÿè°ƒç”¨.
+ * @param {String} tagName æ ‡ç­¾å
+ * @param {DOMElement} [dom] åœ¨è¯¥æ ‡ç­¾ä¸‹æŸ¥æ‰¾,æœªè®¾ç½®æ—¶ä¸ºdocument
  * @return {DOMCollection}
  */
         $T: function(tagName, dom) {
@@ -931,10 +931,10 @@ function testNoForm() {
         }
         ,
 /**
- * ÑØdom½áµãÍùÉÏ±éÀú,ÒÔÑ°ÕÒ±êÇ©ÃûÎªtagµÄ½áµã,Ã»ÕÒµ½·µ»Ønull.
- * @param {DOMElement} dom Íù¸Ã½áµãÉÏ±éÀú(°üÀ¨¸Ã½áµã)
- * @param {String} tag ²éÕÒµÄ±êÇ©Ãû
- * @return {DOMElement} Æ¥Åä±êÇ©µÄ½áµã
+ * æ²¿domç»“ç‚¹å¾€ä¸Šéå†,ä»¥å¯»æ‰¾æ ‡ç­¾åä¸ºtagçš„ç»“ç‚¹,æ²¡æ‰¾åˆ°è¿”å›null.
+ * @param {DOMElement} dom å¾€è¯¥ç»“ç‚¹ä¸Šéå†(åŒ…æ‹¬è¯¥ç»“ç‚¹)
+ * @param {String} tag æŸ¥æ‰¾çš„æ ‡ç­¾å
+ * @return {DOMElement} åŒ¹é…æ ‡ç­¾çš„ç»“ç‚¹
  @example
  var dom = CC.tagUp(div, 'TD');
  */
@@ -947,10 +947,10 @@ function testNoForm() {
           return dom;
         },
 /**
- * »ñµÃ¶ÔÏóºÍ¶ÔÏóÔ­ĞÍÁ´ÉÏÄ³¸öÊôĞÔµÄËùÓĞÖµ,·½·¨Ö»ÊÊºÏÓÃ±¾¿â´´½¨¾ßÓĞsuperclassÊôĞÔµÄÀàÊµÀı.
+ * è·å¾—å¯¹è±¡å’Œå¯¹è±¡åŸå‹é“¾ä¸ŠæŸä¸ªå±æ€§çš„æ‰€æœ‰å€¼,æ–¹æ³•åªé€‚åˆç”¨æœ¬åº“åˆ›å»ºå…·æœ‰superclasså±æ€§çš„ç±»å®ä¾‹.
  * @param {Object} object
  * @param {String} attributeName
- * @return {Array} ·µ»ØÁ´ÉÏ¸ÃÊôĞÔµÄËùÓĞÖµ
+ * @return {Array} è¿”å›é“¾ä¸Šè¯¥å±æ€§çš„æ‰€æœ‰å€¼
  * @example
  <pre>
    A.prototype.name = 'Smart';
@@ -978,9 +978,9 @@ function testNoForm() {
         },
         
 /**
- * ¼ÓÔØÒ»¸ö×ÊÔ´ÎÄ¼ş
- * @param {Object} ×ÊÔ´ÊôĞÔ
- * @param {Function} callback ¼ÓÔØºó»Øµ÷, thisÖ¸Ïò×ÊÔ´tag
+ * åŠ è½½ä¸€ä¸ªèµ„æºæ–‡ä»¶
+ * @param {Object} èµ„æºå±æ€§
+ * @param {Function} callback åŠ è½½åå›è°ƒ, thisæŒ‡å‘èµ„æºtag
  * @param {Document} document
  */
  
@@ -1023,7 +1023,7 @@ function testNoForm() {
 					return res;
 				},
 /**
- * ¼ÓÔØJavaScript½Å±¾ÎÄ¼ş
+ * åŠ è½½JavaScriptè„šæœ¬æ–‡ä»¶
  * @param {String} url
  * @param {Function} callback
  * @param {String} [id]
@@ -1041,9 +1041,9 @@ function testNoForm() {
         }
         ,
 /**
- * ¼ÓÔØÒ»¸öCSSÑùÊ½ÎÄ¼ş
- * @param {String} id ¼ÓÔØcss±êÇ©ID
- * @param {String} url ¼ÓÔØcssµÄÂ·¾¶
+ * åŠ è½½ä¸€ä¸ªCSSæ ·å¼æ–‡ä»¶
+ * @param {String} id åŠ è½½cssæ ‡ç­¾ID
+ * @param {String} url åŠ è½½cssçš„è·¯å¾„
  * @return {DOMElement} link node
  */
         loadCSS: function(url, callback, id) {
@@ -1059,13 +1059,13 @@ function testNoForm() {
         }
         ,
 /**
- * Ó¦ÓÃÒ»¶ÎCSSÑùÊ½ÎÄ±¾
- * @param {String} id Éú³ÉµÄÑùÊ½style½áµãID\
- * @param {String} ÑùÊ½ÎÄ±¾ÄÚÈİ
+ * åº”ç”¨ä¸€æ®µCSSæ ·å¼æ–‡æœ¬
+ * @param {String} id ç”Ÿæˆçš„æ ·å¼styleç»“ç‚¹ID\
+ * @param {String} æ ·å¼æ–‡æœ¬å†…å®¹
  @example
    CC.loadStyle('customCS', '.g-custom {background-color:#DDD;}');
-   //ÔÚÔªËØÖĞÓ¦ÓÃĞÂÔöÑùÊ½Àà
-   &lt;div class=&quot;g-custom&quot;&gt;¶¯Ì¬¼ÓÔØÑùÊ½&lt;/div&gt;
+   //åœ¨å…ƒç´ ä¸­åº”ç”¨æ–°å¢æ ·å¼ç±»
+   &lt;div class=&quot;g-custom&quot;&gt;åŠ¨æ€åŠ è½½æ ·å¼&lt;/div&gt;
  */
         loadStyle: function(id, ss) {
             var o;
@@ -1086,8 +1086,8 @@ function testNoForm() {
         }
         ,
 /**
- * »ñµÃÒ»¸öÇëÇó×Ö·û´®,¸Ã×Ö·û´®ÓÃÓÚ±ÜÃâä¯ÀÀÆ÷»º´æÇëÇóÒ³Ãæ,×·¼ÓÔÚURLÎ²²¿.
- * @return {String} ±ÜÃâä¯ÀÀÆ÷»º´æÇëÇóÒ³ÃæµÄ×Ö·û´®.
+ * è·å¾—ä¸€ä¸ªè¯·æ±‚å­—ç¬¦ä¸²,è¯¥å­—ç¬¦ä¸²ç”¨äºé¿å…æµè§ˆå™¨ç¼“å­˜è¯·æ±‚é¡µé¢,è¿½åŠ åœ¨URLå°¾éƒ¨.
+ * @return {String} é¿å…æµè§ˆå™¨ç¼“å­˜è¯·æ±‚é¡µé¢çš„å­—ç¬¦ä¸².
  * @example
  * var requestUrl = 'http://www.site.com/?name=rock'+CC.noCache();
  */
@@ -1096,31 +1096,31 @@ function testNoForm() {
         }
         ,
 /**
- * ½«¿ÉÃ¶¾Ù¶ÔÏóÄÚÈİ¸´ÖÆµ½ĞÂÊı×éÖĞ,²¢·µ»Ø¸ÃÊı×é,¿ÉÃ¶¾Ù¶ÔÏóÊÇÖ¸¿ÉÓÃ[index]·ÃÎÊ,²¢¾ßÓĞlengthÊôĞÔµÄ,³£¼ûµÄÓĞarguments¶ÔÏó.
- * @param {Object} iterable ¿ÉÃ¶¾Ù¶ÔÏó
- * @return {Array} ĞÂÊı×é
+ * å°†å¯æšä¸¾å¯¹è±¡å†…å®¹å¤åˆ¶åˆ°æ–°æ•°ç»„ä¸­,å¹¶è¿”å›è¯¥æ•°ç»„,å¯æšä¸¾å¯¹è±¡æ˜¯æŒ‡å¯ç”¨[index]è®¿é—®,å¹¶å…·æœ‰lengthå±æ€§çš„,å¸¸è§çš„æœ‰argumentså¯¹è±¡.
+ * @param {Object} iterable å¯æšä¸¾å¯¹è±¡
+ * @return {Array} æ–°æ•°ç»„
  */
         $A : function(a) {
             return Slice.call(a);
         },
 /**
- * »ñµÃiframeÖĞµÄdocument½áµã.
- * @param {DOMElement} frame iframe½áµã
- * @return {DOMElement} iframeÒ³ÃæÖĞµÄdocument½áµã
+ * è·å¾—iframeä¸­çš„documentç»“ç‚¹.
+ * @param {DOMElement} frame iframeç»“ç‚¹
+ * @return {DOMElement} iframeé¡µé¢ä¸­çš„documentç»“ç‚¹
  */
         frameDoc : function(frame) {
             return frame.contentWindow ? frame.contentDocument:frame.contentDocument;
         },
 /**
- * »ñµÃiframeÖĞµÄwindow¶ÔÏó.
- * @param {IFrame} frame iframe½áµã
- * @return {DOMElement} iframeÒ³ÃæÖĞµÄdocument½áµã
+ * è·å¾—iframeä¸­çš„windowå¯¹è±¡.
+ * @param {IFrame} frame iframeç»“ç‚¹
+ * @return {DOMElement} iframeé¡µé¢ä¸­çš„documentç»“ç‚¹
  */
         frameWin : function(frame){
             return frame.contentWindow;
         },
 /**
- * »ñµÃÎÄµµÄÚÈİÇøÓò¸ß¶È.
+ * è·å¾—æ–‡æ¡£å†…å®¹åŒºåŸŸé«˜åº¦.
  * @return {Number}
  */
         getDocumentHeight: function() {
@@ -1128,7 +1128,7 @@ function testNoForm() {
             return Math.max(scrollHeight, this.getViewportHeight());
         },
 /**
- * »ñµÃÎÄµµÄÚÈİÇøÓò¿í¶È.
+ * è·å¾—æ–‡æ¡£å†…å®¹åŒºåŸŸå®½åº¦.
  * @return {Number}
  */
         getDocumentWidth: function() {
@@ -1136,7 +1136,7 @@ function testNoForm() {
             return Math.max(scrollWidth, this.getViewportWidth());
         },
 /**
- * »ñµÃÊÓÍ¼¿É¼ûÇøÓòÓò¸ß¶È.
+ * è·å¾—è§†å›¾å¯è§åŒºåŸŸåŸŸé«˜åº¦.
  * @return {Number}
  */
         getViewportHeight: function(){
@@ -1148,7 +1148,7 @@ function testNoForm() {
             }
         },
 /**
- * »ñµÃÊÓÍ¼¿É¼ûÇøÓòÓò¿í¶È.
+ * è·å¾—è§†å›¾å¯è§åŒºåŸŸåŸŸå®½åº¦.
  * @return {Number}
  */
         getViewportWidth: function() {
@@ -1159,7 +1159,7 @@ function testNoForm() {
             }
         },
 /**
- * »ñµÃÊÓÍ¼¿É¼ûÇøÓòÓò¿í¸ß.
+ * è·å¾—è§†å›¾å¯è§åŒºåŸŸåŸŸå®½é«˜.
  * @return {Object} obj.width,obj.height
  @example
    var vp = CC.getViewport();
@@ -1179,15 +1179,15 @@ function testNoForm() {
         borderBox:isBorderBox
     };
 
-//ºÏ²¢Íâ²¿CC
+//åˆå¹¶å¤–éƒ¨CC
 if(window.CC)
 CC.extend(CC, window.CC);
 
 window.CC = CC;
 /**
-* UIÏà¹Ø¹¦ÄÜº¯Êı´æ·ÅÀà.
+* UIç›¸å…³åŠŸèƒ½å‡½æ•°å­˜æ”¾ç±».
 * @name CC.Util
-* @class UIÏà¹Ø¹¦ÄÜº¯Êı´æ·ÅÀà
+* @class UIç›¸å…³åŠŸèƒ½å‡½æ•°å­˜æ”¾ç±»
 */
 if(!CC.Util)
 CC.Util = {};

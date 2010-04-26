@@ -1,15 +1,15 @@
-/**
+ï»¿/**
  * @name CC.ui.grid.plugins.Toolbar
  */
 CC.create('CC.ui.grid.plugins.Toolbar', null, /**@lends CC.ui.grid.plugins.Toolbar#*/{
 /**
- * µ±±í¸ñÖ¸¶¨ÊÂ¼ş·¢Éúºó°²×°¹¤¾ßÀ¸µ½±í¸ñÖĞ
+ * å½“è¡¨æ ¼æŒ‡å®šäº‹ä»¶å‘ç”Ÿåå®‰è£…å·¥å…·æ åˆ°è¡¨æ ¼ä¸­
  * @type String
  * @default afteraddcontent
  */
   installWhen : 'afteraddcontent',
 /**
- * Ö¸¶¨Òª´´½¨¹¤¾ßÀ¸µÄctypeÀàĞÍ
+ * æŒ‡å®šè¦åˆ›å»ºå·¥å…·æ çš„ctypeç±»å‹
  * @type String
  * @default smallbar
  */
