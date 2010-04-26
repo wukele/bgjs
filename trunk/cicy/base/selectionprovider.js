@@ -1,4 +1,4 @@
-CC.util.ProviderFactory.create('Selection', null, function(father){
+ï»¿CC.util.ProviderFactory.create('Selection', null, function(father){
 
   var Event = CC.Event;
 
@@ -8,7 +8,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
 
   return /**@lends CC.util.SelectionProvider#*/{
 /**
- * µ±Ç°Ñ¡ÔñÄ£Ê½(µ¥Ñ¡,¶àÑ¡),Ä¬ÈÏµ¥Ñ¡
+ * å½“å‰é€‰æ‹©æ¨¡å¼(å•é€‰,å¤šé€‰),é»˜è®¤å•é€‰
  */
   mode : 1,
 
@@ -20,20 +20,20 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
 
   selectedIndex : -1,
 /**
- * ×ÓÏîÑ¡ÔñºóÊÇ·ñ¹ö¶¯µ½ÈİÆ÷¿ÉÊÓ·¶Î§ÄÚ,Ä¬ÈÏÎªtrue
+ * å­é¡¹é€‰æ‹©åæ˜¯å¦æ»šåŠ¨åˆ°å®¹å™¨å¯è§†èŒƒå›´å†…,é»˜è®¤ä¸ºtrue
  */
   autoscroll : true,
 /**
- * Ñ¡ÔñºóÊÇ·ñ¾Û½¹,Ä¬ÈÏÎªtrue
+ * é€‰æ‹©åæ˜¯å¦èšç„¦,é»˜è®¤ä¸ºtrue
  */
  autoFocus : true,
 /**
- * @property {String} selectedCS ×ÓÏîÑ¡ÔñÊ±×ÓÏîÑùÊ½
+ * @property {String} selectedCS å­é¡¹é€‰æ‹©æ—¶å­é¡¹æ ·å¼
  */
   selectedCS: 'selected',
 
 /**
- * ÔÊĞíÑ¡Ôñ
+ * å…è®¸é€‰æ‹©
  */
   unselectable : false,
 
@@ -43,7 +43,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
       this.tracker = new CC.util.Tracker(trackerOpt);
   },
 /**
- * mode¿ÉÑ¡,1 | 0,ÉèÖÃÊ±½«Çå³ıÏÖÓĞÑ¡Ôñ
+ * modeå¯é€‰,1 | 0,è®¾ç½®æ—¶å°†æ¸…é™¤ç°æœ‰é€‰æ‹©
  */
  setMode : function(m){
   this.selectAll(false);
@@ -82,7 +82,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
 /*@private**/
  itemSelectionTrigger : function(it, e){
   //TODO:|| !Event.isLeftClick(e)
-  // ÔÚIEÏÂ,¼´Ê¹ÊÇ×ó»÷,µ«event.button»¹ÊÇÎª0,ºÜÆæ¹Ö
+  // åœ¨IEä¸‹,å³ä½¿æ˜¯å·¦å‡»,ä½†event.buttonè¿˜æ˜¯ä¸º0,å¾ˆå¥‡æ€ª
   if(!this.unselectable){
     //this.decorateSelected(it, !this.isSelected(it));
     if(this.mode)
@@ -92,7 +92,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * µ±×ÓÏîÒÆ³ıÊ±ÌáÊ¾Ñ¡ÔñÆ÷¸üĞÂ×´Ì¬
+ * å½“å­é¡¹ç§»é™¤æ—¶æç¤ºé€‰æ‹©å™¨æ›´æ–°çŠ¶æ€
  * @protected
  **/
  onItemRemoved : function(item){
@@ -107,7 +107,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * ÖØÔØ¸Ã·½·¨¿ÉÒÔ¶¨Òå°´¼üµ¼º½
+ * é‡è½½è¯¥æ–¹æ³•å¯ä»¥å®šä¹‰æŒ‰é”®å¯¼èˆª
  */
  navigateKey : function(e){
    var kc = e.keyCode;
@@ -125,12 +125,12 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
 
 /**
  * @name CC.util.SelectionProvider#t
- * @property {ContainerBase} t targetÄ¿±êÈİÆ÷
+ * @property {ContainerBase} t targetç›®æ ‡å®¹å™¨
  * @protected
  */
 
 /**
- * »ñµÃÈİÆ÷µ±Ç°Ñ¡Çø, ¸Ã²Ù×÷»áÖØĞÂ¼ì²âµ±Ç°Ñ¡ÔñÏî
+ * è·å¾—å®¹å™¨å½“å‰é€‰åŒº, è¯¥æ“ä½œä¼šé‡æ–°æ£€æµ‹å½“å‰é€‰æ‹©é¡¹
  * @return {Array}
  */
  getSelection : function(){
@@ -144,7 +144,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * ĞŞÊÎÑ¡ÔñÊ±×ÓÏîÍâ¹ÛCSS, ÖØĞ´¸Ã·½·¨ÒÔ×Ô¶¨×ÓÏîÑ¡ÔñÊ±ĞŞÊÎ·½
+ * ä¿®é¥°é€‰æ‹©æ—¶å­é¡¹å¤–è§‚CSS, é‡å†™è¯¥æ–¹æ³•ä»¥è‡ªå®šå­é¡¹é€‰æ‹©æ—¶ä¿®é¥°æ–¹
  * @param {CC.Base} item
  * @param {Boolean} b
  */
@@ -155,7 +155,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * Ñ¡ÔñÄ³×ÓÏî
+ * é€‰æ‹©æŸå­é¡¹
  * @param {CC.Base} item
  * @param {Boolean} b
  */
@@ -183,7 +183,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
     return this;
 
 /**
- * Ñ¡ÔñÇ°·¢³ö,Îª¿ÕÑ¡Ê±²»·¢³ö
+ * é€‰æ‹©å‰å‘å‡º,ä¸ºç©ºé€‰æ—¶ä¸å‘å‡º
  * @name CC.ui.ContainerBase#select
  * @event
  * @param {CC.Base} item
@@ -192,18 +192,18 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
 
 
 /**
- * Ñ¡Ôñºó·¢³ö,Îª¿ÕÑ¡Ê±²»·¢³ö
+ * é€‰æ‹©åå‘å‡º,ä¸ºç©ºé€‰æ—¶ä¸å‘å‡º
  * @name CC.ui.ContainerBase#selected
  * @event
  * @param {CC.Base} item
  * @param {CC.util.SelectionProvider} selectionProvider
- * @param {DomEvent} event Èç¹û¸ÃÑ¡ÔñÊÂ¼şÓÉDOMÊÂ¼ş´¥·¢,´«µİevent
+ * @param {DomEvent} event å¦‚æœè¯¥é€‰æ‹©äº‹ä»¶ç”±DOMäº‹ä»¶è§¦å‘,ä¼ é€’event
  */
 
 /**
- * Ñ¡Ôñºó·¢³ö,Îª¿ÕÑ¡Ê±²»·¢³ö
+ * é€‰æ‹©åå‘å‡º,ä¸ºç©ºé€‰æ—¶ä¸å‘å‡º
  * @name CC.util.SelectionProvider#forceSelect
- * @property {Boolean} [forceSelect=false] Ç¿ÖÆ·¢ËÍselectÊÂ¼ş,¼´Ê¹µ±Ç°×ÓÏîÒÑ±»Ñ¡ÖĞ
+ * @property {Boolean} [forceSelect=false] å¼ºåˆ¶å‘é€selectäº‹ä»¶,å³ä½¿å½“å‰å­é¡¹å·²è¢«é€‰ä¸­
  */
   if((this.forceSelect || !this.isSelected(item))
       && this.t.fire('select', item, this, e) !== false){
@@ -220,7 +220,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
   return this;
  },
 /**
- * @name CC.ui.Item#onselect ×ÓÏî±»Ñ¡ÔñÊ±µ÷ÓÃ
+ * @name CC.ui.Item#onselect å­é¡¹è¢«é€‰æ‹©æ—¶è°ƒç”¨
  * @property {Function} onselect
  */
  onSelect : function(item, cancelscroll) {
@@ -233,17 +233,17 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * @name CC.util.SelectionProvider#selected µ±Ç°±»Ñ¡Ôñ×ÓÏî,Èç¹û¶àÑ¡Ä£Ê½,×îºóÒ»¸ö±»Ñ¡ÖĞÑ¡Ïî
+ * @name CC.util.SelectionProvider#selected å½“å‰è¢«é€‰æ‹©å­é¡¹,å¦‚æœå¤šé€‰æ¨¡å¼,æœ€åä¸€ä¸ªè¢«é€‰ä¸­é€‰é¡¹
  * @property {CC.Base} selected
  */
 
 /**
- * @name CC.util.SelectionProvider#previous Ç°Ò»¸ö±»Ñ¡Ôñ×ÓÏî
+ * @name CC.util.SelectionProvider#previous å‰ä¸€ä¸ªè¢«é€‰æ‹©å­é¡¹
  * @property {CC.Base} previous
  */
 
 /**
- * Ñ¡Ôñ±ä¸üÊ±·¢³ö,°üÀ¨¿ÕÑ¡Ôñ
+ * é€‰æ‹©å˜æ›´æ—¶å‘å‡º,åŒ…æ‹¬ç©ºé€‰æ‹©
  * @name CC.ui.ContainerBase#selectchange
  * @event
  * @param {CC.Base} item
@@ -292,18 +292,18 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
     this.tracker.track(s);
 
   this.t.fire('selectchange', item, s, this);
-  if(__debug){  console.group("selectchanged data"); console.log('µ±Ç°Ñ¡Ôñ:',this.selected);console.log('Ç°Ò»¸öÑ¡Ôñ:',this.previous); console.groupEnd();}
+  if(__debug){  console.group("selectchanged data"); console.log('å½“å‰é€‰æ‹©:',this.selected);console.log('å‰ä¸€ä¸ªé€‰æ‹©:',this.previous); console.groupEnd();}
  },
 
 /**
- * ²âÊÔÑ¡ÔñÏî×´Ì¬ÊÇ·ñ¸Ä±ä
+ * æµ‹è¯•é€‰æ‹©é¡¹çŠ¶æ€æ˜¯å¦æ”¹å˜
  */
  hasChanged : function(item, b){
   return !((item === this.selected) && b) || !(item && this.isSelected(item) === b);
  },
 
 /**
- * ²âÊÔÄ³×ÓÏîÊÇ·ñÒÑ±»Ñ¡Ôñ
+ * æµ‹è¯•æŸå­é¡¹æ˜¯å¦å·²è¢«é€‰æ‹©
  * @param item
  * @return {Boolean}
  */
@@ -312,21 +312,21 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * ÈİÆ÷ÊÇ·ñ¿ÉÑ¡Ôñ
+ * å®¹å™¨æ˜¯å¦å¯é€‰æ‹©
  * @return {Boolean}
  */
  isSelectable : function(){
   return !this.unselectable;
  },
 /**
- * ÈİÆ÷ÊÇ·ñ¿ÉÑ¡Ôñ
+ * å®¹å™¨æ˜¯å¦å¯é€‰æ‹©
  */
  setSelectable : function(b){
   this.unselectable = !b;
  },
 
 /**
- * ¼ì²âitemÊÇ·ñÄÜ×÷ÎªÏÂÒ»¸öÑ¡ÔñÏî
+ * æ£€æµ‹itemæ˜¯å¦èƒ½ä½œä¸ºä¸‹ä¸€ä¸ªé€‰æ‹©é¡¹
  * @return {Boolean}
  */
  canNext : function(item){
@@ -334,7 +334,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * ¼ì²âitemÊÇ·ñÄÜ×÷ÎªÉÏÒ»¸öÑ¡ÔñÏî
+ * æ£€æµ‹itemæ˜¯å¦èƒ½ä½œä¸ºä¸Šä¸€ä¸ªé€‰æ‹©é¡¹
  * @return {Boolean}
  */
  canPre : function(item){
@@ -343,15 +343,15 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
 
  /**
   * @protected
-  * »ñµÃµ±Ç°ÓÃÓÚ¼ÆËãÏÂ|ÉÏÒ»Ñ¡ÏîµÄÏÂ±ê,Ä¬ÈÏ·µ»Øµ±Ç°Ñ¡ÏîÏîselectedIndex
+  * è·å¾—å½“å‰ç”¨äºè®¡ç®—ä¸‹|ä¸Šä¸€é€‰é¡¹çš„ä¸‹æ ‡,é»˜è®¤è¿”å›å½“å‰é€‰é¡¹é¡¹selectedIndex
   */
  getStartIndex : function(){
   return this.selectedIndex;
  },
 
  /**
-  * »ñµÃÏÂÒ»¸ö¿ÉÑ¡ÔñÏî,ÈçÎŞ¿ÉÑ¡ÔñÏî,·µ»Ønull
-  * @return {CC.Base} item ÏÂÒ»¸ö¿ÉÑ¡ÔñÏî
+  * è·å¾—ä¸‹ä¸€ä¸ªå¯é€‰æ‹©é¡¹,å¦‚æ— å¯é€‰æ‹©é¡¹,è¿”å›null
+  * @return {CC.Base} item ä¸‹ä¸€ä¸ªå¯é€‰æ‹©é¡¹
   */
  getNext : function(){
   var idx = this.getStartIndex() + 1,
@@ -367,8 +367,8 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
  /**
-  * »ñµÃÉÏÒ»¸ö¿ÉÑ¡ÔñÏî,ÈçÎŞ¿ÉÑ¡ÔñÏî,·µ»Ønull
-  * @return {CC.Base} item ÉÏÒ»¸ö¿ÉÑ¡ÔñÏî
+  * è·å¾—ä¸Šä¸€ä¸ªå¯é€‰æ‹©é¡¹,å¦‚æ— å¯é€‰æ‹©é¡¹,è¿”å›null
+  * @return {CC.Base} item ä¸Šä¸€ä¸ªå¯é€‰æ‹©é¡¹
   */
  getPre : function(){
   var idx = this.getStartIndex() - 1,
@@ -384,7 +384,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * Ñ¡Ôñ²¢·µ»ØÏÂÒ»Ïî,ÈçÎŞ·µ»Ønull
+ * é€‰æ‹©å¹¶è¿”å›ä¸‹ä¸€é¡¹,å¦‚æ— è¿”å›null
  */
  next : function(){
   var n = this.getNext();
@@ -394,7 +394,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * Ñ¡Ôñ²¢·µ»ØÇ°Ò»Ïî,ÈçÎŞ·µ»Ønull
+ * é€‰æ‹©å¹¶è¿”å›å‰ä¸€é¡¹,å¦‚æ— è¿”å›null
  */
  pre : function(){
   var n = this.getPre();
@@ -412,7 +412,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * È«Ñ¡/È«²»Ñ¡
+ * å…¨é€‰/å…¨ä¸é€‰
  */
  selectAll : function(b){
   if(this.mode && !b){
@@ -426,7 +426,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * ·´Ñ¡
+ * åé€‰
  */
  selectOpp : function(b) {
   var s = this;

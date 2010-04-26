@@ -1,4 +1,4 @@
-CC.Tpl.def('CC.ui.form.Combox', '<div class="g-panel g-combo" tabindex="1" hidefocus="on"><div class="g-panel-wrap g-combo-wrap" id="_wrap"><input type="hidden" id="_el" /><div class="unedit-txt" id="_uetxt"></div><span class="downIco" id="_trigger"></span></div></div>');
+ï»¿CC.Tpl.def('CC.ui.form.Combox', '<div class="g-panel g-combo" tabindex="1" hidefocus="on"><div class="g-panel-wrap g-combo-wrap" id="_wrap"><input type="hidden" id="_el" /><div class="unedit-txt" id="_uetxt"></div><span class="downIco" id="_trigger"></span></div></div>');
 
 /**
  * @name CC.ui.form.Combox
@@ -27,27 +27,27 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
     initComponent: function() {
 
-      //ÓÃÓÚÌî³äselectorÑ¡ÏîµÄÊı×é
+      //ç”¨äºå¡«å……selectoré€‰é¡¹çš„æ•°ç»„
       var array = CC.delAttr(this, 'array');
 
-      //±à¼­¿ò
+      //ç¼–è¾‘æ¡†
       this.editor = new CC.ui.form.Text({
         name: this.name
       });
 
-      //¸¸Àà³õÊ¼»¯
+      //çˆ¶ç±»åˆå§‹åŒ–
       superclass.initComponent.call(this);
 
-      //²»¿É±à¼­Ê±ÏÔÊ¾µÄÖ÷Ìå
+      //ä¸å¯ç¼–è¾‘æ—¶æ˜¾ç¤ºçš„ä¸»ä½“
       this.uneditNode = this.dom('_uetxt');
 
-      //¼ÓÈë±à¼­¿ò
+      //åŠ å…¥ç¼–è¾‘æ¡†
       this.dom('_wrap').insertBefore(this.editor.view, null);
 
-      //ÏÂÀ­¿òÖ÷Ìå
+      //ä¸‹æ‹‰æ¡†ä¸»ä½“
       var st = this.selector;
 
-      //Ä¬ÈÏµÄÏÂÀ­¿òÎªFolder¿Ø¼ş
+      //é»˜è®¤çš„ä¸‹æ‹‰æ¡†ä¸ºFolderæ§ä»¶
       if (!st) {
         st = this.selector = new CC.ui.Folder({
           showTo: document.body,
@@ -72,8 +72,8 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       if (this.selected) st.select(selected);
 
       //
-      // ÓÉÓÚComboxÓÉ¶à¸ö¿Ø¼şÆ´×°¶ø³É, ÎªÁËÄÜÕıÈ·²¶»ñCombox¿Ø¼şµÄblur, focusÊÂ¼ş,
-      // ²»µÃ²»¶à¼àÌı¼¸¸öÊÂ¼ş,²¢×÷Ò»´¦ÌØÊâ´¦Àí.
+      // ç”±äºComboxç”±å¤šä¸ªæ§ä»¶æ‹¼è£…è€Œæˆ, ä¸ºäº†èƒ½æ­£ç¡®æ•è·Comboxæ§ä»¶çš„blur, focusäº‹ä»¶,
+      // ä¸å¾—ä¸å¤šç›‘å¬å‡ ä¸ªäº‹ä»¶,å¹¶ä½œä¸€å¤„ç‰¹æ®Šå¤„ç†.
       //
       this.domEvent('focus', this.onFocusTrigger);
       this.domEvent('blur', this.onBodyBlurTrigger);
@@ -81,7 +81,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       this.domEvent('blur', this.onBodyBlurTrigger, false, null, this.editor.element);
       this.domEvent('keydown', this.onKeydownTrigger);
       this.wheelEvent(this.onMouseWheel, true);
-      //½¹µãÏûÊ§Ê±¼ì²éÊäÈëÖµÊÇ·ñÊÇÏÂÀ­ÏîµÄÄ³Ò»Ïî,Èç¹ûÓĞ,Ñ¡ÔñÖ®.
+      //ç„¦ç‚¹æ¶ˆå¤±æ—¶æ£€æŸ¥è¾“å…¥å€¼æ˜¯å¦æ˜¯ä¸‹æ‹‰é¡¹çš„æŸä¸€é¡¹,å¦‚æœæœ‰,é€‰æ‹©ä¹‹.
       this.on('blur', this.checkSelected);
     },
     
@@ -102,7 +102,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
     /**
      * @private
-     * combox Ö÷ÌåÊ§½¹Ê±´¥·¢
+     * combox ä¸»ä½“å¤±ç„¦æ—¶è§¦å‘
      */
     onBodyBlurTrigger: function() {
       if (this.selector.hidden && this._leaveFocus) {
@@ -178,7 +178,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     attach: function(selector) {
       this.selector = selector;
 
-      //selector Óë Ö÷ÌåÉúËÀ´æÍö
+      //selector ä¸ ä¸»ä½“ç”Ÿæ­»å­˜äº¡
       this.follow(selector);
 
       selector.display(false);
@@ -201,12 +201,12 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
 
     onBoxContexted: function(evt) {
-    	//À´×Ôä¯ÀÀÆ÷ÊÂ¼ş
+    	//æ¥è‡ªæµè§ˆå™¨äº‹ä»¶
       if(evt){
 	      var el = Event.element(evt);
 	      if (this.ancestorOf(el)) return false;
       }
-      //±ê¼ÇÎªÍâ²¿Ó°Ó¦,Ê§È¥½¹µã
+      //æ ‡è®°ä¸ºå¤–éƒ¨å½±åº”,å¤±å»ç„¦ç‚¹
       this.leaveFocusOn();
       this.showBox(false);
       this.leaveFocusOff();
@@ -217,7 +217,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       this.showBox(false);
     },
 /**
- * ·µ»Øfalse±íÊ¾²»ÔÙ·¢ËÍ¸ÃÊÂ¼ş
+ * è¿”å›falseè¡¨ç¤ºä¸å†å‘é€è¯¥äº‹ä»¶
  * @private
  */
     _keyHandler: function(ev, isSelectorEv) {
@@ -288,8 +288,8 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     	this.showBox(false);
     },
     /**
-     * ¼ì²éÊäÈëÖµÊÇ·ñÎªÏÂÀ­Ñ¡ÏîÖĞµÄÄ³Ò»Ïî.
-     * Èç¹ûÓĞ¶à¸öÏàÍ¬Ïî,²¢ÇÒµ±Ç°ÒÑÑ¡ÆäÖĞÒ»Ïî,ºöÂÔÖ®,·ñÔòÑ¡ÖĞ·ûºÏµÄÊ×¸öÑ¡Ïî.
+     * æ£€æŸ¥è¾“å…¥å€¼æ˜¯å¦ä¸ºä¸‹æ‹‰é€‰é¡¹ä¸­çš„æŸä¸€é¡¹.
+     * å¦‚æœæœ‰å¤šä¸ªç›¸åŒé¡¹,å¹¶ä¸”å½“å‰å·²é€‰å…¶ä¸­ä¸€é¡¹,å¿½ç•¥ä¹‹,å¦åˆ™é€‰ä¸­ç¬¦åˆçš„é¦–ä¸ªé€‰é¡¹.
      * @private
      */
     checkSelected: function() {
@@ -317,7 +317,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
 
    /**
-   * ¶¨Î»Ñ¡ÔñÈİÆ÷Î»ÖÃ
+   * å®šä½é€‰æ‹©å®¹å™¨ä½ç½®
    * @protected
    */
     preferPosition: function() {
@@ -327,8 +327,8 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
 
     /**
-   * ·µ»Ø×î¼Ñ¿í¶È,ÖØĞ´¸Ãº¯Êı×Ô¶¨ÏÂÀ­Ñ¡ÔñÈİÆ÷µÄ¿í¶È
-   * Ä¬ÈÏ·µ»ØcomboxµÄ¿í¶È
+   * è¿”å›æœ€ä½³å®½åº¦,é‡å†™è¯¥å‡½æ•°è‡ªå®šä¸‹æ‹‰é€‰æ‹©å®¹å™¨çš„å®½åº¦
+   * é»˜è®¤è¿”å›comboxçš„å®½åº¦
    */
     preferWidth: function() {
       return this.getWidth();
@@ -347,9 +347,9 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
 
     /**
-     * @param v Öµ
-     * @param title ±êÌâ
-     * @param innerUsed ÄÚ²¿Ê¹ÓÃ
+     * @param v å€¼
+     * @param title æ ‡é¢˜
+     * @param innerUsed å†…éƒ¨ä½¿ç”¨
      * @override
      */
     setValue: function(v, title, innerUsed) {
@@ -363,7 +363,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
 
     /**
-     * µ±Ç°Ã»Ñ¡Ôñ,·µ»Ø¿Õ»ò±à¼­¿òÖĞµÄÖµ.
+     * å½“å‰æ²¡é€‰æ‹©,è¿”å›ç©ºæˆ–ç¼–è¾‘æ¡†ä¸­çš„å€¼.
      * @override
      */
     getValue: function() {
@@ -374,7 +374,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
 
   /**
-   * ×Ô¶¨¹ıÂËÖØĞ´¸Ãº¯Êı¼´¿É.
+   * è‡ªå®šè¿‡æ»¤é‡å†™è¯¥å‡½æ•°å³å¯.
    */
     matcher: function(item) {
       var tle = item.title;

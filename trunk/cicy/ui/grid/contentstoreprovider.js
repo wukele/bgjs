@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @name CC.ui.grid.StoreProvider
  * @class
  */
@@ -6,7 +6,7 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, /**@lends CC
 	
 	modifyCS : 'g-form-mdy',
 /**
- * �Ƿ�ֻ�ύ�Ѹ��ĵ��м�¼,Ĭ��Ϊtrue, falseʱ�ύ�����м�¼.
+ * 是否只提交已更改的行记录,默认为true, false时提交所有行记录.
  */
 	filterChanged : true,
 

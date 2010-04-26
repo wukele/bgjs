@@ -1,4 +1,4 @@
-CC.Tpl.def('CC.ui.grid.Header', '<div class="g-grid-hd"><div class="hd-inner" id="_hd_inner"><table class="hd-tbl" id="_hd_tbl" cellspacing="0" cellpadding="0" border="0"><tbody><tr id="_ctx"></tr></tbody></table></div><div class="g-clear"></div></div>');
+﻿CC.Tpl.def('CC.ui.grid.Header', '<div class="g-grid-hd"><div class="hd-inner" id="_hd_inner"><table class="hd-tbl" id="_hd_tbl" cellspacing="0" cellpadding="0" border="0"><tbody><tr id="_ctx"></tr></tbody></table></div><div class="g-clear"></div></div>');
 
 /**
  * 表头

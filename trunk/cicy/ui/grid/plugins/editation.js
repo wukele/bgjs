@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @name CC.ui.grid.plugins.Editation
- * @class Ö§³Ö±í¸ñ±à¼­²å¼ş
+ * @class æ”¯æŒè¡¨æ ¼ç¼–è¾‘æ’ä»¶
  */
 CC.create('CC.ui.grid.plugins.Editation', null, function(){
   var E = CC.Event, Math = window.Math;
@@ -10,7 +10,7 @@ CC.create('CC.ui.grid.plugins.Editation', null, function(){
   CC.ui.grid.Cell.prototype.editable   = true;
 
 /**
- * »ñµÃ¸Ãµ¥Ôª¸ñÖµ, Èç¹ûcell.valueÒÑ¶¨Òå,·µ»Øcell.value,·ñÔò·µ»Øcell.title
+ * è·å¾—è¯¥å•å…ƒæ ¼å€¼, å¦‚æœcell.valueå·²å®šä¹‰,è¿”å›cell.value,å¦åˆ™è¿”å›cell.title
  * @param {CC.ui.grid.Cell} cell
  * @return {Object} value
  */
@@ -161,7 +161,7 @@ return {
     
     /**
     * @name CC.ui.Grid#editingCell
-    * @property {CC.ui.GridCell} editingCell µ±Ç°ÕıÔÚ±à¼­µÄµ¥Ôª¸ñ
+    * @property {CC.ui.GridCell} editingCell å½“å‰æ­£åœ¨ç¼–è¾‘çš„å•å…ƒæ ¼
     */
     var et = this.getEditor(col);
     

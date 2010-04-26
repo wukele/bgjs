@@ -1,4 +1,4 @@
-(function () {
+ï»¿(function () {
 
 var CC = window.CC;
 var Base = CC.Base;
@@ -6,7 +6,7 @@ var cptx = Base.prototype;
 var UX = CC.ui;
 /**
  * @name CC.layout
- * @namespace ÈİÆ÷Àà²¼¾Ö¹ÜÀíÆ÷
+ * @namespace å®¹å™¨ç±»å¸ƒå±€ç®¡ç†å™¨
  */
 if(!CC.layout)
   CC.layout = {};
@@ -30,31 +30,31 @@ CC.layout.def = function(type, cls){
 
 /**
  * @name CC.layout.Layout
- * @class ²¼¾Ö¹ÜÀíÆ÷»ùÀà
+ * @class å¸ƒå±€ç®¡ç†å™¨åŸºç±»
  */
 CC.create('CC.layout.Layout', null,
 /**@lends CC.layout.Layout.prototype*/ {
         /**
-         * ²¼¾Ö¹ÜÀíÆ÷¶ÔÓ¦µÄÈİÆ÷Àà
+         * å¸ƒå±€ç®¡ç†å™¨å¯¹åº”çš„å®¹å™¨ç±»
          * @property {CC.Base} ct
          */
         ct: null,
 /**
- * Èç¹ûÃ¿´Î²¼¾Ö¶¼Éæ¼°ËùÓĞÈİÆ÷×ÓÏî,Ôò¸ÃÖµÓ¦ÉèÎªtrue,ÒÔ±ãÓÚµ±ÈİÆ÷×ÓÏî±ä¸ü(add, remove, display)Ê±ÖØĞÂ²¼¾ÖÈİÆ÷
+ * å¦‚æœæ¯æ¬¡å¸ƒå±€éƒ½æ¶‰åŠæ‰€æœ‰å®¹å™¨å­é¡¹,åˆ™è¯¥å€¼åº”è®¾ä¸ºtrue,ä»¥ä¾¿äºå½“å®¹å™¨å­é¡¹å˜æ›´(add, remove, display)æ—¶é‡æ–°å¸ƒå±€å®¹å™¨
  */
         layoutOnChange : false,
 
 /**
  * @property {Boolean} [deffer=false]
- * ÑÓ³Ù¶àÉÙºÁÃëºóÔÙ²¼¾Ö,ÓĞÀûÓÚÌá¸ßÓÃ»§ÌåÑé,
- * µ«×¢Òâ·ÃÎÊÍ¬²½,ÀıÈçÈİÆ÷×ÓÏîÔÚ²¼¾ÖÊ±²ÅäÖÈ¾,
- * Èç¹ûdefferÒÑÖÃ,Ôò×ÓÏîäÖÈ¾½«»áÔÚJavaScriptÏÂÒ»ÖÜÆÚµ÷ÓÃ.
+ * å»¶è¿Ÿå¤šå°‘æ¯«ç§’åå†å¸ƒå±€,æœ‰åˆ©äºæé«˜ç”¨æˆ·ä½“éªŒ,
+ * ä½†æ³¨æ„è®¿é—®åŒæ­¥,ä¾‹å¦‚å®¹å™¨å­é¡¹åœ¨å¸ƒå±€æ—¶æ‰æ¸²æŸ“,
+ * å¦‚æœdefferå·²ç½®,åˆ™å­é¡¹æ¸²æŸ“å°†ä¼šåœ¨JavaScriptä¸‹ä¸€å‘¨æœŸè°ƒç”¨.
  */
         deffer : false,
 
         /**
-         * ³õÊ¼»¯²¼¾Ö
-         * @param {Object} opt ²¼¾ÖÅäÖÃĞÅÏ¢
+         * åˆå§‹åŒ–å¸ƒå±€
+         * @param {Object} opt å¸ƒå±€é…ç½®ä¿¡æ¯
          */
         initialize: function(opt){
             if (opt)
@@ -65,18 +65,18 @@ CC.create('CC.layout.Layout', null,
         },
 
         /**
-         * ÈİÆ÷ÔÚÌí¼Ó×ÓÏîÇ°±»µ÷ÓÃ¡£
-         * @param {CC.Base} comp ×ÓÏî
-         * @param {Object} cfg ×ÓÏîÓÃ²¼¾ÖµÄÅäÖÃĞÅÏ¢
+         * å®¹å™¨åœ¨æ·»åŠ å­é¡¹å‰è¢«è°ƒç”¨ã€‚
+         * @param {CC.Base} comp å­é¡¹
+         * @param {Object} cfg å­é¡¹ç”¨å¸ƒå±€çš„é…ç½®ä¿¡æ¯
          * @function
          */
         beforeAdd: fGo,
 /**
  * @name CC.Base#lyInf
- * @property {Object} lyInf ²¼¾ÖÅäÖÃÊı¾İ,
-    Èç¹û¿Ø¼ş±»²¼¾Ö¹ÜÀíÆ÷Ëù¹ÜÀí,
-    Æä²¼¾ÖÏà¹ØµÄÅäÖÃĞÅÏ¢½«´æ·ÅÔÚcomponent.lyInf,
-    Òª·ÃÎÊ×ÓÏîµ±Ç°²¼¾ÖĞÅÏ¢,¿ÉÍ¨¹ılayout.cfgFrom(component)·½·¨»ñµÃ.
+ * @property {Object} lyInf å¸ƒå±€é…ç½®æ•°æ®,
+    å¦‚æœæ§ä»¶è¢«å¸ƒå±€ç®¡ç†å™¨æ‰€ç®¡ç†,
+    å…¶å¸ƒå±€ç›¸å…³çš„é…ç½®ä¿¡æ¯å°†å­˜æ”¾åœ¨component.lyInf,
+    è¦è®¿é—®å­é¡¹å½“å‰å¸ƒå±€ä¿¡æ¯,å¯é€šè¿‡layout.cfgFrom(component)æ–¹æ³•è·å¾—.
  * @protected
  * @see #cfgFrom
  * @example
@@ -85,22 +85,22 @@ CC.create('CC.layout.Layout', null,
  */
 
 /**
- * ½«×é¼ş component Ìí¼Óµ½²¼¾Ö,
- * Èç¹ûÈİÆ÷¾ßÓĞÓĞĞ§µÄ²¼¾Ö¹ÜÀíÆ÷,Ôò½¨Òé´Ó²¼¾Ö¹ÜÀíÆ÷Ìí¼Ó×ÓÏî×é¼ş,
- * ¶ø²»ÊÇÖ±½Óµ÷ÓÃÈİÆ÷add·½·¨, ÆäËü×ÓÏî±ä¸ü²Ù×÷(remove, insert)Í¬Àí.
- * Èç¹ûlayoutOnChangeÎªtrue,×é¼ş¼ÓÈëºó½«ÖØĞÂ²¼¾ÖÈİÆ÷,·ñÔòÖ»µ÷ÓÃlayoutChild¶Ô¼ÓÈë×é¼ş½øĞĞ²¼¾Ö.
+ * å°†ç»„ä»¶ component æ·»åŠ åˆ°å¸ƒå±€,
+ * å¦‚æœå®¹å™¨å…·æœ‰æœ‰æ•ˆçš„å¸ƒå±€ç®¡ç†å™¨,åˆ™å»ºè®®ä»å¸ƒå±€ç®¡ç†å™¨æ·»åŠ å­é¡¹ç»„ä»¶,
+ * è€Œä¸æ˜¯ç›´æ¥è°ƒç”¨å®¹å™¨addæ–¹æ³•, å…¶å®ƒå­é¡¹å˜æ›´æ“ä½œ(remove, insert)åŒç†.
+ * å¦‚æœlayoutOnChangeä¸ºtrue,ç»„ä»¶åŠ å…¥åå°†é‡æ–°å¸ƒå±€å®¹å™¨,å¦åˆ™åªè°ƒç”¨layoutChildå¯¹åŠ å…¥ç»„ä»¶è¿›è¡Œå¸ƒå±€.
  * @param {CC.Base} component
- * @param {Object} cfg ×é¼ş²¼¾ÖĞÅÏ¢
+ * @param {Object} cfg ç»„ä»¶å¸ƒå±€ä¿¡æ¯
  * @return this
  */
         add : function(comp, cfg){
 
-          // ÓÉJSON¸ñÊ½´´½¨
+          // ç”±JSONæ ¼å¼åˆ›å»º
           if(!comp.cacheId){
             comp = UX.instance(comp);
           }
 
-          //Ìí¼Óµ½ÈİÆ÷
+          //æ·»åŠ åˆ°å®¹å™¨
           this.ct.add(comp);
           var cc = comp.lyInf;
           if (!cc)
@@ -110,7 +110,7 @@ CC.create('CC.layout.Layout', null,
           this.beforeAdd(comp, cc);
 /**
  * @name CC.layout.Layout#itemCS
- * @property {String} itemCS ½«×ÓÏî±»¼Ó½øÈİÆ÷Ê±Ìí¼Óµ½×ÓÏîµÄCSSÑùÊ½
+ * @property {String} itemCS å°†å­é¡¹è¢«åŠ è¿›å®¹å™¨æ—¶æ·»åŠ åˆ°å­é¡¹çš„CSSæ ·å¼
  */
           if(this.itemCS)
             comp.addClassIf(this.itemCS);
@@ -121,12 +121,12 @@ CC.create('CC.layout.Layout', null,
 
             if(this.layoutOnChange)
               this.doLayout();
-            else this.layoutChild(comp); //×ÓÏî²¼¾ÖºóÔÙäÖÈ¾
+            else this.layoutChild(comp); //å­é¡¹å¸ƒå±€åå†æ¸²æŸ“
           }
           return this;
         },
 /**
- * µ±Ç°²¼¾Ö¹ÜÀíÆ÷ÊÇ·ñ¾ÍĞ÷Ö´ĞĞdoLayout²¼¾Ö
+ * å½“å‰å¸ƒå±€ç®¡ç†å™¨æ˜¯å¦å°±ç»ªæ‰§è¡ŒdoLayoutå¸ƒå±€
  * @private
  */
         isUp : function(){
@@ -134,7 +134,7 @@ CC.create('CC.layout.Layout', null,
         },
 
 /**
- * ÏÔÊ¾/Òş²Ø×ÓÏî,Èç¹ûlayoutOnChangeÎªtrueÔòÖØĞÂ²¼¾ÖÈİÆ÷
+ * æ˜¾ç¤º/éšè—å­é¡¹,å¦‚æœlayoutOnChangeä¸ºtrueåˆ™é‡æ–°å¸ƒå±€å®¹å™¨
  */
         display : function(c, b){
           c.display(b);
@@ -144,21 +144,21 @@ CC.create('CC.layout.Layout', null,
 
 /**
  * @name CC.layout.Layout#invalidate
- * @property {Boolean} [invalidate=false] Ö¸Ê¾µ±Òı·¢²¼¾ÖÊ±ÊÇ·ñÖ´ĞĞ²¼¾Ö,Èç´óÁ¿Òı·¢ÖØ¸´²¼¾ÖµÄ²Ù×÷¿ÉÏÈÉèÖÃinvalidate=true,Ö´ĞĞÍêºóÔÙÉèÖÃinvalidate=false,ÔÙµ÷ÓÃ{@link #doLayout}²¼¾Ö.
- * ÈİÆ÷Àà²»±ØÖ±½ÓÉèÖÃ¸ÃÊôĞÔ,¿Éµ÷ÓÃ{@link CC.ui.ContainerBase#validate}ºÍ{@link CC.ui.ContainerBase#invalidate}·½·¨ÉèÖÃ.
+ * @property {Boolean} [invalidate=false] æŒ‡ç¤ºå½“å¼•å‘å¸ƒå±€æ—¶æ˜¯å¦æ‰§è¡Œå¸ƒå±€,å¦‚å¤§é‡å¼•å‘é‡å¤å¸ƒå±€çš„æ“ä½œå¯å…ˆè®¾ç½®invalidate=true,æ‰§è¡Œå®Œåå†è®¾ç½®invalidate=false,å†è°ƒç”¨{@link #doLayout}å¸ƒå±€.
+ * å®¹å™¨ç±»ä¸å¿…ç›´æ¥è®¾ç½®è¯¥å±æ€§,å¯è°ƒç”¨{@link CC.ui.ContainerBase#validate}å’Œ{@link CC.ui.ContainerBase#invalidate}æ–¹æ³•è®¾ç½®.
  */
 
 /**
- * Ö´ĞĞ²¼¾Ö,ÒªÖØĞ´²¼¾ÖÓ¦ÖØĞ´onLayout·½·¨.
+ * æ‰§è¡Œå¸ƒå±€,è¦é‡å†™å¸ƒå±€åº”é‡å†™onLayoutæ–¹æ³•.
  */
         doLayout: function(){
           if(this.isUp()){
-            //²»¿É¼ûÊ±²¢²»Á¢¼´²¼¾ÖÈİÆ÷,¶øÊÇ´ıÏÔÊ¾Ê±ÔÙ²¼¾Ö
-            //²Î¼ûct.display
+            //ä¸å¯è§æ—¶å¹¶ä¸ç«‹å³å¸ƒå±€å®¹å™¨,è€Œæ˜¯å¾…æ˜¾ç¤ºæ—¶å†å¸ƒå±€
+            //å‚è§ct.display
             if(this.ct.hidden){
-              if(__debug) console.log(this,'ÈİÆ÷´¦ÓÚÒş²Ø×´Ì¬,Î´Á¢¼´²¼¾Ö..');
+              if(__debug) console.log(this,'å®¹å™¨å¤„äºéšè—çŠ¶æ€,æœªç«‹å³å¸ƒå±€..');
 /**
- * @property {Array} defferArgs ÑÓ³Ù²¼¾ÖÖĞ¼Ä´æµÄ²¼¾Ö·½·¨²ÎÊı
+ * @property {Array} defferArgs å»¶è¿Ÿå¸ƒå±€ä¸­å¯„å­˜çš„å¸ƒå±€æ–¹æ³•å‚æ•°
  * @private
  */
               this.defferArgs = arguments;
@@ -178,9 +178,9 @@ CC.create('CC.layout.Layout', null,
         },
 
 /**
- * »ñµÃ¿Ø¼şµ±Ç°²¼¾ÖÏà¹ØµÄÊôĞÔÅäÖÃĞÅÏ¢, ¸Ãµ÷ÓÃÎŞÂÛÈÎºÎÊ±ºò¶¼»á·µ»ØÒ»¸ö·Çnull¶ÔÏó,¼´Ê¹Ïà¹ØÅäÖÃ²»´æÔÚ.
+ * è·å¾—æ§ä»¶å½“å‰å¸ƒå±€ç›¸å…³çš„å±æ€§é…ç½®ä¿¡æ¯, è¯¥è°ƒç”¨æ— è®ºä»»ä½•æ—¶å€™éƒ½ä¼šè¿”å›ä¸€ä¸ªénullå¯¹è±¡,å³ä½¿ç›¸å…³é…ç½®ä¸å­˜åœ¨.
  * @param {CC.Base} item
- * @return {Object} ¿Ø¼şµ±Ç°²¼¾ÖÏà¹ØµÄÊôĞÔÅäÖÃĞÅÏ¢
+ * @return {Object} æ§ä»¶å½“å‰å¸ƒå±€ç›¸å…³çš„å±æ€§é…ç½®ä¿¡æ¯
  * @example
    var item = ct.$(0);
    var layout = ct.layout;
@@ -200,7 +200,7 @@ CC.create('CC.layout.Layout', null,
         },
 
         /**
-         * ÈçÃ»ÓĞÕë¶Ôµ¥¸ö¿Ø¼ş²¼¾ÖµÄ¿ÉÖ±½ÓºöÂÔ.
+         * å¦‚æ²¡æœ‰é’ˆå¯¹å•ä¸ªæ§ä»¶å¸ƒå±€çš„å¯ç›´æ¥å¿½ç•¥.
          * @protected
          * @param {CC.Base} comp
          * @param {Object} cfg
@@ -208,9 +208,9 @@ CC.create('CC.layout.Layout', null,
         layoutChild: fGo,
 
         /**
-         * ³ıÒÆ×ÓÏîÊ±µ÷ÓÃ²¢ÖØĞÂ²¼¾Ö,
-         * ×¢Òâ:´Ó²¼¾Ö¹ÜÀíÆ÷ÒÆ³ı×Ó¿Ø¼ş²¢²»´ÓÈİÆ÷ÒÆ³ı.
-         * Èç¹ûlayoutOnChangeÉèÖÃÎªfalseÊ±²»µ÷ÓÃ¡£
+         * é™¤ç§»å­é¡¹æ—¶è°ƒç”¨å¹¶é‡æ–°å¸ƒå±€,
+         * æ³¨æ„:ä»å¸ƒå±€ç®¡ç†å™¨ç§»é™¤å­æ§ä»¶å¹¶ä¸ä»å®¹å™¨ç§»é™¤.
+         * å¦‚æœlayoutOnChangeè®¾ç½®ä¸ºfalseæ—¶ä¸è°ƒç”¨ã€‚
          */
         remove: function(comp){
             if (this.layoutOnChange)
@@ -241,7 +241,7 @@ CC.create('CC.layout.Layout', null,
         },
 
         /**
-         * ½«²¼¾Ö¹ÜÀíÆ÷Ó¦ÓÃµ½Ò»¸öÈİÆ÷¿Ø¼şÖĞ¡£
+         * å°†å¸ƒå±€ç®¡ç†å™¨åº”ç”¨åˆ°ä¸€ä¸ªå®¹å™¨æ§ä»¶ä¸­ã€‚
          * @param {Object} ct
          */
         attach: function(ct){
@@ -250,13 +250,13 @@ CC.create('CC.layout.Layout', null,
               this.deffer = ct.deffer;
 /**
  * @name CC.layout.Layout#ctCS
- * @property {String} ctCS ³õÊ¼»¯Ê±Ìí¼Óµ½ÈİÆ÷µÄÑùÊ½
+ * @property {String} ctCS åˆå§‹åŒ–æ—¶æ·»åŠ åˆ°å®¹å™¨çš„æ ·å¼
  */
             if (this.ctCS)
                 ct.addClass(this.ctCS);
 /**
  * @name CC.layout.Layout#wrCS
- * @property {String} wrCS ³õÊ¼»¯Ê±Ìí¼Óµ½ÈİÆ÷ct.wrapperµÄÑùÊ½
+ * @property {String} wrCS åˆå§‹åŒ–æ—¶æ·»åŠ åˆ°å®¹å™¨ct.wrapperçš„æ ·å¼
  */
             if(this.wrCS)
               ct.wrapper.addClass(this.wrCS);
@@ -271,7 +271,7 @@ CC.create('CC.layout.Layout', null,
         },
 
         /**
-         * ÒÆ³ıÈİÆ÷µÄ²¼¾Ö¹ÜÀíÆ÷.
+         * ç§»é™¤å®¹å™¨çš„å¸ƒå±€ç®¡ç†å™¨.
          */
         detach: function(){
           var ct = this.ct;
@@ -283,7 +283,7 @@ CC.create('CC.layout.Layout', null,
         },
 
         /**
-         * ×ÓÏî±»ÈİÆ÷²¼¾ÖºóÔÙäÖÈ¾.
+         * å­é¡¹è¢«å®¹å™¨å¸ƒå±€åå†æ¸²æŸ“.
          */
         onLayout: function(){
             var i = 0, ch, chs = this.ct.children, len = chs.length;
@@ -304,17 +304,17 @@ var lyx = CC.layout.Layout;
  */
 CC.layout.def('default', lyx);
 //
-// WrapPanelÄ£°å, ÉèÖÃwrap½áµãµÄpadding,border¶ø²»»áÓ°Ïìµ½panel²ãµÄ¿í¸ßµÄ¼ÆËã,
-// ¿ÉÈÆ¹ıä¯ÀÀÆ÷¶ÔBoxModel½âÎöµÄ²»Í¬
+// WrapPanelæ¨¡æ¿, è®¾ç½®wrapç»“ç‚¹çš„padding,borderè€Œä¸ä¼šå½±å“åˆ°panelå±‚çš„å®½é«˜çš„è®¡ç®—,
+// å¯ç»•è¿‡æµè§ˆå™¨å¯¹BoxModelè§£æçš„ä¸åŒ
 //
 CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>')
       .def( 'CC.ui.WrapPanel', '<div class="g-panel"><div class="g-panel-wrap" id="_wrap"></div></div>');
 
 /**
- * ÈİÆ÷Àà¿Ø¼ş,ÈİÆ÷ÊÇ»ùÀàµÄÀ©Õ¹,¿É°üº¬¶à¸ö×Ó×é¼ş,
- * ×Ó×é¼şÒ²¿ÉÊÇÒ»¸öÈİÆ÷,ĞÎ³ÉÁË×é¼şÊ÷
+ * å®¹å™¨ç±»æ§ä»¶,å®¹å™¨æ˜¯åŸºç±»çš„æ‰©å±•,å¯åŒ…å«å¤šä¸ªå­ç»„ä»¶,
+ * å­ç»„ä»¶ä¹Ÿå¯æ˜¯ä¸€ä¸ªå®¹å™¨,å½¢æˆäº†ç»„ä»¶æ ‘
  * @name CC.ui.ContainerBase
- * @class ÈİÆ÷»ùÀà
+ * @class å®¹å™¨åŸºç±»
  * @extends CC.Base
  */
 CC.create('CC.ui.ContainerBase', Base,
@@ -322,12 +322,12 @@ CC.create('CC.ui.ContainerBase', Base,
 {
 
   /**
- * @property {Array} children ÈİÆ÷×Ó¿Ø¼ş´æ·Å´¦
+ * @property {Array} children å®¹å™¨å­æ§ä»¶å­˜æ”¾å¤„
  * @readonly
  */
   children: null,
 /**
- * @property {Boolean} [eventable=true] ¿É´¦ÀíÊÂ¼ş,¼´¿ÉÍ¨¹ıon·½·¨¼àÌıÈİÆ÷ÊÂ¼ş
+ * @property {Boolean} [eventable=true] å¯å¤„ç†äº‹ä»¶,å³å¯é€šè¿‡onæ–¹æ³•ç›‘å¬å®¹å™¨äº‹ä»¶
  * @readonly
  * @example
    ct.on('resized', function(){
@@ -337,7 +337,7 @@ CC.create('CC.ui.ContainerBase', Base,
   eventable: true,
 
 /**
- * Ö¸Ã÷Ãæ°åÈİÆ÷½áµã,ID»òHtmlÔªËØ
+ * æŒ‡æ˜é¢æ¿å®¹å™¨ç»“ç‚¹,IDæˆ–Htmlå…ƒç´ 
  * @type HTMLElement|String
  */
   ct: null,
@@ -350,17 +350,17 @@ CC.create('CC.ui.ContainerBase', Base,
 
   maxW: 65535,
  /**
- * @property {Base} [itemCls=CC.ui.Item] ÈİÆ÷×Ó¿Ø¼şÀà, fromArray·½·¨¸ù¾İ¸Ã×ÓÏîÀàÊµÀı»¯×ÓÏî
+ * @property {Base} [itemCls=CC.ui.Item] å®¹å™¨å­æ§ä»¶ç±», fromArrayæ–¹æ³•æ ¹æ®è¯¥å­é¡¹ç±»å®ä¾‹åŒ–å­é¡¹
  * @see #fromArray
  */
   itemCls: CC.ui.Item,
   /**
- * @property {Boolean} [autoRender=false] ÈİÆ÷×Ó¿Ø¼şÀà
+ * @property {Boolean} [autoRender=false] å®¹å™¨å­æ§ä»¶ç±»
  */
   autoRender: false,
 
 /**
- * @property {Boolean|CC.util.SelectionProvider} selectionProvider ÊÇ·ñ¶ÔÈİÆ÷Ó¦ÓÃ×ÓÏîÑ¡Ôñ¹¦ÄÜ
+ * @property {Boolean|CC.util.SelectionProvider} selectionProvider æ˜¯å¦å¯¹å®¹å™¨åº”ç”¨å­é¡¹é€‰æ‹©åŠŸèƒ½
  */
   selectionProvider : false,
 
@@ -369,7 +369,7 @@ CC.create('CC.ui.ContainerBase', Base,
     //pre load children
 /**
  * @name CC.ui.ContainerBase#array
- * @property {Array} array ×ÓÏîÊı¾İ³õÊ¼»¯×éÊı
+ * @property {Array} array å­é¡¹æ•°æ®åˆå§‹åŒ–ç»„æ•°
  * @see #fromArray
  */
     if (this.array) {
@@ -383,23 +383,23 @@ CC.create('CC.ui.ContainerBase', Base,
 
     /**
  * @name CC.ui.ContainerBase#keyEvent
- * @property {Boolean} keyEvent ÊÇ·ñ¿ªÆô¼üÅÌ¼àÌıÊÂ¼ş
+ * @property {Boolean} keyEvent æ˜¯å¦å¼€å¯é”®ç›˜ç›‘å¬äº‹ä»¶
  */
     if (this.keyEvent)
       this.bindKeyInstaller();
 
     /**
  * @name CC.ui.ContainerBase#useContainerMonitor
- * @property {Boolean} useContainerMonitor ÊÇ·ñÔÚÈİÆ÷²ãÉÏ´¦Àí×ÓÏîDOMÊÂ¼ş
+ * @property {Boolean} useContainerMonitor æ˜¯å¦åœ¨å®¹å™¨å±‚ä¸Šå¤„ç†å­é¡¹DOMäº‹ä»¶
  */
 
 /**
  * @name CC.ui.ContainerBase#cancelClickBubble
- * @property {Boolean|String} [cancelClickBubble=false] ÊÇ·ñÍ£Ö¹ÈİÆ÷clickEventÊÂ¼şµÄDOM´¥·¢ÊÂ¼şÃ°Åİ
+ * @property {Boolean|String} [cancelClickBubble=false] æ˜¯å¦åœæ­¢å®¹å™¨clickEventäº‹ä»¶çš„DOMè§¦å‘äº‹ä»¶å†’æ³¡
  */
     /**
  * @name CC.ui.ContainerBase#clickEvent
- * @property {Boolean|String} clickEvent ÉèÖÃ×ÓÏîµ¥»÷ÊÂ¼ş,Èç¹ûÎªtrue,Ä¬ÈÏÊÂ¼şÎªmousedown
+ * @property {Boolean|String} clickEvent è®¾ç½®å­é¡¹å•å‡»äº‹ä»¶,å¦‚æœä¸ºtrue,é»˜è®¤äº‹ä»¶ä¸ºmousedown
  */
     if (this.useContainerMonitor && this.clickEvent) {
       this.bindClickInstaller();
@@ -421,12 +421,12 @@ CC.create('CC.ui.ContainerBase', Base,
     if (this.layout) {
       /**
  * @name CC.ui.ContainerBase#layout
- * @property {Layout|String} [layout='default'] ÈİÆ÷²¼¾Ö¹ÜÀíÆ÷
+ * @property {Layout|String} [layout='default'] å®¹å™¨å¸ƒå±€ç®¡ç†å™¨
  */
       if (typeof this.layout === 'string') {
 /**
  * @name CC.ui.ContainerBase#lyCfg
- * @property {Object} lyCfg ²¼¾Ö¹ÜÀíÆ÷³õÊ¼»¯ÅäÖÃ
+ * @property {Object} lyCfg å¸ƒå±€ç®¡ç†å™¨åˆå§‹åŒ–é…ç½®
  */
         var cfg = this.lyCfg || {};
         cfg.ct = this;
@@ -440,7 +440,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * ´´½¨ÈİÆ÷µÄDOM½áµã
+ * åˆ›å»ºå®¹å™¨çš„DOMç»“ç‚¹
  */
   createView: function() {
     cptx.createView.call(this);
@@ -450,11 +450,11 @@ CC.create('CC.ui.ContainerBase', Base,
     else if (typeof this.ct === 'string')
       this.ct = this.dom(this.ct);
 
-    //ÔÙÒ»´Î¼ì²â
+    //å†ä¸€æ¬¡æ£€æµ‹
     if (!this.ct)
       this.ct = this.view;
  /**
-  * container.ct½áµã¶ÔÓ¦µÄBase¶ÔÏó,Èç¹ûµ±Ç°container.view === container.ct,ÔòwrapperÎªÈİÆ÷×ÔÉí.
+  * container.ctç»“ç‚¹å¯¹åº”çš„Baseå¯¹è±¡,å¦‚æœå½“å‰container.view === container.ct,åˆ™wrapperä¸ºå®¹å™¨è‡ªèº«.
   * @name CC.ui.ContainerBase#wrapper
   * @type CC.Base
   */
@@ -480,7 +480,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * ´ËÊ±µ÷ÓÃfromArray(array)¼ÓÈë×ÓÏî,µ±onRenderºó²¼¾ÖÈİÆ÷.
+ * æ­¤æ—¶è°ƒç”¨fromArray(array)åŠ å…¥å­é¡¹,å½“onRenderåå¸ƒå±€å®¹å™¨.
  * @override
  */
   onRender: function() {
@@ -490,8 +490,8 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-     * Ìí¼ÓÊ±Ä¬ÈÏ×Ó¿Ø¼şview½«Îªct½áµã×îºóÒ»¸ö×Ó½áµã,×ÓÀà¿ÉÖØĞ´¸Ã·½·¨ÒÔ×Ô¶¨×Ó½áµãÌí¼Óµ½ÈİÆ÷½áµãµÄÎ»ÖÃ.
-     * @param {DOMElement} dom ×ÓÏîview½áµã
+     * æ·»åŠ æ—¶é»˜è®¤å­æ§ä»¶viewå°†ä¸ºctç»“ç‚¹æœ€åä¸€ä¸ªå­ç»“ç‚¹,å­ç±»å¯é‡å†™è¯¥æ–¹æ³•ä»¥è‡ªå®šå­ç»“ç‚¹æ·»åŠ åˆ°å®¹å™¨ç»“ç‚¹çš„ä½ç½®.
+     * @param {DOMElement} dom å­é¡¹viewç»“ç‚¹
      * @param {Number} [idx]
      */
   _addNode: function(dom, idx) {
@@ -501,30 +501,30 @@ CC.create('CC.ui.ContainerBase', Base,
     }
   },
   /**
- * ×Ô¶¨ÒåÒÆ³ıÈİÆ÷ÖĞµÄ×ÓÏîDOMÔªËØ.
- * @param {DOMElement} dom ×ÓÏîview½áµã
+ * è‡ªå®šä¹‰ç§»é™¤å®¹å™¨ä¸­çš„å­é¡¹DOMå…ƒç´ .
+ * @param {DOMElement} dom å­é¡¹viewç»“ç‚¹
  */
   _removeNode: function(dom) {
     dom.parentNode.removeChild(dom);
   },
 
 /**
- * ÏòÈİÆ÷ÖĞÌí¼ÓÒ»¸ö¿Ø¼ş,Ä¬ÈÏÈç¹ûÈİÆ÷ÒÑäÖÈ¾,¼ÓÈëµÄ×ÓÏî½«Á¢¼´äÖÈ¾,
- * ³ı·Ç´«ÈëµÄµÚ¶ş¸ö²ÎÊıÎªtrue,Ö¸Ê¾Î´ºÃäÖÈ¾×ÓÏî.
- * ²¼¾Ö¹ÜÀí¾ÍÕâÑù×ö,ÏòÈİÆ÷¼ÓÈëºó²¢Î´äÖÈ¾×ÓÏî,µÈ´ı×ÓÏî²¼¾ÖºÃºóÔÙäÖÈ¾.
- * ¿Ø¼ş¼´ÊÇ±¾°üÖĞÒÑÊµÏÖµÄ¿Ø¼ş,¾ßÓĞ»ù±¾µÄviewÊôĞÔ.
- * Èç¹ûÒªÅúÁ¿¼ÓÈë×ÓÏî,Çëµ÷ÓÃfromArray·½·¨.
- * @param {Base} a ×ÓÏî
+ * å‘å®¹å™¨ä¸­æ·»åŠ ä¸€ä¸ªæ§ä»¶,é»˜è®¤å¦‚æœå®¹å™¨å·²æ¸²æŸ“,åŠ å…¥çš„å­é¡¹å°†ç«‹å³æ¸²æŸ“,
+ * é™¤éä¼ å…¥çš„ç¬¬äºŒä¸ªå‚æ•°ä¸ºtrue,æŒ‡ç¤ºæœªå¥½æ¸²æŸ“å­é¡¹.
+ * å¸ƒå±€ç®¡ç†å°±è¿™æ ·åš,å‘å®¹å™¨åŠ å…¥åå¹¶æœªæ¸²æŸ“å­é¡¹,ç­‰å¾…å­é¡¹å¸ƒå±€å¥½åå†æ¸²æŸ“.
+ * æ§ä»¶å³æ˜¯æœ¬åŒ…ä¸­å·²å®ç°çš„æ§ä»¶,å…·æœ‰åŸºæœ¬çš„viewå±æ€§.
+ * å¦‚æœè¦æ‰¹é‡åŠ å…¥å­é¡¹,è¯·è°ƒç”¨fromArrayæ–¹æ³•.
+ * @param {Base} a å­é¡¹
  */
   add: function(a) {
 
-    // ÓÉJSON¸ñÊ½´´½¨
+    // ç”±JSONæ ¼å¼åˆ›å»º
     if(!a.cacheId){
       a = UX.instance(a);
     }
 
 /**
- * Ìí¼ÓÇ°·¢ËÍ
+ * æ·»åŠ å‰å‘é€
  * @name CC.ui.ContainerBase#beforeadd
  * @event
  * @param {CC.Base} component
@@ -533,7 +533,7 @@ CC.create('CC.ui.ContainerBase', Base,
         this.onAdd(a);
         this.afterAdd(a);
 /**
- * Ìí¼Óºó·¢³ö
+ * æ·»åŠ åå‘å‡º
  * @name CC.ui.ContainerBase#add
  * @event
  * @param {CC.Base} component
@@ -547,12 +547,12 @@ CC.create('CC.ui.ContainerBase', Base,
  */
   onAdd : function(a){
     this.children.push(a);
-    //Ä¬ÈÏ×ÓÏî½áµã½«µ÷ÓÃ_addNode·½·¨½«¼Óµ½ÈİÆ÷ÖĞ.
+    //é»˜è®¤å­é¡¹ç»“ç‚¹å°†è°ƒç”¨_addNodeæ–¹æ³•å°†åŠ åˆ°å®¹å™¨ä¸­.
     this._addNode(a.view);
-    //½¨Á¢×ÓÏîµ½ÈİÆ÷ÒıÓÃ.
+    //å»ºç«‹å­é¡¹åˆ°å®¹å™¨å¼•ç”¨.
     a.pCt = this;
 
-    //Ä¬ÈÏÈç¹ûÈİÆ÷ÒÑäÖÈ¾,¼ÓÈëµÄ×ÓÏî½«Á¢¼´äÖÈ¾
+    //é»˜è®¤å¦‚æœå®¹å™¨å·²æ¸²æŸ“,åŠ å…¥çš„å­é¡¹å°†ç«‹å³æ¸²æŸ“
     if(this.rendered && !a.rendered){
       a.render();
     }
@@ -564,7 +564,7 @@ CC.create('CC.ui.ContainerBase', Base,
   beforeAdd : function(a){
       if (a.pCt)
         a.pCt.remove(a);
-      //ÔÚuseContainerMonitorÎªfalseÊ±,ÊÇ·ñÔÊĞí×ÓÏîµã»÷ÊÂ¼ş,²¢ÇÒÊÇ·ñÓÉ×ÓÏî×ÔÉí´¥·¢.
+      //åœ¨useContainerMonitorä¸ºfalseæ—¶,æ˜¯å¦å…è®¸å­é¡¹ç‚¹å‡»äº‹ä»¶,å¹¶ä¸”æ˜¯å¦ç”±å­é¡¹è‡ªèº«è§¦å‘.
       if (!this.useContainerMonitor && this.clickEvent && !a.__click) {
         var bnd = a.__click = this.clickEventTrigger;
         var clickProxy = this.clickEventNode ? a.dom(this.clickEventNode) : a.view;
@@ -585,7 +585,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * ×ÓÏîµã»÷ÊÂ¼ş»Øµ÷,·¢ËÍclickEventÊÂ¼ş.
+ * å­é¡¹ç‚¹å‡»äº‹ä»¶å›è°ƒ,å‘é€clickEventäº‹ä»¶.
  * @private
  */
   clickEventTrigger: function(event) {
@@ -594,24 +594,24 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * ÒÆ³ıÇ°·¢ËÍ
+ * ç§»é™¤å‰å‘é€
  * @name CC.ui.ContainerBase#beforeremove
  * @event
  * @param {CC.Base} component
  */
 
 /**
- * ÒÆ³ıºó·¢ËÍ
+ * ç§»é™¤åå‘é€
  * @name CC.ui.ContainerBase#remove
  * @event
  * @param {CC.Base} component
  */
 
 /**
- * ´ÓÈİÆ÷ÒÆ³öµ«²»Ïú»Ù×ÓÏî,ÒÆ³ıµÄ×ÓÏîÒ²°üÀ¨ÍĞ¹ÜµÄ×Ó¿Ø¼ş.
- * Èç¹ûÈİÆ÷×ÓÏîÓÉ²¼¾Ö¹ÜÀíÆ÷²¼¾Ö,ÔÚµ÷ÓÃ¸Ã·½·¨ºóÓÃ
- * ct.doLayoutÖØĞÂ²¼¾Ö, »òÖ±½ÓÓÉct.layout.remove(component)ÒÆ³ı×ÓÏî.
- * @param {String|CC.Base} ¿ÉÎª¿Ø¼şÊµÀı»ò¿Ø¼şID
+ * ä»å®¹å™¨ç§»å‡ºä½†ä¸é”€æ¯å­é¡¹,ç§»é™¤çš„å­é¡¹ä¹ŸåŒ…æ‹¬æ‰˜ç®¡çš„å­æ§ä»¶.
+ * å¦‚æœå®¹å™¨å­é¡¹ç”±å¸ƒå±€ç®¡ç†å™¨å¸ƒå±€,åœ¨è°ƒç”¨è¯¥æ–¹æ³•åç”¨
+ * ct.doLayouté‡æ–°å¸ƒå±€, æˆ–ç›´æ¥ç”±ct.layout.remove(component)ç§»é™¤å­é¡¹.
+ * @param {String|CC.Base} å¯ä¸ºæ§ä»¶å®ä¾‹æˆ–æ§ä»¶ID
  */
   remove: function(a){
     a = this.$(a);
@@ -623,7 +623,7 @@ CC.create('CC.ui.ContainerBase', Base,
     else if(this.fire('beforeremove', a)!==false && this.beforeRemove(a) !== false){
       this.onRemove(a);
   /**
-   * ÒÆ³ı×ÓÏîºó·¢³ö
+   * ç§»é™¤å­é¡¹åå‘å‡º
    * @name CC.ui.ContainerBase#removed
    * @event
    * @param {CC.Base} item
@@ -642,7 +642,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
- * ÒÆ³ıËùÓĞ×ÓÏî.
+ * ç§»é™¤æ‰€æœ‰å­é¡¹.
  */
   removeAll: function() {
     var it, chs = this.children;
@@ -655,7 +655,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-     * Ïú»ÙÈİÆ÷ËùÓĞ×ÓÏî.
+     * é”€æ¯å®¹å™¨æ‰€æœ‰å­é¡¹.
      */
   destoryChildren: function() {
     var it, chs = this.children;
@@ -670,11 +670,11 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-     * ¸ù¾İ¿Ø¼şID»ò¿Ø¼ş×ÔÉí»ò¿Ø¼şËùÔÚÊı×éÏÂ±ê°²È«·µ»ØÈİÆ÷ÖĞ¸Ã¿Ø¼ş¶ÔÏó.
-     * <li>idÎª¿Ø¼şid,¼´×Ö·û´®¸ñÊ½,·µ»Øid¶ÔÓ¦µÄ×ÓÏî,ÎŞÔò·µ»Ønull
-     * <li>idÎªÊı×Ö¸ñÊ½,·µ»ØÊı×ÖÏÂ±ê¶ÔÓ¦×ÓÏî,ÎŞÔò·µ»Ønull
-     * <li>idÎª×ÓÏî,Ö±½Ó·µ»Ø¸Ã×ÓÏî
-     * @param {CC.Base|String|Number} id ×Ó¿Ø¼ş
+     * æ ¹æ®æ§ä»¶IDæˆ–æ§ä»¶è‡ªèº«æˆ–æ§ä»¶æ‰€åœ¨æ•°ç»„ä¸‹æ ‡å®‰å…¨è¿”å›å®¹å™¨ä¸­è¯¥æ§ä»¶å¯¹è±¡.
+     * <li>idä¸ºæ§ä»¶id,å³å­—ç¬¦ä¸²æ ¼å¼,è¿”å›idå¯¹åº”çš„å­é¡¹,æ— åˆ™è¿”å›null
+     * <li>idä¸ºæ•°å­—æ ¼å¼,è¿”å›æ•°å­—ä¸‹æ ‡å¯¹åº”å­é¡¹,æ— åˆ™è¿”å›null
+     * <li>idä¸ºå­é¡¹,ç›´æ¥è¿”å›è¯¥å­é¡¹
+     * @param {CC.Base|String|Number} id å­æ§ä»¶
      */
   $: function(id) {
     if (id === null || id === undefined || id === false) {
@@ -710,9 +710,9 @@ CC.create('CC.ui.ContainerBase', Base,
     cptx.onShow.call(this);
       var ly = this.layout;
       if (ly.defferArgs){
-        if (__debug) console.log(this, 'Èİ¾ÖÏÔÊ¾Ê±²¼¾Ö..', ly.defferArgs);
+        if (__debug) console.log(this, 'å®¹å±€æ˜¾ç¤ºæ—¶å¸ƒå±€..', ly.defferArgs);
         ly.doLayout.apply(ly, ly.defferArgs);
-        //ÖØÖÃ±ê¼Ç
+        //é‡ç½®æ ‡è®°
         ly.defferArgs = false;
 
         if(this.shadow){
@@ -724,23 +724,23 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
- * ·µ»Ø´°¿ÚÖĞ¿Ø¼şµÄË÷Òı.
- * @param {String|CC.Base} ²ÎÊıa¿ÉÎª¿Ø¼şÊµÀı»ò¿Ø¼şID
+ * è¿”å›çª—å£ä¸­æ§ä»¶çš„ç´¢å¼•.
+ * @param {String|CC.Base} å‚æ•°aå¯ä¸ºæ§ä»¶å®ä¾‹æˆ–æ§ä»¶ID
  */
   indexOf: function(a) {
     a = this.$(a);
     return ! a ? -1 : this.children.indexOf(a);
   },
   /**
- * »ñµÃ×ÓÏîÊıÁ¿
+ * è·å¾—å­é¡¹æ•°é‡
  * @return {Number}
  */
   size: function() {
     return this.children.length;
   },
   /**
- * ÈİÆ÷ÊÇ·ñ°üº¬¸ø³ö¿Ø¼ş.
- * @param {String|CC.Base} ²ÎÊıa¿ÉÎª¿Ø¼şÊµÀı»ò¿Ø¼şID
+ * å®¹å™¨æ˜¯å¦åŒ…å«ç»™å‡ºæ§ä»¶.
+ * @param {String|CC.Base} å‚æ•°aå¯ä¸ºæ§ä»¶å®ä¾‹æˆ–æ§ä»¶ID
  * @return {Boolean}
  */
   contains: function(a) {
@@ -751,7 +751,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
- * ×ÓÏîbÖ®Ç°²åÈëÏîa.
+ * å­é¡¹bä¹‹å‰æ’å…¥é¡¹a.
  * @param {CC.Base} a
  * @param {CC.Base} a
  */
@@ -761,7 +761,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-     * ·½·¨Óë_addNode±£³ÖÒ»ÖÂ,¶¨ÒåDOM½áµãÔÚÈİÆ÷½áµãÖĞµÄÎ»ÖÃ.
+     * æ–¹æ³•ä¸_addNodeä¿æŒä¸€è‡´,å®šä¹‰DOMç»“ç‚¹åœ¨å®¹å™¨ç»“ç‚¹ä¸­çš„ä½ç½®.
      * @param {DOMElement} n
      * @param {DOMElement} old
      */
@@ -770,14 +770,14 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-     * ²åÈëÇ°item ¿ÉÔÚÈİÆ÷ÄÚ, ÔÚidxÏÂ±ê´¦²åÈëitem, ¼´item·ÅÔÚÔ­idx´¦ÏîÖ®Ç°.
+     * æ’å…¥å‰item å¯åœ¨å®¹å™¨å†…, åœ¨idxä¸‹æ ‡å¤„æ’å…¥item, å³itemæ”¾åœ¨åŸidxå¤„é¡¹ä¹‹å‰.
      * @param {Number} index
      * @param {CC.Base} item
      * @return this
      */
   insert: function(idx, item) {
 
-    //±¾ÉíÒÑÈİÆ÷ÄÚ²¿,Removeºóµ÷ÕûÎ»ÖÃ
+    //æœ¬èº«å·²å®¹å™¨å†…éƒ¨,Removeåè°ƒæ•´ä½ç½®
     if(item.pCt === this && this.indexOf(item)<idx)
       idx --;
 
@@ -796,7 +796,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
 
   /**
- * Í¬{@link #removeAll}
+ * åŒ{@link #removeAll}
  * @override
  * @return this
  */
@@ -808,7 +808,7 @@ CC.create('CC.ui.ContainerBase', Base,
     return this;
   },
 /**
- * ½»»»Á½×ÓÏî.
+ * äº¤æ¢ä¸¤å­é¡¹.
  * @return this
  */
   swap: function(a1, a2) {
@@ -845,8 +845,8 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-     * ¶ÔÈİÆ÷¿Ø¼ş½øĞĞÅÅĞò,²ÉÓÃArrayÖĞsort·½·¨,ÅÅĞòºó¿Ø¼şµÄDOM½áµãÎ»ÖÃÒ²ËæÖ®¸Ä±ä.
-     * @param {Function} comparator ±È½ÏÆ÷
+     * å¯¹å®¹å™¨æ§ä»¶è¿›è¡Œæ’åº,é‡‡ç”¨Arrayä¸­sortæ–¹æ³•,æ’åºåæ§ä»¶çš„DOMç»“ç‚¹ä½ç½®ä¹Ÿéšä¹‹æ”¹å˜.
+     * @param {Function} comparator æ¯”è¾ƒå™¨
      * @return this
      */
   sort: function(comparator) {
@@ -864,7 +864,7 @@ CC.create('CC.ui.ContainerBase', Base,
     return this;
   },
 /**
- * ·´×ª×Ó¿Ø¼ş
+ * åè½¬å­æ§ä»¶
  * @return this
  */
   reverse: function() {
@@ -880,9 +880,9 @@ CC.create('CC.ui.ContainerBase', Base,
     return this;
   },
 /**
- * ¹ıÂË·½Ê½Òş²Ø×Ó¿Ø¼ş.
+ * è¿‡æ»¤æ–¹å¼éšè—å­æ§ä»¶.
  * @param {Function} matcher
- * @param {Object} µ÷ÓÃmatcherµÄthis
+ * @param {Object} è°ƒç”¨matcherçš„this
  * @return this
  */
   filter: function(matcher, caller) {
@@ -897,11 +897,11 @@ CC.create('CC.ui.ContainerBase', Base,
     return this;
   },
 /**
- * ¸ù¾İ¿Ø¼şÄ³¸öÊôĞÔÖµÀ´¹ıÂË×ÓÏî.
- * @param {Function} callback ·ûºÏÌõ¼şºóµÄ»Øµ÷,´«µİµ±Ç°×ÓÏî×÷²ÎÊı
- * @param {String} attrName ÊôĞÔÃû
- * @param {Object} attrV ²âÊÔµÄÊôĞÔÖµ
- * @param {Boolean} [strictEq=false] ÊÇ·ñÊ¹ÓÃ¾ø¶ÔµÈ±È½Ï·½Ê½
+ * æ ¹æ®æ§ä»¶æŸä¸ªå±æ€§å€¼æ¥è¿‡æ»¤å­é¡¹.
+ * @param {Function} callback ç¬¦åˆæ¡ä»¶åçš„å›è°ƒ,ä¼ é€’å½“å‰å­é¡¹ä½œå‚æ•°
+ * @param {String} attrName å±æ€§å
+ * @param {Object} attrV æµ‹è¯•çš„å±æ€§å€¼
+ * @param {Boolean} [strictEq=false] æ˜¯å¦ä½¿ç”¨ç»å¯¹ç­‰æ¯”è¾ƒæ–¹å¼
  * @return this
  */
   filterBy: function(callback, attrName, attrV, strictEq) {
@@ -924,10 +924,10 @@ CC.create('CC.ui.ContainerBase', Base,
     return this;
   },
 /**
- * Ã¶¾Ù×ÓÏî, Èç¹û»Øµ÷º¯Êı·µ»Øfalse,ÔòÖÕÖ¹Ã¶¾Ù.
- * @param {Function} callback »Øµ÷,´«µİ²ÎÊıÎª callback(item, i)
- * @param {Object} caller µ÷ÓÃcallbackµÄthis, Ä¬ÈÏÎª×ÓÏî
- * @return ×îºóÒ»¸ö»Øµ÷µ÷ÓÃ½á¹ûÖµ
+ * æšä¸¾å­é¡¹, å¦‚æœå›è°ƒå‡½æ•°è¿”å›false,åˆ™ç»ˆæ­¢æšä¸¾.
+ * @param {Function} callback å›è°ƒ,ä¼ é€’å‚æ•°ä¸º callback(item, i)
+ * @param {Object} caller è°ƒç”¨callbackçš„this, é»˜è®¤ä¸ºå­é¡¹
+ * @return æœ€åä¸€ä¸ªå›è°ƒè°ƒç”¨ç»“æœå€¼
  */
   each: function(cb, caller) {
     var i, it, rt, len, its = this.children;
@@ -940,7 +940,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-     * ÊÇ·ñÎª¿Ø¼şµÄ¸¸ÈİÆ÷
+     * æ˜¯å¦ä¸ºæ§ä»¶çš„çˆ¶å®¹å™¨
      * @return {Boolean}
      */
   parentOf: function(child) {
@@ -953,12 +953,12 @@ CC.create('CC.ui.ContainerBase', Base,
     return r == true;
   },
 /**
- * ÅúÁ¿Éú³É×ÓÏî, ²»ÄÜÔÚ³õÊ¼»¯º¯ÊıÀïµ÷ÓÃfromArray,ÒòÎª¿Ø¼şÎ´³õÊ¼»¯Íê³ÉÊ±²»ÄÜ¼ÓÈë×Ó¿Ø¼ş.
- * ×ÓÀàÑ°ÕÒÓÅÏÈ¼¶Îª :
- * {item option}.ctype -> ²ÎÊıitemclass -> ÈİÆ÷.itemCls,
- * ÈİÆ÷µÄitemCls¿ÉÒÔÎªctype×Ö·û´®, Ò²¿ÉÒÔÎª¾ßÌåÀà
- * @param {Array} array ×ÓÏîÊµÊ¼»¯ÅäÖÃ
- * @param {CC.Base} [itemclass=this.itemCls] ¿ÉÑ¡, ×ÓÀà
+ * æ‰¹é‡ç”Ÿæˆå­é¡¹, ä¸èƒ½åœ¨åˆå§‹åŒ–å‡½æ•°é‡Œè°ƒç”¨fromArray,å› ä¸ºæ§ä»¶æœªåˆå§‹åŒ–å®Œæˆæ—¶ä¸èƒ½åŠ å…¥å­æ§ä»¶.
+ * å­ç±»å¯»æ‰¾ä¼˜å…ˆçº§ä¸º :
+ * {item option}.ctype -> å‚æ•°itemclass -> å®¹å™¨.itemCls,
+ * å®¹å™¨çš„itemClså¯ä»¥ä¸ºctypeå­—ç¬¦ä¸², ä¹Ÿå¯ä»¥ä¸ºå…·ä½“ç±»
+ * @param {Array} array å­é¡¹å®å§‹åŒ–é…ç½®
+ * @param {CC.Base} [itemclass=this.itemCls] å¯é€‰, å­ç±»
  * @return this
  */
   fromArray: function(array, cls) {
@@ -969,7 +969,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
 /**
  * @name CC.ui.ContainerBase#itemCfg
- * @property {Object} itemCfg ÓÃÓÚÅúÁ¿Ìí¼Ó×ÓÏî{@link #fromArray}Ê±×ÓÏîµÄÅäÖÃ
+ * @property {Object} itemCfg ç”¨äºæ‰¹é‡æ·»åŠ å­é¡¹{@link #fromArray}æ—¶å­é¡¹çš„é…ç½®
  */
     var it, cfg = this.itemCfg || false;
 
@@ -1008,7 +1008,7 @@ CC.create('CC.ui.ContainerBase', Base,
 	  			
 			it = it.ctype ? UX.instance(it) : new(cls||CC.ui.Item)(it);
 		
-			//²ã²ãÉú³É×ÓÏî
+			//å±‚å±‚ç”Ÿæˆå­é¡¹
 			if (it.array && it.children) {
 				it.fromArray(it.array);
 				delete it.array;
@@ -1062,8 +1062,8 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 /**
  * @property {Boolean|String} keyEvent
- * ÓÃÓÚ¼àÌı¼üÅÌ°´¼üµÄÊÂ¼şÃû³Æ,Èç¹û¸ÃÖµÔÚÈİÆ÷³õÊ¼»¯Ê±ÒÑÉèÖÃ,
- * ¿É¼àÌıÈİÆ÷·¢³öµÄkeydownÊÂ¼ş
+ * ç”¨äºç›‘å¬é”®ç›˜æŒ‰é”®çš„äº‹ä»¶åç§°,å¦‚æœè¯¥å€¼åœ¨å®¹å™¨åˆå§‹åŒ–æ—¶å·²è®¾ç½®,
+ * å¯ç›‘å¬å®¹å™¨å‘å‡ºçš„keydownäº‹ä»¶
  * @example
    var ct = new CC.ui.ContainerBase({keyEvent:true});
    ct.on('keydown', function(event){
@@ -1073,13 +1073,13 @@ CC.create('CC.ui.ContainerBase', Base,
 /**
  * @name CC.ui.ContainerBase#keydown
  * @event
- * Èç¹ûÒÑ°²×°¼üÅÌ¼àÌıÆ÷,¼üÅÌ°´¼ü´¥·¢Ê±·¢ËÍ¸ÃÊÂ¼ş
+ * å¦‚æœå·²å®‰è£…é”®ç›˜ç›‘å¬å™¨,é”®ç›˜æŒ‰é”®è§¦å‘æ—¶å‘é€è¯¥äº‹ä»¶
  * @param {DOMEvent} e
  */
 /**
- * °²×°¼üÅÌÊÂ¼ş¼àÌıÆ÷,ÓÃÓÚ·¢ËÍÈİÆ÷µÄkeydownÊÂ¼ş,
- * Ò»Ğ©¾ßÓĞÑ¡Ôñ¹¦ÄÜ(CC.util.SelectionProvider)¿Ø¼şÒÑÄ¬ÈÏ¿ªÆôÁË¸Ã¹¦ÄÜ.
- * ¿ÉÍ¨¹ı»ñÈ¡ÈİÆ÷keyEventÊôĞÔ¼ì²âÊÇ·ñ°²×°ÁË¼àÌıÆ÷
+ * å®‰è£…é”®ç›˜äº‹ä»¶ç›‘å¬å™¨,ç”¨äºå‘é€å®¹å™¨çš„keydownäº‹ä»¶,
+ * ä¸€äº›å…·æœ‰é€‰æ‹©åŠŸèƒ½(CC.util.SelectionProvider)æ§ä»¶å·²é»˜è®¤å¼€å¯äº†è¯¥åŠŸèƒ½.
+ * å¯é€šè¿‡è·å–å®¹å™¨keyEventå±æ€§æ£€æµ‹æ˜¯å¦å®‰è£…äº†ç›‘å¬å™¨
  * @return this
  */
   bindKeyInstaller: function() {
@@ -1098,7 +1098,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * °²×°ÈİÆ÷itemclickÊÂ¼ş
+ * å®‰è£…å®¹å™¨itemclickäº‹ä»¶
  * @private
  */
   bindClickInstaller : function(){
@@ -1111,15 +1111,15 @@ CC.create('CC.ui.ContainerBase', Base,
       this.onKeyPressing(e);
   },
 /**
- * ÔÚ´¦ÀíÍêkeydownÊÂ¼şºóÄ¬ÈÏµ÷ÓÃµÄ»Øµ÷º¯Êı,
- * ÕâÊÇÒ»¸ö½Ó¿Úº¯Êı,Ä¬ÈÏÎª¿Õº¯Êı,Èç¹û²»ÏëÍ¨¹ıct.on·½Ê½¼àÌı,
- * ¿ÉÍ¨¹ıÖØĞ´¸Ã·½·¨¿ìËÙ´¦Àí°´¼üÊÂ¼ş
+ * åœ¨å¤„ç†å®Œkeydownäº‹ä»¶åé»˜è®¤è°ƒç”¨çš„å›è°ƒå‡½æ•°,
+ * è¿™æ˜¯ä¸€ä¸ªæ¥å£å‡½æ•°,é»˜è®¤ä¸ºç©ºå‡½æ•°,å¦‚æœä¸æƒ³é€šè¿‡ct.onæ–¹å¼ç›‘å¬,
+ * å¯é€šè¿‡é‡å†™è¯¥æ–¹æ³•å¿«é€Ÿå¤„ç†æŒ‰é”®äº‹ä»¶
  */
   onKeyPressing: fGo,
 
 /**
- * ÈİÆ÷¾Û½¹,¿ÉÍ¨¹ıÉèÖÃtimeout·ÇundefinedÖµÀ´³¬Ê±¾Û½¹
- * @param {Number} timeout ÉèÖÃ³¬Ê±
+ * å®¹å™¨èšç„¦,å¯é€šè¿‡è®¾ç½®timeoutéundefinedå€¼æ¥è¶…æ—¶èšç„¦
+ * @param {Number} timeout è®¾ç½®è¶…æ—¶
  * @return this
  */
   focus: function(timeout){
@@ -1137,7 +1137,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-   * Á¢¼´²¼¾Öµ±Ç°ÈİÆ÷
+   * ç«‹å³å¸ƒå±€å½“å‰å®¹å™¨
    * @return this
    */
   validate: function() {
@@ -1154,7 +1154,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-   * ²¼¾Öµ±Ç°ÈİÆ÷,Èç¹ûµ±Ç°ÈİÆ÷Õı´¦ÓÚ²¼¾Ö±ä¸üÖĞ,²¢²»Ö´ĞĞ²¼¾Ö
+   * å¸ƒå±€å½“å‰å®¹å™¨,å¦‚æœå½“å‰å®¹å™¨æ­£å¤„äºå¸ƒå±€å˜æ›´ä¸­,å¹¶ä¸æ‰§è¡Œå¸ƒå±€
    * @return this
    */
   doLayout: function() {
@@ -1163,7 +1163,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * ¸ù¾İÈİÆ÷ÄÚÈİ¿í¶È×Ô¶¯µ÷Õû.
+ * æ ¹æ®å®¹å™¨å†…å®¹å®½åº¦è‡ªåŠ¨è°ƒæ•´.
  * @override
  * @return this
  */
@@ -1173,7 +1173,7 @@ CC.create('CC.ui.ContainerBase', Base,
     return this;
   },
     /**
-     * Ïà¶Ô¸¸²ã¾ÓÖĞ,ÕâÀïµÄ¾ÓÖĞÊÇÏà¶ÔÊÓ½Ç¾ÓÖĞ.
+     * ç›¸å¯¹çˆ¶å±‚å±…ä¸­,è¿™é‡Œçš„å±…ä¸­æ˜¯ç›¸å¯¹è§†è§’å±…ä¸­.
      * @function
      * @return this
      */
@@ -1200,11 +1200,11 @@ CC.create('CC.ui.ContainerBase', Base,
       return this;
     },
 /**
- * ¸ù¾İID»òÖ¸¶¨ÊôĞÔÉî²ã±éÀúÑ°ÕÒ×Ó¿Ø¼ş.
- * @param {String} childId IDÖµ»òÖ¸¶¨ÊôĞÔµÄÖµ
- * @param {String} attributeName ²»Ò»¶¨ÊÇidÖµ,¿ÉÒÔÖ¸¶¨ËÑË÷ÆäËüÊôĞÔ
- * @param {Boolean} [returnMore] ÊÇ·ñ·µ»ØµÚÒ»¸ö»ò¶à¸ö 
- * @return {CC.Base|null|Array} Èç¹û returnMore Î´ÉèÖÃ,·µ»ØµÚÒ»¸öÆ¥Åä»ònull,·ñÔò·µ»ØÒ»¸öÊı×é,°üº¬ËùÓĞµÄÆ¥Åä.
+ * æ ¹æ®IDæˆ–æŒ‡å®šå±æ€§æ·±å±‚éå†å¯»æ‰¾å­æ§ä»¶.
+ * @param {String} childId IDå€¼æˆ–æŒ‡å®šå±æ€§çš„å€¼
+ * @param {String} attributeName ä¸ä¸€å®šæ˜¯idå€¼,å¯ä»¥æŒ‡å®šæœç´¢å…¶å®ƒå±æ€§
+ * @param {Boolean} [returnMore] æ˜¯å¦è¿”å›ç¬¬ä¸€ä¸ªæˆ–å¤šä¸ª 
+ * @return {CC.Base|null|Array} å¦‚æœ returnMore æœªè®¾ç½®,è¿”å›ç¬¬ä¸€ä¸ªåŒ¹é…æˆ–null,å¦åˆ™è¿”å›ä¸€ä¸ªæ•°ç»„,åŒ…å«æ‰€æœ‰çš„åŒ¹é….
  @example
  <pre>
    input1 = form.layout.add(new CC.ui.Text({id:'idInput',  name:'nameInput'}));
@@ -1247,8 +1247,8 @@ CC.create('CC.ui.ContainerBase', Base,
     },
     
 /**
- * ÒÔ¹ã¶ÈÓÅÏÈ±éÀú¿Ø¼şÊ÷
- * @param {Function} cb callback,  ²ÎÊıÎª callback(idxOfItemContainer, totalCounter), ·µ»ØfalseÊ±ÖÕÖ¹±éÀú;
+ * ä»¥å¹¿åº¦ä¼˜å…ˆéå†æ§ä»¶æ ‘
+ * @param {Function} cb callback,  å‚æ•°ä¸º callback(idxOfItemContainer, totalCounter), è¿”å›falseæ—¶ç»ˆæ­¢éå†;
  * @override
  */
   eachH : function(cb){
@@ -1283,9 +1283,9 @@ CC.create('CC.ui.ContainerBase', Base,
   },
   
 /**
- * »ñµÃÈİÆ÷µÄ¹ö¶¯ÌõËùÔÚ¿Ø¼ş,Èç¹û¿Ø¼ş¿í¸ßÒÑÉèÖÃ»ò¸¸ÈİÆ÷²»´æÔÚ,·µ»Ø¿Ø¼şwrapper,·ñÔò·µ»Ø¸¸ÈİÆ÷wrapper,
- * Ã÷È·ÈİÆ÷µÄscrollorÓĞÀûÓÚ¿ØÖÆÈİÆ÷ÄÚÈİµÄ¹ö¶¯,
- * ÔÚÉè¼Æ¿Ø¼şÊ±¿É¸ù¾İ¿Ø¼ş×ÔÉí½á¹¹ÌØµãÖ¸¶¨scrollor.
+ * è·å¾—å®¹å™¨çš„æ»šåŠ¨æ¡æ‰€åœ¨æ§ä»¶,å¦‚æœæ§ä»¶å®½é«˜å·²è®¾ç½®æˆ–çˆ¶å®¹å™¨ä¸å­˜åœ¨,è¿”å›æ§ä»¶wrapper,å¦åˆ™è¿”å›çˆ¶å®¹å™¨wrapper,
+ * æ˜ç¡®å®¹å™¨çš„scrolloræœ‰åˆ©äºæ§åˆ¶å®¹å™¨å†…å®¹çš„æ»šåŠ¨,
+ * åœ¨è®¾è®¡æ§ä»¶æ—¶å¯æ ¹æ®æ§ä»¶è‡ªèº«ç»“æ„ç‰¹ç‚¹æŒ‡å®šscrollor.
  */
     getScrollor : function(){
       return this.scrollor || 
@@ -1297,25 +1297,25 @@ var ccx = CC.ui.ContainerBase;
 var ccxp = CC.ui.ContainerBase.prototype;
 UX.def('ct', ccx);
 /**
- * Ãæ°åÓëÈİÆ÷µÄÖ÷ÒªÇø±ğÊÇ¿É·¢ËÍresized, reposedÊÂ¼ş,¿É¶¨ÖÆwrapperÎ»ÖÃ
+ * é¢æ¿ä¸å®¹å™¨çš„ä¸»è¦åŒºåˆ«æ˜¯å¯å‘é€resized, reposedäº‹ä»¶,å¯å®šåˆ¶wrapperä½ç½®
  * @name CC.ui.Panel
- * @class Ãæ°å
+ * @class é¢æ¿
  * @extends CC.ui.ContainerBase
  */
 CC.create('CC.ui.Panel', ccx, function(superclass){
  return /**@lends CC.ui.Panel#*/{
 /**
- * Ä¬ÈÏÎªIDÎª_wrap,Èç¹û²»´æÔÚ¸Ã½áµã,ÔòÖ¸Ïòµ±Ç°Ãæ°åµÄview½áµã
+ * é»˜è®¤ä¸ºIDä¸º_wrap,å¦‚æœä¸å­˜åœ¨è¯¥ç»“ç‚¹,åˆ™æŒ‡å‘å½“å‰é¢æ¿çš„viewç»“ç‚¹
  * @type HTMLElement|String
  */
         ct: '_wrap',
 /**
- * ÊÇ·ñÑÓ³Ù²¼¾Ö,¸ÃÖµattachµ½²¼¾Ö¹ÜÀíÆ÷Ê±½«¸²¸Ç²¼¾Ö¹ÜÀíÆ÷Ô­ÓĞdefferÉèÖÃ,Ä¬ÈÏ²»ÑÓ³Ù.
+ * æ˜¯å¦å»¶è¿Ÿå¸ƒå±€,è¯¥å€¼attachåˆ°å¸ƒå±€ç®¡ç†å™¨æ—¶å°†è¦†ç›–å¸ƒå±€ç®¡ç†å™¨åŸæœ‰defferè®¾ç½®,é»˜è®¤ä¸å»¶è¿Ÿ.
  */
         deffer : false,
 
 /**
- * µ±Ãæ°å¿í¸ß¸Ä±äÊ±ÊÇ·ñÍ¬²½¼ÆËã²¢¸üĞÂÈİÆ÷ÄÚÈİ×é¼ş¿í¸ß,Ä¬ÈÏÎªtrue
+ * å½“é¢æ¿å®½é«˜æ”¹å˜æ—¶æ˜¯å¦åŒæ­¥è®¡ç®—å¹¶æ›´æ–°å®¹å™¨å†…å®¹ç»„ä»¶å®½é«˜,é»˜è®¤ä¸ºtrue
  * @type Boolean
  */
         syncWrapper : true,
@@ -1364,9 +1364,9 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
         },
 
 /**
- * µÃµ½ÈİÆ÷¾àÀë±ß¿ò¾ØĞÎ¿í¸ß.
- * ¸ÃÖµÓ¦Óë¿Ø¼şCSSÖĞÉèÖÃ±£³ÖÒ»ÖÂ,
- * ÓÃÓÚÔÚ¿Ø¼şsetSizeÖĞ¼ÆËã¿Í»§Çø¿í¸ß,²¢²»ÉèÖÃÈİÆ÷µÄ×ø±ê(Left, Top).
+ * å¾—åˆ°å®¹å™¨è·ç¦»è¾¹æ¡†çŸ©å½¢å®½é«˜.
+ * è¯¥å€¼åº”ä¸æ§ä»¶CSSä¸­è®¾ç½®ä¿æŒä¸€è‡´,
+ * ç”¨äºåœ¨æ§ä»¶setSizeä¸­è®¡ç®—å®¢æˆ·åŒºå®½é«˜,å¹¶ä¸è®¾ç½®å®¹å™¨çš„åæ ‡(Left, Top).
  */
         getWrapperInsets: function(){
             var ins = this.insets;
@@ -1387,16 +1387,16 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
 /**
  * @name CC.ui.Panel#resized
  * @event
- * @param {Number} contentWidth Ãæ°åÈİÆ÷½áµãÄÚÈİ¿í¶È
- * @param {Number} contentHeight Ãæ°åÈİÆ÷½áµãÄÚÈİ¸ß¶È
- * @param {Number} width  Ãæ°å¿í¶È
- * @param {Number} height Ãæ°å¸ß¶È
+ * @param {Number} contentWidth é¢æ¿å®¹å™¨ç»“ç‚¹å†…å®¹å®½åº¦
+ * @param {Number} contentHeight é¢æ¿å®¹å™¨ç»“ç‚¹å†…å®¹é«˜åº¦
+ * @param {Number} width  é¢æ¿å®½åº¦
+ * @param {Number} height é¢æ¿é«˜åº¦
  */
 
 /**
- * ÔÚÉèÖÃ¿í¸ßºó·¢ËÍresizedÊÂ¼ş,²¢µ÷ÓÃ²¼¾Ö¹ÜÀíÆ÷²¼¾Ö(layout.doLayout()).
- * @param {Boolean} uncheck ĞÔÄÜÓÅ»¯Ïî,ÊÇ·ñ±È½Ï¿í¸ß,Èç¹û¿í¸ßÎ´±ä,ÔòÖ±½Ó·µ»Ø
- * @override ¼ÆËãÈİÆ÷ºÍWrapper»òÄÚÈİºÏÊÊµÄ¿í¸ß
+ * åœ¨è®¾ç½®å®½é«˜åå‘é€resizedäº‹ä»¶,å¹¶è°ƒç”¨å¸ƒå±€ç®¡ç†å™¨å¸ƒå±€(layout.doLayout()).
+ * @param {Boolean} uncheck æ€§èƒ½ä¼˜åŒ–é¡¹,æ˜¯å¦æ¯”è¾ƒå®½é«˜,å¦‚æœå®½é«˜æœªå˜,åˆ™ç›´æ¥è¿”å›
+ * @override è®¡ç®—å®¹å™¨å’ŒWrapperæˆ–å†…å®¹åˆé€‚çš„å®½é«˜
  */
         setSize: function(a, b, uncheck){
             var w = this.width, h = this.height;
@@ -1407,22 +1407,22 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
 
             if (w !== false || h !== false){
               superclass.setSize.call(this, w, h);
-              //ÊÜmax,minÓ°Ïì,ÖØĞÂ»ñµÃ
+              //å—max,minå½±å“,é‡æ–°è·å¾—
               if(w !== false) w = this.width;
               if(h !== false) h = this.height;
 
               var wr = this.wrapper, spaces,cw, ch;
-              //Èç¹ûwrapper·ÇÈİÆ÷½áµã
+              //å¦‚æœwrapperéå®¹å™¨ç»“ç‚¹
               if(wr.view !== this.view && this.syncWrapper){
                 spaces = this.getWrapperInsets();
                 cw = w===false?w:Math.max(w - spaces[5], 0);
                 ch = h===false?h:Math.max(h - spaces[4], 0);
                 wr.setSize(cw, ch);
-                //ÊÜmax,minÓ°Ïì,ÖØĞÂ»ñµÃ
+                //å—max,minå½±å“,é‡æ–°è·å¾—
                 if(cw !== false) cw = wr.width;
                 if(ch !== false) ch = wr.height;
               }else {
-                //ÈİÆ÷×ÔÉí½áµã,¼ÆËãÈİÆ÷content size
+                //å®¹å™¨è‡ªèº«ç»“ç‚¹,è®¡ç®—å®¹å™¨content size
                 cw = w===false?w:Math.max(w - this.getOuterW(), 0);
                 ch = h===false?h:Math.max(h - this.getOuterH(), 0);
               }
@@ -1434,15 +1434,15 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
 /**
  * @name CC.ui.Panel#reposed
  * @event
- * @param {Number} left ÉèÖÃºóÃæ°åx×ø±ê
- * @param {Number} top  ÉèÖÃºóÃæ°åy×ø±ê
+ * @param {Number} left è®¾ç½®åé¢æ¿xåæ ‡
+ * @param {Number} top  è®¾ç½®åé¢æ¿yåæ ‡
  * @param {Number} deltaX
  * @param {Number} deltaY
  */
 
 /**
- * ÉèÖÃÃæ°åx,y×ø±ê
- * ÉèÖÃºó·¢ËÍreposedÊÂ¼ş
+ * è®¾ç½®é¢æ¿x,yåæ ‡
+ * è®¾ç½®åå‘é€reposedäº‹ä»¶
  */
         setXY: function(a, b){
             if (CC.isArray(a)) {

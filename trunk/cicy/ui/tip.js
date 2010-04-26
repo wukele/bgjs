@@ -1,9 +1,9 @@
-if(!CC.ie)
+ï»¿if(!CC.ie)
   CC.Tpl.def('CC.ui.FloatTip', '<div class="g-float-tip g-clear"><div class="tipbdy"><div id="_tle" class="important_txt"></div><div id="_msg" class="important_subtxt"></div></div><div class="btm_cap" id="_cap"></div></div>');
 else
   CC.Tpl.def('CC.ui.FloatTip', '<table class="g-float-tip g-clear"><tr><td><table class="tipbdy"><tr><td id="_tle" class="important_txt"></td></tr><tr><td id="_msg" class="important_subtxt"></td></tr></table></td></tr><tr><td class="btm_cap" id="_cap"></td></tr></table>');
 /**
- * ¸¡¶¯ÌáÊ¾¿ò,¿ÉÓÃÓÚÒ»°ãµÄ¶Ô»°ÌáÊ¾»òÊó±êĞü¸¡ÌáÊ¾
+ * æµ®åŠ¨æç¤ºæ¡†,å¯ç”¨äºä¸€èˆ¬çš„å¯¹è¯æç¤ºæˆ–é¼ æ ‡æ‚¬æµ®æç¤º
  * @name CC.ui.FloatTip
  * @class
  * @extends CC.ui.Panel
@@ -11,16 +11,16 @@ else
 CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
   var CC = window.CC;
 
-  //Ò»¸öÈ«¾ÖFloatTip¶ÔÏó
+  //ä¸€ä¸ªå…¨å±€FloatTipå¯¹è±¡
   var instance;
 
   var Event = CC.Event;
   //
-  // ¼ÇÂ¼Êó±êÒÆ¶¯Ê±×ø±ê
+  // è®°å½•é¼ æ ‡ç§»åŠ¨æ—¶åæ ‡
   //
   var globalPos = [-10000,-10000];
 
-  //µ±Ç°documentÊÇ·ñÒÑ°ó¶¨Êó±êÒÆ¶¯¼àÌı»Øµ÷
+  //å½“å‰documentæ˜¯å¦å·²ç»‘å®šé¼ æ ‡ç§»åŠ¨ç›‘å¬å›è°ƒ
   var docEvtBinded = false;
 
   function onDocMousemove(event){
@@ -28,13 +28,13 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
   }
   /**
    * @function
-   * @param {String} msg ÌáÊ¾ÏûÏ¢
-   * @param {String} [title] ÏûÏ¢ÌáÊ¾±êÌâ
-   * @param {DOMElement|CC.Base} [target] ÏûÏ¢ÌáÊ¾Ä¿Â¼ÔªËØ,ÏûÏ¢½«³öÏÖÔÚ¸ÃÔªËØ×óÉÏ·½
-   * @param {Boolean} [getFocus] ÌáÊ¾Ê±ÊÇ·ñ¾Û½¹µ½targetÔªËØ,Õâ¶ÔÓÚ±íµ¥Àà¿Ø¼ş±È½ÏÓĞÓÃ
-   * @param {Number} [timout] ³¬Ê±ºÁÃëÊı,¼´ÏûÏ¢ÏÔÊ¾Í£ÁôÊ±¼ä
+   * @param {String} msg æç¤ºæ¶ˆæ¯
+   * @param {String} [title] æ¶ˆæ¯æç¤ºæ ‡é¢˜
+   * @param {DOMElement|CC.Base} [target] æ¶ˆæ¯æç¤ºç›®å½•å…ƒç´ ,æ¶ˆæ¯å°†å‡ºç°åœ¨è¯¥å…ƒç´ å·¦ä¸Šæ–¹
+   * @param {Boolean} [getFocus] æç¤ºæ—¶æ˜¯å¦èšç„¦åˆ°targetå…ƒç´ ,è¿™å¯¹äºè¡¨å•ç±»æ§ä»¶æ¯”è¾ƒæœ‰ç”¨
+   * @param {Number} [timout] è¶…æ—¶æ¯«ç§’æ•°,å³æ¶ˆæ¯æ˜¾ç¤ºåœç•™æ—¶é—´
    * @example
-     CC.Util.ftip('ÃÜÂë²»ÄÜÎª¿Õ.', 'ÌáÊ¾', 'input_el', true, 3000);
+     CC.Util.ftip('å¯†ç ä¸èƒ½ä¸ºç©º.', 'æç¤º', 'input_el', true, 3000);
    */
   CC.Util.ftip = function(msg, title, proxy, getFocus, timeout){
     if(!instance)
@@ -45,11 +45,11 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     return instance;
   };
   /**
-   * ¸øÄ¿±ê¶ÔÏó°ó¶¨Ğü¸¡ÏûÏ¢
+   * ç»™ç›®æ ‡å¯¹è±¡ç»‘å®šæ‚¬æµ®æ¶ˆæ¯
    * @param {CC.ui.Base} target
    * @param {String} msg
    @example
-     CC.Util.qtip(input, 'ÔÚÕâÀïÊäÈëÄúµÄ´óÃû');
+     CC.Util.qtip(input, 'åœ¨è¿™é‡Œè¾“å…¥æ‚¨çš„å¤§å');
    */
   CC.Util.qtip = function(proxy, msg){
     if(!instance)
@@ -59,31 +59,31 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
 
   return /**@lends CC.ui.FloatTip#*/{
     /**
-     * @property {Number} timeout = 2500 ÉèÖÃÏûÊ§³¬Ê±ms, Èç¹ûÎª0 »ò false ²»×Ô¶¯¹Ø±Õ.
+     * @property {Number} timeout = 2500 è®¾ç½®æ¶ˆå¤±è¶…æ—¶ms, å¦‚æœä¸º0 æˆ– false ä¸è‡ªåŠ¨å…³é—­.
      */
     timeout: 2500,
   /**
-   * ÏÔÊ¾ÌáÊ¾ÏûÏ¢µÄÑÓ³Ù,ÏûÏ¢½«Êó±êÎ»ÓÚÄ¿±êÑÓ³ÙdalyºÁÃëºó³öÏÖ
+   * æ˜¾ç¤ºæç¤ºæ¶ˆæ¯çš„å»¶è¿Ÿ,æ¶ˆæ¯å°†é¼ æ ‡ä½äºç›®æ ‡å»¶è¿Ÿdalyæ¯«ç§’åå‡ºç°
    * @type Number
    */
     delay : 500,
 
     /**
-     * @property {Boolean} [reuseable = true] ÏûÏ¢ÌáÊ¾ÊÇ·ñ¿É¸´ÓÃ,Èç¹û·ñ,ÔÚÏûÏ¢Òş²Øºó×Ô¶¯Ïú»Ù
+     * @property {Boolean} [reuseable = true] æ¶ˆæ¯æç¤ºæ˜¯å¦å¯å¤ç”¨,å¦‚æœå¦,åœ¨æ¶ˆæ¯éšè—åè‡ªåŠ¨é”€æ¯
      */
     reuseable : true,
 
     shadow:true,
 
   /**
-   * Ö¸¶¨ÊÇÄÄÖÖÏÔÊ¾·ç¸ñ,Ò»ÖÖÎªmouseoverÊ½ÌáÊ¾,ÁíÒ»ÖÖÎªµ¯³öÌáÊ¾
+   * æŒ‡å®šæ˜¯å“ªç§æ˜¾ç¤ºé£æ ¼,ä¸€ç§ä¸ºmouseoverå¼æç¤º,å¦ä¸€ç§ä¸ºå¼¹å‡ºæç¤º
    */
     qmode : false,
 
     zIndex : 10002,
   /**
    * @private
-   * mouseoverÊ½ÌáÊ¾Ê±ÑùÊ½
+   * mouseoverå¼æç¤ºæ—¶æ ·å¼
    */
     hoverTipCS : 'g-small-tip',
 
@@ -143,7 +143,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
         this.ontimeout();
     },
 /**
- * ³¬Ê±ÏÔÊ¾
+ * è¶…æ—¶æ˜¾ç¤º
  * @private
  */
     killPretimer : function(){
@@ -154,8 +154,8 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     },
 
   /**
-   * Çå³ıµ±Ç°³¬Ê±¹Ø±Õ
-   * @param {boolean} check ÊÇ·ñ×÷»ØÊÕ(reuseable)¼ì²é
+   * æ¸…é™¤å½“å‰è¶…æ—¶å…³é—­
+   * @param {boolean} check æ˜¯å¦ä½œå›æ”¶(reuseable)æ£€æŸ¥
    * @private
    */
     killTimer : function(check){
@@ -170,7 +170,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     },
 
   /**
-   * ÉèÖÃÌáÊ¾±êÌâÓëÏûÏ¢
+   * è®¾ç½®æç¤ºæ ‡é¢˜ä¸æ¶ˆæ¯
    * @param {String} msg
    * @param {String} title
    */
@@ -185,11 +185,11 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     },
 
   /**
-   * @param {String} msg ÌáÊ¾ÏûÏ¢
-   * @param {String} [title] ÏûÏ¢ÌáÊ¾±êÌâ
-   * @param {DOMElement|CC.Base} [target] ÏûÏ¢ÌáÊ¾Ä¿Â¼ÔªËØ,ÏûÏ¢½«³öÏÖÔÚ¸ÃÔªËØ×óÉÏ·½
-   * @param {Boolean} [getFocus] ÌáÊ¾Ê±ÊÇ·ñ¾Û½¹µ½targetÔªËØ,Õâ¶ÔÓÚ±íµ¥Àà¿Ø¼ş±È½ÏÓĞÓÃ
-   * @param {Number} [timout] ³¬Ê±ºÁÃëÊı,¼´ÏûÏ¢ÏÔÊ¾Í£ÁôÊ±¼ä
+   * @param {String} msg æç¤ºæ¶ˆæ¯
+   * @param {String} [title] æ¶ˆæ¯æç¤ºæ ‡é¢˜
+   * @param {DOMElement|CC.Base} [target] æ¶ˆæ¯æç¤ºç›®å½•å…ƒç´ ,æ¶ˆæ¯å°†å‡ºç°åœ¨è¯¥å…ƒç´ å·¦ä¸Šæ–¹
+   * @param {Boolean} [getFocus] æç¤ºæ—¶æ˜¯å¦èšç„¦åˆ°targetå…ƒç´ ,è¿™å¯¹äºè¡¨å•ç±»æ§ä»¶æ¯”è¾ƒæœ‰ç”¨
+   * @param {Number} [timout] è¶…æ—¶æ¯«ç§’æ•°,å³æ¶ˆæ¯æ˜¾ç¤ºåœç•™æ—¶é—´
    */
     show : function(msg, title, target, getFocus, timeout){
 
@@ -231,11 +231,11 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
       }
     },
   /**
-   * ¸øÄ¿±ê¶ÔÏó°ó¶¨Ğü¸¡ÏûÏ¢
+   * ç»™ç›®æ ‡å¯¹è±¡ç»‘å®šæ‚¬æµ®æ¶ˆæ¯
    * @param {CC.ui.Base} target
-   * @param {String} msg, ÏûÏ¢
+   * @param {String} msg, æ¶ˆæ¯
    @example
-     CC.Util.qtip(input, 'ÔÚÕâÀïÊäÈëÄúµÄ´óÃû');
+     CC.Util.qtip(input, 'åœ¨è¿™é‡Œè¾“å…¥æ‚¨çš„å¤§å');
    */
     tipFor : function(proxy, msg, title){
       CC.fly(proxy)
@@ -247,7 +247,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
               docEvtBinded = true;
             }
 
-            //É¾³ı
+            //åˆ é™¤
             if(this.pretimerId)
               this.killPretimer();
 
@@ -281,7 +281,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
       this.killPretimer();
     },
   /**
-   * »ñµÃÈ«¾Ötip¶ÔÏó
+   * è·å¾—å…¨å±€tipå¯¹è±¡
    */
     getInstance : function(){
       return instance;

@@ -1,9 +1,9 @@
-//~@base/Tracker.js
+ï»¿//~@base/Tracker.js
 /**
- * ×´Ì¬±ä¸ü¸ú×ÙÆ÷
+ * çŠ¶æ€å˜æ›´è·Ÿè¸ªå™¨
  */
 CC.create('CC.util.Tracker', null, {
-  /**ÀúÊ·¼ÇÂ¼×î´óÌõÊı*/
+  /**å†å²è®°å½•æœ€å¤§æ¡æ•°*/
   max : 20,
 
   initialize : function(opt){
@@ -12,7 +12,7 @@ CC.create('CC.util.Tracker', null, {
       CC.extend(this, opt);
   },
 
-/**¼ÇÂ¼Êı¾İ*/
+/**è®°å½•æ•°æ®*/
   track : function(data){
     var a = this.area;
     if(a.indexOf(data) !== -1)
@@ -22,28 +22,28 @@ CC.create('CC.util.Tracker', null, {
 
     if(a.length > this.max)
       a.pop();
-    if(__debug) console.log('¼ÇÂ¼:', data);
+    if(__debug) console.log('è®°å½•:', data);
   },
 
 /**
- * ²âÊÔµ±Ç°¼ÇÂ¼Êı¾İÊÇ¿ÉÓÃ
+ * æµ‹è¯•å½“å‰è®°å½•æ•°æ®æ˜¯å¯ç”¨
  * @param data
  * @type function
  */
   isValid : fGo,
 
 /**
- * isValidµÄthis¶ÔÏó
+ * isValidçš„thiså¯¹è±¡
  */
   validCaller : null,
 
 /**
- * µ¯³ö×î½ü¼ÇÂ¼µÄÊı¾İ
+ * å¼¹å‡ºæœ€è¿‘è®°å½•çš„æ•°æ®
  */
   pop : function(){
     var vc = this.validCaller || this, as = this.area, len = as.length, i = len - 1;
     for(;i>=0;i--){
-      if(__debug) console.log('Ä¨³ı:', this.isValid.call(vc, as[i]), as[i]);
+      if(__debug) console.log('æŠ¹é™¤:', this.isValid.call(vc, as[i]), as[i]);
       if(this.isValid.call(vc, as[i]))
         return as[i];
       as.pop();
@@ -51,12 +51,12 @@ CC.create('CC.util.Tracker', null, {
   },
 
 /**
- * ÒÆ³ıÖ¸¶¨¼ÇÂ¼Êı¾İ
+ * ç§»é™¤æŒ‡å®šè®°å½•æ•°æ®
  */
   remove : function(data){
     this.area.remove(data);
   },
 
-/**µ±Ç°¼ÇÂ¼Êı¾İ´óĞ¡*/
+/**å½“å‰è®°å½•æ•°æ®å¤§å°*/
   size : function() {return this.area.length;}
 });

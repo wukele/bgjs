@@ -1,7 +1,7 @@
-(function(){
+ï»¿(function(){
  var cvtMap = {};
 /**
- * Êı¾İÀàĞÍ×ª»»Æ÷
+ * æ•°æ®ç±»å‹è½¬æ¢å™¨
  * @class
  * @example
  <pre>
@@ -12,21 +12,21 @@
  */
 CC.util.TypeConverter = {
 /**
- * ×¢²áÒ»¸öÀàĞÍ×ª»»º¯Êı
+ * æ³¨å†Œä¸€ä¸ªç±»å‹è½¬æ¢å‡½æ•°
  */
   registerConverter : function(type, cvt){
     cvtMap[type] = cvt;
   },
 
 /**
- * »ñµÃÀàĞÍ×ª»»º¯Êı
+ * è·å¾—ç±»å‹è½¬æ¢å‡½æ•°
  */
   getConverter : function(type){
     var c = cvtMap[type];
     if(!c){
       c = this.createConverter.apply(this, arguments);
       if(!c)
-        throw 'Î´Ê¶±ğµÄÊı¾İÀàĞÍ:'+type;
+        throw 'æœªè¯†åˆ«çš„æ•°æ®ç±»å‹:'+type;
       cvtMap[type] = c;
     }
 
@@ -34,8 +34,8 @@ CC.util.TypeConverter = {
   },
 
   /**
-  * Êı¾İÀàĞÍ×ª»»Æ÷,´´½¨ºó´æÔÚÊôĞÔconverterÖĞ,ÓÃÓÚ±È½ÏÆ÷±È½ÏÁ½ÁĞÖµ.
-  * @return {Object} ¸ÃÁĞµÄÊı¾İÀàĞÍ×ª»»Æ÷
+  * æ•°æ®ç±»å‹è½¬æ¢å™¨,åˆ›å»ºåå­˜åœ¨å±æ€§converterä¸­,ç”¨äºæ¯”è¾ƒå™¨æ¯”è¾ƒä¸¤åˆ—å€¼.
+  * @return {Object} è¯¥åˆ—çš„æ•°æ®ç±»å‹è½¬æ¢å™¨
   */
   createConverter: function(type){
     var numReg = /[\$,%]/g, cv;

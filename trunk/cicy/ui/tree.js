@@ -1,5 +1,5 @@
-/**
- * Ê÷ĞÍ¿Ø¼şÊµÏÖ
+ï»¿/**
+ * æ ‘å‹æ§ä»¶å®ç°
  */
 (function(){
 
@@ -19,7 +19,7 @@ var spr = cbx.prototype;
  */
 CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
   /**
-   * Ã¿¸öTreeItem¶¼ÓĞÒ»¸öÖ¸Ïò¸ù½áµãµÄÖ¸ÕëÒÔ·½±ã·ÃÎÊ¸ù½áµã
+   * æ¯ä¸ªTreeIteméƒ½æœ‰ä¸€ä¸ªæŒ‡å‘æ ¹ç»“ç‚¹çš„æŒ‡é’ˆä»¥æ–¹ä¾¿è®¿é—®æ ¹ç»“ç‚¹
    */
   root : null,
 
@@ -38,26 +38,26 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
   nodeLeafCS : 'g-tree-nd-leaf',
   loadCS:'g-tree-nd-loading',
   /**
-   * ¿ÕÕ¼Î»½áµãÑùÊ½.
+   * ç©ºå ä½ç»“ç‚¹æ ·å¼.
    * @private
    */
   elbowLineCS :'g-tree-elbow-line',
 
   springCS : 'spring',
   /**
-   * Êó±êÂÓ¹ıÊ±Ìí¼ÓÑùÊ½µÄ´¥·¢½áµãid
+   * é¼ æ ‡æ è¿‡æ—¶æ·»åŠ æ ·å¼çš„è§¦å‘ç»“ç‚¹id
    * @private
    *@see Base#bindAlternateStyle
    */
   mouseoverNode : '_head',
 
   /**
-   * Êó±êÂÓ¹ıÊ±Ìí¼ÓÑùÊ½Ä¿±ê½áµãid.
+   * é¼ æ ‡æ è¿‡æ—¶æ·»åŠ æ ·å¼ç›®æ ‡ç»“ç‚¹id.
    * @private
    */
   mouseoverTarget : '_head',
 
-  /**Ê÷½áµãÊÇ·ñÎªÄ¿Â¼,Ä¬ÈÏfalse.*/
+  /**æ ‘ç»“ç‚¹æ˜¯å¦ä¸ºç›®å½•,é»˜è®¤false.*/
   nodes : false,
 
   clickEvent : 'mousedown',
@@ -76,7 +76,7 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     this._elbow = this.$$('_elbow');
     this._head  = this.$$('_head');
 
-    //ÎÄ¼ş¼Ğ
+    //æ–‡ä»¶å¤¹
     if(this.nodes) {
       this.domEvent('dblclick', this.expand, true, null, this._head.view);
       this.domEvent('mousedown', this.expand, true, null, this._elbow.view, false);
@@ -179,11 +179,11 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     }
   },
   /**
-   * ¸Ã½áµã·¢Éú±ä¶¯Ê±ÖØ×é
+   * è¯¥ç»“ç‚¹å‘ç”Ÿå˜åŠ¨æ—¶é‡ç»„
    * @private
    */
   _applyChange : function(parentNode) {
-    //ËùÓĞÊÂ¼şÓÉ¾İ½áµãµÄÊÂ¼ş¼àÌıÕß½ÓÊÕ
+    //æ‰€æœ‰äº‹ä»¶ç”±æ®ç»“ç‚¹çš„äº‹ä»¶ç›‘å¬è€…æ¥æ”¶
     this._applyRoot(parentNode.root);
     this._applySibling();
     this._fixSpacer(parentNode);
@@ -234,15 +234,15 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
 
 /**
  * @private
- * ×ÓÏîµã»÷ÊÂ¼ş»Øµ÷,·¢ËÍclickEventÊÂ¼ş
+ * å­é¡¹ç‚¹å‡»äº‹ä»¶å›è°ƒ,å‘é€clickEventäº‹ä»¶
  */
    clickEventTrigger : function(e){
      this.root.tree.fire('itemclick', this, e);
    },
 
 /**
- * ÒÔÉî¶ÈÓÅÏÈ±éÀúÊ÷Ä¿Â¼
- * @param {Function} cb callback, thisÎªtreeItem, ²ÎÊıÎª callback(treeItem, counter), ·µ»ØfalseÊ±ÖÕÖ¹±éÀú;
+ * ä»¥æ·±åº¦ä¼˜å…ˆéå†æ ‘ç›®å½•
+ * @param {Function} cb callback, thisä¸ºtreeItem, å‚æ•°ä¸º callback(treeItem, counter), è¿”å›falseæ—¶ç»ˆæ­¢éå†;
  * @override
  */
   eachH : function(cb, acc){
@@ -262,7 +262,7 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
   },
 
 /**
- * ±éÀú²éÕÒ½áµã(°üÀ¨µ±Ç°½áµã)
+ * éå†æŸ¥æ‰¾ç»“ç‚¹(åŒ…æ‹¬å½“å‰ç»“ç‚¹)
  * @param {String} childId
  * @return {CC.ui.TreeItem}
  */
@@ -290,7 +290,7 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     item._applySibling(true);
     spr.remove.call(this, item);
 
-    //Èç¹ûÉ¾³ıµ±Ç°Ñ¡ÔñÏî,ÖØÉèÑ¡ÔñÎª¿Õ.
+    //å¦‚æœåˆ é™¤å½“å‰é€‰æ‹©é¡¹,é‡è®¾é€‰æ‹©ä¸ºç©º.
     this.root.tree.getSelectionProvider().onItemRemoved(item);
 
     if(last)
@@ -303,10 +303,10 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
   },
 /**
  * @name CC.ui.TreeItem#expanded
- * @property {Boolean} expanded ½áµãÊÇ·ñÒÑÕ¹¿ª
+ * @property {Boolean} expanded ç»“ç‚¹æ˜¯å¦å·²å±•å¼€
  */
   /**
-   * Ö»ÓĞÔÚäÖÈ¾Ê±²ÅÄÜÈ·¶¨¸ù½áµã
+   * åªæœ‰åœ¨æ¸²æŸ“æ—¶æ‰èƒ½ç¡®å®šæ ¹ç»“ç‚¹
    * @private
    */
   onRender : function(){
@@ -344,7 +344,7 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     var sp = this._ident.view;
     sp.innerHTML = '';
     sp.appendChild(parentNode.getSpacerNodes());
-    //ÊÇ·ñÓĞÁ¬½ÓÏßÒÀ¾İ:¸¸²ãÓĞÍùÏÂÓĞĞÖµÜ½áµã
+    //æ˜¯å¦æœ‰è¿æ¥çº¿ä¾æ®:çˆ¶å±‚æœ‰å¾€ä¸‹æœ‰å…„å¼Ÿç»“ç‚¹
     if(parentNode.next)
       CC.addClassIf(sp.lastChild,parentNode.elbowLineCS);
 
@@ -396,13 +396,13 @@ CC.create('CC.ui.tree.TreeSelectionProvider', CC.util.SelectionProvider, {
       dir = !(n.nodes && n.expanded && n.children.length>0);
 
       if(!dir)
-        //ÏòÏÂ
+        //å‘ä¸‹
         n = n.children[0];
 
       while(true){
         if(dir){
           if(!n.next){
-              //ÉÏËİµ½¶¥
+              //ä¸Šæº¯åˆ°é¡¶
               if(n === root){
                 n = null;
                 break;
@@ -468,8 +468,8 @@ CC.create('CC.ui.tree.TreeItemLoadingIndicator', CC.ui.Loading, {
 CC.ui.TreeItem.prototype.indicatorCls = CC.ui.tree.TreeItemLoadingIndicator;
 
 /**
- * Ê÷ĞÎ¿Ø¼ş, ¿ÉÒÔÖ¸¶¨Ò»¸ö¸ù½áµãroot,»òÕßÓÉÊ÷×Ô¼ºÉú³É.
- * µ±×Ô¼ºÉú³É¸ù½áµãÊ±,ËüÄ¬ÈÏÊÇCC.ui.TreeItemÀà,´ËÊ±¿ÉÒÔÔÚÊ÷³õÊ¼»¯Ê±´«ÈëarrayÉú³É¸ùµÄ×Ó½áµã.
+ * æ ‘å½¢æ§ä»¶, å¯ä»¥æŒ‡å®šä¸€ä¸ªæ ¹ç»“ç‚¹root,æˆ–è€…ç”±æ ‘è‡ªå·±ç”Ÿæˆ.
+ * å½“è‡ªå·±ç”Ÿæˆæ ¹ç»“ç‚¹æ—¶,å®ƒé»˜è®¤æ˜¯CC.ui.TreeItemç±»,æ­¤æ—¶å¯ä»¥åœ¨æ ‘åˆå§‹åŒ–æ—¶ä¼ å…¥arrayç”Ÿæˆæ ¹çš„å­ç»“ç‚¹.
  * @name CC.ui.Tree
  * @class
  * @extends CC.ui.ContainerBase
@@ -501,7 +501,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
 
   /**
    * @private
-   * ÏîµÄÑ¡ÔñÊÂ¼ş´¥·¢½áµãÎªÊÓÍ¼ÖĞÖ¸ÏòµÄid½áµã.
+   * é¡¹çš„é€‰æ‹©äº‹ä»¶è§¦å‘ç»“ç‚¹ä¸ºè§†å›¾ä¸­æŒ‡å‘çš„idç»“ç‚¹.
    */
   clickEventNode : '_head',
 
@@ -529,11 +529,11 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
 
   /**
    * @private
-   * ×Ô¶¯¼ÓÔØ¹¦ÄÜ
+   * è‡ªåŠ¨åŠ è½½åŠŸèƒ½
    */
   onExpand : function(item, b) {
     //
-    // Èç¹û½áµãÒÑ¾­¼ÓÔØ,ºöÂÔ.
+    // å¦‚æœç»“ç‚¹å·²ç»åŠ è½½,å¿½ç•¥.
     //
     if(this.autoLoad  && b){
       if(!item.getConnectionProvider()
@@ -546,8 +546,8 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
   },
 
 /**
- * µ±autoLoadÎªtrueÊ±,½áµãÕ¹¿ª¼´Ê±¼ÓÔØ,Ò²¿ÉÒÔµ÷ÓÃ¸Ã·½·¨ÊÖ¶¯¼ÓÔØ×Ó½áµã
- * ¼ÓÔØ×ÓÏî, ¸Ã·½·¨Í¨¹ı×ÓÏîµÄconnectionProviderÀ´ÊµÏÖÔØÈëÊı¾İ¹¦ÄÜ.
+ * å½“autoLoadä¸ºtrueæ—¶,ç»“ç‚¹å±•å¼€å³æ—¶åŠ è½½,ä¹Ÿå¯ä»¥è°ƒç”¨è¯¥æ–¹æ³•æ‰‹åŠ¨åŠ è½½å­ç»“ç‚¹
+ * åŠ è½½å­é¡¹, è¯¥æ–¹æ³•é€šè¿‡å­é¡¹çš„connectionProvideræ¥å®ç°è½½å…¥æ•°æ®åŠŸèƒ½.
  */
   loadItem : function(item){
       var url = this.getItemUrl(item);
@@ -559,7 +559,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
   },
 
 /**
- * »ñµÃ×ÓÏîÓÃÓÚÇëÇóÊı¾İµÄurl
+ * è·å¾—å­é¡¹ç”¨äºè¯·æ±‚æ•°æ®çš„url
  */
   getItemUrl : function(item){
     var url = this.url;
@@ -576,7 +576,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
   },
 
 /**
- * ±éÀúÊ÷ËùÓĞ½áµã(°üÀ¨Éî²ã½áµã)
+ * éå†æ ‘æ‰€æœ‰ç»“ç‚¹(åŒ…æ‹¬æ·±å±‚ç»“ç‚¹)
  */
   each : function(cb){
     var r = this.root;

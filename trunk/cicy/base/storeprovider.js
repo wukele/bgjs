@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * @name CC.util.StoreProvider
  * @class
  */
@@ -217,7 +217,7 @@ CC.util.ProviderFactory.create('Store', null, {
   },
 
 /**
- * ¹ıÂËÎ´ĞŞ¸Ä¹ıµÄ
+ * è¿‡æ»¤æœªä¿®æ”¹è¿‡çš„
  * @override
  */
 	each : function(cb){
@@ -337,7 +337,7 @@ CC.util.ProviderFactory.create('Store', null, {
     return item ? item.modified : false;
   },
 /**
- * ÈİÆ÷Êı¾İÊÇ·ñ±»ĞŞ¸Ä¹ı.
+ * å®¹å™¨æ•°æ®æ˜¯å¦è¢«ä¿®æ”¹è¿‡.
  */
   isModifiedAll : function(){
   	var self = this, md = false;
@@ -391,7 +391,7 @@ CC.util.ProviderFactory.create('Store', null, {
   },
   
 /**
- * Èç¹û×Ô¶¨Òå×ÓÏîµÄÌá½»²ÎÊıÄÚÈİ,¿ÉÖØĞ´¸Ã·½·¨
+ * å¦‚æœè‡ªå®šä¹‰å­é¡¹çš„æäº¤å‚æ•°å†…å®¹,å¯é‡å†™è¯¥æ–¹æ³•
  * @param {CC.Base}
  * @param {String} itemQueryTemplateString
  * @return {String}

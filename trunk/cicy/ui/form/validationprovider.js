@@ -1,4 +1,4 @@
-CC.create('CC.ui.form.ValidationProvider', CC.util.ValidationProvider, function(father){
+﻿CC.create('CC.ui.form.ValidationProvider', CC.util.ValidationProvider, function(father){
 return {
 /**
  * @implementation

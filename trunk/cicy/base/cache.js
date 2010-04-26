@@ -1,4 +1,4 @@
-(function(){
+﻿(function(){
 var CC = window.CC;
 /**
  * 缓存类.

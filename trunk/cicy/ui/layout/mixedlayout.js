@@ -1,11 +1,11 @@
-(function(){
+ï»¿(function(){
 
 var ly = CC.layout;
 var B =  ly.Layout;
 var superclass = B.prototype;
 var Math = window.Math;
 /**
- * CardLayout,ÈİÆ÷ÄÚËùÓĞ×ÓÏî¿í¸ßÓëÈİÆ÷Ò»ÖÂ
+ * CardLayout,å®¹å™¨å†…æ‰€æœ‰å­é¡¹å®½é«˜ä¸å®¹å™¨ä¸€è‡´
  * @name CC.layout.CardLayout
  * @extends CC.layout.Layout
  * @class
@@ -52,7 +52,7 @@ CC.create('CC.layout.QQLayout', B, {
           i, it, t,j,
           its = ct.children,
           len = ct.size();
-      //ÓÉÉÏ¶øÏÂ
+      //ç”±ä¸Šè€Œä¸‹
       for(i=0, t = 0;i<len;i++){
         it = its[i];
 
@@ -69,7 +69,7 @@ CC.create('CC.layout.QQLayout', B, {
 
       if(c)
         c.setTop(t);
-      //ÓÉÏÂ¶øÉÏ
+      //ç”±ä¸‹è€Œä¸Š
       for(j=len-1, t = ct.wrapper.height;j>i;j--){
         it = its[j];
         t -= it.minH;
@@ -108,11 +108,11 @@ CC.create('CC.layout.QQLayout', B, {
 ly.def('qq', ly.QQLayout);
 
 /**
- * ĞĞ²¼¾Ö,¸Ã²¼¾Ö½«¶Ô×Ó¿Ø¼ş¿í¶È/¸ß¶È½øĞĞ²¼¾Ö,²»¸ÉÔ¤¿Ø¼ş×ø±ê.
- * ¿Ø¼şÅäÖÃ·½Ãæ:
- * <li>auto : ×Ô¶¯¿í¸ß,²»½øĞĞ¸ÉÔ¤</li>
- * <li>¾ßÌå¿í/¸ß : Èç50px</li>
- * <li>leading : Æ½·Ö¿í¸ß</li>
+ * è¡Œå¸ƒå±€,è¯¥å¸ƒå±€å°†å¯¹å­æ§ä»¶å®½åº¦/é«˜åº¦è¿›è¡Œå¸ƒå±€,ä¸å¹²é¢„æ§ä»¶åæ ‡.
+ * æ§ä»¶é…ç½®æ–¹é¢:
+ * <li>auto : è‡ªåŠ¨å®½é«˜,ä¸è¿›è¡Œå¹²é¢„</li>
+ * <li>å…·ä½“å®½/é«˜ : å¦‚50px</li>
+ * <li>leading : å¹³åˆ†å®½é«˜</li>
  * @name CC.layout.RowLayout
  * @class
  * @extends CC.layout.Layout

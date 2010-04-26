@@ -1,4 +1,4 @@
-(function(){
+ï»¿(function(){
   var CC = window.CC,
       tpx = CC.Tpl,
       uix = CC.ui,
@@ -17,7 +17,7 @@
    */
   uix.BorderLayoutSpliter = CC.create(CC.Base, function(spr) {
 
-    //ghost ³õÊ¼×ø±ê
+    //ghost åˆå§‹åæ ‡
     var GIXY;
 
     return {
@@ -34,7 +34,7 @@
         G.installDrag(this, true);
       },
 /**
- * ¼ÆËãÍÏ¶¯·¶Î§dx,dy
+ * è®¡ç®—æ‹–åŠ¨èŒƒå›´dx,dy
  * @private
  * @return {Array}
  */
@@ -265,7 +265,7 @@
     },
 
     /**
-     * ÊÕËõ°´Å¥µã»÷
+     * æ”¶ç¼©æŒ‰é’®ç‚¹å‡»
      */
     onNavBlockClick : function(){
       var c = this.comp;
@@ -276,7 +276,7 @@
     },
 
     /**
-     * Ê¹µÃÃæ°å¸¡¶¯
+     * ä½¿å¾—é¢æ¿æµ®åŠ¨
      */
     makeFloat : function(){
       var c = this.comp;
@@ -326,7 +326,7 @@
     },
 
     /**
-     * Ãæ°å¸´Ô­
+     * é¢æ¿å¤åŸ
      */
     unFloat : function(){
       var c = this.comp,
@@ -340,7 +340,7 @@
     },
 
     /**
-     * µã»÷ÇøÓò·¶Î§ÍâÊ±»Øµ÷
+     * ç‚¹å‡»åŒºåŸŸèŒƒå›´å¤–æ—¶å›è°ƒ
      */
     onCompReleaseContext : function(){
       var cfg = this.pCt.layout.cfgFrom(this);
@@ -348,7 +348,7 @@
     },
 
     /**
-     * ²à±ßÀ¸µã»÷
+     * ä¾§è¾¹æ ç‚¹å‡»
      */
     onBarClick : function(){
       var c = this.comp;
@@ -362,7 +362,7 @@
     },
 
     /**
-     * ÉèÖÃ¸¡¶¯Ãæ°å¸¡¶¯¿ªÊ¼Ç°Î»ÖÃÓë¿í¸ß
+     * è®¾ç½®æµ®åŠ¨é¢æ¿æµ®åŠ¨å¼€å§‹å‰ä½ç½®ä¸å®½é«˜
      */
     setCompContextedBounds : function(){
       var c = this.comp, dir = this.dir;
@@ -394,8 +394,8 @@
 
   });
 /**
- * ÓëJava swingÖĞµÄBorderLayout¾ßÓĞÏàÍ¬Ğ§¹û.
- * ½«ÈİÆ÷ÄÚ¿Ø¼ş×÷ÎªÑØ±ß¿ò²¼¾Ö.
+ * ä¸Java swingä¸­çš„BorderLayoutå…·æœ‰ç›¸åŒæ•ˆæœ.
+ * å°†å®¹å™¨å†…æ§ä»¶ä½œä¸ºæ²¿è¾¹æ¡†å¸ƒå±€.
  *
  * @name CC.layout.BorderLayout
  * @class
@@ -405,15 +405,15 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
   /**@lends CC.layout.BorderLayout#*/
   {
     /**
-     * Ë®Æ½·½Ïò·Ö¸ôÌõ¸ß¶È,ÀûÓÃÃæ°å²¼ÖÃÉèÖÃ¿É¸²¸Ç¸ÃÖµ.
+     * æ°´å¹³æ–¹å‘åˆ†éš”æ¡é«˜åº¦,åˆ©ç”¨é¢æ¿å¸ƒç½®è®¾ç½®å¯è¦†ç›–è¯¥å€¼.
      */
     hgap: 5,
     /**
-     * ´¹Ö±·½Ïò·Ö¸ôÌõ¸ß¶È,ÀûÓÃÃæ°å²¼ÖÃÉèÖÃ¿É¸²¸Ç¸ÃÖµ.
+     * å‚ç›´æ–¹å‘åˆ†éš”æ¡é«˜åº¦,åˆ©ç”¨é¢æ¿å¸ƒç½®è®¾ç½®å¯è¦†ç›–è¯¥å€¼.
      */
     vgap: 5,
     /**
-     * ²à±ßÀ¸¿í¶È.
+     * ä¾§è¾¹æ å®½åº¦.
      */
     cgap : 32,
     /**
@@ -482,7 +482,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
       return cbar;
     },
 /**
- * ÊÕÆğ»òÕ¹¿ªÖ¸¶¨¿Ø¼ş,Èç¹û¿Ø¼ş´æÔÚcollapse·½·¨,Ò²½«µ÷ÓÃ¸Ã·½·¨
+ * æ”¶èµ·æˆ–å±•å¼€æŒ‡å®šæ§ä»¶,å¦‚æœæ§ä»¶å­˜åœ¨collapseæ–¹æ³•,ä¹Ÿå°†è°ƒç”¨è¯¥æ–¹æ³•
  * @param {CC.Base} component
  * @param {Boolean} collapsedOrNot
  */

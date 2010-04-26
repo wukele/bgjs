@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @name CC.ui.grid.plugins.Pagenation
  * @class 表格分页插件
  */

@@ -1,10 +1,10 @@
-/**
+ï»¿/**
  * @name CC.util.ValidationProvider
  * @class
  */
 CC.util.ProviderFactory.create('Validation', null, {
   /**
-   * ÑéÖ¤Ê§°ÜÊ±ÑùÊ½
+   * éªŒè¯å¤±è´¥æ—¶æ ·å¼
    * @private
    */
   errorCS : 'g-form-error',
@@ -40,7 +40,7 @@ CC.util.ProviderFactory.create('Validation', null, {
   },
 
 /**
- * ÊÂ¼ş·µ»Øfalse½«ÖĞ¶ÏÍùÏÂÑéÖ¤
+ * äº‹ä»¶è¿”å›falseå°†ä¸­æ–­å¾€ä¸‹éªŒè¯
  * @name CC.ui.ContainerBase#validation:start
  * @event
  * @param {CC.ui.Item} item
@@ -81,7 +81,7 @@ CC.util.ProviderFactory.create('Validation', null, {
   },
   
 /**
- * Í¨ÖªListenerÄ³¸ö×ÓÏîĞÅÏ¢ÑéÖ¤ÊÇ·ñ³É¹¦,¿ÉÒÔÊÖ¶¯ÑéÖ¤ºó,µ÷ÓÃ¸Ã·½·¨Í¨ÖªListenerÑéÖ¤½á¹û.
+ * é€šçŸ¥ListeneræŸä¸ªå­é¡¹ä¿¡æ¯éªŒè¯æ˜¯å¦æˆåŠŸ,å¯ä»¥æ‰‹åŠ¨éªŒè¯å,è°ƒç”¨è¯¥æ–¹æ³•é€šçŸ¥ListeneréªŒè¯ç»“æœ.
  * @return this
  */
   notifyValidation : function(isvalid, item, collector, type){
@@ -97,8 +97,8 @@ CC.util.ProviderFactory.create('Validation', null, {
   },
   
 /**
- * ÑéÖ¤ÊÇ·ñ<b>²»</b>ÕıÈ·.
- * @return {Array|Boolean} Î´Í¨¹ıÑéÖ¤·µ»ØÏûÏ¢Êı×é,Í¨¹ı·µ»Øfalse
+ * éªŒè¯æ˜¯å¦<b>ä¸</b>æ­£ç¡®.
+ * @return {Array|Boolean} æœªé€šè¿‡éªŒè¯è¿”å›æ¶ˆæ¯æ•°ç»„,é€šè¿‡è¿”å›false
  */
   isInvalid :function(item, type){
     var res = [], ret;

@@ -1,4 +1,4 @@
-(function(){
+﻿(function(){
 /**
  * DOM事件处理实用函数库,更多关于浏览器DOM事件的文章请查看<a href="http://www.bgscript.com/archives/369" target="_blank">http://www.bgscript.com/archives/369</a>
  * @name CC.Event

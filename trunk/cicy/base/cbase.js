@@ -1,4 +1,4 @@
-(function(CC){
+﻿(function(CC){
 var Eventable = CC.Eventable;
 //component cache
 var CPC = {};

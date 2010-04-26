@@ -1,10 +1,10 @@
-CC.Tpl['CC.ui.BarItem'] = '<table class="g-baritem" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>';
+ï»¿CC.Tpl['CC.ui.BarItem'] = '<table class="g-baritem" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>';
 CC.Tpl['CC.ui.Toolbar'] = '<div class="g-tbar"><div class="g-tbar-wr" id="_wrap"></div></div>';
 
 
 
 /**
- * ¹¤¾ßÀ¸,32*32Í¼±ê´óĞ¡
+ * å·¥å…·æ ,32*32å›¾æ ‡å¤§å°
  * @class CC.ui.Bigbar
  * @extends CC.ui.Panel
  */
@@ -65,7 +65,7 @@ CC.create('CC.ui.BigbarDropButton', CC.ui.DropButton, {
 
 CC.ui.def('bigbardropbtn', CC.ui.BigbarDropButton);
 /**
- * Ğ¡ĞÍ¹¤¾ßÀ¸,16*16Í¼±ê´óĞ¡
+ * å°å‹å·¥å…·æ ,16*16å›¾æ ‡å¤§å°
  * @name CC.ui.Smallbar
  * @class
  * @extends CC.ui.Panel

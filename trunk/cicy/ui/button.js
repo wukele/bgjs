@@ -1,4 +1,4 @@
-CC.Tpl.def('CC.ui.Button', '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>');
+锘緾C.Tpl.def('CC.ui.Button', '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>');
 /**
  * @name CC.ui.Button
  * @class
@@ -108,7 +108,7 @@ CC.create('CC.ui.DropButton', CC.ui.Button, {
           width:120,
           showTo: document.body,
         /**
-         * 重载CC.ui.Menu.onDisplay方法
+         * 閲嶈浇CC.ui.Menu.onDisplay鏂规硶
          * @private
          */
           onDisplay : function(b){
