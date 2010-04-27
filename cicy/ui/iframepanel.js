@@ -11,7 +11,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
  */
   traceLoad : true,
 
-/**indicatorDisabled:false*/
+/**indicatorDisabled:true*/
   indicatorDisabled : true,
 
 /**

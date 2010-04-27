@@ -1,0 +1,94 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Combo Tree</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+</style>
+</head>
+<body></body>
+</html>
+<script>
+CC.ready(function() {
+/**
+ * Javascript Utility for web development.
+ * R&D : www.bgscript.com/forum
+ * @author javeejy@126.com
+ * www.bgscript.com ? 2009 - 构建自由的WEB应用 
+ */
+
+function createCellData(cols, rows){
+  var rs = [];
+  for(var i=0;i<rows;i++){
+    var cs = {array:[]};
+    for(var j=0;j<cols;j++){
+      cs.array.push({title:i+','+j});
+      if(((i+j)%3) === 0)
+        cs.array[cs.array.length - 1].disabled = true;
+    }
+    rs.push(cs);
+  }
+  return rs;
+}
+  
+  var combox = new CC.ui.form.Combox({
+  	
+  	//filterContent : false,
+  	
+  	//@override
+  	//定义获得项数据方式
+    getItemValue : function(row){
+      return row.$(0).title;
+    },
+    
+    //@override
+    getItemTitle : function(row){
+      return row.$(0).title;
+    },
+    
+    selector : {
+     ctype:'grid',
+     height:200,
+     autoFit:true,
+     shadow:{ctype:'shadow', inpactH:6,inpactY:-2, inpactX : -5, inpactW:9},
+     showTo:document.body,     
+	   plugins:[
+	    {name:'tb',ctype:'gridtb', tb:{css:'lnt'}},
+	    {name:'pagenation',ctype:'gridpage', count:100, url : '/samples/grid/pagedata.json'}
+	   ],
+	   header:
+	    {
+	     array:[
+	      {title:'第一列', width:.2},
+	      {title:'第二列'},
+	      {title:'第三列'},
+	      {title:'第四列'}
+	     ]
+	    },
+	   content : {array:createCellData(4, 20), altCS:'alt-row'}
+	  },
+	  
+	  //@override
+	  // 定义从selector控件获得具有selectionProvider的子控件方式
+	  getSelectioner : function(selector){
+	    return selector.content;
+	  },
+	  
+	  //@override
+	  //可以在这返回具体自定的值
+	  getValue : function(row){
+	    return row.$(0).title;
+	  },
+	  
+    showTo:document.body,
+    width:300,
+    css:'pa l:150 t:50',
+    autoRender : true
+  });
+});
+
+
+</script>

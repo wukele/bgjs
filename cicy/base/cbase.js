@@ -218,9 +218,9 @@ var camelFn = function(m, a){ return a.charAt(1).toUpperCase(); };
 //
 //
 //
-var hidCS = ['vid','hid'];
+var hidCS = ['vid','hid','hid','hid'];
 
-var disCS = ['vvi', 'dbl','dbi'];
+var disCS = ['vvi', 'dbl','dbi',''];
 
 var undefined;
 
