@@ -1,0 +1,107 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Cicy树型控件功能展示</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+	.combo-tree .g-panel-body {border:1px solid #CCC;border-top:0;}
+</style>
+</head>
+<body>
+	<h2>自定下拉控件和过滤方式</h2>
+	<div id="tree_combo"></div>
+	
+	<h2>自定下拉控件和过滤方式 + 滚动 + Ajax动态加载</h2>
+	<div id="tree_ajax_combo"></div>
+</body>
+</html>
+<script>
+CC.ready(function() {
+/**
+ * Javascript Utility for web development.
+ * R&D : www.bgscript.com/forum
+ * @author javeejy@126.com
+ * www.bgscript.com © 2009 - 构建自由的WEB应用 
+ */
+
+      // ----------------------------------
+      // 下拉为树  
+      //自定义过滤
+			function treeFilter(matcher, caller){
+			  var caller = caller || window, fn = arguments.callee;
+			  if(this.children){
+			  	var cm = true;
+	        CC.each(this.children, (function(){
+	            if(!matcher.call(caller,this) && !this.nodes){
+	                this.display(0);
+	                cm = false;
+	                return;
+	            }
+	            this.display(1);
+	            if(this.nodes && this.expanded)
+	            	fn.call(this, matcher, caller);
+	        }));
+      	}
+			}
+						
+		var tree = new CC.ui.Tree({
+			  cs:'combo-tree',
+			  showTo:document.body, hidden:true,filter:treeFilter,
+		  	rootCfg:{
+		    title:'tree', array:[
+					{title:'disabled item',nodes:true,disabled:true},
+					{title:'B'},
+					{title:'C',nodes:true, array:[
+						{title:'disabled A',nodes:true,disabled:true},
+						{title:'B',disabled:true},
+						{title:'items',nodes:true}
+				  ]}
+			  ]}
+    });
+		
+		tree.render();
+		
+		//指定selector
+		cb = new CC.ui.form.Combox({showTo:'tree_combo', selector:tree, autoRender:true,width:350});
+		
+		// Ajax Tree	
+		tree = new CC.ui.Tree({
+			cs:'combo-tree',
+			/*url:'/q?bg_q=test_group', autoConnect:false, */showTo:document.body, hidden:true,filter:treeFilter,
+			rootCfg:{title:'tree2', array:[
+			  {title:'Back Light 点击展开', nodes:true},
+			  {title:'BCDEFJDFL;AJSDL'},
+				{title:'disabled item',nodes:true,disabled:true},
+				{title:'BCDEFJDFL;AJSDL'},
+				{title:'C',nodes:true, array:[
+						{title:'disabled A',nodes:true,disabled:true},
+						{title:'B',disabled:true},
+						{title:'items',nodes:true}
+				]},
+				{title:'item something',disabled:true},
+				{title:'BCD人物事件'},
+				{title:'CDEFASLDFJ', nodes:true},
+				{title:'disabled item',nodes:true,disabled:true},
+				{title:'AAAAAAAAAAAAAA'},
+				{title:'WEB前端'}
+			]},
+			
+			//指定滚动时滑动至可见的视图结点
+			getScrollor : function(){
+			  if(!this.scrollor)
+			    this.scrollor = this.$$('_scrollor') || this.wrapper;
+			  return this.scrollor;
+			}
+		});			
+			tree.render();
+			tree.root.expand();
+		  //指定selector
+			cb = new CC.ui.form.Combox({showTo:'tree_ajax_combo',  autoRender:true,selector:tree, width:350});
+			cb.setScrollorHeight(150);
+});
+
+
+</script>

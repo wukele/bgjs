@@ -393,7 +393,10 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
   itemCls: CC.ui.grid.Cell,
 
   hoverCS: 'row-over',
-
+  
+  //display:'' 
+  blockMode  : 0,
+  displayMode:3,
   createView : function(){
     this.view = C.get('CC.ui.grid.Row');
     CC.ui.ContainerBase.prototype.createView.call(this);

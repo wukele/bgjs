@@ -24,7 +24,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     _leaveFocus: true,
 
     maxH: 21,
-
+/**
+ * 
+ */
+    filterContent : true,
+    
     initComponent: function() {
 
       //用于填充selector选项的数组
@@ -48,20 +52,14 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       var st = this.selector;
 
       //默认的下拉框为Folder控件
-      if (!st) {
-        st = this.selector = new CC.ui.Folder({
-          showTo: document.body,
-          shadow: true
-        });
-        //bind scrolor
-        st.scrollor = st.dom('_scrollor');
-      }else {
-        st = CC.ui.instance(st);
-      }
+      st = st ? CC.ui.instance(st):this.createDefSelector();
 
-      if (array) st.fromArray(array);
+      var sn = this.getSelectioner(st);
+      
+      if (array) 
+        sn.fromArray(array);
 
-      this.attach(st);
+      this.attach(st, sn);
       this._bindKey();
 
       if (this.uneditable) {
@@ -69,8 +67,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         this.setEditable(false);
       } else this.setEditable(true);
 
-      if (this.selected) st.select(selected);
-
+      if (this.selected)
+        sn.getSelectionProvider().select(this.selected);
+      
+      delete this.selected;
+      
       //
       // 由于Combox由多个控件拼装而成, 为了能正确捕获Combox控件的blur, focus事件,
       // 不得不多监听几个事件,并作一处特殊处理.
@@ -91,12 +92,33 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     	superclass.onHide.apply(this, arguments);
     },
     
+    createDefSelector : function(){
+        var st = CC.ui.instance({
+        	ctype:'folder',
+          showTo: document.body,
+          shadow: true,
+          getScrollor : function(){
+            if(!this.scrollor)
+             this.scrollor = this.dom('_scrollor');
+            return this.scrollor;
+          }
+        });
+        return st;
+    },
+    
+/**
+ * 获得下拉控件中具有selectionProvider的控件
+ */
+    getSelectioner : function(st){
+      return this.selectioner || st;
+    },
+    
     onMouseWheel : function(e){
       var dt = CC.Event.getWheel(e);
       if( dt>0 ){
-        this.selector.selectionProvider.pre();
+        this.selectioner.selectionProvider.pre();
       }else if( dt<0 ){
-        this.selector.selectionProvider.next();
+        this.selectioner.selectionProvider.next();
       }
     },
 
@@ -159,8 +181,8 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     onUneditableClick: function(evt) {
       var b = !this.selector.hidden;
       this.leaveFocusOff();
-      if (!b) {
-        this.selector.filter(allMather);
+      if (!b && this.filterContent) {
+        this.selectioner.filter(allMather);
       }
       this.showBox(!b);
     },
@@ -175,10 +197,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 /**
  * @param {CC.ui.ContainerBase}
  */
-    attach: function(selector) {
+    attach: function(selector, selectioner) {
       this.selector = selector;
-
-      //selector 与 主体生死存亡
+      this.selectioner = selectioner;
+      
       this.follow(selector);
 
       selector.display(false);
@@ -187,15 +209,15 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       if (selector.shadow)
         selector.shadow.setZ(999);
 
-      selector.addClass(this.selectorCS)
-              .on('selected', this.onSelected, this)
-              .on('itemclick', this.onclickEvent, this);
+      selector.addClass(this.selectorCS);
+      selectioner.on('selected', this.onSelected, this)
+      selectioner.on('itemclick', this.onclickEvent, this);
 
       this._savSelKeyHdr = selector.defKeyNav;
 
       var self = this;
 
-      selector.selectionProvider.defKeyNav = (function(ev) {
+      selectioner.getSelectionProvider().defKeyNav = (function(ev) {
         self._keyHandler(ev, true);
       });
     },
@@ -232,24 +254,24 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
       //handle to selector.
       if (!isSelectorEv) {
-        var s = this.selector;
-        return s.selectionProvider.navigateKey(ev);
+        return this.selectioner.selectionProvider.navigateKey(ev);
       }
     },
 
     _filtHandler: function(ev) {
       var kc = ev.keyCode,
-          s = this.selector,
-          p = s.selectionProvider;
+          sn = this.selectioner,
+          p = sn.selectionProvider;
       if (kc === p.UP || kc === p.DOWN || this.noFilt || kc === 27 || kc === 13 || kc === 9) return;
 
       var v = this.editor.element.value;
       if (v == '') p.select(null);
 
-      if (p.selected && kc != Event.LEFT && kc != Event.RIGHT) p.select(null);
+      if (p.selected && kc != Event.LEFT && kc != Event.RIGHT)
+         p.select(null);
 
-      if (v != this.preValue) {
-        s.filter(this.matcher, this);
+      if (this.filterContent && v != this.preValue) {
+        sn.filter(this.matcher, this);
         this.preValue = v;
       }
       this.leaveFocusOff();
@@ -257,11 +279,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
 
     showBox: function(b) {
-      var s = this.selector;
-      var ds = !s.hidden;
+      var st = this.selector, ds = !st.hidden;
       if (b.type) b = !ds;
       if (!b) {
-        s.display(false);
+        st.display(false);
         if (!this._leaveFocus) {
           if (!this.uneditable) this.editor.focus(true);
           else this.focus(true);
@@ -271,19 +292,20 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       }
 
       this.preferPosition();
-      if (this.selector.shadow) this.selector.shadow.reanchor();
+      if (st.shadow) st.shadow.reanchor();
       if (!this.uneditable) this.editor.focus(true);
       else this.focus(true);
 
       if (ds) return;
       this.checkSelected();
       this.addClass(this.downCS);
-      s.bindContext(this.onBoxContexted, false, this).display(true);
+      st.bindContext(this.onBoxContexted, false, this).display(true);
     },
 
     active : function(){
       this.showBox(true);
     },
+    
     deactive : function(){
     	this.showBox(false);
     },
@@ -293,8 +315,8 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
      * @private
      */
     checkSelected: function() {
-      var s = this.selector,
-          p = s.getSelectionProvider();
+      var sn = this.selectioner,
+          p  = sn.getSelectionProvider();
 
       var v = this.editor.element.value;
 
@@ -307,7 +329,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
       p.select(null);
 
-      s.each(function(it) {
+      sn.each(function(it) {
         if (!it.hidden && !it.disabled && it.title == this) {
           p.select(it);
           return false;
@@ -340,25 +362,37 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
 
     onSelected: function(item) {
-      this.editor.setValue(item.title);
-      this.setValue(item.value, item.title, true);
+      this.setValueInner(item, true);
       if (!this.uneditable && this.focused) this.editor.focus(true);
       else this.uneditNode.innerHTML = item.title;
     },
+    
+    setValueInner : function(item, inner){
+      var v = this.getItemValue(item), t = this.getItemTitle(item);
+      superclass.setValue.call(this, v);
+      this.editor.setValue(t);
 
+      if (this.selector && !inner) {
+        this.checkSelected();
+      }
+    },
+    
+    getItemValue : function(item){
+      return (item.getValue && item.getValue()) || item.value || item.title;
+    },
+    
+    getItemTitle : function(item){
+      return item.title || item.value;
+    },
+    
     /**
      * @param v 值
      * @param title 标题
      * @param innerUsed 内部使用
      * @override
      */
-    setValue: function(v, title, innerUsed) {
-      superclass.setValue.call(this, v || title);
-      this.editor.setValue(title || v);
-
-      if (innerUsed !== true && this.selector) {
-        this.checkSelected();
-      }
+    setValue: function(item) {
+    	this.setValueInner(item);
       return this;
     },
 
@@ -367,7 +401,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
      * @override
      */
     getValue: function() {
-      if (!this.selector.selected) {
+      if (!this.selectioner.selectionProvider.selected) {
         superclass.setValue.call(this, this.uneditable ? '': this.editor.getValue());
       }
       return superclass.getValue.call(this);
@@ -377,10 +411,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
    * 自定过滤重写该函数即可.
    */
     matcher: function(item) {
-      var tle = item.title;
+      var tle = this.getItemTitle(item);
       var v = this.editor.element.value;
       if (v == '') {
-        item.setTitle(item.title);
+        item.setTitle(tle);
         return true;
       }
 
@@ -389,12 +423,12 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         item.dom('_tle').innerHTML = tle.replace(v, '<span class="g-match">' + v + '</span>');
         return true;
       }
-      item.setTitle(item.title);
+      item.setTitle(tle);
       return false;
     },
 /***/
     select: function(id) {
-      this.selector.select(id);
+      this.selectioner.selectionProvider.select(id);
     }
   };
 });
