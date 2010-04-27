@@ -155,22 +155,21 @@ if(!window.__debug)
          * 遍历可以枚举的对象.
          *@param {Object} object 可枚兴的对象,如果为数组或arguments时遍历下标数据,为普通对象时遍历对象所有属性.
          *@param {Function} callback
-         *@param args
          *@example
              CC.each(array, funtion(obj, i){
                 //true
                 alert(this === array[i] && this === obj) ;
              });
          */
-        each: function(object, callback, args) {
+        each: function(object, callback) {
             if (args) {
                 if (object.length === undefined) {
                     for (var name in object)
-                        if (callback.apply(object[name], args) === false)
+                        if (callback.apply(object[name]) === false)
                             break;
                 } else
                     for (var i = 0, length = object.length; i < length; i++)
-                        if (callback.apply(object[i], args) === false)
+                        if (callback.apply(object[i], i) === false)
                             break;
             } else {
                 if (object.length === undefined) {
@@ -1109,7 +1108,7 @@ function testNoForm() {
  * @return {DOMElement} iframe页面中的document结点
  */
         frameDoc : function(frame) {
-            return frame.contentWindow ? frame.contentDocument:frame.contentDocument;
+            return frame.contentWindow ? frame.contentWindow.document:frame.contentDocument;
         },
 /**
  * 获得iframe中的window对象.
