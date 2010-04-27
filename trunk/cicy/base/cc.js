@@ -162,23 +162,11 @@ if(!window.__debug)
              });
          */
         each: function(object, callback) {
-            if (args) {
-                if (object.length === undefined) {
-                    for (var name in object)
-                        if (callback.apply(object[name]) === false)
-                            break;
-                } else
-                    for (var i = 0, length = object.length; i < length; i++)
-                        if (callback.apply(object[i], i) === false)
-                            break;
-            } else {
                 if (object.length === undefined) {
                     for (var name in object)
                         if (callback.call(object[name], name, object[name]) === false)
                             break;
-                } else
-                    for (var i = 0, length = object.length, value = object[0]; i < length && callback.call(value, i, value) !== false; value = object[++i]){}
-            }
+                } else for (var i = 0, length = object.length, value = object[0]; i < length && callback.call(value, i, value) !== false; value = object[++i]){}
             return object;
         },
 
