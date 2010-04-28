@@ -368,7 +368,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
     
     getItemValue : function(item){
-      return (item.getValue && item.getValue()) || item.value || item.title;
+      return (item.getValue && item.getValue()) || (item.value !== undefined && item.value) || item.title;
     },
     
     getItemTitle : function(item){
@@ -387,7 +387,18 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       if (this.selector && !inner) {
         this.checkSelected();
       }
+      
+      if(t !== undefined)
+        this.title = t;
+      
       return this;
+    },
+    
+/**
+ * @return {String}
+ */
+    getTitle : function(){
+      return (this.title !== undefined && this.title) || this.editor.getValue();
     },
     
     /**

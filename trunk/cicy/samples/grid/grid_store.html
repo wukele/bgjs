@@ -48,10 +48,11 @@ CC.ready(function () {
                 id: 'gender',
                 editor: {
                     ctype: 'combo',
-                    array: [{
-                        title: '第一项',
-                        icon: 'iconUser'
-                    }]
+                    array: [
+			       	  	    {title:'与组共享',icon:'iconUser',value:''},
+			       	  	    {title:'独享tab',value:'singletab',icon:'iconEdit'},
+			       	  	    {title:'全局共享tab',value:'sharetab',icon:'iconRef'}
+			       	       ]
                 },
                 validator: function (v) {
                     if (v == '') return '该值不能为空';

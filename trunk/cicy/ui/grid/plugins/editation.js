@@ -24,7 +24,6 @@ CC.create('CC.ui.grid.plugins.Editation', null, function(){
  */    
   CC.ui.grid.Cell.prototype.setValue = function(v){
       this.value = v;
-      this.pCt.pCt.updateCell(this);
       return this;
   };
   
@@ -186,6 +185,7 @@ return {
 			et.hide();
 			v = et.getValue(), prev = cell.getValue();
 			if(v != prev){
+				g.content.updateCell(cell, et.getTitle());
 				cell.setValue(v);
 				this.grid.content.getValidationProvider().validateCell(cell);
 				if(!cell.modified)

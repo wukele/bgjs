@@ -1313,6 +1313,14 @@ CC.extend(Base.prototype,
       this.tip = ss;
       return this;
    },
+   
+/**
+ * @return {String}
+ */
+    getTitle : function(){
+      return this.title;
+    },
+    
 /**
 * @param {String} ss
 * @return this
