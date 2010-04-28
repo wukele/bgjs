@@ -372,7 +372,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
     
     getItemTitle : function(item){
-      return item.title || item.value;
+      return item.title!==undefined?item.title : item.value;
     },
     /**
      * @param v 值
@@ -380,17 +380,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
      * @param innerUsed 内部使用
      * @override
      */
-    setValue : function(v, t, inner){
+    setValue : function(v, inner){
       superclass.setValue.call(this, v);
-      this.editor.setValue(t||v);
-
       if (this.selector && !inner) {
         this.checkSelected();
       }
-      
-      if(t !== undefined)
-        this.title = t;
-      
       return this;
     },
     
@@ -401,6 +395,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       return (this.title !== undefined && this.title) || this.editor.getValue();
     },
     
+    setTitle : function(t){
+      this.editor.setValue(t);
+      return superclass.setTitle.call(this, t);
+    },
     /**
      * @param innerUsed 内部使用
      * @override
@@ -408,7 +406,8 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     setValueFromItem: function(item, inner) {
       var v = this.getItemValue(item), 
           t = this.getItemTitle(item);
-      this.setValue(v, t, inner);
+      this.setValue(v, inner);
+      this.setTitle(t);
       return this;
     },
 
