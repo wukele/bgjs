@@ -549,8 +549,4 @@ var E = CC.Event,
  */
     sbmove : fGo
   });
-  
-  CC.ui.def('base', function(opt){
-    return CC.Base.create(opt);
-  });
 })();

@@ -5,7 +5,7 @@
  * @class
  * @example
  <pre>
-  var cvt = CC.util.TypeConverter.getConverter('int');
+  var cvt = CC.util.TypeConverter.get('int');
   var num = cvt('123456');
   alert(typeof num);
  </pre>
@@ -14,17 +14,17 @@ CC.util.TypeConverter = {
 /**
  * 注册一个类型转换函数
  */
-  registerConverter : function(type, cvt){
+  reg : function(type, cvt){
     cvtMap[type] = cvt;
   },
 
 /**
  * 获得类型转换函数
  */
-  getConverter : function(type){
+  get : function(type){
     var c = cvtMap[type];
     if(!c){
-      c = this.createConverter.apply(this, arguments);
+      c = this.create.apply(this, arguments);
       if(!c)
         throw '未识别的数据类型:'+type;
       cvtMap[type] = c;
@@ -37,7 +37,7 @@ CC.util.TypeConverter = {
   * 数据类型转换器,创建后存在属性converter中,用于比较器比较两列值.
   * @return {Object} 该列的数据类型转换器
   */
-  createConverter: function(type){
+  create: function(type){
     var numReg = /[\$,%]/g, cv;
     switch (type) {
       case "":

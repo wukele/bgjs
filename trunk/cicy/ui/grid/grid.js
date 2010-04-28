@@ -18,19 +18,24 @@ var CC = window.CC,
 CC.create('CC.ui.grid.Column', B, function(father){
 
     return {
-
+        // bdEl,
+        
         createView : function(){
-          this.view = CC.$C({tagName: 'TD'});
-          this.createViewBody();
+          this.view = CC.$C({
+            tagName:'TD',
+            innerHTML : '<div class="hdrcell"></div>'
+          });
+          
+          this.bdEl = this.view.firstChild;
+          this.createViewBody(this.bdEl);
         },
 /**
  * 创建td内容结点,这里是一个div
  * @private
  */
-        createViewBody : function(){
-          this.view.appendChild(CC.$C({
-                      tagName: 'DIV',
-                      className: 'hdrcell',
+        createViewBody : function(bd){
+          bd.appendChild(CC.$C({
+                      tagName: 'span',
                       id: '_tle'
           }));
         },
