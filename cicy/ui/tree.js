@@ -485,7 +485,7 @@ CC.ui.TreeItem.prototype.indicatorCls = CC.ui.tree.TreeItemLoadingIndicator;
 
 var rootCfg = {
   nodes : true,
-  draggable : true,
+  draggable : false,
   itemCls : CC.ui.TreeItem
 };
 

@@ -2401,63 +2401,6 @@ if (CC.ie){
 }
 
 /**
- * 标题画笔工厂.
- * @name CC.Base.BrushFactory
- * @namespace
- */
-Base.BrushFactory = /**@lends CC.Base.BrushFactory*/{
-/**
- * 获得浮点数格式化表示值.
- * @param {Number} 保留位数
- * @return {Function}
-   @example
-   var brush = Base.brushFactory.floatBrush(2);
-   alert(brush(1.2214));
-   alert(brush(.3218));
- */
-  floatBrush : function(digit, type){
-    var n = Math.pow(10, digit);
-    switch(type){
-      case '%' :
-        n = n*100;
-        var m = n/100;
-        return function(v){
-          return Math.round(v*n)/m + '%';
-        }
-      break;
-      default :
-        return function(v){
-          return Math.round(v*n)/n;
-        }
-    }
-  },
-/**
- * @param {String} fmt mm/dd/yy或其它格式
- * @return {Function}
- */
-  date : function(fmt){
-    if(!fmt)
-      fmt = 'yy/mm/dd';
-
-    return function(v){
-      return CC.dateFormat(v, fmt);
-    }
-  }
-};
-/**
- * @name CC.Base.BrushFactory.Float2
- * @property {Function} Float2 保留两位小数的浮点预留画笔
- */
-Base.BrushFactory.Float2 = Base.BrushFactory.floatBrush(2);
-
-/**
- * @name CC.Base.BrushFactory.Percent2
- * @property {Function} Float2 保留两位小数的百分比预留画笔
- */
-Base.BrushFactory.Percent2 = Base.BrushFactory.floatBrush(2, '%');
-
-
-/**
  * @name CC.ui
  * @class 控件包
  */
@@ -2513,6 +2456,10 @@ CC.ui = /**@lends CC.ui*/{
   }
 };
 
+CC.ui.def('base', function(opt){
+	return Base.create(opt);
+});
+  
 /**
  * document.body的Base封装
  * @type CC.Base

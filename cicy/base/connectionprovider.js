@@ -139,10 +139,10 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
       afg.url = url;
 
     afg.caller = this;
-
+    
     if(cfg)
       CC.extend(afg, cfg);
-
+    
     if (!afg.success){
       if(afg.caller !== this)
         throw '如果使用默认处理,ajaxCfg的caller须为当前的connection provider';
@@ -189,6 +189,10 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
       this.getConnector().abort();
 
     var a = this.connector =  this.createConnector(cfg);
+    
+    // 应用url模板
+    a.url = CC.templ(this.t, a.url);
+    
     a.to(this.t);
     a.connect();
   },

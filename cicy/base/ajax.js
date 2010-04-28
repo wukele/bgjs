@@ -144,12 +144,6 @@ Ajax.prototype =
      * 根据设置初始化.
      */
     initialize: function(options) {
-    /**
-     * @name CC.Ajax#eventable
-     * @property {Boolean} eventable=true 该类是可以监听,发送和处理事件的.
-     * @readonly
-     */
-        CC.Eventable.call(this,options);
         CC.extend(this, options);
         this.method = this.method.toUpperCase();
     }
@@ -477,7 +471,7 @@ Ajax.prototype =
     getJson : function(){
         if(this.json)
             return this.json;
-        var o = undefined;
+        var o;
         try {
             /**
              * @name CC.Ajax#json

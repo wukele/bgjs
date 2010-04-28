@@ -362,19 +362,9 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
 
     onSelected: function(item) {
-      this.setValueInner(item, true);
+      this.setValueFromItem(item, true);
       if (!this.uneditable && this.focused) this.editor.focus(true);
       else this.uneditNode.innerHTML = item.title;
-    },
-    
-    setValueInner : function(item, inner){
-      var v = this.getItemValue(item), t = this.getItemTitle(item);
-      superclass.setValue.call(this, v);
-      this.editor.setValue(t);
-
-      if (this.selector && !inner) {
-        this.checkSelected();
-      }
     },
     
     getItemValue : function(item){
@@ -384,15 +374,30 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     getItemTitle : function(item){
       return item.title || item.value;
     },
-    
     /**
      * @param v 值
      * @param title 标题
      * @param innerUsed 内部使用
      * @override
      */
-    setValue: function(item) {
-    	this.setValueInner(item);
+    setValue : function(v, t, inner){
+      superclass.setValue.call(this, v);
+      this.editor.setValue(t||v);
+
+      if (this.selector && !inner) {
+        this.checkSelected();
+      }
+      return this;
+    },
+    
+    /**
+     * @param innerUsed 内部使用
+     * @override
+     */
+    setValueFromItem: function(item, inner) {
+      var v = this.getItemValue(item), 
+          t = this.getItemTitle(item);
+      this.setValue(v, t, inner);
       return this;
     },
 
