@@ -39,7 +39,12 @@ CC.ready(function(){
      array:[
       {title:'第一列', width:.2, editor:{ctype:'text'}, validator:function(v){ if(v=='') return '不能为空'; return true;}},
       {title:'第二列', editor:{ctype:'textarea', minW:100, minH:100}},
-      {title:'第三列', editor:{ctype:'combo', array:[{title:'第一项', icon:'iconUser'}]}},
+      {title:'第三列', editor:{ctype:'combo', array:[
+       	  	    {title:'与组共享',icon:'iconUser',value:''},
+       	  	    {title:'独享tab',value:'singletab',icon:'iconEdit'},
+       	  	    {title:'全局共享tab',value:'sharetab',icon:'iconRef'}
+       	       ]}
+      },
       {title:'第四列', editor:{ctype:'datepicker'}}
      ]
     },
@@ -57,6 +62,10 @@ CC.ready(function(){
   win.render();
 
   win.center();
+  
+  g.on('editend', function(cell){
+    alert(cell.getValue());
+  });
 });
 
 

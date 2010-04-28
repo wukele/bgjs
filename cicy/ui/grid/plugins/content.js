@@ -4,6 +4,7 @@
  */
 CC.Tpl.def('CC.ui.grid.Content', '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup><tbody id="_ctx"></tbody></table></div>');
 CC.create('CC.ui.grid.Content', CC.ui.Panel, function(father){
+	var undefined;
 return /**@lends CC.ui.grid.Content#*/{
 
  itemCls : CC.ui.grid.Row,
@@ -225,7 +226,7 @@ return /**@lends CC.ui.grid.Content#*/{
 
     for(i=0;i<rl;i++){
       for(j=0;j<hl;j++){
-        this.updateCell(rs[i].children[j], rs[i].brush || bs[j]);
+        this.updateCell(rs[i].children[j],undefined, rs[i].brush || bs[j]);
       }
     }
   },
@@ -239,7 +240,7 @@ return /**@lends CC.ui.grid.Content#*/{
         rl = rs.length;
 
     for(i=0;i<rl;i++){
-      this.updateCell(rs[i], rs[i].brush || cs[i].cellBrush);
+      this.updateCell(rs[i], undefined, rs[i].brush || cs[i].cellBrush);
     }
   },
 
@@ -247,10 +248,13 @@ return /**@lends CC.ui.grid.Content#*/{
  * 定义更新单元格html方式
  * @param
  */
-  updateCell : function(cell, /**@inner*/brush){
+  updateCell : function(cell, title, /**@inner*/brush){
     if(!brush)
     	brush = cell.brush || this.pCt.header.$(cell.pCt.indexOf(cell)).cellBrush;
-    cell.getTitleNode().innerHTML = brush.call(cell, cell.value===undefined?cell.title:cell.value);
+    if(title === undefined){
+      title = cell.title===undefined?cell.value:cell.title;
+    }
+    cell.getTitleNode().innerHTML = brush.call(cell, title);
   },
 /**
  *

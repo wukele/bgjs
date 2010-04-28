@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+        <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+        <link rel="stylesheet" href="../../default/lan_share.css" type="text/css"/>
+        <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+    </head>
+    <body></body>
+</html>
+<script type="text/javascript">
+
+CC.ready(function(){
+  
+	var w = new CC.ui.Dialog({
+		title: '库表单控件',
+		showTo: document.body,
+		hidden:true,
+		width:500,
+		height:340,
+		buttons : [{title: '取消'}, {title: '确定', id:'ok'}],
+
+		onok : function(){
+			this.byId('myform').getStoreProvider().save();
+			return false;
+		},
+		
+		array:[
+			{
+				ctype:'form', id:'myform', 
+				storeCls : CC.ui.form.StoreProvider, validationCls:CC.ui.form.ValidationProvider, 
+				storeCfg : {saveUrl : 'http://localhost/test.txt' },
+				events : {
+					//通过监听验证失败事件可以自定义错误提示方式
+				  'validation:failed' : [{
+				  	cb:function(item, errors){
+				  	  CC.Util.ftip(errors[0], '错误' , item);
+				  	}
+				  }]
+				},
+				array: 
+				 [
+				   {title: '单行文本', hlabel:true, css:'^1c', 
+						array:[{
+							name:'name',
+							ctype:'text',
+						  validator : function(v){
+						  	return v == '' ? '输入不能为空' : true;
+							},
+						}]},
+				   {css:'1c ^c:42', array:
+				   	[
+					    {ctype:'fieldset', title:'Part one', css:'^1c', array:[{ctype:'text'},{ctype:'text'}]},
+					    {ctype:'fieldset', title:'Part two', css:'^1c $mg:0,5', array:[{ctype:'text'},{ctype:'text'}]}
+				    ]
+				   },
+				 {title: '日期选择', array:[{ctype:'datepicker'}]}
+				]
+	    }
+		]
+	});
+
+	w.render();
+	w.show().center();
+});
+</script>
