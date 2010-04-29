@@ -65,7 +65,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
   },
 /***/
   abort : function(){
-    this.getFrameEl().src = CC.ie?'about:blank':'';
+    this.t.getFrameEl().src = CC.ie?'about:blank':'';
     this.onFinal();
   },
 
