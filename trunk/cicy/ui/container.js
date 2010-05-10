@@ -105,9 +105,6 @@ CC.create('CC.layout.Layout', null,
             comp.lyInf = cc = cfg || {};
           else if(cfg)
             CC.extend(cc, cfg);
-            
-          //添加到容器
-          this.ct.add(comp);
          
           this.beforeAdd(comp, cc);
 /**
@@ -117,6 +114,9 @@ CC.create('CC.layout.Layout', null,
           if(this.itemCS)
             comp.addClassIf(this.itemCS);
 
+          //添加到容器
+          this.ct.add(comp);
+          
           if(this.isUp()){
             if (!comp.rendered)
               comp.render();
