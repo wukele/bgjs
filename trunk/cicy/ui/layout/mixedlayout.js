@@ -126,8 +126,13 @@ CC.create('CC.layout.RowLayout', B, {
       i,len, it, its = this.ct.children, cfg, ty = this.type, iv;
       //y direction
       var leH = [], leW = [];
+      
       for(i=0,len=its.length;i<len;i++){
         it = its[i];
+        
+        if (!it.rendered)
+          it.render();
+
         if(it.hidden)
           continue;
 
@@ -178,11 +183,6 @@ CC.create('CC.layout.RowLayout', B, {
             h-=it.height;
           }
        }
-
-      for(i=0,len=its.length;i<len;i++){
-        it = its[i];
-        if (!it.rendered) it.render();
-      }
     }
 });
 
