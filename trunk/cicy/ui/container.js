@@ -100,13 +100,15 @@ CC.create('CC.layout.Layout', null,
             comp = UX.instance(comp);
           }
 
-          //添加到容器
-          this.ct.add(comp);
           var cc = comp.lyInf;
           if (!cc)
             comp.lyInf = cc = cfg || {};
           else if(cfg)
             CC.extend(cc, cfg);
+            
+          //添加到容器
+          this.ct.add(comp);
+         
           this.beforeAdd(comp, cc);
 /**
  * @name CC.layout.Layout#itemCS

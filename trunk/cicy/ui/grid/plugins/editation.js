@@ -185,7 +185,7 @@ return {
 			et.hide();
 			v = et.getValue(), prev = cell.getValue();
 			if(v != prev){
-				g.content.updateCell(cell, et.getTitle());
+				g.content.updateCell(cell, v);
 				cell.setValue(v);
 				this.grid.content.getValidationProvider().validateCell(cell);
 				if(!cell.modified)
