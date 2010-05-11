@@ -28,8 +28,8 @@ function fGo(){};
  *@global
  *@name __debug
  */
-if(!window.__debug)
-  var __debug = true;
+if(window.__debug === undefined)
+  var __debug = false;
 
 
 (function(){
@@ -3728,6 +3728,13 @@ CC.extend(Base.prototype,
         if(this.hoverCS){
             this.bindHoverStyle(this.hoverCS);
         }
+        
+/**
+* @name CC.Base#css
+* @property {String} css 设置控件inline style字符串
+*/
+        if(this.css)
+         this.cset(this.css);
 /**
 * @name CC.Base#unselectable
 * @property {Boolean} [unselectable=false] 是否允许选择控件的文本区域.
@@ -3873,14 +3880,6 @@ CC.extend(Base.prototype,
           this.hidden = undefined;
           this.display(false);
         }
-
-
-/**
-* @name CC.Base#css
-* @property {String} css 设置控件inline style字符串
-*/
-        if(this.css)
-         this.cset(this.css);
 
         if(this.width !== false)
             this.setWidth(this.width, true);
@@ -6846,13 +6845,12 @@ CC.create('CC.layout.Layout', null,
             comp = UX.instance(comp);
           }
 
-          //添加到容器
-          this.ct.add(comp);
           var cc = comp.lyInf;
           if (!cc)
             comp.lyInf = cc = cfg || {};
           else if(cfg)
             CC.extend(cc, cfg);
+         
           this.beforeAdd(comp, cc);
 /**
  * @name CC.layout.Layout#itemCS
@@ -6861,13 +6859,16 @@ CC.create('CC.layout.Layout', null,
           if(this.itemCS)
             comp.addClassIf(this.itemCS);
 
+          //添加到容器
+          this.ct.add(comp);
+          
           if(this.isUp()){
-            if (!comp.rendered)
-              comp.render();
-
             if(this.layoutOnChange)
               this.doLayout();
             else this.layoutChild(comp); //子项布局后再渲染
+
+            if (!comp.rendered)
+              comp.render();
           }
           return this;
         },
@@ -6971,7 +6972,8 @@ CC.create('CC.layout.Layout', null,
 
               if (typeof cls === 'string')
                 cls = UX.ctypes[cls];
-
+            var tmp = this.invalidate;
+            this.invalidate = true;
 				    for (var i=0,len=its.length;i<len;i++) {
 				      item = its[i];
 				      // already instanced
@@ -6983,6 +6985,11 @@ CC.create('CC.layout.Layout', null,
 				       item = ct.instanceItem(item, cls, true)
               }
 				      this.add(item);
+				    }
+				    this.invalidate = tmp;
+				    
+				    if(this.isUp()){
+				    	this.doLayout();
 				    }
         },
 
@@ -7297,11 +7304,6 @@ CC.create('CC.ui.ContainerBase', Base,
     this._addNode(a.view);
     //建立子项到容器引用.
     a.pCt = this;
-
-    //默认如果容器已渲染,加入的子项将立即渲染
-    if(this.rendered && !a.rendered){
-      a.render();
-    }
   },
 
 /**
@@ -15350,27 +15352,33 @@ return {
        opt, 
        // plugin instance
        pl , 
-       i, len;
+       i, len,
+       nps = [];
     // prepare, instance and register events
     for(i=0,len=ps.length;i<len;i++){
       pl   = ps[i];
       name = pl.name;
       cfgId = pl.cfgId || name;
+      opt = {};
       // from grid indexed cfgId
-      pl   = CC.extend(pl, CC.delAttr(this, cfgId));
-      ctype = pl.ctype;
+      CC.extend(opt, pl);
+      CC.extend(opt, CC.delAttr(this, cfgId));
+      ctype = opt.ctype;
+      // make a reference to grid
+      opt.grid = this;
       if(__debug) tester.ok(!!ctype, true);
-      pl   = CC.ui.instance(ctype, pl);
-      this.extraRegisterEventMaps(pl);
-      ps[i] = pl;
+      opt   = CC.ui.instance(ctype, opt);
+      this.extraRegisterEventMaps(opt);
+      // new plugin list
+      nps[i] = opt;
       //make a reference
-      this[cfgId] = pl;
+      this[cfgId] = opt;
     }
 
     var rt = [], ui;
     //init
-    for(i=0,len=ps.length;i<len;i++){
-      pl = ps[i];
+    for(i=0,len=nps.length;i<len;i++){
+      pl = nps[i];
       name = pl.name;
       this.fireOnce('beforeinit'+name, pl, this);
       if(pl.initPlugin){
@@ -15395,7 +15403,7 @@ return {
       }
     }
     
-    return ps;
+    return nps;
   },
 
 
@@ -15650,7 +15658,7 @@ return /**@lends CC.ui.grid.Content#*/{
     this.ctTbl = this.$$('_ct_tbl');
   },
 
-  initPlugin : function(grid){
+  initPlugin : function(){
     return true;
   },
 
@@ -15661,7 +15669,7 @@ return /**@lends CC.ui.grid.Content#*/{
   setupColumnLever : function(){
     var n, i,
         levers = [],
-        cs = this.pCt.header.children,
+        cs = this.grid.header.children,
         len = cs.length,
         cp = this.dom('_grp');
 
@@ -15774,7 +15782,7 @@ return /**@lends CC.ui.grid.Content#*/{
  * @private
  */
   onScroll : function(e){
-    this.pCt.fire('contentscroll', e, parseInt(this.view.scrollLeft, 10) || 0, this);
+    this.grid.fire('contentscroll', e, parseInt(this.view.scrollLeft, 10) || 0, this);
   },
 
 /**
@@ -15797,24 +15805,24 @@ return /**@lends CC.ui.grid.Content#*/{
     if(!this.clickDisabled && !row.ignoreClick){
       var cell = row.$(e.srcElement || e.target), rt;
       if(cell && !row.clickDisabled && !cell.ignoreClick){
-        rt = this.pCt.fire('cellclick', cell, e);
+        rt = this.grid.fire('cellclick', cell, e);
       }
       if(rt !== false){
         this.fire('itemclick', row, e);
-        this.pCt.fire('rowclick',  row, e);
+        this.grid.fire('rowclick',  row, e);
       }
     }
   },
 
   onRowOver : function(r, e){
     if(this.hoverEvent === true){
-      this.pCt.fire('rowover', r, e);
+      this.grid.fire('rowover', r, e);
     }
   },
 
   onRowOut : function(r, e){
     if(this.hoverEvent === true){
-      this.pCt.fire('rowout', r, e);
+      this.grid.fire('rowout', r, e);
     }
   },
 
@@ -15822,7 +15830,7 @@ return /**@lends CC.ui.grid.Content#*/{
     if(w !== false){
       //fix ie no scroll event bug
       if(CC.ie){
-        this.pCt.fire('contentscroll', null, parseInt(this.view.scrollLeft, 10) || 0, this);
+        this.grid.fire('contentscroll', null, parseInt(this.view.scrollLeft, 10) || 0, this);
       }
     }
   },
@@ -15839,7 +15847,7 @@ return /**@lends CC.ui.grid.Content#*/{
   },
 
   updateView : function(){
-    var cs = this.pCt.header.children,
+    var cs = this.grid.header.children,
         hl = cs.length,
         i, rs = this.children,
         rl = rs.length,
@@ -15859,7 +15867,7 @@ return /**@lends CC.ui.grid.Content#*/{
  * 当一行数据添加到表格时,调用该方法更新行数据.
  */
   updateRow : function(row){
-    var cs = this.pCt.header.children,
+    var cs = this.grid.header.children,
         i, rs = row.children,
         rl = rs.length;
 
@@ -15874,7 +15882,7 @@ return /**@lends CC.ui.grid.Content#*/{
  */
   updateCell : function(cell, title, /**@inner*/brush){
     if(!brush)
-    	brush = cell.brush || this.pCt.header.$(cell.pCt.indexOf(cell)).cellBrush;
+    	brush = cell.brush || this.grid.header.$(cell.pCt.indexOf(cell)).cellBrush;
     if(title === undefined){
       title = cell.title===undefined?cell.value:cell.title;
     }
@@ -16055,7 +16063,6 @@ CC.create('CC.ui.grid.plugins.ColumnWidthControler', null, {
   },
 
   initPlugin : function(g) {
-    this.grid = g;
     if(g.autoFit){
       g.addClass(this.autoFitCS);
     }
@@ -16176,10 +16183,6 @@ return {
   initialize : function(opt){
     if(opt)
       CC.extend(this, opt);
-  },
-  
-  initPlugin : function(g){
-    this.grid = g;
   },
 
 /**
@@ -16322,7 +16325,7 @@ return {
 			et.hide();
 			v = et.getValue(), prev = cell.getValue();
 			if(v != prev){
-				g.content.updateCell(cell, et.getTitle());
+				g.content.updateCell(cell, v);
 				cell.setValue(v);
 				this.grid.content.getValidationProvider().validateCell(cell);
 				if(!cell.modified)
@@ -16374,8 +16377,6 @@ CC.create('CC.ui.grid.plugins.Toolbar', null, /**@lends CC.ui.grid.plugins.Toolb
   
   initPlugin : function(g){
   	
-  	this.grid = g;
-  	
     var tb = this.tb || {};
     
     if(!tb.ctype)
@@ -16425,8 +16426,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   },
   
   initPlugin : function(g){
-    this.grid = g;
-    this.grid.content.on('statuschange', this._onConnectorStatusChange, this);
+    g.content.on('statuschange', this._onConnectorStatusChange, this);
   },
   
   gridEventHandlers : {

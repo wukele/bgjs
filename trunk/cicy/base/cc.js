@@ -28,8 +28,8 @@ function fGo(){};
  *@global
  *@name __debug
  */
-if(!window.__debug)
-  var __debug = true;
+if(window.__debug === undefined)
+  var __debug = false;
 
 
 (function(){

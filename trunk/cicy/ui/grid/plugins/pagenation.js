@@ -30,8 +30,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   },
   
   initPlugin : function(g){
-    this.grid = g;
-    this.grid.content.on('statuschange', this._onConnectorStatusChange, this);
+    g.content.on('statuschange', this._onConnectorStatusChange, this);
   },
   
   gridEventHandlers : {

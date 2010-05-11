@@ -243,27 +243,33 @@ return {
        opt, 
        // plugin instance
        pl , 
-       i, len;
+       i, len,
+       nps = [];
     // prepare, instance and register events
     for(i=0,len=ps.length;i<len;i++){
       pl   = ps[i];
       name = pl.name;
       cfgId = pl.cfgId || name;
+      opt = {};
       // from grid indexed cfgId
-      pl   = CC.extend(pl, CC.delAttr(this, cfgId));
-      ctype = pl.ctype;
+      CC.extend(opt, pl);
+      CC.extend(opt, CC.delAttr(this, cfgId));
+      ctype = opt.ctype;
+      // make a reference to grid
+      opt.grid = this;
       if(__debug) tester.ok(!!ctype, true);
-      pl   = CC.ui.instance(ctype, pl);
-      this.extraRegisterEventMaps(pl);
-      ps[i] = pl;
+      opt   = CC.ui.instance(ctype, opt);
+      this.extraRegisterEventMaps(opt);
+      // new plugin list
+      nps[i] = opt;
       //make a reference
-      this[cfgId] = pl;
+      this[cfgId] = opt;
     }
 
     var rt = [], ui;
     //init
-    for(i=0,len=ps.length;i<len;i++){
-      pl = ps[i];
+    for(i=0,len=nps.length;i<len;i++){
+      pl = nps[i];
       name = pl.name;
       this.fireOnce('beforeinit'+name, pl, this);
       if(pl.initPlugin){
@@ -288,7 +294,7 @@ return {
       }
     }
     
-    return ps;
+    return nps;
   },
 
 
