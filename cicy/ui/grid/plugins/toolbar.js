@@ -23,8 +23,6 @@ CC.create('CC.ui.grid.plugins.Toolbar', null, /**@lends CC.ui.grid.plugins.Toolb
   
   initPlugin : function(g){
   	
-  	this.grid = g;
-  	
     var tb = this.tb || {};
     
     if(!tb.ctype)

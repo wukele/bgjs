@@ -40,10 +40,6 @@ return {
     if(opt)
       CC.extend(this, opt);
   },
-  
-  initPlugin : function(g){
-    this.grid = g;
-  },
 
 /**
  * this.editable && !cell.disabled &&  col.editor && col.editable && cell.pCt.editable && cell.editable

@@ -12,7 +12,6 @@ CC.create('CC.ui.grid.plugins.ColumnWidthControler', null, {
   },
 
   initPlugin : function(g) {
-    this.grid = g;
     if(g.autoFit){
       g.addClass(this.autoFitCS);
     }

@@ -118,12 +118,12 @@ CC.create('CC.layout.Layout', null,
           this.ct.add(comp);
           
           if(this.isUp()){
-            if (!comp.rendered)
-              comp.render();
-
             if(this.layoutOnChange)
               this.doLayout();
             else this.layoutChild(comp); //子项布局后再渲染
+
+            if (!comp.rendered)
+              comp.render();
           }
           return this;
         },
@@ -227,7 +227,8 @@ CC.create('CC.layout.Layout', null,
 
               if (typeof cls === 'string')
                 cls = UX.ctypes[cls];
-
+            var tmp = this.invalidate;
+            this.invalidate = true;
 				    for (var i=0,len=its.length;i<len;i++) {
 				      item = its[i];
 				      // already instanced
@@ -239,6 +240,11 @@ CC.create('CC.layout.Layout', null,
 				       item = ct.instanceItem(item, cls, true)
               }
 				      this.add(item);
+				    }
+				    this.invalidate = tmp;
+				    
+				    if(this.isUp()){
+				    	this.doLayout();
 				    }
         },
 
@@ -553,11 +559,6 @@ CC.create('CC.ui.ContainerBase', Base,
     this._addNode(a.view);
     //建立子项到容器引用.
     a.pCt = this;
-
-    //默认如果容器已渲染,加入的子项将立即渲染
-    if(this.rendered && !a.rendered){
-      a.render();
-    }
   },
 
 /**

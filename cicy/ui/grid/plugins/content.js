@@ -26,7 +26,7 @@ return /**@lends CC.ui.grid.Content#*/{
     this.ctTbl = this.$$('_ct_tbl');
   },
 
-  initPlugin : function(grid){
+  initPlugin : function(){
     return true;
   },
 
@@ -37,7 +37,7 @@ return /**@lends CC.ui.grid.Content#*/{
   setupColumnLever : function(){
     var n, i,
         levers = [],
-        cs = this.pCt.header.children,
+        cs = this.grid.header.children,
         len = cs.length,
         cp = this.dom('_grp');
 
@@ -150,7 +150,7 @@ return /**@lends CC.ui.grid.Content#*/{
  * @private
  */
   onScroll : function(e){
-    this.pCt.fire('contentscroll', e, parseInt(this.view.scrollLeft, 10) || 0, this);
+    this.grid.fire('contentscroll', e, parseInt(this.view.scrollLeft, 10) || 0, this);
   },
 
 /**
@@ -173,24 +173,24 @@ return /**@lends CC.ui.grid.Content#*/{
     if(!this.clickDisabled && !row.ignoreClick){
       var cell = row.$(e.srcElement || e.target), rt;
       if(cell && !row.clickDisabled && !cell.ignoreClick){
-        rt = this.pCt.fire('cellclick', cell, e);
+        rt = this.grid.fire('cellclick', cell, e);
       }
       if(rt !== false){
         this.fire('itemclick', row, e);
-        this.pCt.fire('rowclick',  row, e);
+        this.grid.fire('rowclick',  row, e);
       }
     }
   },
 
   onRowOver : function(r, e){
     if(this.hoverEvent === true){
-      this.pCt.fire('rowover', r, e);
+      this.grid.fire('rowover', r, e);
     }
   },
 
   onRowOut : function(r, e){
     if(this.hoverEvent === true){
-      this.pCt.fire('rowout', r, e);
+      this.grid.fire('rowout', r, e);
     }
   },
 
@@ -198,7 +198,7 @@ return /**@lends CC.ui.grid.Content#*/{
     if(w !== false){
       //fix ie no scroll event bug
       if(CC.ie){
-        this.pCt.fire('contentscroll', null, parseInt(this.view.scrollLeft, 10) || 0, this);
+        this.grid.fire('contentscroll', null, parseInt(this.view.scrollLeft, 10) || 0, this);
       }
     }
   },
@@ -215,7 +215,7 @@ return /**@lends CC.ui.grid.Content#*/{
   },
 
   updateView : function(){
-    var cs = this.pCt.header.children,
+    var cs = this.grid.header.children,
         hl = cs.length,
         i, rs = this.children,
         rl = rs.length,
@@ -235,7 +235,7 @@ return /**@lends CC.ui.grid.Content#*/{
  * 当一行数据添加到表格时,调用该方法更新行数据.
  */
   updateRow : function(row){
-    var cs = this.pCt.header.children,
+    var cs = this.grid.header.children,
         i, rs = row.children,
         rl = rs.length;
 
@@ -250,7 +250,7 @@ return /**@lends CC.ui.grid.Content#*/{
  */
   updateCell : function(cell, title, /**@inner*/brush){
     if(!brush)
-    	brush = cell.brush || this.pCt.header.$(cell.pCt.indexOf(cell)).cellBrush;
+    	brush = cell.brush || this.grid.header.$(cell.pCt.indexOf(cell)).cellBrush;
     if(title === undefined){
       title = cell.title===undefined?cell.value:cell.title;
     }

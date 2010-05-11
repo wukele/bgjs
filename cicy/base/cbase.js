@@ -459,6 +459,13 @@ CC.extend(Base.prototype,
         if(this.hoverCS){
             this.bindHoverStyle(this.hoverCS);
         }
+        
+/**
+* @name CC.Base#css
+* @property {String} css 设置控件inline style字符串
+*/
+        if(this.css)
+         this.cset(this.css);
 /**
 * @name CC.Base#unselectable
 * @property {Boolean} [unselectable=false] 是否允许选择控件的文本区域.
@@ -604,14 +611,6 @@ CC.extend(Base.prototype,
           this.hidden = undefined;
           this.display(false);
         }
-
-
-/**
-* @name CC.Base#css
-* @property {String} css 设置控件inline style字符串
-*/
-        if(this.css)
-         this.cset(this.css);
 
         if(this.width !== false)
             this.setWidth(this.width, true);
