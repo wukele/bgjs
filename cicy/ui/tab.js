@@ -62,7 +62,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
  * @return {CC.ui.ContainerBase}
  */
     getContentPanel: function(autoCreate) {
-      var p = this.panel, ct, tct;
+      var p = this.panel, tct;
       if (!p && autoCreate) {
         //iframe
         p  = this.src ? new CC.ui.IFramePanel() : new CC.ui.Panel();
@@ -320,12 +320,12 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 
     //@override
-    beforeAdd: function(it) {
-      if(SP.beforeAdd.call(this, it) !== false){
-        if (it.getContentPanel())
-          it.panel.display(false);
-      }
-    },
+//    beforeAdd: function(it) {
+//      if(SP.beforeAdd.call(this, it) !== false){
+//        if (it.getContentPanel())
+//          it.panel.display(false);
+//      }
+//    },
 
     //是否显示指定的TabItem,
     //参数a可为TabItem实例也可为TabItem的id,b为true或false.
