@@ -6838,11 +6838,10 @@ CC.create('CC.layout.Layout', null,
  * @param {Object} cfg 组件布局信息
  * @return this
  */
-        add : function(comp, cfg){
-
+        add : function(comp, cfg){          
           // 由JSON格式创建
           if(!comp.cacheId){
-            comp = UX.instance(comp);
+            comp = this.ct.instanceItem(comp);
           }
 
           var cc = comp.lyInf;
@@ -6974,23 +6973,23 @@ CC.create('CC.layout.Layout', null,
                 cls = UX.ctypes[cls];
             var tmp = this.invalidate;
             this.invalidate = true;
-				    for (var i=0,len=its.length;i<len;i++) {
-				      item = its[i];
-				      // already instanced
-				      if (!item.cacheId){
-				       
-				       if(!item.ctype && icfg)
-				      	 item = CC.extendIf(item, icfg);
-				       
-				       item = ct.instanceItem(item, cls, true)
+            for (var i=0,len=its.length;i<len;i++) {
+              item = its[i];
+              // already instanced
+              if (!item.cacheId){
+               
+               if(!item.ctype && icfg)
+                 item = CC.extendIf(item, icfg);
+               
+               item = ct.instanceItem(item, cls, true)
               }
-				      this.add(item);
-				    }
-				    this.invalidate = tmp;
-				    
-				    if(this.isUp()){
-				    	this.doLayout();
-				    }
+              this.add(item);
+            }
+            this.invalidate = tmp;
+            
+            if(this.isUp()){
+              this.doLayout();
+            }
         },
 
         /**
@@ -7302,23 +7301,30 @@ CC.create('CC.ui.ContainerBase', Base,
     this.children.push(a);
     //默认子项结点将调用_addNode方法将加到容器中.
     this._addNode(a.view);
-    //建立子项到容器引用.
-    a.pCt = this;
+
+    if (a.pCt){
+      if(a.pCt !== this){
+        a.pCt.remove(a);
+        //建立子项到容器引用
+        a.pCt = this;
+      }
+    }else a.pCt = this;
+    
+    //在useContainerMonitor为false时,是否允许子项点击事件,并且是否由子项自身触发.
+    if (!this.useContainerMonitor && this.clickEvent && !a.__click) {
+      var bnd = a.__click = this.clickEventTrigger;
+      var clickProxy = this.clickEventNode ? a.dom(this.clickEventNode) : a.view;
+      a.domEvent(this.clickEvent === true ? 'mousedown': this.clickEvent, bnd, this.cancelClickBubble, null, clickProxy);
+    }
   },
 
 /**
  * @protected
  */
-  beforeAdd : function(a){
-      if (a.pCt)
-        a.pCt.remove(a);
-      //在useContainerMonitor为false时,是否允许子项点击事件,并且是否由子项自身触发.
-      if (!this.useContainerMonitor && this.clickEvent && !a.__click) {
-        var bnd = a.__click = this.clickEventTrigger;
-        var clickProxy = this.clickEventNode ? a.dom(this.clickEventNode) : a.view;
-        a.domEvent(this.clickEvent === true ? 'mousedown': this.clickEvent, bnd, this.cancelClickBubble, null, clickProxy);
-      }
+  beforeAdd : function(){
+    
   },
+  
 /**
  * @protected
  */
@@ -7726,10 +7732,10 @@ CC.create('CC.ui.ContainerBase', Base,
       // already instanced
       if (!it.cacheId){
       
-      	if(!it.ctype && cfg)
-      		it = CC.extendIf(it, cfg);
-      		
-      	it = this.instanceItem(it, cls, true);
+        if(!it.ctype && cfg)
+          it = CC.extendIf(it, cfg);
+          
+        it = this.instanceItem(it, cls, true);
       }
       
       this.add(it);
@@ -7738,31 +7744,33 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   instanceItem : function(it, cls, /**@inner*/mixed){
-  	
-  	if(!cls){
-  		cls = this.itemCls;
-	    if (typeof cls === 'string') {
-	      cls = CC.ui.ctypes[cls];
-	    }
-  	}
-  	
-  	if(!it)
-  		it = {};
-  		
-		if (!it.cacheId) {
-	  	if(!mixed && this.itemCfg){
-	  		it = CC.extendIf(it, this.itemCfg);
-	  	}
-	  			
-			it = it.ctype ? UX.instance(it) : new(cls||CC.ui.Item)(it);
-		
-			//层层生成子项
-			if (it.array && it.children) {
-				it.fromArray(it.array);
-				delete it.array;
-			}
-		}
-  	return it;
+    
+    if(!cls){
+      cls = this.itemCls;
+      if (typeof cls === 'string') {
+        cls = CC.ui.ctypes[cls];
+      }
+    }
+    
+    if(!it)
+      it = {};
+      
+    if (!it.cacheId) {
+      if(!mixed && this.itemCfg){
+        it = CC.extendIf(it, this.itemCfg);
+      }
+
+      // 提前添加父子关联,有利于在初始化过程中获得父控件信息
+      it.pCt = this;
+      it = it.ctype ? UX.instance(it) : new(cls||CC.ui.Item)(it);
+    
+      //层层生成子项
+      if (it.array && it.children) {
+        it.fromArray(it.array);
+        delete it.array;
+      }
+    }
+    return it;
   },
   
 /**
@@ -8003,31 +8011,31 @@ CC.create('CC.ui.ContainerBase', Base,
     var chs = this.children, ch, acc = 0, idx = 0, tmp = [];
     
     ch = chs[0];
-		
-		while (ch) {
-			
-			if(ch.children){
-				// prepared
-				tmp.push(ch);
-			}
-			//apply
-			acc++;
-			
-			if(cb.call(ch, idx, acc) === false)
-	       break;
-	    
-			// move next
-			ch = chs[++idx];
-			
-			if(!ch){
-				ch = tmp.pop();
-				if(ch){
-					idx = 0;
-					chs = ch.children;
-					ch = chs[0];
-				}
-			}
-		}
+    
+    while (ch) {
+      
+      if(ch.children){
+        // prepared
+        tmp.push(ch);
+      }
+      //apply
+      acc++;
+      
+      if(cb.call(ch, idx, acc) === false)
+         break;
+      
+      // move next
+      ch = chs[++idx];
+      
+      if(!ch){
+        ch = tmp.pop();
+        if(ch){
+          idx = 0;
+          chs = ch.children;
+          ch = chs[0];
+        }
+      }
+    }
   },
   
 /**
@@ -14660,7 +14668,8 @@ CC.ui.TreeItem.prototype.indicatorCls = CC.ui.tree.TreeItemLoadingIndicator;
 var rootCfg = {
   nodes : true,
   draggable : false,
-  itemCls : CC.ui.TreeItem
+  itemCls : CC.ui.TreeItem,
+  ctype:'treeitem'
 };
 
 CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
@@ -14687,11 +14696,11 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
     var arr = CC.delAttr(this, 'array');
     sprs.initComponent.call(this);
 
-    if(!this.root) {
-      var cfg = this.rootCfg;
+    if(!this.root || this.root.cacheId === undefined) {
+      var cfg = this.root || this.rootCfg;
       if(cfg)
         delete this.rootCfg;
-      this.root = new CC.ui.TreeItem(CC.extendIf(cfg, rootCfg));
+      this.root = this.instanceItem(CC.extendIf(cfg, rootCfg));
     }
 
     this.root.tree = this;
