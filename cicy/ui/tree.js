@@ -486,7 +486,8 @@ CC.ui.TreeItem.prototype.indicatorCls = CC.ui.tree.TreeItemLoadingIndicator;
 var rootCfg = {
   nodes : true,
   draggable : false,
-  itemCls : CC.ui.TreeItem
+  itemCls : CC.ui.TreeItem,
+  ctype:'treeitem'
 };
 
 CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
@@ -513,11 +514,11 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
     var arr = CC.delAttr(this, 'array');
     sprs.initComponent.call(this);
 
-    if(!this.root) {
-      var cfg = this.rootCfg;
+    if(!this.root || this.root.cacheId === undefined) {
+      var cfg = this.root || this.rootCfg;
       if(cfg)
         delete this.rootCfg;
-      this.root = new CC.ui.TreeItem(CC.extendIf(cfg, rootCfg));
+      this.root = this.instanceItem(CC.extendIf(cfg, rootCfg));
     }
 
     this.root.tree = this;
