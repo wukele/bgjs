@@ -22,7 +22,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
   setTarget : function(t){
   	CC.util.ConnectionProvider.prototype.setTarget.apply(this, arguments);
   	if(t.src || t.url)
-  	  this.connect();
+  	  this.connect(t.src || t.url);
   },
   
   initConnection : function(){
@@ -88,7 +88,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
   },
 
 /**@private*/
-  connectInner : function(cfg){
+  connectInner : function(){
     this.t.fire('open', this);
     (function(){
       try{
