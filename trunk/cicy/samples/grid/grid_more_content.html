@@ -1,0 +1,240 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+
+  <style>	
+.order .sep-row td {
+  border-bottom:1px solid #CCC;
+  padding:3px 0 !important;
+}
+.ordergrid .g-grid-ct .cell {
+  white-space:normal;
+  border-right:0px;
+}
+.ordergrid .g-grid-ct .ct-tbl .grid-td{color:#808080;}
+.order-hd { background:none repeat scroll 0 0 #F3F3F3;}
+
+.order-hd td {
+  border-color:#E6E6E6 #E6E6E6 #EEEEEE;
+  border-style:solid;
+  border-width:1px;  
+  padding:5px 0;
+}
+
+.order-hd .basic-info {
+  float:left;
+  text-align:left;
+}
+
+.order-hd .basic-info .order-num {
+	display:inline-block;
+	width:200px;
+}
+.order-hd .more-info {
+	float:right;
+	padding:0 8px 0 15px;
+}
+
+.order-item .grid-td .pic-info {
+	float:left;
+	margin-right:5px;
+}
+
+.order-item .pic-info .pic {
+	border:medium none;
+	overflow:hidden;
+}
+.s50, .s50 a {
+	height:50px;
+	width:50px;
+}
+.pic a {
+	display:table-cell;
+	text-align:center;
+	vertical-align:middle;
+}
+.pic a img {
+ vertical-align:middle;
+}
+a {
+color:#3366CC;
+text-decoration:none;
+}
+.s50 img {
+	max-height:50px;
+	max-width:50px;
+}
+
+.order-item .grid-td .txt-info {
+	line-height:18px;
+	margin-left:55px;
+	text-align:left;
+}
+
+.order-hd .selector {
+  float:left;
+  margin:0 8px 0 6px;
+}
+.order-item .grid-td .props span {
+  margin-right:15px;
+}
+.order-item .grid-td .name{
+	display:block;
+	margin:2px auto;
+}
+
+.ww-online {
+	background-image:url("http://a.tbcdn.cn/sys/wangwang/wangwang_v2.gif") !important;
+	background-repeat:no-repeat;
+	text-decoration:none !important;
+	height:20px;
+	width:67px;
+	display:inline-block;
+	overflow:hidden;
+	vertical-align:text-bottom;
+}
+  </style>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function(){
+  __debug = true;
+  var win = new CC.ui.Win(
+   {
+     layout:'card',
+     showTo:document.body,
+     width:800,
+     height:500,
+     lyCfg:{items:[
+     {
+      ctype:'grid',
+      cs:'ordergrid',
+      autoFit:true,
+ 	    plugins:[
+	     {name:'tb',ctype:'gridtb', tb:{css:'lnt'}},
+	     {name:'edition', ctype:'grideditor'},
+	     {name:'pagenation',ctype:'gridpage', count:100, url : '/samples/grid/pagedata.json'}
+	    ],
+      header : {
+        array : [
+          {title:'宝 贝', editor:'text',
+           cellBrush : function(v){
+				    return [
+				      '<div class="pic-info">',
+				        '<div class="pic s50">',
+				          '<a href="#" title="查看宝贝详情" target="_blank" hidefocus="true">',
+				            '<img src="http://img06.taobaocdn.com/bao/uploaded/i6/T15FFpXhtiXXXanykT_012226.jpg_sum.jpg" alt="查看宝贝详情">',
+				          '</a>',
+				        '</div>',
+				      '</div>',
+				      '<div class="txt-info">',
+				        '<div class="desc">',
+				          '<a target="_blank" title="查看宝贝详情" href="#" hidefocus="true">'+v+'</a>',
+				        '</div>',
+				        '<div class="props">',
+				        '<span>颜色: 浅蓝</span><span>尺码: M</span>',                          
+				        '</div>',
+				      '</div>'
+				    ].join('');
+           }
+          },
+          {title:'单 价', editor:'text'},
+          {title:'买家',  editor:'text',
+           cellBrush : function(v){
+           	return [
+							'<a class="nickname" href="#" target="_blank">'+v+'</a>',
+							'<a title="查询该买家订单" target="_blank" href="javascript:void(0);">',
+								'<img src="http://img08.taobaocdn.com/tps/i8/T1KNtuXc4rXXXXXXXX-12-12.png" alt="查询该买家订单">',
+							'</a>',
+							'<span class="name"><img alt="" src="http://assets.taobaocdn.com/sys/common/icon/trade/new_msg.gif">----</span>',
+							'<span><a class="ww-online" target="_blank" href="#"></a></span>'
+						 ].join('');
+           }
+          }
+        ]
+      },
+      content : {
+      	template : '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup></table></div>',
+			  ct : '_ct_tbl',
+			  itemCfg:{
+          //@override
+				  createView : function(){
+				    var cols = this.pCt.grid.header.children.length;
+				    var nd = CC.Tpl.forNode([
+							'<table><tbody class="order" id="{id}">',
+							  '<tr class="order-hd">',
+							    '<td colspan="'+cols+'">',
+							      '<input type="checkbox" class="selector" />',
+							      '<div class="basic-info">',
+							        '<span class="order-num"><label>订单编号：34326472153963</label>',
+							        '</span>',
+							        '<span class="deal-time">成交时间：2010-04-01 20:28</span>',
+							      '</div>',
+							      '<div class="more-info">',
+							        '<a href="" target="_blank" class="memo-flag">',
+							          '<img src="http://assets.taobaocdn.com/sys/common/icon/trade/op_memo_0.png">',
+							        '</a>',
+							      '</div>',
+							    '</td>',
+							  '</tr>',
+							  '<tr class="order-item last" id="_ctx"></tr>',
+							'</tbody></table>'
+				    ].join(''), {});
+				
+						this.view = nd.removeChild(nd.firstChild);
+						this.ct = this.dom('_ctx');
+				  }
+			  },
+        array:[
+          {array:[
+            {title:'呛口小辣椒大C同款女装牛仔7分背带裤长裤黑色'},
+            {title:'12.22'},
+            {title:'Rock'}
+          ]},
+          {array:[
+            {title:'呛口小辣椒大C同款女装牛仔7分背带裤长裤黑色'},
+            {title:'12.22'},
+            {title:'Rock'}
+          ]},
+          {array:[
+            {title:'呛口小辣椒大C同款女装牛仔7分背带裤长裤黑色'},
+            {title:'12.22'},
+            {title:'Rock'}
+          ]},
+          {array:[
+            {title:'呛口小辣椒大C同款女装牛仔7分背带裤长裤黑色'},
+            {title:'12.22'},
+            {title:'Rock'}
+          ]},
+          {array:[
+            {title:'呛口小辣椒大C同款女装牛仔7分背带裤长裤黑色'},
+            {title:'12.22'},
+            {title:'Rock'}
+          ]},
+          {array:[
+            {title:'呛口小辣椒大C同款女装牛仔7分背带裤长裤黑色'},
+            {title:'12.22'},
+            {title:'Rock'}
+          ]},
+          {array:[
+            {title:'呛口小辣椒大C同款女装牛仔7分背带裤长裤黑色'},
+            {title:'12.22'},
+            {title:'Rock'}
+          ]}
+        ]
+      }
+     }
+    ]}
+   }
+  );
+  
+  win.render();
+  win.center();
+});
+</script>
