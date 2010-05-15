@@ -38,8 +38,14 @@ CC.create('CC.ui.form.FormElement', Bx,
       }
       var el = this.element;
 
-      if (!el) el = this.element = this.dom(this.elementNode);
-
+      if (!el) {
+        el = this.dom(this.elementNode);
+        if(!el)
+          el = this.view;
+          
+        this.element = el;
+      }
+      
       el.id = this.id || 'comp' + CC.uniqueID();
       this.focusNode = el.id;
 
@@ -189,7 +195,8 @@ var fr = CC.ui.form;
 
 Tpl.def('Text', '<input type="text" id="_el" class="g-ipt-text g-corner" />')
    .def('Textarea', '<textarea id="_el" class="g-textarea g-corner" />')
-   .def('Checkbox', '<span tabindex="0" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>');
+   .def('Checkbox', '<span tabindex="0" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>')
+   .def('Select', '<select class="g-corner"/>');
 /**
  * @class
  * @name CC.ui.form.Text
@@ -277,4 +284,53 @@ CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
   checkedCS: 'g-radio-checked'
 });
 CC.ui.def('radio', fr.Radio);
+
+
+/**
+ * 对html select元素的轻量封装
+ * @class
+ * @name CC.ui.form.Select
+ */
+CC.create('CC.ui.form.Select', cf, {
+    template:'Select',
+    initComponent: function() {
+      spr.initComponent.call(this);
+      this.domEvent('focus', this.onFocusTrigger)
+          .domEvent('blur', this.onBlurTrigger)
+          .domEvent('keydown', this.onKeydownTrigger)
+          .domEvent('change', this.onChangeTrigger);
+          
+      if(this.array){
+        for(var i=0,as = this.array,len=as.length;i<len;i++){
+          this.add(as[i]);
+        }
+        delete this.array;
+      }
+      
+      if(this.selectedIndex){
+        this.element.selectedIndex = this.selectedIndex;
+        delete this.selectedIndex;
+      }
+    },
+    
+    onChangeTrigger : function(){
+      if(this.onchange)
+         this.onchange();
+    },
+    
+    getText : function(){
+      var sel = this.element.options[this.element.selectedIndex];
+      return sel?sel.text : '';
+    },
+/**
+ * 添加一个option元素
+ * @param {Object} option {text:'option text', value:'option value'}
+ */
+    add : function(option){
+      option.tagName = 'OPTION';
+      this.element.appendChild(CC.$C(option));
+    }
+});
+
+CC.ui.def('select', fr.Select);
 })();

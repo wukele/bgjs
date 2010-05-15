@@ -173,11 +173,11 @@ return {
  * @private
  */
   attachPluginEventHandlers : function(comp, map){
-  	if(typeof map === 'function')
-  	   map = map(comp);
-  	 
+    if(typeof map === 'function')
+       map = map(comp);
+     
     for(var k in map)
-    	this.on(k, map[k], comp);
+      this.on(k, map[k], comp);
   },
 
 /**
@@ -201,11 +201,11 @@ return {
     if(arrs.length === 1){
       pls = arrs[0];
     }else if(arrs.length === 0){
-    	return arrs;
+      return arrs;
     }else {
-    	pls = [];
+      pls = [];
       for(var i=0,len=arrs.length;i<len;i++){
-      	pls = pls.concat(arrs[i]);
+        pls = pls.concat(arrs[i]);
       }
     }
     return pls;
@@ -273,14 +273,14 @@ return {
       name = pl.name;
       this.fireOnce('beforeinit'+name, pl, this);
       if(pl.initPlugin){
-      	ui = pl.initPlugin(this);
-      	if(ui){
-      		rt.push(name);
+        ui = pl.initPlugin(this);
+        if(ui){
+          rt.push(name);
           // 插件本身
-	        if(ui === true)
-	          ui = pl;
-	        rt.push(ui);
-	        rt.push(pl);
+          if(ui === true)
+            ui = pl;
+          rt.push(ui);
+          rt.push(pl);
         }
       }
       this.fireOnce('afterinit'+name, pl, this);
@@ -303,7 +303,7 @@ return {
  * @param {Object} plugin
  */
   addPlugin : function(pl){
-  	pl = this.addPluginsInner([pl]);
+    pl = this.addPluginsInner([pl]);
     this.plugins.push(pl[0]);
   },
   
@@ -410,7 +410,7 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
   displayMode:3,
   
   createView : function(){
-  	// deletage to parent container to create row view
+    // deletage to parent container to create row view
     if(this.pCt){
       this.pCt.createRowView(this);
     }else {
