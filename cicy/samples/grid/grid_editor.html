@@ -30,14 +30,12 @@ function createCellData(cols, rows){
 }
 
 CC.ready(function(){
-  __debug = true;
-
   window.g = new CC.ui.Grid({
    plugins : [{name:'edition', ctype:'grideditor'}],
    header:
     {
      array:[
-      {title:'第一列', width:.2, editor:{ctype:'text'}, validator:function(v){ if(v=='') return '不能为空'; return true;}},
+      {title:'第一列', width:.2, editor:'text', validator:function(v){ if(v=='') return '不能为空'; return true;}},
       {title:'第二列', editor:{ctype:'textarea', minW:100, minH:100}},
       {title:'第三列', editor:{ctype:'combo', array:[
        	  	    {title:'',icon:'iconUser',value:''},
@@ -45,10 +43,11 @@ CC.ready(function(){
        	  	    {title:'全局共享tab',value:'sharetab',icon:'iconRef'}
        	       ]}
       },
-      {title:'第四列', editor:{ctype:'datepicker'}}
+      {title:'第四列', editor:'datepicker'},
+      {title:'第五列', editor:{ctype:'select',array:[{text:'请选择..', selected:true},{text:'第一项', value:5},{text:'第二项', value:6},{text:'第三项', value:7}]}},
      ]
     },
-   content : {array:createCellData(4, 6), altCS:'alt-row'}
+   content : {array:createCellData(5, 6), altCS:'alt-row'}
   });
 
   var win = new CC.ui.Win({

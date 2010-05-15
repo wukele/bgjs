@@ -164,6 +164,10 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 			f.unfly();
 		}
 		return this;
+	},
+	
+	getText : function(){
+	  return this.getValue();
 	}
 
 });
