@@ -283,7 +283,7 @@ if(window.__debug === undefined)
               this.attr(window, type, clazz);
             } else window[type] = clazz;
           }
-          
+          clazz.constructors = ags;
           applyCustructors(absObj, superclass, ags);
           absObj.constructor = clazz;
           return clazz;
