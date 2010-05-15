@@ -4,7 +4,7 @@
  */
 CC.Tpl.def('CC.ui.grid.Content', '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup><tbody id="_ctx"></tbody></table></div>');
 CC.create('CC.ui.grid.Content', CC.ui.Panel, function(father){
-	var undefined;
+	var undefined, C = CC.Cache, CX = CC.ui.ContainerBase.prototype;
 return /**@lends CC.ui.grid.Content#*/{
 
  itemCls : CC.ui.grid.Row,
@@ -230,7 +230,14 @@ return /**@lends CC.ui.grid.Content#*/{
       }
     }
   },
-
+/**
+ * 当行初始化时,委托父类生成view结点,当通过fromArray方式载行数据时才生效.
+ */
+  createRowView : function(row){
+    row.view = C.get('CC.ui.grid.Row');
+    CX.createView.call(row);
+  },
+  
 /**
  * 当一行数据添加到表格时,调用该方法更新行数据.
  */

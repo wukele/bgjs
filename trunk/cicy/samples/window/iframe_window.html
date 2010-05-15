@@ -16,7 +16,7 @@
 <script>
 		CC.ready(function(){
 				window.win = new CC.ui.Win(
-				  { title : 'Loading http://www.bgscript.com ...', 
+				  { title : 'Loading http://www.google.com ...', 
 				  	closeable : false, 
 				  	width : 600,
 				  	height : 400,
@@ -30,8 +30,8 @@
 					  				url:'http://www.bgscript.com',
 					  				  //在连接前可添加加载状态事件, 这些事件与ajax加载是一致的:
 					  				success : function(j){
-					  					CC.Util.ftip('IFrame 加载完成！', '提示' , win.ct);
-					  					win.setTitle('WEB开发交流 - http://www.bgscript.com');
+					  					CC.Util.ftip('IFrame 加载完成！', '提示' , this.t.ct);
+					  					this.t.pCt.setTitle('WEB开发交流 - http://www.bgscript.com');
 					  				}
 					  			 }
 				  		  }
@@ -43,5 +43,34 @@
 				
 				win.render();
 				win.center();
+				
+    win = new CC.ui.Dialog(
+				  { title : 'Loading http://www.bgscript.com ...', 
+				  	closeable : false, 
+				  	width : 600,
+				  	height : 400,
+				  	layout : 'card', 
+				  	showTo:document.body,
+				  	buttons:[{ctype:'button', title:'确定啦'}],
+				  	lyCfg : {
+				  		items : [
+				  			{ctype:'iframe', 
+				  			 connectionProvider:{
+					  			 ajaxCfg:{
+					  				url:'http://www.google.com',
+					  				  //在连接前可添加加载状态事件, 这些事件与ajax加载是一致的:
+					  				success : function(j){
+					  					CC.Util.ftip('IFrame 加载完成！', '提示' , this.t.ct);
+					  					this.t.pCt.setTitle('Google - http://www.google.com');
+					  				}
+					  			 }
+				  		  }
+				  		 }
+				  		]
+				  	}
+				  }
+				);
+				
+				win.render();
 		});
 </script>
