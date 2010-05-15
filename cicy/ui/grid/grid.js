@@ -408,9 +408,15 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
   //display:'' 
   blockMode  : 0,
   displayMode:3,
+  
   createView : function(){
-    this.view = C.get('CC.ui.grid.Row');
-    CC.ui.ContainerBase.prototype.createView.call(this);
+  	// deletage to parent container to create row view
+    if(this.pCt){
+      this.pCt.createRowView(this);
+    }else {
+      this.view = C.get('CC.ui.grid.Row');
+      CC.ui.ContainerBase.prototype.createView.call(this);
+    }
   },
 
   mouseoverCallback: function(e){

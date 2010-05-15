@@ -283,9 +283,7 @@ if(window.__debug === undefined)
               this.attr(window, type, clazz);
             } else window[type] = clazz;
           }
-
-          clazz.constructors = ags;
-
+          
           applyCustructors(absObj, superclass, ags);
           absObj.constructor = clazz;
           return clazz;
@@ -949,16 +947,20 @@ function testNoForm() {
  */
         getObjectLinkedValues : function(obj, name, check){
 			    var maps = [], check = !!check, o;
+          if(obj.hasOwnProperty(name)){
+            o = obj[name];
+            if(!check || o) maps.push(obj[name]);
+          }
+          if(obj.constructor.prototype.hasOwnProperty(name)){
+            o = obj.constructor.prototype[name];
+            if(!check || o) maps.push(o);
+          }
+          obj = obj.superclass;
 			    while(obj){
-			      if(obj.hasOwnProperty(name)){
-			      	o = obj[name];
-			      	if(!check || o) maps.push(obj[name]);
-			      }
-			      if(obj.constructor.prototype.hasOwnProperty(name)){
-			      	o = obj.constructor.prototype[name];
-			      	if(!check || o) maps.push(o);
-			      }
-			      
+            if(obj.hasOwnProperty(name)){
+              o = obj[name];
+              if(!check || o) maps.push(obj[name]);
+            }
 			      obj = obj.superclass;
 			    }
 			    return maps;

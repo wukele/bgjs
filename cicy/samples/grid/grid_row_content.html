@@ -1,0 +1,84 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+
+<style>
+  .g-grid .g-grid-ct .row-hd{background-color:#F3F3F3;border-bottom:1px solid #CCC;}
+  .g-grid .g-grid-ct .row-hd td {padding:4px 6px;}
+</style>
+</head>
+<body>
+  <input type="button" onclick="testAddRow()" value="新增行" />
+</body>
+</html>
+<script>
+
+function createCellData(cols, rows){
+  var rs = [];
+  for(var i=0;i<rows;i++){
+    var cs = {array:[]};
+    for(var j=0;j<cols;j++){
+      cs.array.push({title:i+','+j});
+      if(((i+j)%3) === 0)
+        cs.array[cs.array.length - 1].disabled = true;
+    }
+    rs.push(cs);
+  }
+  return rs;
+}
+
+CC.ready(function(){
+  window.g = new CC.ui.Grid({
+   autoFit:true,
+   header:
+    {
+     array:[
+      {title:'第一列'},
+      {title:'第二列'},
+      {title:'第三列'},
+      {title:'第四列'}
+     ]
+    },
+   content : {
+    template : '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup></table></div>',
+    ct : '_ct_tbl',
+    createRowView : function(row){
+      var cols = this.grid.header.children.length;
+      var nd = CC.Tpl.forNode([
+        '<table><tbody><tr class="row-hd"><td colspan="'+cols+'">'+this.getRowContent(row)+'</td></tr><tr id="_ctx"></tr></tbody></table>'
+        ].join(''), {});
+  
+  		row.view = nd.removeChild(nd.firstChild);
+  		row.ct   = row.dom('_ctx');
+    },
+    
+    getRowContent : function(row){
+      return '<span><strong>第'+(this.size()+1)+'行</strong></span>'
+    },
+    
+    array:createCellData(4, 20)
+   }
+  });
+
+  var win = new CC.ui.Win({
+    title:'Grid 自定义行内容',
+    showTo:document.body,
+    layout:'card',
+    lyCfg:{items:[g]}
+  });
+
+
+  win.render();
+
+  win.center();
+});
+
+
+  function testAddRow(){
+    g.content.fromArray([{ctype:'gridrow', array:[{title:'测试add'},{title:'测试add2'},{title:'测试add3'},{title:'测试add4'}]}]);
+  }
+</script>
