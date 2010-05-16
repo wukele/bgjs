@@ -65,12 +65,13 @@ CC.ready(function() {
 		tree.render();
 		
 		//指定selector
-		cb = new CC.ui.form.Combox({showTo:'tree_combo', selector:tree, autoRender:true,width:350});
+		cb = new CC.ui.form.Combox({showTo:'tree_combo',uneditable:true, selector:tree, autoRender:true,width:350});
 		
 		// Ajax Tree	
 		tree = new CC.ui.Tree({
 			cs:'combo-tree',
-			/*url:'/q?bg_q=test_group', autoConnect:false, */showTo:document.body, hidden:true,filter:treeFilter,
+			shadow:true,
+			/*url:'/q?bg_q=test_group', autoLoad:false, */showTo:document.body, hidden:true,filter:treeFilter,
 			rootCfg:{title:'tree2', array:[
 			  {title:'Back Light 点击展开', nodes:true},
 			  {title:'BCDEFJDFL;AJSDL'},
@@ -99,7 +100,15 @@ CC.ready(function() {
 			tree.render();
 			tree.root.expand();
 		  //指定selector
-			cb = new CC.ui.form.Combox({showTo:'tree_ajax_combo',  autoRender:true,selector:tree, width:350});
+			cb = new CC.ui.form.Combox({
+			  showTo:'tree_ajax_combo',  
+			  autoRender:true,
+			  selector:tree, 
+			  width:350,
+			  getItemValue : function(item){
+			    return item.id;
+			  }
+			});
 			cb.setScrollorHeight(150);
 });
 

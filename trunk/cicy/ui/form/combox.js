@@ -367,7 +367,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
     
     getItemValue : function(item){
-      return (item.getValue && item.getValue()) || (item.value !== undefined && item.value) || item.title;
+      if(item.getValue)
+        return item.getValue();
+      if(item.value !== undefined)
+        return item.value;
+      return item.getTitle();
     },
     
     getItemTitle : function(item){
@@ -390,14 +394,18 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 /**
  * @return {String}
  */
-    getTitle : function(){
-      return (this.title !== undefined && this.title) || this.editor.getValue();
+    getText : function(){
+      if(this.uneditable)
+        return this.title||'';
+      return this.editor.getValue();
     },
     
     setTitle : function(t){
       if(this.uneditable)
         this.uneditNode.innerHTML = t;
       else this.editor.setValue(t);
+      this.title = t;
+      return this;
     },
     
     /**
@@ -417,9 +425,6 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
      * @override
      */
     getValue: function() {
-      if (!this.selectioner.selectionProvider.selected) {
-        superclass.setValue.call(this, this.uneditable ? '': this.editor.getValue());
-      }
       return superclass.getValue.call(this);
     },
 
