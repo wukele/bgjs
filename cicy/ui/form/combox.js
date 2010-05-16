@@ -364,7 +364,6 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     onSelected: function(item) {
       this.setValueFromItem(item, true);
       if (!this.uneditable && this.focused) this.editor.focus(true);
-      else this.uneditNode.innerHTML = item.title;
     },
     
     getItemValue : function(item){
@@ -396,9 +395,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
     
     setTitle : function(t){
-      this.editor.setValue(t);
-      return superclass.setTitle.call(this, t);
+      if(this.uneditable)
+        this.uneditNode.innerHTML = t;
+      else this.editor.setValue(t);
     },
+    
     /**
      * @param innerUsed 内部使用
      * @override
