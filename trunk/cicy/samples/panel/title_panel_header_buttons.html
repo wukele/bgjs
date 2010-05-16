@@ -1,0 +1,84 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+	body {overflow:hidden;}
+	.tp-hd-btn {
+	  position:absolute;
+	  display:block;
+	  top:5px;
+	  width:16px;
+	  height:16px;
+	  background-image:url("http://mimg.126.net/p/dm3style/lib/1001261008/126green/f1.gif");
+	  background-repeat:no-repeat;
+	  cursor:pointer;
+	}
+	.sIcoRecycle {background-position:-60px -222px;}
+	.sIcoAdd{background-position:-281px -108px;}
+	a.sIcoAdd:hover{background-position:-281px -128px;}
+	a.sIcoRecycle:hover{background-position:-60px -246px;}
+	#hdRecycleBtn {right:8px;}
+	#hdAddBtn {right:22px;}
+	#hdUserBtn{right:40px;top:2px;}
+</style>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+		CC.ready(function(){
+	   var win = new CC.ui.Win(
+	  	{
+	  		title:'右侧有小按钮的CC.ui.TitlePanel', 
+	  		destoryOnlose:true, 
+	  		showTo:document.body, 
+	  		width:280,
+	  		layout:'card',
+	  		lyCfg:{
+	  			items : [
+	  				{ctype:'titlepanel', title:'TitlePanel包含一个组', 
+	  				 // 丰富界面UI方式之一:重写createView方法
+	  				 // 此外,还可以重写html模板以更直接的方式添加按钮
+	  				 createView : function(){
+	  				   // 先调用父类生成原来UI
+	  				   this.superclass.createView.call(this);
+	  				   var linkBtn, ctEl;
+	  				   
+	  				   // 用firebug观察控件模板找到适合的父结点,加进去
+	  				   ctEl = this.dom('_tleBar');
+	  				   // 这里只是方便演示一个个添加,可以写个批量加方式,直接从初始化读入数据
+	  				   linkBtn = CC.Tpl.forNode(
+	  				      '<span>'+
+	  				        '<a class="tp-hd-btn sIcoRecycle" id="hdRecycleBtn"></a>'+
+	  				        '<a class="tp-hd-btn sIcoAdd" id="hdAddBtn"></a>'+
+	  				        '<a class="tp-hd-btn iconUser" id="hdUserBtn"></a>'+
+	  				      '</span>'
+	  				   );
+	  				   ctEl.appendChild(linkBtn);
+	  				 },
+	  				 array:[
+	  					{ctype:'folder',
+	  					 getScrollor : function(){return this.pCt.wrapper},
+	  					 array:[
+				  			{title:'disabled item',icon:'iconRef',disabled:true},
+								{title:'粉红色',icon:'iconUser'},
+								{title:'蓝色',icon:'iconEdit'},
+								{title:'清除记录',icon:'iconLeaf'},
+								{title:'粉红色',icon:'iconTabs'},
+								{title:'蓝色',icon:'iconUser'},
+								{title:'清除记录',icon:'iconEdit'}
+	  	         ]
+	  					}
+	  				 ]}
+	  			]
+	  		}
+	    });
+	   win.render();
+	   win.center();
+		});
+</script>
