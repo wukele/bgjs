@@ -166,7 +166,7 @@ return {
     this.setBoundsForEditor(cell, et);
     
     et.setValue(cell.getValue())
-      .setTitle(cell.getValue())
+      .setTitle(cell.getTitle())
       .show().focus();
     this.grid.fire('editstart', cell, et, col, idx, this);
   },
@@ -181,8 +181,10 @@ return {
 			et.hide();
 			v = et.getValue(), prev = cell.getValue();
 			if(v != prev){
-				g.content.updateCell(cell, et.getText());
+			  var txt = et.getText();
+				g.content.updateCell(cell, txt);
 				cell.setValue(v);
+				cell.title = txt;
 				this.grid.content.getValidationProvider().validateCell(cell);
 				if(!cell.modified)
 					g.content.getStoreProvider().decorateCellModified(cell, true);
