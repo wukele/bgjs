@@ -163,9 +163,9 @@ CC.create('CC.ui.form.FormElement', Bx,
       return this.element.value;
     },
 
-/**获得控件文本显示值,返回this.title || this.element.value*/
+/**获得控件文本显示值,返回this.getValue()*/
     getText : function(){
-      return this.title || this.element.value;
+      return this.getValue();
     },
 /**
  * 设置提交字段名称
