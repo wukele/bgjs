@@ -29,22 +29,31 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
  * @class
  * @extends CC.ui.ContainerBase
  */
-    CC.create('CC.ui.win.Titlebar', CC.ui.ContainerBase, {
-        autoRender: true,
-        clickEvent : true,
-        unselectable:true,
-        cancelClickBubble : true,
-        itemCfg: { template: 'CC.ui.win.TitlebarButton' },
-        ct: '_ctx',
-        selectionProvider : {forceSelect: true, selectedCS : false}
-    });
+    var wtbDef = {
+      ctype:'ct',
+      autoRender: true,
+      clickEvent : true,
+      unselectable:true,
+      cancelClickBubble : true,
+      itemCfg: { template: 'CC.ui.win.TitlebarButton' },
+      ct: '_ctx',
+      template:'CC.ui.win.Titlebar',
+      selectionProvider : {forceSelect: true, selectedCS : false}
+    };
 
-
+    var wtbClsBtn = {
+      ctype:'item',
+      cs:'g-win-clsbtn',
+      template:'CC.ui.win.TitlebarButton',
+      tip:'关闭',
+      id:'_cls'
+    };
+    
     return /**@lends CC.ui.Win#*/{
 
         closeable : true,
 
-        shadow : true,
+        shadow : {ctype:'shadow', inpactY:-1,inpactH:5},
 
         innerCS : 'g-win g-tbar-win',
 /**
@@ -73,29 +82,50 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         dragOpacity : 0.6,
 
         initComponent: function() {
-          var tb = this.titlebar = new CC.ui.win.Titlebar({title:this.title});
+          var tle = CC.delAttr(this, 'title');
+          father.initComponent.call(this);
+          
+          //create titlebar
+          var tb = this.titlebar;
+          if(tb)
+            CC.extendIf(tb,wtbDef);
+          else tb = wtbDef;
+          tb.title = tle;
+          
+          var tboutter = true, v=tb.view;
+          // toolbar view 结点位于window 模板内
+          if(v && typeof v === 'string'){
+             tb.view = this.dom(v);
+             tboutter = false;
+          }
+          this.titlebar = CC.ui.instance(tb.ctype, tb);
+          //recovery
+          tb.view = v;
+          tb = this.titlebar;
+          
+          if(tboutter)
+            this.addTitlebarNode(tb);
+          
           this.follow(tb);
           delete this.title;
-
-          if(this.shadow === true)
-            this.shadow = new CC.ui.Shadow({inpactY:-1,inpactH:5});
-
-          father.initComponent.call(this);
 
           if(this.overflow)
             this.wrapper.fastStyleSet('overflow', this.overflow);
 
-          this.wrapper.insertBefore(tb);
-
           if(this.closeable === true){
-            this.clsBtn = new CC.ui.Item({
-              cs:'g-win-clsbtn',
-              template:'CC.ui.win.TitlebarButton',
-              onselect:this.onClsBtnClick,
-              tip:'关闭',
-              id:'_cls'
-            });
-            tb.add(this.clsBtn);
+            var cls = tb.clsBtn;
+            if(cls)
+              CC.extendIf(cls,wtbClsBtn);
+            else cls = wtbClsBtn;
+            cls.onselect = this.onClsBtnClick;
+            v = cls.view;
+            if(v && typeof v === 'string'){
+               cls.view = this.dom(v);
+            }
+            this.clsBtn = CC.ui.instance(cls);
+            // recovery
+            cls.view = v;
+            tb.layout.add(this.clsBtn);
           }
 
           if(this.destoryOnClose)
@@ -111,6 +141,16 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
 
           this.trackZIndex();
         },
+        
+/**
+ * @interface
+ * 重写该接口实现自定义标题栏位置
+ * @param {CC.ui.ContainerBase} titlebar
+ */
+   addTitlebarNode : function(tb){
+     this.wrapper.insertBefore(tb);
+   },
+   
 /**
  * 实现窗口的拖放
  * @private

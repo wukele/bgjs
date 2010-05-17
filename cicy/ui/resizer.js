@@ -91,7 +91,7 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
                 isz = this.initPS.size,
                 dxy = [sz.width - isz.width, sz.height - isz.height],
                 sd  = this.shadow,
-                sds = !sd.hidden;
+                sds = sd && !sd.hidden;
 
             dlt[0] -= ips[0];
             dlt[1] -= ips[1];
