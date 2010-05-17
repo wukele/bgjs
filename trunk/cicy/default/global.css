@@ -292,11 +292,9 @@ white-space:nowrap;
 .g-shadow-rb, .g-shadow-lb,.g-shadow-lt, .g-shadow-rt{width:6px;height:6px;}
 .g-shadow-r{top: 6px; bottom:6px;width: 6px; right: 0px;
 	background:transparent url(shadow-lr.png) repeat-y scroll -6px 0;
-  _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMethod=crop,src="shadow-lr.png") !important;
 }
 .g-shadow-b{left: 6px; height: 6px;right:6px;bottom: 0px;
 	background:transparent url(shadow.png) repeat-x scroll 0 -36px;
-_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMethod=crop,src="shadow.png") !important;
 }
 .g-shadow-l{top:6px;left:0;bottom:6px;width:6px;background:transparent url(shadow-lr.png) repeat-y;}
 .g-shadow-t{top:0;left:6px;right:6px;height:6px;background:transparent url(shadow.png) repeat-x scroll 0 -30px;}

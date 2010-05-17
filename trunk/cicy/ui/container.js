@@ -452,7 +452,6 @@ CC.create('CC.ui.ContainerBase', Base,
   createView: function() {
     cptx.createView.call(this);
     if (!this.ct) this.ct = this.view;
-
     //apply ct
     else if (typeof this.ct === 'string')
       this.ct = this.dom(this.ct);
