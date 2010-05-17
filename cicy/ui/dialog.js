@@ -162,23 +162,31 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
      * @private
      */
     createBottom: function(){
-      var b = this.bottomer = new CC.ui.ContainerBase({
+      var b = this.bottomer = CC.ui.instance(
+       CC.extendIf(this.bottomer, {
+        ctype:'ct',
+        pCt:this,
         itemCls: CC.ui.Button,
         template:'CC.ui.Dialog.Bottom',
         ct : '_wrap',
-        showTo:this.view,
         clickEvent : 'click',
         keyEvent : true,
         selectionProvider:{forceSelect:true}
-      });
+       }
+      ));
 
       this.follow(b);
       //监听按钮点击
       b.on('selected', this.onBottomItemSelected);
+      this.addBottomNode(b);
     },
-
+    
+    addBottomNode : function(bottom){
+      this.view.appendChild(bottom.view);
+    },
+    
     getWrapperInsets: function(){
-      var s = CC.ui.Win.prototype.getWrapperInsets.call(this),
+      var s = this.superclass.getWrapperInsets.call(this),
           h = this.bottomHeight - 1;
       s[2] += h;
       s[4] += h;

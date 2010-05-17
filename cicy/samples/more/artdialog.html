@@ -1,0 +1,112 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/lan_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+  <script type="text/javascript" src="../../more/artdialog.js"></script>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+CC.ready(function(){
+//
+// 实例
+// 
+ var win = new CC.more.ArtWin({
+   title:'Cicy JS快速创建一个完全不同的Window控件',
+   showTo:document.body,
+   autoRender : true,
+   width:190,
+   strHtml : '<div class="ui_content"><span class="ui_dialog_icon"></span>感谢<a href="http://www.planeart.cn/downs/artDialog/" target="_blank">planeart.cn提供的样式。</a></div>'
+ });
+ 
+ win.center();
+ 
+ win = new CC.more.ArtWin({
+  title : 'Loading http://www.google.com ...',
+  width : 600,
+  height : 400,
+  left : 150,
+  top:100,
+  layout : 'card',
+  showTo:document.body,
+  lyCfg : {
+    items : [
+    {ctype:'iframe',
+      connectionProvider:{
+        ajaxCfg:{
+          url:'http://www.bgscript.com/forum/',
+          //在连接前可添加加载状态事件, 这些事件与ajax加载是一致的:
+          success : function(j){
+            CC.Util.ftip('IFrame 加载完成！', '提示' , this.t.ct);
+            this.t.pCt.setTitle('WEB开发交流 - http://www.bgscript.com/');
+          }
+        }
+      }
+    }
+    ]
+  }
+ });
+ 
+ win.render();
+ 
+win = new CC.more.ArtWin({
+				layout:'qq',
+				title:'QQ布局管理器',
+				left:90,
+				top:40,
+				width:200,
+				height:450,
+				itemCls:'titlepanel',
+				lyCfg : {
+					items : [
+					 {ctype:'titlepanel',title:'我的好友', array:[
+	  					{ctype:'folder',
+	  					 selectionProvider : {/**允许多选*/mode:0},
+	  					 array:[
+				  			{title:'disabled item',icon:'iconRef',disabled:true},
+								{title:'粉红色',icon:'iconUser'},
+								{title:'蓝色',icon:'iconEdit'},
+								{title:'清除记录',icon:'iconLeaf'},
+								{title:'粉红色',icon:'iconTabs'},
+								{title:'蓝色',icon:'iconUser'},
+								{title:'清除记录',icon:'iconEdit'}
+	  	         ]
+	  				 }
+	  			]},
+					 {title:'我的同学',array:[
+				 	  	{ctype:'tree', 
+				 	  	 lyInf:{
+				 	  	 	 dir:'center'}, 
+				 	  		 rootCfg:{ expanded:true, title:'根目录', array:
+				 	  			 [ {title:'show case'}, {title:'Wiki changes', nodes:true},{title:'show case'}, {title:'Wiki changes', nodes:true},{title:'show case'}, {title:'Wiki changes', nodes:true},{title:'show case'}, {title:'Wiki changes', nodes:true}]
+				 	  		 }
+				 	  	}
+					 ]},
+					 {ctype:'titlepanel',title:'公司同事', array:[
+	  					{ctype:'folder',
+	  					 array:[
+				  			{title:'disabled item',icon:'iconRef',disabled:true},
+								{title:'粉红色',icon:'iconUser'},
+								{title:'蓝色',icon:'iconEdit'},
+								{title:'清除记录',icon:'iconLeaf'},
+								{title:'粉红色',icon:'iconTabs'},
+								{title:'蓝色',icon:'iconUser'},
+								{title:'清除记录',icon:'iconEdit'}
+	  	         ]
+	  				 }
+	  			]},
+					 {title:'陌生人'},
+					 {title:'黑名单'}
+					]
+				},
+				showTo:document.body
+			});
+      win.render();
+      win.layout.collapse(win.$(0), false);
+});
+</script>
