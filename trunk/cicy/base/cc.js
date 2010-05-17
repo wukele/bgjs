@@ -973,38 +973,41 @@ function testNoForm() {
  * @param {Document} document
  */
  
-				loadResource : function(attr, callback, doc) {
+				loadResource : function(attr, callback, autoremove, doc) {
 					// javascript , img..
 					var src = CC.delAttr(attr, 'src');
 					// css style sheet
 					var href = CC.delAttr(attr, 'href');
 					// tag
 					var res = this.$C(attr, doc);
-					
-					if(res.readyState) {
-						//IE
-						res.onreadystatechange = function() {
-							if (res.readyState == "loaded" ||
-							res.readyState == "complete") {
-								res.onreadystatechange = null;
-								setTimeout(function(){res.parentNode.removeChild(res)},1)
-								if(callback)
-								callback.call(res);
-							}
-						};
-					}else{
-						//Others
-						res.onload = function() {
-							setTimeout(function(){res.parentNode.removeChild(res)},1)
-							if(callback)
-							callback.call(res);
-						};
-					}
+					if(callback || autoremove){
+  					if(res.readyState) {
+  						//IE
+  						res.onreadystatechange = function() {
+  							if (res.readyState == "loaded" ||
+  							res.readyState == "complete") {
+  								res.onreadystatechange = null;
+  								if(autoremove)
+  								  setTimeout(function(){res.parentNode.removeChild(res)},1)
+  								if(callback)
+  								callback.call(res);
+  							}
+  						};
+  					}else{
+  						//Others
+  						res.onload = function() {
+  							if(autoremove)
+  							  setTimeout(function(){res.parentNode.removeChild(res)},1)
+  							if(callback)
+  							  callback.call(res);
+  						};
+  					}
+				  }
 					
 					if(src)
 					 res.src = src;
 					
-					if(rel)
+					if(href)
 					 res.href = href;
 					
 					this.$T('head')[0].appendChild(res);
@@ -1022,7 +1025,7 @@ function testNoForm() {
                 tagName: 'script',
                 src: url,
                 type: 'text/javascript'
-          }, callback);
+          }, callback, true);
           
           if(id) 
           	nd.id = id;
@@ -1056,22 +1059,17 @@ function testNoForm() {
    //在元素中应用新增样式类
    &lt;div class=&quot;g-custom&quot;&gt;动态加载样式&lt;/div&gt;
  */
-        loadStyle: function(id, ss) {
-            var o;
-            if (document.createStyleSheet) {
-                window[id] = ss;
-                o = document.createStyleSheet('javascript:' + id);
-                return o;
-            }
-            var css = this.$C( {
-                tagName: 'style',
-                id: id,
-                type: 'text/css'
-            }
-            );
-            css.innerHTML = ss;
-            this.$T('head')[0].appendChild(css);
-            return css;
+        loadStyle: function(ss, doc) {
+          var styleEl = this._styleEl;
+          if(!styleEl){
+            styleEl = this._styleEl = this.$C( {
+              tagName: 'style',
+              type: 'text/css'
+            });
+            this.$T('head')[0].appendChild(styleEl);
+          }
+          styleEl.styleSheet && (styleEl.styleSheet.cssText += ss) || styleEl.appendChild((doc||document).createTextNode(ss));
+          return styleEl;
         }
         ,
 /**
