@@ -60,7 +60,7 @@ if(window.__debug === undefined)
     isGecko = !isSafari && ua.indexOf("gecko") > -1,
     //优先检测BackCompat,因为
     //假如以后compatMode改变,也是非盒模型
-    isBorderBox = isIE && !isStrict,
+    isBorderBox = (isIE && !isStrict) || (!isIE && !isStrict),
     /**是否合法EMAIL字符串.
      * 参见 CC.isMail().
      * @inner
