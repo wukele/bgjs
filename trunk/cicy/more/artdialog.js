@@ -61,7 +61,7 @@ CC.Tpl.def('CC.more.ArtWin',
     minW : 190,
     minH : 53,
     getWrapperInsets : function(){
-      return [43,8,9,8,52,16];
+      return CC.borderBox?[43,10,9,10,52,20]:[43,8,9,8,52,16];
     },
     
     initComponent : function(){

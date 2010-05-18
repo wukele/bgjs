@@ -39,6 +39,8 @@ CC.create('CC.layout.Layout', null,
          * @property {CC.Base} ct
          */
         ct: null,
+        
+        items : false,
 /**
  * 如果每次布局都涉及所有容器子项,则该值应设为true,以便于当容器子项变更(add, remove, display)时重新布局容器
  */
@@ -273,7 +275,12 @@ CC.create('CC.layout.Layout', null,
               this.fromArray(this.items);
               delete this.items;
             }
-
+            
+            if(ct.items){
+              this.fromArray(ct.items);
+              delete ct.items;              
+            }
+            
             return this;
         },
 
@@ -371,6 +378,13 @@ CC.create('CC.ui.ContainerBase', Base,
  */
   selectionProvider : false,
 
+/**
+ * 预留给布局管理器初始化的子项,初始化后移除.
+ * items与array初始化的区别仅在于是否通过布局管理器加载,如果是items时,由container.layout.fromArray加载,
+ * 如果是array,直接由container.fromArray加载,忽略布管理器对子项进行布局.
+ */
+  items : false,
+  
   initialize : function(){
     Base.prototype.initialize.apply(this, arguments);
     //pre load children

@@ -183,9 +183,11 @@ white-space:nowrap;
 .g-ly-tablize .tblly-td .tblly-sep {color:#CCC;margin-top:-1px;display:inline-block;}
 .g-ly-tablize .tblly-td .lbl{margin: 0 2px;}
 
-/**table layout for form*/
-.g-ly-tbl .tbl-td label.cap{text-align:right;width:120px;display:inline-block;}
-.g-ly-tbl .tbl-td{padding:4px 3px;white-space:nowrap;}
+/**table layout*/
+.g-ly-tbl .tbl-td {padding:4px 3px;white-space:nowrap;}
+.g-ly-tbl .al{text-align:left;}
+.g-ly-tbl .ac{text-align:left;}
+.g-ly-tbl .ar{text-align:left;}
 
 /*tab*/
 .g-tab {background-color:#FFFFFF;background-position:0 -32px;height:33px;position:relative;}
