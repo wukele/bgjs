@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
   <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
 <style>
-	.g-tree {width:49.9%;float:left;}
 </style>
 </head>
 <body></body>
@@ -23,12 +22,20 @@ CC.ready(function() {
   
   var tree = new CC.ui.Tree({
     showTo: document.body,
-    rootCfg:{title: '树根目录', array:
+    css : 'pa l:100 t:100',
+    root:{title: '树根目录', array:
     	[{title: '禁用项',nodes: true,disabled: true},
-			  {title: '结点B'},
+			  {title: '结点B', onselect : function(){ alert('选择了'+this.title); }},
 			  {title: '添加图标',nodes: true}
 			]
+    },
+    
+    events : {
+      selected : [
+        {cb : function( treeitem ){ CC.Util.ftip('选择:'+treeitem.title, '', treeitem.view);  }}
+      ]
     }
+    
   });
   
   tree.render();

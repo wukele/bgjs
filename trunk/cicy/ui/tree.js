@@ -497,7 +497,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
   parentParamName : 'pid',
 
   keyEvent : true,
-
+  
   clickEventTrigger : CC.ui.TreeItem.prototype.clickEventTrigger,
 
   /**
@@ -520,7 +520,12 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
         delete this.rootCfg;
       this.root = this.instanceItem(CC.extendIf(cfg, rootCfg));
     }
-
+    
+    if(this.hideRoot){
+      this.root._head.hide();
+      delete this.hideRoot;
+    }
+    
     this.root.tree = this;
 
     var self = this;
