@@ -327,8 +327,9 @@ CC.create('CC.ui.form.Select', cf, {
  * @param {Object} option {text:'option text', value:'option value'}
  */
     add : function(option){
-      option.tagName = 'OPTION';
-      this.element.appendChild(CC.$C(option));
+      var op = document.createElement("OPTION");
+      this.element.appendChild(op);
+      CC.extend(op, option);
     }
 });
 

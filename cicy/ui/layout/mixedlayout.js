@@ -192,6 +192,62 @@ ly.RowLayout.prototype.layoutChild = ly.RowLayout.prototype.onLayout;
 ly.def('row', ly.RowLayout);
 
 /**
+ * 用HTML TABLE元素布局控件,主要用于表单设计中,
+ * 布局信息用JSON表示,通过 lyCfg:{  items:  } 传入.
+ * items为一个数组,数组每个元素代表一行(tr).
+ * 每一行的数据格式可为一个数组或一个object
+ * 
+ *  行为数组时,数组中每个元素表示每个单元(td)<br>
+ *  行为object时,表示该行只有一个单元格,可以在object中定义td,tr的属性信息, object.td = {}, object.tr = {}<br>
+ * 当一个配置信息既无ctype属性,亦无td属性时被看作是该行tr的信息
+ * @example
+ <pre>
+var win = new CC.ui.Win({
+  showTo:document.body,
+  layout:'table',
+  lyCfg:{
+    // 设置table结点的class样式
+    tblCs : 'form_tbl',
+    // 设置每个分组的信息
+  	group:{ 
+  		cols:2,
+  		// 第一个colgroup结点的信息
+  		0 : {css:'w:120', cs:'hgrp'} 
+  	},
+  	
+    items:[
+      //  row one
+      [ 
+        { 
+          // cell one
+          ctype:'label', 
+          title:'提交请求:', 
+          // td结点的信息
+          td:{css:'tr', cs:'cap'}
+        },
+         // cell two
+        {ctype:'text',  width:120, value:'提交请求:'}
+      ],
+      // row two
+      { 
+        ctype:'text', css:'w:100%', 
+        // td.colspan = 2
+        td:{cols:2}
+      },
+      
+      [
+        // 占位td
+        false, 
+        // tr信息
+        {cs:'tr-row'}, 
+        {td:{css:'h:33'}}
+      ],
+      // row with single cell 
+      {tr:{cs:'tr-end'}, td:{cols:2}}
+    ]
+  }
+});
+ </pre>
  * @name CC.layout.TableLayout
  * @class
  */
@@ -217,26 +273,26 @@ CC.create('CC.layout.TableLayout', B, {
           if(as[j] && as[j].ctype){
             news.push(as[j]);
             // 避免td污染
-            tds.push(as[j].td);
-            delete as[j].td;
+//            tds.push(as[j].td);
+//            delete as[j].td;
           }   
         }
       }else if(as && as.ctype){
         news.push(as);
         // 避免td污染
-        tds.push(as.td);
-        delete as.td;
+//        tds.push(as.td);
+//        delete as.td;
       }
     }
     superclass.fromArray.call(this, news);
     
     // 恢复td
-    for(i=0,len=news.length;i<len;i++){
-      if(news[i].td !== undefined){
-        news[i].td = tds[i];
-      }
-    }
-    tds = null;
+//    for(i=0,len=news.length;i<len;i++){
+//      if(news[i].td !== undefined){
+//        news[i].td = tds[i];
+//      }
+//    }
+//    tds = null;
     news = null;
   },
 /**
@@ -308,8 +364,11 @@ CC.create('CC.layout.TableLayout', B, {
 				            Base.applyOption(tr, cc);
 				            continue;
 				          }
-				         td = CC.$C('TD');
-				         td.className = 'tbl-td';
+				          td = CC.$C('TD');
+				          td.className = 'tbl-td';
+				          // td class
+				          if(cc.tdcs)
+				            CC.fly(td).addClass(cc.tdcs).unfly();
 				          // apply td cfg
 							    if(inf){
 							       if(inf.cols){
@@ -332,22 +391,25 @@ CC.create('CC.layout.TableLayout', B, {
 				       }
 				     }
 			    }else {
-				     ch  = chs[k++];
 				      // single td in row
 				     td = CC.$C('TD');
-				     if(ch.td){
-				       var inf = ch.td;
+				     if(r.td){
+				       var inf = r.td;
 				       if(inf.cols){
 				         td.colSpan = inf.cols;
 				         delete td.cols;
 				       }
 				       Base.applyOption(td, inf);
 				     }
-				     if(ch.tr){
+				     if(r.tr){
               // tr config
-              Base.applyOption(tr, ch.tr);
+              Base.applyOption(tr, r.tr);
 				     }
-				     td.appendChild(ch.view);
+				     if(r.ctype){
+				       ch  = chs[k++];
+				       td.appendChild(ch.view);
+				     }
+				     
 				     tr.appendChild(td);
 			    }
 			    tbody.appendChild(tr);
