@@ -4,6 +4,7 @@ var ly = CC.layout;
 var B =  ly.Layout;
 var superclass = B.prototype;
 var Math = window.Math;
+var Base = CC.Base;
 /**
  * CardLayout,容器内所有子项宽高与容器一致
  * @name CC.layout.CardLayout
@@ -15,7 +16,7 @@ CC.create('CC.layout.CardLayout', B, {
   layoutChild : function(item){
     var sz = this.ct.wrapper.getContentSize(true);
     if(!item.rendered)
-    	CC.Base.prototype.setSize.apply(item, sz);
+    	Base.prototype.setSize.apply(item, sz);
     else item.setSize(sz[0], sz[1]);
   }
 });
@@ -199,41 +200,76 @@ CC.create('CC.layout.TableLayout', B, {
 	attach : function(ct){
 		// cache the items
 	  this._items = ct.lyCfg && ct.lyCfg.items;
+	  // 自由添加结点到容器
 	  ct._addNode = fGo;
 	  superclass.attach.apply(this, arguments);
 	},
 	
 	//override
   fromArray : function(items){
-    var len = items.length, i, j, as, news = [];
+    // 将items的json行列所有数据存到单一的数组中,由父类fromArray载入
+    // 未定义ctype的配置作为非实体控件配置处理
+    var len = items.length, i, j, as, news = [], tds = [];
     for(i=0;i<len;i++){
       as = items[i];
       if(CC.isArray(as)){
         for(j=0;j<as.length;j++){
-          if(as[j] && as[j].ctype)
+          if(as[j] && as[j].ctype){
             news.push(as[j]);
+            // 避免td污染
+            tds.push(as[j].td);
+            delete as[j].td;
+          }   
         }
       }else if(as && as.ctype){
         news.push(as);
+        // 避免td污染
+        tds.push(as.td);
+        delete as.td;
       }
     }
     superclass.fromArray.call(this, news);
+    
+    // 恢复td
+    for(i=0,len=news.length;i<len;i++){
+      if(news[i].td !== undefined){
+        news[i].td = tds[i];
+      }
+    }
+    tds = null;
     news = null;
   },
-  
-	//override
+/**
+ * @property {HTMLElement} tableEl
+ */
+/**
+ * 一次性布局,生成table表
+ * @override
+ * @protected
+ */
+/**
+ * class name of main table node
+ * @property {String} tblCs
+ */
 	onLayout : function(){
 		if(!this.layouted){
 			superclass.onLayout.apply(this, arguments);
 			
 			this.layouted = true;
 			
-			var c = this.ct,
-			    tb = CC.$C('TABLE');
+			var tbl = this.tableEl;
+			var tb = this.tableEl = CC.$C('TABLE');
+			var c = this.ct;
+			
 			tb.className = 'g-ly-tbl';
-			if(this.tbl){
-			  CC.Base.applyOption(tb, this.tbl);
-			  delete this.tbl;
+			
+			if(this.tblCs){
+			  CC.fly(tb).addClass(this.tblCs).unfly();
+			  delete this.tblCs;
+			}
+			
+			if(tbl){
+			  Base.applyOption(tb, tbl);
 			}
 			
 			if(this.group){
@@ -244,7 +280,7 @@ CC.create('CC.layout.TableLayout', B, {
 				for(i=0;i<len;i++){
 				  col = CC.$C('COL');
 				  if(g[i]){
-				    CC.Base.applyOption(col, g[i]);
+				    Base.applyOption(col, g[i]);
 				  }
 				  gn.appendChild(col);
 				}
@@ -254,44 +290,62 @@ CC.create('CC.layout.TableLayout', B, {
 			
 			var tbody = CC.$C('TBODY'),
           its = this._items;
-
+          
 			if(its){
 			  var szits = its.length, chs = c.children, szchs = chs.length;
-			  var i,j,k,ch, szr, tr, td, cc;
+			  var i,j,k,ch, szr, tr, td, cc, inf, tp;
 			  for(i=0, k=0;i<szits;i++){
 			    r = its[i];
 			    tr = CC.$C('TR');
 			    
 			    if(CC.isArray(r)){
 				     for(j=0,szr=r.length;j<szr;j++){
-				       td = CC.$C('TD');
-				       td.className = 'tbl-td';
 				       cc = r[j];
 				       if(cc){
-						      if(cc.ctype){
+				          inf = cc.td, tp = cc.ctype;
+				          if(!inf && !tp){
+				            // tr config
+				            Base.applyOption(tr, cc);
+				            continue;
+				          }
+				         td = CC.$C('TD');
+				         td.className = 'tbl-td';
+				          // apply td cfg
+							    if(inf){
+							       if(inf.cols){
+							         td.colSpan = inf.cols;
+							         delete inf.cols;
+							       }
+							       Base.applyOption(td, inf);
+							     }
+							    // add component to td
+                  if(tp){
 							       ch  = chs[k++];
 							       td.appendChild(ch.view);
 							    }
-							    if(cc.lyInf){
-							       var inf = cc.lyInf;
-							       if(inf.td)
-							         CC.Base.applyOption(td, inf.td);
-							       if(inf.cols)
-							         td.colSpan = inf.cols;
-							     }				       
+							    tr.appendChild(td);
+				       }else {
+				         // else single td, nothing
+				         td = CC.$C('TD');
+				         td.className = 'tbl-td';
+				         tr.appendChild(td);
 				       }
-				       tr.appendChild(td);
 				     }
 			    }else {
 				     ch  = chs[k++];
 				      // single td in row
 				     td = CC.$C('TD');
-				     if(ch.lyInf){
-				       var inf = ch.lyInf;
-				       if(inf.td)
-				         CC.Base.applyOption(td, inf.td);
-				       if(inf.cols)
+				     if(ch.td){
+				       var inf = ch.td;
+				       if(inf.cols){
 				         td.colSpan = inf.cols;
+				         delete td.cols;
+				       }
+				       Base.applyOption(td, inf);
+				     }
+				     if(ch.tr){
+              // tr config
+              Base.applyOption(tr, ch.tr);
 				     }
 				     td.appendChild(ch.view);
 				     tr.appendChild(td);
