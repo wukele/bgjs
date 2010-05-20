@@ -1,0 +1,104 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>经典DEMO</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+  
+<style>
+	#northTab {position:absolute;bottom:0;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function(){
+  // 设置两个容器关联选择, 以tab和folder为例子
+
+var tabWin = new CC.ui.Win({
+  title:'Tab Window',
+  showTo:document.body,
+  layout:'card',
+  //
+  // 也可以通过 lyCfg:{ items:[] }进行初始化,现在简单了
+  //
+  items : [ { 
+    ctype:'tab',
+    id :'mytab', 
+    array:[
+      {title:'桌面'}
+    ],
+    events :{
+      // 监听select 子项选择事件,切换对应组
+      selected :[{cb: function(tabItem){
+        var folderItem = tabItem.folderItemCid, folder =  CC.Base.find('myfolder');
+        // 如果对应的tabitem未创建
+        if(!folderItem){
+          // cacheId是控件在初始化生成的一全全局唯一标识.
+          // 作个记号tabItemCid,方便根据folderitem找到对应的tabitem
+          folderItem = folder.instanceItem({title:tabItem.title, tabItemCid:tabItem.cacheId});
+          tabItem.folderItemCid = folderItem.cacheId;
+          folder.layout.add(folderItem);
+        }else {
+           // 根据保存的cacheId找到对应的tabitem
+           folderItem = CC.Base.byCid(folderItem);
+        }
+        if(folderItem){
+          if(folder.getSelectionProvider().selected !== folderItem){
+            folder.getSelectionProvider().select(folderItem);
+          }
+        }
+      }}]
+    }
+  }]
+});
+tabWin.render();
+tabWin.center();
+
+
+var folderWin = new CC.ui.Win({
+  title:'Folder Window',
+  showTo:document.body,
+  layout:'card',
+  //
+  // 也可以通过 lyCfg:{ items:[] }进行初始化,现在简单了
+  //
+  items : [ { 
+    ctype:'folder',
+    id:'myfolder',
+    array:[
+      {title:'分组'},
+      {title:'分组2'},
+      {title:'分组3'}
+    ],
+    events :{
+      // 监听select 子项选择事件,切换对应tab
+      selected : [{cb: function(folderItem){
+        var tabitem = folderItem.tabItemCid, tab =  CC.Base.find('mytab');
+
+        // 如果对应的tabitem未创建
+        if(!tabitem){
+          // cacheId是控件在初始化生成的一全全局唯一标识.
+          // 作个记号folderItemCid,方便根据tabitem找到对应的folderitem
+          tabitem = tab.instanceItem({title:folderItem.title, folderItemCid:folderItem.cacheId});
+          folderItem.tabItemCid = tabitem.cacheId;
+          tab.layout.add(tabitem);
+        }else {
+           // 根据保存的cacheId找到对应的tabitem
+           tabitem = CC.Base.byCid(tabitem);
+        }
+        if(tabitem){
+          if(tab.getSelectionProvider().selected !== tabitem){
+            tab.getSelectionProvider().select(tabitem);
+          }
+        }
+      }}]
+    }
+  }]
+});
+folderWin.render();
+});
+</script>

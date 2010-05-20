@@ -375,7 +375,7 @@ white-space:nowrap;
 .g-combo-unedit .unedit-txt {display:block;cursor:pointer;}
 .g-combo-unedit input{display:none;}
 :lang(zh) .g-combo input{padding-top:0px;}
-.g-combo-list-tree .g-panel-wrap, .g-combo-list-folderview .g-folderview-wrap{border:1px solid #CCC;border-top:0;}
+.combo-tree .g-panel-body {border:1px solid #CCC;overflow:auto;height:230px;}
 /*********
  */
 .g-combo-list {position:absolute; overflow:hidden;z-index:8999;background:white;}
