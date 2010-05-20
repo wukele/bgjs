@@ -7,7 +7,8 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
  * 当前页
  * @type Number
  */
-	current : 1,
+	current : false,
+	
 /**
  * 总页数
  * @type Number
@@ -18,19 +19,43 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
  * @type Number
  */
 	size : 10,
+/**
+ * 表格后渲染后是否立即连接请求分页数据,默认为true.
+ */
+  autoLoad : true,
+
+/**
+ * 在每次发起请求时共享的提交参数对象键值对
+ * @type Object
+ */
+  params : false,
+
+/**
+ * 创建并返回自定义的查询字符串
+ * @type Function
+ * @param {Object} queryObject key:value的提交键值对,可在里面定义提交的数据
+ * @return {String}
+ */
+  customQuery : false,
 
 /**
  * 分页提交参数
  * @type Object
  */
- params : null,
- 
+  params : null,
+/**
+ * 是否允许响应分页
+ */
+  disabled : false,
+  
   initialize : function(opt){
     CC.extend(this, opt);
   },
   
   initPlugin : function(g){
     g.content.on('statuschange', this._onConnectorStatusChange, this);
+    if(this.autoLoad)
+      g.on('rendered', this.go, this);
   },
   
   gridEventHandlers : {
@@ -43,17 +68,17 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   installUI : function(tb){
   	var self = this;
     tb.layout.fromArray([
-      {id:'first', qtip:'第一页', icon:'g-icon-navfirst', onclick : self.go.bind(self, 1)},
+      {id:'first', tip:'第一页', icon:'g-icon-navfirst', onclick : self.go.bind(self, 1)},
       
-      {id:'pre', lyInf:{separator:true}, qtip:'上一页', icon:'g-icon-navpre', onclick : self.pre.bind(self)},
+      {id:'pre', lyInf:{separator:true}, tip:'上一页', icon:'g-icon-navpre', onclick : self.pre.bind(self)},
       {lyInf:{separator:true}, id:'current', template:'<span class="lbl">第 <span><input class="g-ipt-text g-corner" style="text-align:center;" id="_i" size="3"/></span> 页</span>',ctype:'base',clickDisabled:true},
-      {id:'next', qtip:'下一页', icon:'g-icon-navnxt', onclick : self.next.bind(self)},
+      {id:'next', tip:'下一页', icon:'g-icon-navnxt', onclick : self.next.bind(self)},
       
-      {lyInf:{separator:true}, id:'last', qtip:'最后一页', icon:'g-icon-navlast',onclick : function(){
+      {lyInf:{separator:true}, id:'last', tip:'最后一页', icon:'g-icon-navlast',onclick : function(){
         self.go(self.count);
       }},
       {lyInf:{separator:true}, id:'total', template:'<span class="lbl">共<span id="_t">0</span>页</span>', ctype:'base', clickDisabled:true},
-      {id:'refresh',qtip:'刷新当前页', icon:'g-icon-ref', onclick:function(){
+      {id:'refresh',tip:'刷新当前页', icon:'g-icon-ref', onclick:function(){
         self.go(self.current, true);
       }}
     ]);
@@ -83,6 +108,14 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
     return this;
   },
 /**
+ * @return this;
+ */
+  disable : function(b){
+    this.disabled = b;
+    this.updateUIStatus();
+    return this;
+  },
+/**
  * @name CC.ui.grid#page:beforechange
  * @param {Object} pageInformation
  * @param {Object} pagenationPlugin
@@ -94,13 +127,15 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
  * @return this
  */
   go : function(inf, fource){
-  	if(typeof inf === 'number')
-  	  inf = {current:inf};
-  	
-  	var pre = this.current, cr = inf.current;
-  	
-    if( (pre !== cr || fource) && cr>0){
-      this.grid.fire('page:beforechange', inf, this) !== false && this.onPageChange(inf) !== false;
+    if(!this.disabled){
+    	if(!inf || typeof inf === 'number')
+    	  inf = {current:inf||1};
+    	
+    	var pre = this.current, cr = inf.current;
+    	
+      if( (pre !== cr || fource) && cr>0){
+        this.grid.fire('page:beforechange', inf, this) !== false && this.onPageChange(inf) !== false;
+      }
     }
     return this;
   },
@@ -115,21 +150,13 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
     
     // 收集提交的分页信息
     // copy page info to temp object
-    CC.extendIf(pageInf, {
-      size:this.size,
-      count:this.count,
-      current:this.current
-    });
-    
-    // update param data to temp object
-    if(this.params)
-      CC.extend(pageInf, params);
+    pageInf = this.createQuery(pageInf);
 
     this.grid.content.getConnectionProvider()
-        .connect(this.url, {
-           success : this._onSuccess,
-           params  : pageInf
-    });
+        .connect(
+           CC.templ(this, this.url), 
+           { success : this._onSuccess, params  : pageInf}
+        );
   },
   
   _onConnectorStatusChange : function(s){
@@ -138,6 +165,26 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
      else if(s === 'final')
      	 this.tb.$('refresh').disable(false);
   },
+  
+/**
+ * 要完全自定义提交的参数,可重写该方法,要定义局部的提交参数,可重写customQuery方法
+ * 应用参数的顺序为 default page info -> this.params -> this.customQuery
+ */
+  createQuery : function(pageInf){
+    CC.extendIf(pageInf, {
+          size:this.size,
+          count:this.count,
+          current:this.current
+    });
+    // update param data to temp object
+    if(this.params)
+      CC.extend(pageInf, params);
+      
+    if(this.customQuery)
+      this.customQuery(pageInf);
+    return pageInf;
+  },
+  
 /**
  * @name CC.ui.grid#page:afterchange
  * @event
@@ -158,6 +205,9 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
 	     page.count   = json.count;
 	     page.current = json.current || j.params.current;
 	     
+	     if(page.current > page.count)
+	       page.current = page.count;
+	     
     	 //clear content rows
     	 this.t.destoryChildren();
     	 
@@ -171,16 +221,17 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   updateUIStatus : function(){
   	var tb = this.tb, cur = this.current, cnt = this.count;
   	//has pre
-  	var test = cnt === 1 || cur <= 1;
+  	var test = this.disabled || cnt === 1 || cur <= 1;
   	tb.$('first').disable(test);
     tb.$('pre').disable(test);
     //has last
-    test = cur === cnt || cnt === 1;
+    test = this.disabled || cur === cnt || cnt === 1;
   	tb.$('next').disable(test);
     tb.$('last').disable(test); 
-    this.currentEl.value = cur;
+    this.currentEl.value = cur||'';
     this.totalEl.innerHTML = cnt;
     
+    tb.$('refresh').disable(this.disabled);
   },
   
   next : function(){

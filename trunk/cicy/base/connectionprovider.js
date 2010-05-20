@@ -11,6 +11,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
  * 是否禁用指示器,默认false
  */
   indicatorDisabled : false,
+
 /**
  * 连接器设置,连接器保存当前默认的连接器connector配置信息,
  * 每次连接时都以该配置信息与新的配置结合发出连接.
@@ -133,8 +134,10 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
  */
   connect : function(url, cfg){
     var afg = this.ajaxCfg;
+    
     if(!afg)
       afg = {};
+      
     if(url)
       afg.url = url;
 
