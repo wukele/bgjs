@@ -1,0 +1,382 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="generator" content="background ui" />
+		
+		<title>Background JavaScript UI 框架API文档 - CC.ClassB</title>
+
+		<style type="text/css">
+			/* default.css */
+body, td, th,dl, dt, form, input, textarea, select, button,ul{font-size:12px;}
+html,body, h1,h2,h3,h4,td, th, dl, dd, dt, form, input, textarea, select, button,ul{
+	color:#333;
+	font-family:Verdana,Helvetica,Arial,sans-serif;
+	margin:0;padding:0;
+	border:0;
+	z-index:inherit;
+	list-style-type:none;
+}
+
+img, table {border:0 none;border-collapse:collapse;}
+a{text-decoration:none;}
+a:visited {color:#083772;}
+.header
+{
+	clear: both;
+	background-color: #ccc;
+	padding: 8px;
+}
+
+h1
+{
+  margin:20px 0 13px;
+	font-size:16px;
+}
+
+hr
+{
+	border: none 0;
+	border-top: 1px solid #EEE;
+	height: 1px;
+}
+
+pre.code
+{
+	display: block;
+	padding: 8px;
+	border: 1px dashed #ccc;
+}
+
+#index
+{
+	margin-top: 24px;
+	float: left;
+	width: 200px;
+	position: absolute;
+	left: 8px;
+	background-color: #F3F3F3;
+	padding: 8px;
+}
+
+#content
+{
+	margin-left: 240px;
+	width: 760px;
+}
+
+.classList
+{
+	margin: 0 0 0 8px;
+	overflow: auto;
+	font-weight:bold;
+}
+
+.classList li
+{
+	padding: 0;
+	margin: 0 0 8px 0;
+}
+
+.summaryTable { width: 100%; }
+
+h2 { font-weight:bold; font-size:14px;margin:13px 0 8px;}
+
+caption, div.sectionTitle
+{
+	background-color: #EEE;
+	text-align: left;
+	padding: 2px 6px 2px 6px;
+	border: 1px #EEE solid;
+}
+
+div.sectionTitle { margin-bottom: 8px; font-weight:bold; }
+.summaryTable thead { display: none; }
+
+.summaryTable td
+{
+	vertical-align: top;
+	padding: 4px;
+	border-bottom: 1px #EEE solid;
+	border-right: 1px #EEE solid;
+}
+
+/*col#summaryAttributes {}*/
+.summaryTable td.attributes
+{
+	border-left: 1px #EEE solid;
+	width: 140px;
+	text-align: right;
+}
+
+td.attributes, .fixedFont
+{
+	line-height: 15px;
+	color: #002EBE;
+	font-family: "Courier New",Courier,monospace;
+}
+
+.summaryTable td.nameDescription
+{
+	text-align: left;
+	line-height: 15px;
+}
+
+.summaryTable td.nameDescription, .description
+{
+	line-height: 15px;
+	padding: 4px;
+	padding-left: 4px;
+}
+
+.summaryTable { margin-bottom: 8px; }
+
+dl.inheritsList
+{
+	padding-left: 0;
+	padding : 5px 0px;
+}
+dl.inheritsList dt {background-color:#EEE;padding:3px 6px;}
+dl.inheritsList dl {padding : 5px 3px;}
+
+dl.inheritsList dd {padding-left : 5px;}
+
+dl.inheritsList dd a {padding:5px;}
+
+.detailList {
+	margin-left: 20px; 
+	line-height: 15px;
+}
+.detailList dt { margin-left: 20px; }
+
+.detailList .heading
+{
+	font-weight: bold;
+	padding-bottom: 6px;
+	margin-left: 0;
+}
+
+.light, td.attributes, .light a:link, .light a:visited
+{
+	color: #777;
+	font-style: italic;
+}
+
+.fineprint
+{
+	text-align: right;
+	font-size: 10px;
+}
+		</style>
+	</head>
+
+	<body>
+<!-- ============================== header ================================= -->	
+		<!-- begin static/header.html -->
+		<div id="header">
+</div>
+		<!-- end static/header.html -->
+
+<!-- ============================== classes index ============================ -->
+		<div id="index">
+			<!-- begin publish.classesIndex -->
+			<div><a href="../index.html">所有类</a>
+| <a href="../files.html">文件目录</a></div>
+<hr />
+<h2>类</h2>
+<ul class="classList">
+	
+	<li><i><a href="../symbols/_global_.html">_global_</a></i></li>
+	
+	<li><a href="../symbols/CC.html">CC</a></li>
+	
+	<li><a href="../symbols/CC.ClassA.html">CC.ClassA</a></li>
+	
+	<li><a href="../symbols/CC.ClassB.html">CC.ClassB</a></li>
+	
+</ul>
+<hr />
+			<!-- end publish.classesIndex -->
+		</div>
+		
+		<div id="content">
+<!-- ============================== class title ============================ -->
+			<h1 class="classTitle">
+				
+				类 CC.ClassB
+			</h1>
+
+<!-- ============================== class summary ========================== -->			
+			<p class="description">
+				<br />Extends
+					<a href="../symbols/CC.ClassA.html">CC.ClassA</a>.<br />
+				
+			
+				示例类ClassB
+				
+				
+					<br /><i>定义在: </i> <a href="../symbols/src/h__website_esline_www_js_cicy_doc_docexample.js.html">docexample.js</a>.
+				
+			</p>
+
+<!-- ============================== constructor summary ==================== -->			
+			
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class CC.ClassB.">
+				<caption>类 概述</caption>
+				<thead>
+					<tr>
+						<th scope="col">属性</th>
+						<th scope="col">名称说明</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="attributes">&nbsp;</td>
+						<td class="nameDescription" >
+							<div class="fixedFont">
+								<b><a href="../symbols/CC.ClassB.html#constructor">CC.ClassB</a></b>()
+							</div>
+							<div class="description"></div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+
+<!-- ============================== properties summary ===================== -->
+			
+				
+				
+				
+				
+				<dl class="inheritsList">
+				<dt>基类 <a href="../symbols/CC.ClassA.html">CC.ClassA</a> 属性: </dt><dd><a href="../symbols/CC.ClassA.html#key">key</a>, <a href="../symbols/CC.ClassA.html#title">title</a></dd>
+				</dl>
+				
+			
+<!-- ============================== events summary ======================== -->
+			
+				
+				
+				
+				
+				<dl class="inheritsList">
+				<dt>基类 <a href="../symbols/CC.ClassA.html">CC.ClassA</a> 事件: </dt><dd><a href="../symbols/CC.ClassA.html#event:resize">resize</a></dd>
+				</dl>
+				
+			
+			
+<!-- ============================== methods summary ======================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class CC.ClassB.">
+					<caption>方法</caption>
+					<thead>
+						<tr>
+							<th scope="col">Method Attributes</th>
+							<th scope="col">Method Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/CC.ClassB.html#invoke">invoke</a></b>()
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
+				<dl class="inheritsList">
+				<dt>基类 <a href="../symbols/CC.ClassA.html">CC.ClassA</a> 方法: </dt><dd><a href="../symbols/CC.ClassA.html#methodOfA">methodOfA</a></dd>
+				</dl>
+				
+			
+<!-- ============================== constructor details ==================== -->		
+			
+			<div class="details"><a name="constructor"> </a>
+				<div class="sectionTitle">
+					类 Detail
+				</div>
+				
+				<div class="fixedFont">
+						<b>CC.ClassB</b>()
+				</div>
+				
+				<div class="description">
+					
+					
+				</div>
+				
+				
+				
+				
+					
+					
+					
+					
+					
+					
+					
+
+			</div>
+			
+
+<!-- ============================== field details ========================== -->		
+			
+
+<!-- ============================== event details ========================= -->		
+			
+			
+<!-- ============================== method details ========================= -->		
+			
+				<div class="sectionTitle">
+					方法详解
+				</div>
+				
+					<a name="invoke"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>invoke</b>()
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					
+				
+			
+			<hr />
+		</div>
+
+		
+<!-- ============================== footer ================================= -->
+		<div class="fineprint" style="clear:both">
+			
+			<a href="http://www.bgscript.com/bgdemo" target="_blankt">bgscript.com</a> , Fri May 21 2010 13:00:10 GMT+0800 (CST)
+		</div>
+	</body>
+</html>
+ 
