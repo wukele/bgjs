@@ -1,0 +1,49 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <script type="text/javascript" src="../../more/tabcontextmenu.js"></script>
+<style>
+	#mytab .auto-margin{margin-left:50px;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function(){
+__debug=true;
+ var win = new CC.ui.Win({
+  title : '选项卡右键菜单',
+  destoryOnClose : true,
+  layout : 'row',
+  showTo:document.body,
+  items:[
+    {
+      ctype:'tab',   
+      id:'mytab', 
+      selectionProvider:{selected:0}, 
+      contentPanel:'tabcontentpanel', 
+      lyInf:{h:'auto'}, 
+      events:{
+       contextmenu : [ { cb:function(menu, tabitem){
+         // 可以往菜单上添加自己的内容
+         var customItem = menu.$('customitem');
+         if(!customItem){
+           customItem = menu.instanceItem({title:'自定义项', id:'customitem'});
+           menu.layout.add(customItem);
+         }
+       } } ]
+      },
+      array:[{title:'选项_1', src:'http://www.g.cn'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4', closeable:false},{title:'选项_5'}]
+    },
+    {ctype:'panel', id:'tabcontentpanel', lyInf:{h:'lead'}, layout:'card'}
+  ]
+ });
+ win.render();
+ win.center();
+ 
+});
+</script>
