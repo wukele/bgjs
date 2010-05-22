@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+        <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+        <link rel="stylesheet" href="../../default/lan_share.css" type="text/css"/>
+        <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+    </head>
+    <body></body>
+</html>
+<script type="text/javascript">
+
+CC.ready(function(){
+	
+CC.create('CC.layout.TableLayout', CC.layout.Layout, {
+/**
+ * @type {Number}
+ */
+	rows:0,
+/**
+ * @type {Number}
+ */
+	cols:0,
+	
+/**
+ * create & get table element,
+ * 获得html table 结点
+ * @return {HTMLElement} table node
+ */
+	getTableEl : function(){
+		var el = this.tableEl;
+		if(!el){
+		  el = this.tableEl = this.createTable();
+		  this.ct.wrapper.append(el);
+		}
+		return this.tableEl;
+	},
+	
+	//override
+	//父类onLayout会依次
+	layoutChild : function(item){
+		var td  = this.getTableEl()
+									.rows [item.lyInf.pos[0]]
+									.cells[item.lyInf.pos[1]];
+		td.appendChild(item.view);
+	},
+	
+	//override
+	onLayout : function(){
+		if(!this.layouted){
+			this.layouted = true;
+			var c = this.ct;
+			//取消容器对子结点默认的添加方式
+			var hw = c.hasOwnProperty('_addNode'),
+			    tmp = c._addNode;
+		  c._addNode = fGo;
+			this.getTableEl();
+			CC.layout.Layout.prototype.onLayout.apply(this, arguments);
+			
+			if(hw) 
+			  c._addNode = tmp;
+		  else delete c._addNode;
+		}
+	},
+	
+	createTable : function(){
+		var tpl = ['<table class="g-ly-tbl"><tbody>'],
+		    c = this.cols,
+		    r = this.rows;
+		for(var i=0;i<r;i++){
+			tpl[tpl.length] = '<tr>';
+			for(var j=0;j<c;j++){
+				tpl[tpl.length] = '<td class="c'+i+j+'"></td>';
+			}
+			tpl[tpl.length] = '</tr>';
+		}
+		tpl[tpl.length] = '</tbody></table>';
+		return CC.Tpl.forNode(tpl.join(''));
+	}
+});
+
+CC.ui.def('table', CC.layout.TableLayout);
+
+
+
+var win = new CC.ui.Win({
+  showTo:document.body,
+  layout:'table',
+  lyCfg:{
+  	rows:2,
+  	cols:3,
+    items:[
+      
+    ]
+  }
+});
+
+win.render();
+
+		
+});
+</script>
