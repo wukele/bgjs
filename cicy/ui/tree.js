@@ -588,6 +588,13 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
     var r = this.root;
     if(cb.call(r, r, 0) !== false)
       return r.eachH(cb, 1);
+  },
+  // @override fix ie no horizon scrollbar
+  setSize : function(w, h){
+    sprs.setSize.apply(this, arguments);
+    if(w !== false && CC.ie){
+      this.getScrollor().setWidth(this.width);
+    }
   }
 });
 
