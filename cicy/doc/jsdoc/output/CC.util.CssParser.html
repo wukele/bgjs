@@ -1,0 +1,93 @@
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>Class <a href="source/cssparser.html#cls-CC.util.CssParser">CC.util.CssParser</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">CC.util</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">cssparser.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/cssparser.html#cls-CC.util.CssParser">CssParser</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description">CssParser对于懒得写CSS或需要用脚本控制css的开发人员来说,是个好工具.
+它可以以一种非常简单的方式写元素的inline css style.<br>
+例如<pre><code>parser.parse(comp, <em>'pa l:5 t:10 ofh ac w:25 $pd:5,3'</em>);
+   上面这句将应用comp以下样式:
+   {
+    position:absolute;
+    left:5px;
+    top:10px;
+    overflow:hidden;
+    text-align:center;
+    width:25px;
+    对于border box浏览器应用
+    padding:5px 3px;
+   }
+   CC.Base的cset方法已内嵌CSS Parser解析,以上可直接调用
+   comp.parse(<em>'pa l:5 t:10 oh tc w:25 $p:5,3'</em>);</code></pre><br>
+系统自带的规则为:<br>
+<pre><code>{
+<i>//1c, 占宽一列, 即width:95%</i>
+  <em>'1c'</em>:[<em>'width'</em>,<em>'95%'</em>],
+<i>//2c, 占宽两列, 即width:45%</i>
+  <em>'2c'</em>:[<em>'width'</em>,<em>'45%'</em>],
+  <em>'3c'</em>:[<em>'width'</em>,<em>'30%'</em>],
+  <em>'4c'</em>:[<em>'width'</em>,<em>'20%'</em>],
+  <em>'5c'</em>:[<em>'width'</em>,<em>'10%'</em>],
+<i>//c:5 为 width = 5*10 + <em>'%'</em>,结果为width=50%</i>
+  <em>'c'</em> :<b>function</b>(c,v){c.view.style.width = v + <em>'%'</em>},
+  <em>'w'</em> :<b>function</b>(c,v){c.view.style.width = v;},
+  <em>'h'</em> :<b>function</b>(c,v){c.view.style.height = v;},
+  <em>'d'</em> :<b>function</b>(c,v){c.view.style.display = v;},
+  <em>'db'</em>: [<em>'display'</em>, <em>'block'</em>],
+  <em>'dib'</em>:[<em>'display'</em>, <em>'inline-block'</em>],
+  <em>'dh'</em> :[<em>'display'</em>, <em>'hidden'</em>],
+  <em>'np'</em>:[<em>'padding'</em>,<em>'0px'</em>],
+  <em>'nb'</em>:[<em>'border'</em>,<em>'0px'</em>],
+
+  <em>'fl'</em>:[<em>'float'</em>,<em>'left'</em>],
+  <em>'fr'</em>:[<em>'float'</em>,<em>'right'</em>],
+  <em>'cb'</em>:[<em>'clear'</em>,<em>'both'</em>],
+
+  <em>'tl'</em>:[<em>'textAlign'</em>,<em>'left'</em>],
+  <em>'tr'</em>:[<em>'textAlign'</em>,<em>'right'</em>],
+  <em>'tc'</em>:[<em>'textAlign'</em>,<em>'center'</em>],
+
+  <em>'p'</em>:<b>function</b>(c, v){c.view.style.padding = v;},
+  <em>'pl'</em>:<b>function</b>(c, v){c.view.style.paddingLeft = v;},
+  <em>'pr'</em>:<b>function</b>(c, v){c.view.style.paddingRight = v;},
+  <em>'pt'</em>:<b>function</b>(c, v){c.view.style.paddingTop = v;},
+  <em>'pb'</em>:<b>function</b>(c, v){c.view.style.paddingBottom = v;},
+
+  <em>'bd'</em>:<b>function</b>(c, v){c.view.style.border = v;},
+  <em>'bdl'</em>:<b>function</b>(c, v){c.view.style.borderLeft = v;},
+  <em>'bdr'</em>:<b>function</b>(c, v){c.view.style.borderRight = v;},
+  <em>'bdt'</em>:<b>function</b>(c, v){c.view.style.borderTop = v;},
+  <em>'bdb'</em>:<b>function</b>(c, v){c.view.style.borderBottom = v;},
+   
+  <em>'z'</em>  :<b>function</b>(c, v){c.view.style.zIndex = v;},
+   
+  <em>'lnl'</em>:[<em>'borderLeft'</em>,  <em>'1px solid #CCC'</em>],
+  <em>'lnt'</em>:[<em>'borderTop'</em>,   <em>'1px solid #CCC'</em>],
+  <em>'lnb'</em>:[<em>'borderBottom'</em>,<em>'1px solid #CCC'</em>],
+  <em>'lnr'</em>:[<em>'borderRight'</em>, <em>'1px solid #CCC'</em>],
+  <em>'lnx'</em>:[<em>'border'</em>,      <em>'1px solid #CCC'</em>],
+
+  <em>'m'</em>:<b>function</b>(c, v){c.view.style.margin  = v;},
+  <em>'ml'</em>:<b>function</b>(c, v){c.view.style.marginLeft  = v;},
+  <em>'mr'</em>:<b>function</b>(c, v){c.view.style.marginRight  = v;},
+  <em>'mt'</em>:<b>function</b>(c, v){c.view.style.marginTop  = v;},
+  <em>'mb'</em>:<b>function</b>(c, v){c.view.style.marginBottom  = v;},
+
+  <em>'pa'</em>:[<em>'position'</em>, <em>'absolute'</em>],
+  <em>'pr'</em>:[<em>'position'</em>, <em>'relative'</em>],
+  <em>'b'</em> :<b>function</b>(c, v){c.view.style.bottom = v;},
+  <em>'l'</em> :<b>function</b>(c, v){c.view.style.left = v;},
+  <em>'r'</em> :<b>function</b>(c, v){c.view.style.right = v;},
+  <em>'t'</em> :<b>function</b>(c, v){c.view.style.top = v;},
+  <em>'oh'</em>:[<em>'overflow'</em>,<em>'hidden'</em>],
+  <em>'oa'</em>:[<em>'overflow'</em>,<em>'auto'</em>]
+}</code></pre></div><div class="hr"></div><a id="CC.util.CssParser-props"></a><h2>Public Properties</h2><div class="no-members">This class has no public properties.</div><a id="CC.util.CssParser-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.CssParser-def"></a><b><a href="source/cssparser.html#method-CC.util.CssParser-def">def</a></b>(&nbsp;<code>String|Object&nbsp;key</code>,&nbsp;<code>Object&nbsp;value</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">定义规则.&#13;
+ parser.def('fl', ['float', 'left']);&#13;
+   parser.def('bdred', {border:'1px red'});&#13;
+   parser.def('bd', functi...</div><div class="long">定义规则.<br>
+ <pre><code>parser.def(<em>'fl'</em>, [<em>'float'</em>, <em>'left'</em>]);
+   parser.def(<em>'bdred'</em>, {border:<em>'1px red'</em>});
+   parser.def(<em>'bd'</em>, <b>function</b>(comp, value){
+    comp.setStyle(<em>'border'</em>, value);
+   });</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>key</code> : String|Object<div class="sub-desc">当为Object类型时批量定义规则</div></li><li><code>value</code> : Object<div class="sub-desc">可以是一个属生集的Object, 也可以是css属性组合的数组[attrName, attrValue],还可以是一个函数,该函数参数为 function(component, value){},其中component为应用样式的控件,value为当前解析得出的值,未设置则为空.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CssParser</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.CssParser-getParser"></a><b><a href="source/cssparser.html#method-CC.util.CssParser-getParser">getParser</a></b>()
+    :
+                                        CC.util.CssParser<div class="mdesc"><div class="short">&lt;static&gt;&nbsp;获得全局CSS解析器</div><div class="long">&lt;static&gt;&nbsp;获得全局CSS解析器<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>CC.util.CssParser</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CssParser</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.CssParser-parse"></a><b><a href="source/cssparser.html#method-CC.util.CssParser-parse">parse</a></b>(&nbsp;<code>CC.Base&nbsp;taget</code>,&nbsp;<code>String&nbsp;pattern</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">解析指定规则.</div><div class="long">解析指定规则.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>taget</code> : CC.Base<div class="sub-desc">目标控件</div></li><li><code>pattern</code> : String<div class="sub-desc">规则样式字符串</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CssParser</td></tr></tbody></table><a id="CC.util.CssParser-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div></div>

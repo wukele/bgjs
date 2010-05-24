@@ -1,0 +1,296 @@
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>Class <a href="source/cc.html#cls-CC">CC</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Global</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">cc.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/cc.html#cls-CC">CC</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description">Cicy缩写,所有类包根目录.</div><div class="hr"></div><a id="CC-props"></a><h2>Public Properties</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Property</th><th class="msource-header">Defined By</th></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-borderBox"></a><b><a href="source/cc.html#prop-CC-borderBox">borderBox</a></b> : Object<div class="mdesc">是否border box模型</div></td><td class="msource">CC</td></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-gecko"></a><b><a href="source/cc.html#prop-CC-gecko">gecko</a></b> : Object<div class="mdesc">是否gecko</div></td><td class="msource">CC</td></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-ie"></a><b><a href="source/cc.html#prop-CC-ie">ie</a></b> : Object<div class="mdesc">是否IE浏览器</div></td><td class="msource">CC</td></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-ie6"></a><b><a href="source/cc.html#prop-CC-ie6">ie6</a></b> : Object<div class="mdesc">是否IE6</div></td><td class="msource">CC</td></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-ie7"></a><b><a href="source/cc.html#prop-CC-ie7">ie7</a></b> : Object<div class="mdesc">是否IE7</div></td><td class="msource">CC</td></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-opera"></a><b><a href="source/cc.html#prop-CC-opera">opera</a></b> : Object<div class="mdesc">是否opera</div></td><td class="msource">CC</td></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-safari"></a><b><a href="source/cc.html#prop-CC-safari">safari</a></b> : Object<div class="mdesc">是否safari</div></td><td class="msource">CC</td></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-strict"></a><b><a href="source/cc.html#prop-CC-strict">strict</a></b> : Object<div class="mdesc">是否strict模式</div></td><td class="msource">CC</td></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-version"></a><b><a href="source/cc.html#prop-CC-version">version</a></b> : String<div class="mdesc">当前版本号</div></td><td class="msource">CC</td></tr></tbody></table><a id="CC-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-$"></a><b><a href="source/cc.html#method-CC-$">$</a></b>(&nbsp;<code>String|DOMElement&nbsp;id</code>,&nbsp;<code>DOMElement&nbsp;ancestorNode</code>&nbsp;)
+    :
+                                        DOMElement<div class="mdesc"><div class="short">根据结点ID值返回该DOM结点.&#13;
+该遍历为广度优先&#13;
+如果只有一个参数,返回id相同的结点(只一个).&#13;
+如 var objDiv = CC.$('idDiv');&#13;
+当参数为2时, 返回包含在父结点中的属性id孩子结点,孩子结点可...</div><div class="long">根据结点ID值返回该DOM结点.
+该遍历为广度优先
+如果只有一个参数,返回id相同的结点(只一个).
+如 var objDiv = CC.$('idDiv');
+当参数为2时, 返回包含在父结点中的属性id孩子结点,孩子结点可在深层,id在父结点中需唯一.<br/>
+如
+<pre><code><b>var</b> objDiv = CC.$(<em>'idOfChild'</em>, ancestorNode);
+<i>//结果为true</i>
+alert(CC.$(<em>'idDIV'</em>)==document.getElementById(<em>'idDIV'</em>));
+<i>//在结点oDiv中寻找id为childDiv的结点</i>
+CC.$(<em>'childDiv'</em>,oDiv);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>id</code> : String|DOMElement<div class="sub-desc">结点ID,直接一个DOM也没关系</div></li><li><code>ancestorNode</code> : DOMElement<div class="sub-desc">父结点,如果该值指定,将在该结点下查找</div></li></ul><strong>Returns:</strong><ul><li><code>DOMElement</code><div class="sub-desc">对应ID的结点,如果不存在返回null</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-$$"></a><b><a href="source/cbase.html#method-CC-$$">$$</a></b>(&nbsp;<code>DOMElement|String&nbsp;dom</code>,&nbsp;<code>DOMElement&nbsp;parentNode</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">根据DOM快速转化为控件对象方法，该方法将具有控件生命周期，但略去了初始化和渲染.</div><div class="long">根据DOM快速转化为控件对象方法，该方法将具有控件生命周期，但略去了初始化和渲染.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>dom</code> : DOMElement|String<div class="sub-desc"></div></li><li><code>parentNode</code> : DOMElement<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-$A"></a><b><a href="source/cc.html#method-CC-$A">$A</a></b>(&nbsp;<code>Object&nbsp;iterable</code>&nbsp;)
+    :
+                                        Array<div class="mdesc"><div class="short">将可枚举对象内容复制到新数组中,并返回该数组,可枚举对象是指可用[index]访问,并具有length属性的,常见的有arguments对象.</div><div class="long">将可枚举对象内容复制到新数组中,并返回该数组,可枚举对象是指可用[index]访问,并具有length属性的,常见的有arguments对象.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>iterable</code> : Object<div class="sub-desc">可枚举对象</div></li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">新数组</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-$C"></a><b><a href="source/cc.html#method-CC-$C">$C</a></b>(&nbsp;<code>String|Object&nbsp;为字符串时,传递tagName,为对象时,传递属性集.</code>,&nbsp;<code>Document&nbsp;document</code>&nbsp;)
+    :
+                                        DOMElement<div class="mdesc"><div class="short">创建一个DOM元素.&#13;
+//简单方式创建一个DIV结点.&#13;
+   var div = CC.$C('DIV');&#13;
+   //以属性集创建一个DIV结点.&#13;
+   var div = CC.$C({&#13;
+     tagName:'DI...</div><div class="long">创建一个DOM元素.<br/>
+<pre><code><i>//简单方式创建一个DIV结点.</i>
+   <b>var</b> div = CC.$C(<em>'DIV'</em>);
+   <i>//以属性集创建一个DIV结点.</i>
+   <b>var</b> div = CC.$C({
+     tagName:<em>'DIV'</em>,
+     innerHTML : <em>'This div is created from <b>function</b> C.$C!'</em>,
+     className : <em>'cs-div'</em>,
+     onclick : <b>function</b>(){alert(this.innerHTML);}
+   });</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>为字符串时,传递tagName,为对象时,传递属性集.</code> : String|Object<div class="sub-desc"></div></li><li><code>document</code> : Document<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>DOMElement</code><div class="sub-desc">新创建的DOM结点</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-$N"></a><b><a href="source/cc.html#method-CC-$N">$N</a></b>(&nbsp;<code>name&nbsp;DOM元素的name</code>&nbsp;)
+    :
+                                        DOMCollection<div class="mdesc"><div class="short">document.getElementsByName的快速调用.</div><div class="long">document.getElementsByName的快速调用.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>DOM元素的name</code> : name<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>DOMCollection</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-$T"></a><b><a href="source/cc.html#method-CC-$T">$T</a></b>(&nbsp;<code>String&nbsp;tagName</code>,&nbsp;<code>DOMElement&nbsp;[dom]</code>&nbsp;)
+    :
+                                        DOMCollection<div class="mdesc"><div class="short">dom.getElementsByTagName的快速调用.</div><div class="long">dom.getElementsByTagName的快速调用.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>tagName</code> : String<div class="sub-desc">标签名</div></li><li><code>[dom]</code> : DOMElement<div class="sub-desc">在该标签下查找,未设置时为document</div></li></ul><strong>Returns:</strong><ul><li><code>DOMCollection</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-addClass"></a><b><a href="source/cc.html#method-CC-addClass">addClass</a></b>(&nbsp;<code>DOMElement&nbsp;o</code>,&nbsp;<code>String&nbsp;s</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">添加元素样式类.&#13;
+CC.addClass(oDiv, 'cssName');</div><div class="long">添加元素样式类.
+<pre><code>CC.addClass(oDiv, <em>'cssName'</em>);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : DOMElement<div class="sub-desc"></div></li><li><code>s</code> : String<div class="sub-desc">css类名</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-addClassIf"></a><b><a href="source/cc.html#method-CC-addClassIf">addClassIf</a></b>(&nbsp;<code>DOMElement&nbsp;o</code>,&nbsp;<code>String&nbsp;s</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">如果元素未存在该样式类,添加元素样式类,否则忽略.&#13;
+CC.addClassIf(oDiv, 'cssName');</div><div class="long">如果元素未存在该样式类,添加元素样式类,否则忽略.
+<pre><code>CC.addClassIf(oDiv, <em>'cssName'</em>);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : DOMElement<div class="sub-desc"></div></li><li><code>s</code> : String<div class="sub-desc">css类名</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-addDate"></a><b><a href="source/cc.html#method-CC-addDate">addDate</a></b>(&nbsp;<code>String&nbsp;field</code>,&nbsp;<code>Date&nbsp;date</code>,&nbsp;<code>Number&nbsp;delta</code>&nbsp;)
+    :
+                                        Date<div class="mdesc"><div class="short">增加日期的某个字段值.</div><div class="long">增加日期的某个字段值.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>field</code> : String<div class="sub-desc">year|month|day中的一个</div></li><li><code>date</code> : Date<div class="sub-desc"></div></li><li><code>delta</code> : Number<div class="sub-desc">增量</div></li></ul><strong>Returns:</strong><ul><li><code>Date</code><div class="sub-desc">值增加后的新日期</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-ajaxRequest"></a><b><a href="source/cc.html#method-CC-ajaxRequest">ajaxRequest</a></b>()
+    :
+                                        XMLHttpRequest<div class="mdesc"><div class="short">获得一个XMLHttpRequest类实例.</div><div class="long">获得一个XMLHttpRequest类实例.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>XMLHttpRequest</code><div class="sub-desc">XMLHttpRequest 实例</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-attr"></a><b><a href="source/cc.html#method-CC-attr">attr</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">获得或设置对象任意层次属性.&#13;
+var obj = {name:'xiaoming', car : {color:'black'}};&#13;
+           //set&#13;
+           CC.attr(obj, 'car.c...</div><div class="long">获得或设置对象任意层次属性.
+<pre><code><b>var</b> obj = {name:<em>'xiaoming'</em>, car : {color:<em>'black'</em>}};
+           <i>//set</i>
+           CC.attr(obj, <em>'car.color'</em>, <em>'white'</em>);
+           <i>//get</i>
+           alert( CC.attr(obj, <em>'car.color'</em>));</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-create"></a><b><a href="source/cc.html#method-CC-create">create</a></b>(&nbsp;<code>String&nbsp;ns</code>,&nbsp;<code>Object&nbsp;base</code>,&nbsp;<code>Object|Function&nbsp;set</code>&nbsp;)
+    :
+                                        Object<div class="mdesc"><div class="short">创建类方法</div><div class="long">创建类方法<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>ns</code> : String<div class="sub-desc">类名,可带有命名空间</div></li><li><code>base</code> : Object<div class="sub-desc">父类</div></li><li><code>set</code> : Object|Function<div class="sub-desc">类属性集,如果为一个函数,返回类属性对象.</div></li></ul><strong>Returns:</strong><ul><li><code>Object</code><div class="sub-desc">新类</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-dateFormat"></a><b><a href="source/cc.html#method-CC-dateFormat">dateFormat</a></b>(&nbsp;<code>Date&nbsp;date</code>,&nbsp;<code>String&nbsp;格式,</code>&nbsp;)
+    :
+                                        String<div class="mdesc"><div class="short">返回日期的格式化字符串.</div><div class="long">返回日期的格式化字符串.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>date</code> : Date<div class="sub-desc"></div></li><li><code>格式,</code> : String<div class="sub-desc">mm/dd/yy或dd/mm/yy或yy/mm/dd,中间分隔符不限定</div></li></ul><strong>Returns:</strong><ul><li><code>String</code><div class="sub-desc">日期的格式化字串符</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-dateParse"></a><b><a href="source/cc.html#method-CC-dateParse">dateParse</a></b>(&nbsp;<code>String&nbsp;str</code>,&nbsp;<code>String&nbsp;格式,</code>&nbsp;)
+    :
+                                        Date<div class="mdesc"><div class="short">返日期的格式化字符串所表示的日期对象.</div><div class="long">返日期的格式化字符串所表示的日期对象.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>str</code> : String<div class="sub-desc">日期的格式化字符串,如2009/02/15</div></li><li><code>格式,</code> : String<div class="sub-desc">mm/dd/yy或dd/mm/yy或yy/mm/dd,中间分隔符不限定</div></li></ul><strong>Returns:</strong><ul><li><code>Date</code><div class="sub-desc">格式化字符串所表示的日期对象</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-delAttr"></a><b><a href="source/cc.html#method-CC-delAttr">delAttr</a></b>(&nbsp;<code>Object&nbsp;obj</code>,&nbsp;<code>String&nbsp;attrName</code>&nbsp;)
+    :
+                                        Object<div class="mdesc"><div class="short">移除并返回对象属性,该方法利用delete删除对象属性,并返回该属性值.</div><div class="long">移除并返回对象属性,该方法利用delete删除对象属性,并返回该属性值.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>obj</code> : Object<div class="sub-desc">要移除的属性所在的对象</div></li><li><code>attrName</code> : String<div class="sub-desc">属性名称</div></li></ul><strong>Returns:</strong><ul><li><code>Object</code><div class="sub-desc">移除属性的值,如果不存在,返回undefined</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-delClass"></a><b><a href="source/cc.html#method-CC-delClass">delClass</a></b>(&nbsp;<code>DOMElement&nbsp;o</code>,&nbsp;<code>String&nbsp;s</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">删除元素样式类.&#13;
+CC.delClass(oDiv, 'cssName');</div><div class="long">删除元素样式类.
+<pre><code>CC.delClass(oDiv, <em>'cssName'</em>);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : DOMElement<div class="sub-desc"></div></li><li><code>s</code> : String<div class="sub-desc">css类名</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-disable"></a><b><a href="source/cc.html#method-CC-disable">disable</a></b>(&nbsp;<code>DOMElement&nbsp;v</code>,&nbsp;<code>Boolean&nbsp;[b]</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">测试或设置元素是可用.&#13;
+//禁用元素&#13;
+           CC.disable(div, true);&#13;
+           //测试元素是否可用.&#13;
+           var b = CC.disable(div);</div><div class="long">测试或设置元素是可用.
+<pre><code><i>//禁用元素</i>
+           CC.disable(div, true);
+           <i>//测试元素是否可用.</i>
+           <b>var</b> b = CC.disable(div);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>v</code> : DOMElement<div class="sub-desc"></div></li><li><code>[b]</code> : Boolean<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-display"></a><b><a href="source/cc.html#method-CC-display">display</a></b>(&nbsp;<code>DOMElement&nbsp;v</code>,&nbsp;<code>Boolean&nbsp;[b]</code>,&nbsp;<code>Boolean&nbsp;[inline]</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">获得或设置元素style.display属性.&#13;
+以style.display方式设置元素是否可见.&#13;
+//测试元素是否可见&#13;
+           alert( CC.display(div) );&#13;
+           //设置...</div><div class="long">获得或设置元素style.display属性.
+以style.display方式设置元素是否可见.
+<pre><code><i>//测试元素是否可见</i>
+           alert( CC.display(div) );
+           <i>//设置元素可见,模式为block</i>
+           CC.display(div, true);
+           <i>//设置元素可见,模式为display=<em>''</em></i>
+           CC.display(div, true, <em>''</em>);
+           <i>//设置元素可见,模式为display=<em>'inline'</em></i>
+           CC.display(div, true, <em>'inline'</em>);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>v</code> : DOMElement<div class="sub-desc">dom结点</div></li><li><code>[b]</code> : Boolean<div class="sub-desc">设置是否可见</div></li><li><code>[inline]</code> : Boolean<div class="sub-desc">inline为true时将display设为空,而不是block</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-each"></a><b><a href="source/cc.html#method-CC-each">each</a></b>(&nbsp;<code>Object&nbsp;object</code>,&nbsp;<code>Function&nbsp;callback</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">遍历可以枚举的对象.&#13;
+CC.each(array, funtion(obj, i){&#13;
+//true&#13;
+alert(this === array[i] &amp;&amp; this === obj) ;&#13;
+});</div><div class="long">遍历可以枚举的对象.
+<pre><code>CC.each(array, funtion(obj, i){
+<i>//true</i>
+alert(this === array[i] && this === obj) ;
+});</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>object</code> : Object<div class="sub-desc">可枚兴的对象,如果为数组或arguments时遍历下标数据,为普通对象时遍历对象所有属性.</div></li><li><code>callback</code> : Function<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-eachH"></a><b><a href="source/cc.html#method-CC-eachH">eachH</a></b>(&nbsp;<code>Object&nbsp;obj</code>,&nbsp;<code>String&nbsp;nextAttr</code>,&nbsp;<code>Function&nbsp;callback</code>&nbsp;)
+    :
+                                        如果callback有返回值,则中断当前遍历返回该值.<div class="mdesc"><div class="short">沿上层对象某属性遍历.&#13;
+CC.eachH(element, 'parentNode', function(){&#13;
+            alert('当前级父结点为:'+ this);&#13;
+            if(this =...</div><div class="long">沿上层对象某属性遍历.
+<pre><code>CC.eachH(element, <em>'parentNode'</em>, <b>function</b>(){
+            alert(<em>'当前级父结点为:'</em>+ this);
+            <b>if</b>(this === document.body)
+              <b>return</b> false;
+         });</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>obj</code> : Object<div class="sub-desc"></div></li><li><code>nextAttr</code> : String<div class="sub-desc">属性名称</div></li><li><code>callback</code> : Function<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>如果callback有返回值,则中断当前遍历返回该值.</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-extend"></a><b><a href="source/cc.html#method-CC-extend">extend</a></b>(&nbsp;<code>Object&nbsp;dest</code>,&nbsp;<code>Object&nbsp;src</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">复制src对象属性到des对象中,des对象中相同名称的属性被覆盖.</div><div class="long">复制src对象属性到des对象中,des对象中相同名称的属性被覆盖.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>dest</code> : Object<div class="sub-desc">目标对象</div></li><li><code>src</code> : Object<div class="sub-desc">源对象</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-extendIf"></a><b><a href="source/cc.html#method-CC-extendIf">extendIf</a></b>(&nbsp;<code>Object&nbsp;des</code>,&nbsp;<code>Object&nbsp;src</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">将原对象所有属性复制到目标对象中,如果目标对象存在该属性,并不进行覆盖.&#13;
+该方法是用for..in..遍历对象属性的.</div><div class="long">将原对象所有属性复制到目标对象中,如果目标对象存在该属性,并不进行覆盖.
+该方法是用for..in..遍历对象属性的.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>des</code> : Object<div class="sub-desc">目标对象</div></li><li><code>src</code> : Object<div class="sub-desc">源对象</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-fly"></a><b><a href="source/cbase.html#method-CC-fly">fly</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">这是CC.Base类加上去的,参见CC.Base.fly</div><div class="long">这是CC.Base类加上去的,参见<a href="output/CC.Base.html#CC.Base-fly" ext:member="fly" ext:cls="CC.Base">CC.Base.fly</a><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-formQuery"></a><b><a href="source/cc.html#method-CC-formQuery">formQuery</a></b>(&nbsp;<code>FormElement|String&nbsp;f</code>&nbsp;)
+    :
+                                        String<div class="mdesc"><div class="short">获得一个表单所有表单元素的数据,并返回表单的查询字符串表示.&#13;
+&#13;
+         &amp;lt;form id=&amp;quot;f&amp;quot;&amp;gt;&#13;
+             &amp;lt;input type=&amp;quot;text&amp;quot...</div><div class="long">获得一个表单所有表单元素的数据,并返回表单的查询字符串表示.
+<br/>
+         <code>&lt;form id=&quot;f&quot;&gt;
+             &lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;rock&quot;/&gt;
+             &lt;input type=&quot;text&quot; name=&quot;password&quot; value=&quot;123&quot;/&gt;
+           &lt;/form&gt;
+           &lt;script&gt;
+             <i>//&gt;: username=rock&amp;password=123</i>
+             alert(CC.formQuery(<em>'f'</em>));
+           &lt;/script&gt;
+           </code><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>f</code> : FormElement|String<div class="sub-desc">form或form的id</div></li></ul><strong>Returns:</strong><ul><li><code>String</code><div class="sub-desc">所有表单元素的查询字符串表示</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-frameDoc"></a><b><a href="source/cc.html#method-CC-frameDoc">frameDoc</a></b>(&nbsp;<code>DOMElement&nbsp;iframe</code>&nbsp;)
+    :
+                                        DOMElement<div class="mdesc"><div class="short">获得iframe中的document结点.</div><div class="long">获得iframe中的document结点.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>iframe</code> : DOMElement<div class="sub-desc">iframe结点</div></li></ul><strong>Returns:</strong><ul><li><code>DOMElement</code><div class="sub-desc">iframe页面中的document结点</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-frameWin"></a><b><a href="source/cc.html#method-CC-frameWin">frameWin</a></b>(&nbsp;<code>DOMElement&nbsp;iframe</code>&nbsp;)
+    :
+                                        DOMElement<div class="mdesc"><div class="short">获得iframe中的window对象.</div><div class="long">获得iframe中的window对象.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>iframe</code> : DOMElement<div class="sub-desc">iframe结点</div></li></ul><strong>Returns:</strong><ul><li><code>DOMElement</code><div class="sub-desc">window iframe页面中的window对象</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-getDocumentHeight"></a><b><a href="source/cc.html#method-CC-getDocumentHeight">getDocumentHeight</a></b>()
+    :
+                                        Number<div class="mdesc"><div class="short">获得文档内容区域高度.</div><div class="long">获得文档内容区域高度.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Number</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-getDocumentWidth"></a><b><a href="source/cc.html#method-CC-getDocumentWidth">getDocumentWidth</a></b>()
+    :
+                                        Number<div class="mdesc"><div class="short">获得文档内容区域宽度.</div><div class="long">获得文档内容区域宽度.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Number</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-getObjectLinkedValues"></a><b><a href="source/cc.html#method-CC-getObjectLinkedValues">getObjectLinkedValues</a></b>(&nbsp;<code>Object&nbsp;object</code>,&nbsp;<code>String&nbsp;attributeName</code>&nbsp;)
+    :
+                                        Array<div class="mdesc"><div class="short">获得对象和对象原型链上某个属性的所有值,方法只适合用本库创建具有superclass属性的类实例.&#13;
+ A.prototype.name = 'Smart';&#13;
+   a = new A();&#13;
+   a.name = 'Rock';...</div><div class="long">获得对象和对象原型链上某个属性的所有值,方法只适合用本库创建具有superclass属性的类实例.
+ <pre><code>A.prototype.name = <em>'Smart'</em>;
+   a = <b>new</b> A();
+   a.name = <em>'Rock'</em>;
+   <i>// [<em>'Rock'</em>, <em>'Smart'</em>]</i>
+   CC.getObjectLinkedValues(a, <em>'name'</em>);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>object</code> : Object<div class="sub-desc"></div></li><li><code>attributeName</code> : String<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">返回链上该属性的所有值</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-getViewport"></a><b><a href="source/cc.html#method-CC-getViewport">getViewport</a></b>()
+    :
+                                        Object<div class="mdesc"><div class="short">获得视图可见区域域宽高.&#13;
+ var vp = CC.getViewport();&#13;
+   alert(vp.width+','+vp.height);</div><div class="long">获得视图可见区域域宽高.
+ <pre><code><b>var</b> vp = CC.getViewport();
+   alert(vp.width+<em>','</em>+vp.height);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Object</code><div class="sub-desc">obj.width,obj.height</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-getViewportHeight"></a><b><a href="source/cc.html#method-CC-getViewportHeight">getViewportHeight</a></b>()
+    :
+                                        Number<div class="mdesc"><div class="short">获得视图可见区域域高度.</div><div class="long">获得视图可见区域域高度.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Number</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-getViewportWidth"></a><b><a href="source/cc.html#method-CC-getViewportWidth">getViewportWidth</a></b>()
+    :
+                                        Number<div class="mdesc"><div class="short">获得视图可见区域域宽度.</div><div class="long">获得视图可见区域域宽度.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Number</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-hasClass"></a><b><a href="source/cc.html#method-CC-hasClass">hasClass</a></b>(&nbsp;<code>DOMElement&nbsp;o</code>,&nbsp;<code>String&nbsp;s</code>&nbsp;)
+    :
+                                        Boolean<div class="mdesc"><div class="short">测试元素是否存在指定样式类.&#13;
+CC.hasClass(oDiv, 'cssName');</div><div class="long">测试元素是否存在指定样式类.
+<pre><code>CC.hasClass(oDiv, <em>'cssName'</em>);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : DOMElement<div class="sub-desc"></div></li><li><code>s</code> : String<div class="sub-desc">css类名</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-insertAfter"></a><b><a href="source/cc.html#method-CC-insertAfter">insertAfter</a></b>(&nbsp;<code>DOMElement&nbsp;oSelf</code>,&nbsp;<code>DOMElement&nbsp;oNew</code>&nbsp;)
+    :
+                                        DOMElement<div class="mdesc"><div class="short">在oSelf后面插入oNew结点.</div><div class="long">在oSelf后面插入oNew结点.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>oSelf</code> : DOMElement<div class="sub-desc"></div></li><li><code>oNew</code> : DOMElement<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>DOMElement</code><div class="sub-desc">oNew</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-isArray"></a><b><a href="source/cc.html#method-CC-isArray">isArray</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">是否为Array实例.</div><div class="long">是否为Array实例.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-isDate"></a><b><a href="source/cc.html#method-CC-isDate">isDate</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">是否为一个日期对象.</div><div class="long">是否为一个日期对象.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-isFunction"></a><b><a href="source/cc.html#method-CC-isFunction">isFunction</a></b>(&nbsp;<code>Object&nbsp;obj</code>&nbsp;)
+    :
+                                        Boolean<div class="mdesc"><div class="short">是否为一个函数(方法).</div><div class="long">是否为一个函数(方法).<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>obj</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-isMail"></a><b><a href="source/cc.html#method-CC-isMail">isMail</a></b>(&nbsp;<code>String&nbsp;strMail</code>&nbsp;)
+    :
+                                        Boolean<div class="mdesc"><div class="short">测试字符串是否为邮箱格式.</div><div class="long">测试字符串是否为邮箱格式.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>strMail</code> : String<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-isNumber"></a><b><a href="source/cc.html#method-CC-isNumber">isNumber</a></b>(&nbsp;<code>Object&nbsp;ob</code>&nbsp;)
+    :
+                                        Boolean<div class="mdesc"><div class="short">测试是否为数字</div><div class="long">测试是否为数字<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>ob</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-isString"></a><b><a href="source/cc.html#method-CC-isString">isString</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">是否为字符串.</div><div class="long">是否为字符串.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-loadCSS"></a><b><a href="source/cc.html#method-CC-loadCSS">loadCSS</a></b>(&nbsp;<code>String&nbsp;id</code>,&nbsp;<code>String&nbsp;url</code>&nbsp;)
+    :
+                                        DOMElement<div class="mdesc"><div class="short">加载一个CSS样式文件</div><div class="long">加载一个CSS样式文件<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>id</code> : String<div class="sub-desc">加载css标签ID</div></li><li><code>url</code> : String<div class="sub-desc">加载css的路径</div></li></ul><strong>Returns:</strong><ul><li><code>DOMElement</code><div class="sub-desc">link node</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-loadResource"></a><b><a href="source/cc.html#method-CC-loadResource">loadResource</a></b>(&nbsp;<code>Object&nbsp;资源属性</code>,&nbsp;<code>Function&nbsp;callback</code>,&nbsp;<code>Document&nbsp;document</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">加载一个资源文件</div><div class="long">加载一个资源文件<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>资源属性</code> : Object<div class="sub-desc"></div></li><li><code>callback</code> : Function<div class="sub-desc">加载后回调, this指向资源tag</div></li><li><code>document</code> : Document<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-loadScript"></a><b><a href="source/cc.html#method-CC-loadScript">loadScript</a></b>(&nbsp;<code>String&nbsp;url</code>,&nbsp;<code>Function&nbsp;callback</code>,&nbsp;<code>String&nbsp;[id]</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">加载JavaScript脚本文件</div><div class="long">加载JavaScript脚本文件<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>url</code> : String<div class="sub-desc"></div></li><li><code>callback</code> : Function<div class="sub-desc"></div></li><li><code>[id]</code> : String<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-loadStyle"></a><b><a href="source/cc.html#method-CC-loadStyle">loadStyle</a></b>(&nbsp;<code>String&nbsp;id</code>,&nbsp;<code>String&nbsp;样式文本内容</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">应用一段CSS样式文本.&#13;
+CC.loadStyle('customCS', '.g-custom {background-color:#DDD;}');&#13;
+   //在元素中应用新增样式类&#13;
+   &amp;lt;div class=&amp;qu...</div><div class="long">应用一段CSS样式文本.
+<pre><code>CC.loadStyle(<em>'customCS'</em>, <em>'.g-custom {background-color:#DDD;}'</em>);
+   <i>//在元素中应用新增样式类</i>
+   &lt;div class=&quot;g-custom&quot;&gt;动态加载样式&lt;/div&gt;</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>id</code> : String<div class="sub-desc">生成的样式style结点ID\</div></li><li><code>样式文本内容</code> : String<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-noCache"></a><b><a href="source/cc.html#method-CC-noCache">noCache</a></b>()
+    :
+                                        String<div class="mdesc"><div class="short">获得一个请求字符串,该字符串用于避免浏览器缓存请求页面,追加在URL尾部.&#13;
+var requestUrl = 'http://www.site.com/?name=rock'+CC.noCache();</div><div class="long">获得一个请求字符串,该字符串用于避免浏览器缓存请求页面,追加在URL尾部.
+<pre><code><b>var</b> requestUrl = <em>'http:<i>//www.site.com/?name=rock'</em>+CC.noCache();</i></code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>String</code><div class="sub-desc">避免浏览器缓存请求页面的字符串.</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-queryString"></a><b><a href="source/cc.html#method-CC-queryString">queryString</a></b>(&nbsp;<code>Object&nbsp;obj</code>&nbsp;)
+    :
+                                        对象的查询字符串表示形式<div class="mdesc"><div class="short">返回对象查询字符串表示形式.&#13;
+var obj = {name:'rock', age:'25'};&#13;
+&#13;
+           //显示 name=rock&amp;age=25&#13;
+           alert(CC.queryStri...</div><div class="long">返回对象查询字符串表示形式.
+<pre><code><b>var</b> obj = {name:<em>'rock'</em>, age:<em>'25'</em>};
+
+           <i>//显示 name=rock&age=25</i>
+           alert(CC.queryString(obj));</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>obj</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>对象的查询字符串表示形式</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-ready"></a><b><a href="source/event.html#method-CC-ready">ready</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">添加DOM加载完成后回调函数</div><div class="long">添加DOM加载完成后回调函数<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-setClass"></a><b><a href="source/cc.html#method-CC-setClass">setClass</a></b>(&nbsp;<code>DOMElement&nbsp;o</code>,&nbsp;<code>String&nbsp;s</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">重置元素样式类.&#13;
+CC.switchClass(oDiv, 'mouseoverCss', 'mouseoutCss');</div><div class="long">重置元素样式类.
+<pre><code>CC.switchClass(oDiv, <em>'mouseoverCss'</em>, <em>'mouseoutCss'</em>);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : DOMElement<div class="sub-desc"></div></li><li><code>s</code> : String<div class="sub-desc">CSS类名</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-switchClass"></a><b><a href="source/cc.html#method-CC-switchClass">switchClass</a></b>(&nbsp;<code>DOMElement&nbsp;o</code>,&nbsp;<code>String&nbsp;oldSty</code>,&nbsp;<code>String&nbsp;newSty</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">替换元素样式类.&#13;
+CC.switchClass(oDiv, 'mouseoverCss', 'mouseoutCss');</div><div class="long">替换元素样式类.
+<pre><code>CC.switchClass(oDiv, <em>'mouseoverCss'</em>, <em>'mouseoutCss'</em>);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : DOMElement<div class="sub-desc"></div></li><li><code>oldSty</code> : String<div class="sub-desc">已存在的CSS类名</div></li><li><code>newSty</code> : String<div class="sub-desc">新的CSS类名</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-tagUp"></a><b><a href="source/cc.html#method-CC-tagUp">tagUp</a></b>(&nbsp;<code>DOMElement&nbsp;dom</code>,&nbsp;<code>String&nbsp;tag</code>&nbsp;)
+    :
+                                        DOMElement<div class="mdesc"><div class="short">沿dom结点往上遍历,以寻找标签名为tag的结点,没找到返回null.&#13;
+ var dom = CC.tagUp(div, 'TD');</div><div class="long">沿dom结点往上遍历,以寻找标签名为tag的结点,没找到返回null.<br/>
+ <pre><code><b>var</b> dom = CC.tagUp(div, <em>'TD'</em>);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>dom</code> : DOMElement<div class="sub-desc">往该结点上遍历(包括该结点)</div></li><li><code>tag</code> : String<div class="sub-desc">查找的标签名</div></li></ul><strong>Returns:</strong><ul><li><code>DOMElement</code><div class="sub-desc">匹配标签的结点</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-templ"></a><b><a href="source/cc.html#method-CC-templ">templ</a></b>(&nbsp;<code>Object&nbsp;obj</code>,&nbsp;<code>String&nbsp;str</code>,&nbsp;<code>undefined|Number&nbsp;[st]</code>,&nbsp;<code>Boolean&nbsp;[urlencode]</code>&nbsp;)
+    :
+                                        String<div class="mdesc"><div class="short">应用对象替换模板内容.&#13;
+CC.templ({name:'Rock'},'&amp;#60;html&amp;#62;&amp;#60;title&amp;#62;{name}&amp;#60;/title&amp;#62;&amp;#60;/html&amp;#62;');&#13;
+         ...</div><div class="long">应用对象替换模板内容.<br/>
+<pre><code>CC.templ({name:<em>'Rock'</em>},<em>'&#60;html&#62;&#60;title&#62;{name}&#60;/title&#62;&#60;/html&#62;'</em>);
+           st:0,1:未找到属性是是否保留</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>obj</code> : Object<div class="sub-desc">数据对象</div></li><li><code>str</code> : String<div class="sub-desc">模板字符串</div></li><li><code>[st]</code> : undefined|Number<div class="sub-desc">控制开并 undefined 或 0 或 1 或其它</div></li><li><code>[urlencode]</code> : Boolean<div class="sub-desc">是否用encodeURIComponent方法进行编码</div></li></ul><strong>Returns:</strong><ul><li><code>String</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-uniqueID"></a><b><a href="source/cc.html#method-CC-uniqueID">uniqueID</a></b>()
+    :
+                                        Number<div class="mdesc"><div class="short">获得一个全局唯一的ID.</div><div class="long">获得一个全局唯一的ID.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Number</code><div class="sub-desc">全局唯一ID</div></li></ul></div></div></div></td><td class="msource">CC</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC-validate"></a><b><a href="source/cc.html#method-CC-validate">validate</a></b>()
+    :
+                                        false|Object<div class="mdesc"><div class="short">表单验证函数.&#13;
+//密码长度&gt;=6&#13;
+function checkPassword(v) {&#13;
+  return v.length &gt;= 6;&#13;
+}&#13;
+&#13;
+//两次密码要相同&#13;
+function isTheSame(v, obj, ...</div><div class="long">表单验证函数.
+<pre><code><i>//密码长度>=6</i>
+<b>function</b> checkPassword(v) {
+  <b>return</b> v.length >= 6;
+}
+
+<i>//两次密码要相同</i>
+<b>function</b> isTheSame(v, obj, form) {
+  <b>return</b> form ? form.password.value == v: CC.$(<em>'password'</em>).value == v;
+}
+
+<i>//出错时自定回调</i>
+<b>function</b> myCallback(msg, obj, form) {
+  alert(<em>"出错显示的消息是:"</em> + msg + <em>" - 元素:"</em> +
+          obj.name + <em>",所在form:"</em> + (form ? form.id: <em>'无'</em>));
+}
+
+<i>//存在Form的例子</i>
+<b>function</b> testForm() {
+  <b>var</b> result = CC.validate(<em>'testForm'</em>,
+     [<em>'username'</em>, <em>'请输入用户名。'</em>],
+     [<em>'mail'</em>, <em>'邮箱格式不正确。'</em>, isMail],
+     [<em>'password'</em>, <em>'密码长度大于或等于6。'</em>, checkPassword],
+     <i>//完整的配置示例</i>
+     [<em>'password2'</em>, <em>'两次密码不一致。'</em>, isTheSame,
+        {nofocus: false,callback: myCallback,ignoreNull: false}
+     ],
+     {queryString: true});
+
+  <b>if</b> (result !== false) alert(<em>"恭喜，通过验证!提交的字符串是:"</em> + result);
+
+  <b>return</b> result;
+}
+<i>//无Form的例子.</i>
+<b>function</b> testNoForm() {
+  <b>var</b> result = CC.validate( <i>//既然没form了,这里不必存入form id作为第一个参数.</i>
+   [<em>'username'</em>, <em>'请输入用户名。'</em>],
+   [<em>'mail'</em>, <em>'邮箱格式不正确。'</em>, CC.isMail],
+   [<em>'password'</em>, <em>'密码长度大于或等于6。'</em>, checkPassword],
+   [<em>'password2'</em>, <em>'两次密码不一致。'</em>, isTheSame,
+        {nofocus: false, callback: myCallback, ignoreNull: false}
+   ],
+  <i>//函数最后一个参数</i>
+  { queryString: true});
+
+  <b>if</b> (result !== false) alert(<em>"恭喜，通过验证!提交的字符串是:"</em> + result);
+
+  <b>return</b> result;
+}</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>false|Object</code><div class="sub-desc">如果设置的queryString:true并通过验证,就返回form的提交字符串,验证失败返回false</div></li></ul></div></div></div></td><td class="msource">CC</td></tr></tbody></table><a id="CC-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div></div>

@@ -1,0 +1,2 @@
+本文档用EXT DOC(http://code.google.com/p/ext-doc/)生成,因为用到ajax请求文档页面,所以直接在本地打开是看不了的.
+可将文档放在任何一个WEB服务器下打开查看,如 http://localhost/doc/

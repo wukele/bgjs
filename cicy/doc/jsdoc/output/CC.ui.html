@@ -1,0 +1,20 @@
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>Class <a href="source/cbase.html#cls-CC.ui">CC.ui</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">CC</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">cbase.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/cbase.html#cls-CC.ui">ui</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description">控件包</div><div class="hr"></div><a id="CC.ui-props"></a><h2>Public Properties</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Property</th><th class="msource-header">Defined By</th></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.ui-$body"></a><b><a href="source/cbase.html#prop-CC.ui-$body">$body</a></b> : CC.Base<div class="mdesc">document.body的Base封装,在DOMReady后由CC.Base生成.</div></td><td class="msource">ui</td></tr></tbody></table><a id="CC.ui-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.ui-def"></a><b><a href="source/cbase.html#method-CC.ui-def">def</a></b>(&nbsp;<code>String&nbsp;ctype</code>,&nbsp;<code>Function&nbsp;类</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">注册控件类标识,方便在未知具体类的情况下生成该类,也方便序列化生成类实例.</div><div class="long">注册控件类标识,方便在未知具体类的情况下生成该类,也方便序列化生成类实例.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>ctype</code> : String<div class="sub-desc">类标识</div></li><li><code>类</code> : Function<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">ui</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.ui-instance"></a><b><a href="source/cbase.html#method-CC.ui-instance">instance</a></b>(&nbsp;<code>Object&nbsp;option</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">根据类初始化信息返回类实例,如果初始化信息未指定ctype,默认类为CC.Base,&#13;
+如果初始化信息中存在ctype属性,在实例化前将移除该属性.&#13;
+如果传入的参数已是某个类的实例,则忽略.&#13;
+  通过该类创建类实例方式有几种&#13;
+ ...</div><div class="long">根据类初始化信息返回类实例,如果初始化信息未指定ctype,默认类为CC.Base,
+如果初始化信息中存在ctype属性,在实例化前将移除该属性.
+如果传入的参数已是某个类的实例,则忽略.
+  <pre><code>通过该类创建类实例方式有几种
+  1. <b>var</b> inst = CC.ui.instance(<em>'shadow'</em>);
+    或
+     <b>var</b> inst = CC.ui.instance(<em>'shadow'</em>, { width:55, ...});
+
+  2. <b>var</b> inst = CC.ui.instance({ctype:<em>'shadow'</em>, width:55});
+
+  <i>//得到CC.ui.ContainerBase类实例,假定该类的ctype为ct</i>
+     <b>var</b> inst = CC.ui.instance({ ctype : <em>'ct'</em>, showTo : document.body });</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>option</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">ui</td></tr></tbody></table><a id="CC.ui-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div></div>
