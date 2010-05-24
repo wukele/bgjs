@@ -1,0 +1,45 @@
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>Class <a href="source/prototypeext.html#cls-Function">Function</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Global</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">prototypeext.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/prototypeext.html#cls-Function">Function</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description"></div><div class="hr"></div><a id="Function-props"></a><h2>Public Properties</h2><div class="no-members">This class has no public properties.</div><a id="Function-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Function-bind"></a><b><a href="source/prototypeext.html#method-Function-bind">bind</a></b>()
+    :
+                                        绑定this后的新函数<div class="mdesc"><div class="short">绑定this对象到函数 &#13;
+ var self = {name:'Rock'};&#13;
+  function getName(){&#13;
+   return this.name;&#13;
+  }&#13;
+&#13;
+  var binded = getName....</div><div class="long">绑定this对象到函数 <br>
+ <pre><code><b>var</b> self = {name:<em>'Rock'</em>};
+  <b>function</b> getName(){
+   <b>return</b> this.name;
+  }
+
+  <b>var</b> binded = getName.bind(self);
+
+  <i>//显示Rock</i>
+  alert(binded());</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>绑定this后的新函数</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Function</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Function-bindAsListener"></a><b><a href="source/prototypeext.html#method-Function-bindAsListener">bindAsListener</a></b>()
+    :
+                                        绑定this后的新函数<div class="mdesc"><div class="short">绑定事件处理函数,使其具有指定this范围功能,并传递event参数 &#13;
+ var self = {name:'Rock'};&#13;
+   function onclick = function(event){&#13;
+     alert("...</div><div class="long">绑定事件处理函数,使其具有指定this范围功能,并传递event参数 <br>
+ <pre><code><b>var</b> self = {name:<em>'Rock'</em>};
+   <b>function</b> onclick = <b>function</b>(event){
+     alert(<em>"name:"</em> + this.name + <em>', event:'</em>+event);
+   }
+
+   dom.onclick = onclick.bindAsListener(self);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>绑定this后的新函数</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Function</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Function-timeout"></a><b><a href="source/prototypeext.html#method-Function-timeout">timeout</a></b>(&nbsp;<code>Number&nbsp;seconds</code>,&nbsp;<code>Boolean&nbsp;是否为interval</code>&nbsp;)
+    :
+                                        Number<div class="mdesc"><div class="short">超时调用. &#13;
+ //setTimeout方式调用&#13;
+   var timerId = (function(){&#13;
+    alert('timeout came!');&#13;
+   }).timeout(2000);&#13;
+   //set...</div><div class="long">超时调用. <br>
+ <pre><code><i>//setTimeout方式调用</i>
+   <b>var</b> timerId = (<b>function</b>(){
+    alert(<em>'timeout came!'</em>);
+   }).timeout(2000);
+   <i>//setInterval方式调用</i>
+   <b>var</b> intervalTimerId = (<b>function</b>(){
+    alert(<em>'interval came!'</em>);
+    clearInterval(intervalTimerId);
+   }).timeout(2000, true);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>seconds</code> : Number<div class="sub-desc">毫秒</div></li><li><code>是否为interval</code> : Boolean<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Number</code><div class="sub-desc">timer id</div></li></ul></div></div></div></td><td class="msource">Function</td></tr></tbody></table><a id="Function-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div></div>

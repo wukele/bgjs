@@ -1,0 +1,80 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">﻿<div id="cls-CC.util.Tracker"></div>/**
+ * @class CC.util.Tracker
+ * 状态变更跟踪器.<br>
+ * 内部维护一个后进先出数据结构来记录数据,该类目前用于记录{@link CC.ui.Tab}类的TAB选项打开顺序.
+ */
+CC.create('CC.util.Tracker', null, {
+  <div id="cfg-CC.util.Tracker-max"></div>/**@cfg {Number} max 历史记录最大条数*/
+  max : 20,
+
+  initialize : function(opt){
+    this.area = [];
+    if(opt)
+      CC.extend(this, opt);
+  },
+
+<div id="method-CC.util.Tracker-track"></div>/**
+ * 记录数据
+ * @param {Object} data
+ */
+  track : function(data){
+    var a = this.area;
+    if(a.indexOf(data) !== -1)
+      a.remove(data);
+
+    a.push(data);
+
+    if(a.length > this.max)
+      a.pop();
+    if(__debug) console.log('记录:', data);
+  },
+
+<div id="method-CC.util.Tracker-isValid"></div>/**
+ * 接口,测试当前记录数据是可用
+ * @param {Object} data
+ * @method
+ */
+  isValid : fGo,
+
+<div id="cfg-CC.util.Tracker-validCaller"></div>/**
+ * @cfg {Object} validCaller {@link #isValid}的this对象
+ */
+  validCaller : null,
+
+<div id="method-CC.util.Tracker-pop"></div>/**
+ * 弹出最近记录的数据.
+ */
+  pop : function(){
+    var vc = this.validCaller || this, as = this.area, len = as.length, i = len - 1;
+    for(;i>=0;i--){
+      if(__debug) console.log('抹除:', this.isValid.call(vc, as[i]), as[i]);
+      if(this.isValid.call(vc, as[i]))
+        return as[i];
+      as.pop();
+    }
+  },
+
+<div id="method-CC.util.Tracker-remove"></div>/**
+ * 移除指定记录数据.
+ * @param {Object} data
+ */
+  remove : function(data){
+    this.area.remove(data);
+  },
+
+<div id="method-CC.util.Tracker-size"></div>/**
+ * 当前记录数据大小
+ * @return {Number}
+ */
+  size : function() {return this.area.length;}
+});</pre>    
+</body>
+</html>

@@ -1,0 +1,57 @@
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>Class <a href="source/prototypeext.html#cls-String">String</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Global</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">prototypeext.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/prototypeext.html#cls-String">String</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description"></div><div class="hr"></div><a id="String-props"></a><h2>Public Properties</h2><div class="no-members">This class has no public properties.</div><a id="String-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-camelize"></a><b><a href="source/prototypeext.html#method-String-camelize">camelize</a></b>()
+    :
+                                        String<div class="mdesc"><div class="short">将css文件属性名形式转换成js dom中style对象属性名称.&#13;
+ //显示backgroundPosition&#13;
+ alert('background-position'.camelize());</div><div class="long">将css文件属性名形式转换成js dom中style对象属性名称.<br>
+ <pre><code><i>//显示backgroundPosition</i>
+ alert(<em>'background-position'</em>.camelize());</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>String</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-checkSpecialChar"></a><b><a href="source/prototypeext.html#method-String-checkSpecialChar">checkSpecialChar</a></b>()
+    :
+                                        Boolean<div class="mdesc"><div class="short">检查是否存在'"/\等非法字符.</div><div class="long">检查是否存在'"/\等非法字符.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc">如果存在,返回true,否则false</div></li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-escape"></a><b><a href="source/prototypeext.html#method-String-escape">escape</a></b>()
+    :
+                                        String<div class="mdesc"><div class="short">同escape(string).</div><div class="long">同escape(string).<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>String</code><div class="sub-desc">新字符串</div></li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-execScript"></a><b><a href="source/prototypeext.html#method-String-execScript">execScript</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">执行字符串script标签中的内容.&#13;
+ var s = '&amp;lt;script type=&amp;quot;text/javascript&amp;quot;&amp;gt;alert('execute some script code');&amp;lt;/s...</div><div class="long">执行字符串script标签中的内容.<br>
+ <pre><code><b>var</b> s = <em>'&lt;script type=&quot;text/javascript&quot;&gt;alert('</em>execute some script code<em>');&lt;/script&gt;'</em>;
+   s.execScript();</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-execStyle"></a><b><a href="source/prototypeext.html#method-String-execStyle">execStyle</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">执行字符串style标签中的内容.&#13;
+ var s = '&amp;lt;style &amp;gt;.css {color:red;}&amp;lt;/style&amp;gt;';&#13;
+   s.execStyle();&#13;
+   //应用&#13;
+   div.inne...</div><div class="long">执行字符串style标签中的内容.<br>
+ <pre><code><b>var</b> s = <em>'&lt;style &gt;.css {color:red;}&lt;/style&gt;'</em>;
+   s.execStyle();
+   <i>//应用</i>
+   div.innerHTML = <em>'&lt;span class=&quot;css&quot;&gt;Text&lt;/span&gt;'</em>;</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-innerScript"></a><b><a href="source/prototypeext.html#method-String-innerScript">innerScript</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">返回字符串JavaScript脚本标签内容.&#13;
+ var s = '&amp;lt;script type=&amp;quot;javascript&amp;quot;&amp;gt;var obj = {};&amp;lt;/script&amp;gt;';&#13;
+   //显示 v...</div><div class="long">返回字符串JavaScript脚本标签内容.<br>
+ <pre><code><b>var</b> s = <em>'&lt;script type=&quot;javascript&quot;&gt;<b>var</b> obj = {};&lt;/script&gt;'</em>;
+   <i>//显示 <b>var</b> obj = {};</i>
+   alert(s.innerScript());</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-innerStyle"></a><b><a href="source/prototypeext.html#method-String-innerStyle">innerStyle</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">返回字符串style标签内容.&#13;
+ var s = '&amp;lt;style&amp;gt;.css {color:red;}&amp;lt;/style&amp;gt;';&#13;
+   //显示 .css {color:red;}&#13;
+   alert(s.inne...</div><div class="long">返回字符串style标签内容.
+ <pre><code><b>var</b> s = <em>'&lt;style&gt;.css {color:red;}&lt;/style&gt;'</em>;
+   <i>//显示 .css {color:red;}</i>
+   alert(s.innerStyle());</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-stripScript"></a><b><a href="source/prototypeext.html#method-String-stripScript">stripScript</a></b>(&nbsp;<code>Function&nbsp;fncb</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">返回已剔除字符串中脚本标签内容的新字符串.</div><div class="long">返回已剔除字符串中脚本标签内容的新字符串.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>fncb</code> : Function<div class="sub-desc">回调函数,参数传递当前已匹配的标签内容</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-stripStyle"></a><b><a href="source/prototypeext.html#method-String-stripStyle">stripStyle</a></b>(&nbsp;<code>Function&nbsp;fncb</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">返回已剔除字符串中脚本标签内容的新字符串.</div><div class="long">返回已剔除字符串中脚本标签内容的新字符串.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>fncb</code> : Function<div class="sub-desc">回调函数,参数传递当前已匹配的标签内容</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-trim"></a><b><a href="source/prototypeext.html#method-String-trim">trim</a></b>()
+    :
+                                        String<div class="mdesc"><div class="short">删除两头空格</div><div class="long">删除两头空格<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>String</code><div class="sub-desc">新字符串</div></li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-truncate"></a><b><a href="source/prototypeext.html#method-String-truncate">truncate</a></b>(&nbsp;<code>Number&nbsp;length</code>,&nbsp;<code>String&nbsp;[truncation]</code>&nbsp;)
+    :
+                                        String<div class="mdesc"><div class="short">截短字符串,使得不超过指定长度,如果已截短,则用特定字符串追加.&#13;
+ var str = "这是一个长长的字符串,非常非常长";&#13;
+   //显示:这是一个长长的字符串...&#13;
+   alert(str.truncate(10));</div><div class="long">截短字符串,使得不超过指定长度,如果已截短,则用特定字符串追加.<br>
+ <pre><code><b>var</b> str = <em>"这是一个长长的字符串,非常非常长"</em>;
+   <i>//显示:这是一个长长的字符串...</i>
+   alert(str.truncate(10));</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>length</code> : Number<div class="sub-desc">截短的长度</div></li><li><code>[truncation]</code> : String<div class="sub-desc">追加的字符串,默认为三个点,表示省略</div></li></ul><strong>Returns:</strong><ul><li><code>String</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">String</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="String-unescape"></a><b><a href="source/prototypeext.html#method-String-unescape">unescape</a></b>()
+    :
+                                        String<div class="mdesc"><div class="short">同unescape(string).</div><div class="long">同unescape(string).<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>String</code><div class="sub-desc">新字符串</div></li></ul></div></div></div></td><td class="msource">String</td></tr></tbody></table><a id="String-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div></div>
