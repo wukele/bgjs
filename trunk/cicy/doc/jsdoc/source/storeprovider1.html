@@ -1,0 +1,49 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">﻿<div id="cls-CC.ui.form.StoreProvider"></div>/**
+ * @class CC.ui.form.StoreProvider
+ * @extends CC.util.StoreProvider
+ */
+CC.create('CC.ui.form.StoreProvider', CC.util.StoreProvider, function(father){
+return {
+<div id="method-CC.ui.form.StoreProvider-queryString"></div>/**
+ * 调用CC.formQuery 获得提交数据
+ * @return {String}
+ * @override
+ */
+  queryString : function(){
+    return CC.formQuery(this.t.getFormEl());
+    //ignore
+  },
+
+<div id="method-CC.ui.form.StoreProvider-save"></div>/**
+ * 保存时提交整个表单数据
+ */
+  save : function(){
+    if(this.beforeSave()!== false && 
+       this.t.fire('store:beforesave', this)!==false){
+         this.onSave();
+    }
+  },
+  // 忽略addUrl与modifyUrl,统一利用saveUrl提交
+  getSaveUrl : function(){
+    return this.mappingUrl(this.saveUrl);
+  },
+
+  beforeSave : function(item, isNew){
+    return this.t.getValidationProvider().validateAll()===true;
+  }
+};
+
+CC.ui.def('formstore' , CC.ui.form.StoreProvider);
+
+});
+CC.ui.form.FormLayer.prototype.storeProvider = CC.ui.form.StoreProvider;</pre>    
+</body>
+</html>

@@ -1,0 +1,27 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">﻿CC.Tpl.def('CC.ui.FolderItem', '<li class="g-unsel"><b id="_ico" class="icos"></b><a id="_tle" class="g-tle"></a></li>')
+      .def('CC.ui.Folder', '<div class="g-folder g-grp-bdy"><div class="g-grp-bdy" id="_scrollor"><ul id="_bdy" tabindex="1" hidefocus="on"></ul></div></div>');
+<div id="cls-CC.ui.Folder"></div>/**
+ * @class CC.ui.Folder
+ * @extends CC.ui.ContainerBase
+ */
+CC.create('CC.ui.Folder', CC.ui.ContainerBase, <div id="prop-CC.ui.Folder-itemCfg"></div>/**@lends CC.ui.Folder#*/{
+  itemCfg : {template : 'CC.ui.FolderItem', hoverCS:'on', icon:'icoNote', blockMode:2},
+  keyEvent : true,
+  ct : '_bdy',
+  clickEvent : true,
+  useContainerMonitor : true,
+  template:'CC.ui.Folder',
+  selectionProvider : true
+});
+
+CC.ui.def('folder', CC.ui.Folder);</pre>    
+</body>
+</html>
