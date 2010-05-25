@@ -1,0 +1,72 @@
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/CC.util.ProviderBase.html" ext:member="" ext:cls="CC.util.ProviderBase">ProviderBase</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif"><a href="output/CC.util.ConnectionProvider.html" ext:member="" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a>&#13;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/elbow-end.gif">IFrameConnectionProvider</pre></div><h1>Class <a href="source/iframepanel.html#cls-CC.util.IFrameConnectionProvider">CC.util.IFrameConnectionProvider</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">CC.util</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">iframepanel.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/iframepanel.html#cls-CC.util.IFrameConnectionProvider">IFrameConnectionProvider</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/CC.util.ConnectionProvider.html" ext:cls="CC.util.ConnectionProvider" ext:member="">ConnectionProvider</a></td></tr></table><div class="description">封装IFramePanel容器的连接处理.</div><div class="hr"></div><a id="CC.util.IFrameConnectionProvider-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.IFrameConnectionProvider-traceLoad"></a><b><a href="source/iframepanel.html#cfg-CC.util.IFrameConnectionProvider-traceLoad">traceLoad</a></b> : Boolean<div class="mdesc">是否监听IFRAME加载事件,默认为true</div></td><td class="msource">IFrameConnectionProvider</td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ConnectionProvider-indicatorDisabled"></a><b><a href="source/connectionprovider.html#cfg-CC.util.ConnectionProvider-indicatorDisabled">indicatorDisabled</a></b> : Boolean<div class="mdesc">是否禁用指示器,默认false</div></td><td class="msource"><a href="output/CC.util.ConnectionProvider.html#indicatorDisabled" ext:member="#indicatorDisabled" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ConnectionProvider-ajaxCfg"></a><b><a href="source/connectionprovider.html#cfg-CC.util.ConnectionProvider-ajaxCfg">ajaxCfg</a></b> : Object<div class="mdesc"><div class="short">连接器设置,连接器保存当前默认的连接器connector配置信息,&#13;
+每次连接时都以该配置信息与新的配置结合发出连接.&#13;
+var provider = new CC.util.ConnectionProvider(target, {&#13;...</div><div class="long">连接器设置,连接器保存当前默认的连接器connector配置信息,
+每次连接时都以该配置信息与新的配置结合发出连接.
+<br><pre><code><b>var</b> provider = <b>new</b> CC.util.ConnectionProvider(target, {
+    indicatorDisabled : true,
+    ajaxCfg : {
+      url : <em>'http:<i>//www.server.com/old'</em>,</i>
+      success : <b>function</b>(){},
+      ...
+    }
+   });
+
+   provider.connect(<em>'http:<i>//www.server.com/<b>new</b>'</em>,</i>
+    <i>//这里的配置属性将会覆盖provider.ajaxCfg原有属性</i>
+    {
+      success : <b>function</b>(){},
+      ...
+    }
+   );</code></pre></div></div></td><td class="msource"><a href="output/CC.util.ConnectionProvider.html#ajaxCfg" ext:member="#ajaxCfg" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ConnectionProvider-loadType"></a><b><a href="source/connectionprovider.html#cfg-CC.util.ConnectionProvider-loadType">loadType</a></b> : String<div class="mdesc"><div class="short">指明返回数据的类型,成功加载数据后默认的处理函数将根据该类型执行&#13;
+相应的操作,被支持的类型有如下两种&lt;div class="mdetail-params"&gt;&#13;
+html,返回的HTML将被加载到target.wrapper中&#13;
+js...</div><div class="long">指明返回数据的类型,成功加载数据后默认的处理函数将根据该类型执行
+相应的操作,被支持的类型有如下两种<div class="mdetail-params"><ul>
+<li>html,返回的HTML将被加载到target.wrapper中</li>
+<li>json,返回的数据转换成json,并通过target.fromArray加载子项</li></ul></div>
+如果未指定,按json类型处理.
+默认处理函数:<a href="output/CC.util.ConnectionProvider.html#CC.util.ConnectionProvider-defaultLoadSuccess" ext:member="defaultLoadSuccess" ext:cls="CC.util.ConnectionProvider">defaultLoadSuccess</a></div></div></td><td class="msource"><a href="output/CC.util.ConnectionProvider.html#loadType" ext:member="#loadType" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ConnectionProvider-indicatorCfg"></a><b><a href="source/connectionprovider.html#cfg-CC.util.ConnectionProvider-indicatorCfg">indicatorCfg</a></b> : Object<div class="mdesc"></div></td><td class="msource"><a href="output/CC.util.ConnectionProvider.html#indicatorCfg" ext:member="#indicatorCfg" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a></td></tr></tbody></table><a id="CC.util.IFrameConnectionProvider-props"></a><h2>Public Properties</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Property</th><th class="msource-header">Defined By</th></tr><tr class="property-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ProviderBase-t"></a><b><a href="source/providerbase.html#prop-CC.util.ProviderBase-t">t</a></b> : CC.ui.ContainerBase<div class="mdesc">已绑定的目标容器</div></td><td class="msource"><a href="output/CC.util.ProviderBase.html#t" ext:member="#t" ext:cls="CC.util.ProviderBase">ProviderBase</a></td></tr></tbody></table><a id="CC.util.IFrameConnectionProvider-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div><a id="CC.util.IFrameConnectionProvider-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ProviderBase-setTarget"></a><b><a href="source/providerbase.html#method-CC.util.ProviderBase-setTarget">setTarget</a></b>(&nbsp;<code>CC.ui.ContainerBase&nbsp;targetContainer</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">绑定容器.</div><div class="long">绑定容器.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>targetContainer</code> : CC.ui.ContainerBase<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/CC.util.ProviderBase.html#setTarget" ext:member="#setTarget" ext:cls="CC.util.ProviderBase">ProviderBase</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.IFrameConnectionProvider-abort"></a><b><a href="source/iframepanel.html#method-CC.util.IFrameConnectionProvider-abort">abort</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">中止当前连接.</div><div class="long">中止当前连接.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">IFrameConnectionProvider</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ConnectionProvider-defaultLoadSuccess"></a><b><a href="source/connectionprovider.html#method-CC.util.ConnectionProvider-defaultLoadSuccess">defaultLoadSuccess</a></b>(&nbsp;<code>CC.Ajax&nbsp;ajax</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">成功返回后执行,默认是根据返回数据类型(loadType)执行相应操作,&#13;
+如果要自定义处理返回的数据,可定义在连接时传递success方法或重写本方法.&#13;
+ var ct = new CC.ui.ContainerBase({&#13;
+ ...</div><div class="long">成功返回后执行,默认是根据返回数据类型(loadType)执行相应操作,
+如果要自定义处理返回的数据,可定义在连接时传递success方法或重写本方法.<br>
+ <pre><code><b>var</b> ct = <b>new</b> CC.ui.ContainerBase({
+    connectionProvider : {loadType:<em>'json'</em>}
+   });
+   <i>//加载json</i>
+   ct.getConnectionProvider().connect(<em>'http:<i>//server/getChildrenData'</em>);</i>
+
+   <i>//加载html到容器</i>
+   ct.connectionProvider.loadType = <em>'html'</em>;
+   ct.connectionProvider.connect(<em>'http:<i>//server/htmls/'</em>);</i>
+
+   <i>//或自定义加载</i>
+   ct.getConnectionProvider().connect(<em>'http:<i>//server/..'</em>, {</i>
+     success : <b>function</b>(j){
+      <i>//this默认是connectionProvider</i>
+      alert(this.loadType);
+      alert(j.getText());
+     }
+   });</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>ajax</code> : CC.Ajax<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/CC.util.ConnectionProvider.html#defaultLoadSuccess" ext:member="#defaultLoadSuccess" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ConnectionProvider-defaultDataProcessor"></a><b><a href="source/connectionprovider.html#method-CC.util.ConnectionProvider-defaultDataProcessor">defaultDataProcessor</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">可重写本方法自定义数据类型加载</div><div class="long">可重写本方法自定义数据类型加载<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/CC.util.ConnectionProvider.html#defaultDataProcessor" ext:member="#defaultDataProcessor" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ConnectionProvider-getIndicator"></a><b><a href="source/connectionprovider.html#method-CC.util.ConnectionProvider-getIndicator">getIndicator</a></b>(&nbsp;<code>Object&nbsp;indicatorConfig</code>&nbsp;)
+    :
+                                        CC.ui.Loading<div class="mdesc"><div class="short">获得连接指示器,&#13;
+Loading类寻找路径 this.indicatorCls -&gt; target ct.indicatorCls -&gt; CC.ui.Loading</div><div class="long">获得连接指示器,
+Loading类寻找路径 this.indicatorCls -> target ct.indicatorCls -> CC.ui.Loading<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>indicatorConfig</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>CC.ui.Loading</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource"><a href="output/CC.util.ConnectionProvider.html#getIndicator" ext:member="#getIndicator" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ConnectionProvider-connect"></a><b><a href="source/connectionprovider.html#method-CC.util.ConnectionProvider-connect">connect</a></b>(&nbsp;<code>String&nbsp;url,</code>,&nbsp;<code>Object&nbsp;cfg</code>&nbsp;)
+    :
+                                        this<div class="mdesc"><div class="short">连接服务器, success操作如果未在配置中指定,默认调用当前ConnectionProvider类的defaultLoadSuccess方法&#13;
+如果当前未指定提示器,调用getIndicator方法实例化一个提示器;&#13;
+如果上一个...</div><div class="long">连接服务器, success操作如果未在配置中指定,默认调用当前ConnectionProvider类的defaultLoadSuccess方法
+如果当前未指定提示器,调用getIndicator方法实例化一个提示器;
+如果上一个正求正忙,终止上一个请求再连接;
+当前绑定容器将订阅请求过程中用到的Ajax类的所有消息;
+indicator cfg 配置信息从 this.indicatorCfg -> target ct.indicatorCfg获得<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>url,</code> : String<div class="sub-desc">未指定时用this.url</div></li><li><code>cfg</code> : Object<div class="sub-desc">配置Ajax类的配置信息, 参考信息:cfg.url = url, cfg.caller = this</div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource"><a href="output/CC.util.ConnectionProvider.html#connect" ext:member="#connect" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.ConnectionProvider-getConnector"></a><b><a href="source/connectionprovider.html#method-CC.util.ConnectionProvider-getConnector">getConnector</a></b>()
+    :
+                                        CC.Ajax<div class="mdesc"><div class="short">获得连接器,该连接器只提供数据加载功能,默认用CC.Ajax类作为连接器.</div><div class="long">获得连接器,该连接器只提供数据加载功能,默认用CC.Ajax类作为连接器.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>CC.Ajax</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource"><a href="output/CC.util.ConnectionProvider.html#getConnector" ext:member="#getConnector" ext:cls="CC.util.ConnectionProvider">ConnectionProvider</a></td></tr></tbody></table></div>

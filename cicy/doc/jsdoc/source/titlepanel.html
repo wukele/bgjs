@@ -1,0 +1,82 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">﻿<div id="cls-CC.ui.TitlePanel"></div>/**
+ * 具有标题栏的面板容器.
+ * @class CC.ui.TitlePanel
+ * @extends CC.ui.Panel
+ */
+CC.Tpl.def('CC.ui.TitlePanel', '<div class="g-panel g-titlepanel"><h3 class="g-titlepanel-hd" id="_tleBar"><a id="_btnFN" class="g-icoFld" href="javascript:fGo()"></a><a id="_tle" class="g-tle" href="javascript:fGo()"></a></h3><div id="_scrollor" class="g-panel-wrap g-titlepanel-wrap"></div></div>');
+
+CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
+    return {
+
+        unselectable : '_tleBar',
+
+        ct:'_scrollor',
+
+        minH : 29,
+
+        openCS : 'g-icoOpn',
+
+        clsCS  : 'g-icoFld',
+
+        foldNode : '_btnFN',
+
+        initComponent: function() {
+            superclass.initComponent.call(this);
+
+            //evName, handler, cancel, caller, childId
+            this.domEvent('mousedown', this.onTriggerClick, true, null, this.foldNode)
+                .domEvent('mousedown', this.onTitleClick,  true, null, this.titleNode || '_tle');
+            //_tleBar
+            this.header = this.$$('_tleBar');
+
+            if(this.collapsed)
+              this.collapse(this.collapsed, true);
+        },
+
+        getWrapperInsets : function(){
+          return [29 , 0, 0, 0, 29, 0];
+        },
+
+<div id="cfg-CC.ui.TitlePanel-onTriggerClick"></div>/**@cfg {Function} onTriggerClick 点击收缩图标时触发,可重写自定*/
+        onTriggerClick: function() {
+            var v = !this.wrapper.hidden;
+            this.collapse(v, true);
+        },
+<div id="cfg-CC.ui.TitlePanel-onTitleClick"></div>/**
+ * @cfg {Function} onTitleClick 标题点击时触发,默认执行缩放面板
+ */
+        onTitleClick : function(){
+          this.onTriggerClick();
+        },
+<div id="method-CC.ui.TitlePanel-collapse"></div>/**
+ * 收缩/展开内容面板
+ * @param {Boolean} collapsed
+ * @param {Boolean} notifyParentLayout 是否通知父容器的布局管理器,如果布局管理器存在collapse方法，调用该方法折叠控件，否则直接调用doLayout布局.
+ */
+        collapse : function(b, layout) {
+            this.attr(this.foldNode, 'className', b ? this.openCS : this.clsCS);
+            this.wrapper.display(!b);
+            this.collapsed = b;
+            this.fire('collapsed',b);
+
+            if(layout && this.pCt){
+              if(this.pCt.layout.collapse)
+                this.pCt.layout.collapse(this, b);
+              else this.pCt.layout.doLayout();
+            }
+            return this;
+        }
+    }
+});
+
+CC.ui.def('titlepanel', CC.ui.TitlePanel);</pre>    
+</body>
+</html>
