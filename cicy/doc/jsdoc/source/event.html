@@ -231,13 +231,15 @@ CC.extend(Event,
     Event.toggle('src','des','expand', 'fold', '点击展开','点击收缩', '标题栏');
    &lt;/script&gt;
    </code></pre>
- * @param {DOMElement|String} 源DOM
- * @param {DOMElement|String} 目标DOM
- * @param {String} cssExpand 展开时样式
- * @param {String} cssFold   闭合时样式
- * @param {String} [msgExp] src.title = msgExp
- * @param {String} [msgFld] src.title =  msgFld
- * @param {String} [hasText] src显示文本
+   <br><pre>
+ * param {DOMElement|String} 源DOM
+ * param {DOMElement|String} 目标DOM
+ * param {String} cssExpand 展开时样式
+ * param {String} cssFold   闭合时样式
+ * param {String} [msgExp] src.title = msgExp
+ * param {String} [msgFld] src.title =  msgFld
+ * param {String} [hasText] src显示文本
+ </pre>
  */
     toggle : function(src, des, cssExpand, cssFold, msgExp, msgFld, hasText) {
         src = CC.$(src);
@@ -327,13 +329,15 @@ CC.extend(Event,
         }
     },
 <div id="method-CC.Event-setDragable"></div>/**
- * 提供元素拖动行为,在RIA中不建议用该方式实现元素拖放,而应实例化一个Base对象,使之具有一个完整的控件生命周期.
- * @param {DOMElement} dragEl
- * @param {DOMElement} moveEl
- * @param {Boolean} enable or not?
- * @param {Function} [onmovee] callback on moving
- * @param {Function} [ondrag] callback on drag start
- * @param {Function} [ondrog] callback when drogged
+ * 提供元素拖动行为,在RIA中不建议用该方式实现元素拖放,而应实例化一个Base对象,使之具有一个完整的控件生命周期.<br>
+ <pre>
+ * param {DOMElement} dragEl
+ * param {DOMElement} moveEl
+ * param {Boolean} enable or not?
+ * param {Function} [onmovee] callback on moving
+ * param {Function} [ondrag] callback on drag start
+ * param {Function} [ondrog] callback when drogged
+ </pre>
  */
     setDragable: function(dragEl, moveEl, b, onmove, ondrag, ondrog) {
         if (!b) {

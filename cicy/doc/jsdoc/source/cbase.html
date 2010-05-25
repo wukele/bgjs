@@ -453,8 +453,9 @@ CC.extend(Base.prototype,
  */
     strHtml : false,
 
-<div id="cfg-CC.Base-innerCS"></div>/**
+/**
  * @cfg {String} innerCS 控件自身内在的css类设置,常用于控件的设计中,如果无继承控件创建新控件类,不必理会该属性.
+ * @private
  */
     innerCS : false,
 
@@ -707,7 +708,7 @@ CC.extend(Base.prototype,
  */   
     showTo : false,
     
-    <div id="method-CC.Base-onRender"></div>/**
+    /**
      * <p>
      * 渲染方式的实现方法,子类要自定渲染时,重写该方法即可.
      * <div class="mdetail-params"><ul>主要步骤有:
@@ -718,6 +719,7 @@ CC.extend(Base.prototype,
        <li>渲染跟随部件(参见{@link # follow})</li>
        </ul></div>
        </p>
+     * @private
      */
     onRender : function(){
         if(this.hidden){
@@ -777,9 +779,15 @@ CC.extend(Base.prototype,
  */
     rendered : false,
 
-/**
- * @private
- * 渲染方法,子类要定义渲染方式应该重写{@link #onRender}方法,
+<div id="method-CC.Base-render"></div>/**
+ * 渲染控件到DOM文档,子类要定义渲染方式应该重写{@link #onRender}方法.<br>
+       <div class="mdetail-params"><ul>主要步骤有:
+       <li>应用控件的显示/隐藏属性</li>
+       <li>将控件view添加到showTo属性中</li>
+       <li>如果需要,设置鼠标提示</li>
+       <li>如果存在阴影,将阴影附加到控件中</li>
+       <li>渲染跟随部件(参见{@link # follow})</li>
+       </ul></div>
  */
     render : function() {
         if(this.rendered || this.fireOnce('render')===false)
@@ -1107,8 +1115,8 @@ CC.extend(Base.prototype,
      return this;
    },
 
-<div id="method-CC.Base-onShow"></div>/**
- * @protected
+/**
+ * @private
  */
    onShow : function(){
       this.delClass(hidCS[this.displayMode]);
@@ -1123,8 +1131,8 @@ CC.extend(Base.prototype,
         }).timeout(0);
       }
    },
-<div id="method-CC.Base-onHide"></div>/**
- * @protected
+/**
+ * @private
  */
    onHide : function(){
      if(!this.hasClass(hidCS[this.displayMode])){
@@ -1542,14 +1550,14 @@ CC.extend(Base.prototype,
         return this.getSize().height;
     },
 
-<div id="prop-CC.Base-outerW"></div>/**
+/**
  * @property outerW
  * <p>
  * border + padding 的宽度,除非确定当前
  * 值是最新的,否则请通过{@link #getOuterW}方法来获得该值.
  * 该值主要用于布局计算,当调用{@link #getOuterW}方法时缓存该值
  * </p>
- * @protected
+ * @private
  * @type Number
  */
 
@@ -1569,14 +1577,14 @@ CC.extend(Base.prototype,
       return ow;
     },
 
-<div id="prop-CC.Base-outerH"></div>/**
+/**
  * @property outerH
  * <p>
  * border + padding 的高度,除非确定当前
  * 值是最新的,否则请通过{@link #getOuterH}方法来获得该值.
  * 该值主要用于布局计算,当调用{@link #getOuterH}方法时缓存该值
  * </p>
- * @protected
+ * @private
  * @type Number
  */
 
@@ -2306,12 +2314,14 @@ CC.extend(Base.prototype,
  
 <div id="method-CC.Base-bindContext"></div>/**
  * 添加上下文切换效果,当点击控件区域以外的地方时隐藏控件.
- * @param {Function} callback
- * @param {Boolean}  cancelBubble
- * @param {Object}   caller
- * @param {DOMElement|String} childNode 触发结点
- * @param {DOMElement|String} cssTarget
- * @param {String} cssName
+ <pre>
+ * param {Function} callback
+ * param {Boolean}  cancelBubble
+ * param {Object}   caller
+ * param {DOMElement|String} childNode 触发结点
+ * param {DOMElement|String} cssTarget
+ * param {String} cssName
+ </pre>
  * @return {Object} this
  */
     bindContext : function(callback,cancel, caller, childId, cssTarget, cssName) {
@@ -2512,12 +2522,12 @@ CC.extend(Base.prototype,
   }
 });
 
-<div id="method-CC.Base-create"></div>/**
+/**
  * 创建一个具有完整生命周期的基本类实例.<br>
  * 注意如果直接用new CC.Base创建的类没控件初始化过程.
  * 该方法已被设为 protected, 不建议直接调用,要创建基类实例请调用
  * CC.ui.instance(option)方法.
- * @protected
+ * @private
  * @param {Object} opt 类初始化信息
  * @method create
  * @member CC.Base

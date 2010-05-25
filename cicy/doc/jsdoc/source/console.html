@@ -11,6 +11,7 @@
  * 系统控制台,如果存在firebug,利用firebug输出调试信息,否则忽略.
  * 在firbug中可直接进行对某个对象进行监视,
  * 无console时就为空调用,可重写自定输出.
+ * @singleton
  */
 if(!window.console)
       window.console = {};
@@ -23,58 +24,58 @@ CC.extendIf(console,
       <div id="method-console-debug"></div>/**
        * %o表示参数为一个对象
        * console.log('This an string "%s",this is an object , link %o','a string', CC);
-       *@method
        *@param {arguments} 类似C语言中printf语法
+       *@method
        */
     debug : fGo,
 <div id="method-console-info"></div>/**
- * @method
+ * @method info
  */
     info : fGo,
 <div id="method-console-trace"></div>/**
- * @method
+ * @method trace
  */
     trace : fGo,
 <div id="method-console-log"></div>/**
- * @method
+ * @method log
  */
     log : fGo,
 <div id="method-console-warn"></div>/**
- * @method
+ * @method warn
  */
     warn : fGo,
 <div id="method-console-error"></div>/**
- * @method
+ * @method error
  */
     error : fGo,
 <div id="method-console-assert"></div>/**
- * @method
+ * @method assert
  */
     assert:fGo,
       <div id="method-console-dir"></div>/**
        * 列出对象所有属性.
-       *@method
        *@param {object} javascript对象
+       *@method dir
       */
     dir:fGo,
 <div id="method-console-count"></div>/**
- * @method
+ * @method count
  */
     count : fGo,
 <div id="method-console-group"></div>/**
- * @method
+ * @method group
  */
     group:fGo,
 <div id="method-console-groupEnd"></div>/**
- * @method
+ * @method groupEnd
  */
     groupEnd:fGo,
 <div id="method-console-time"></div>/**
- * @method
+ * @method time
  */
     time:fGo,
 <div id="method-console-timeEnd"></div>/**
- * @method
+ * @method timeEnd
  */
     timeEnd:fGo});
 //基于firebug插件fireunit

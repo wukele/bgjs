@@ -77,11 +77,12 @@ CC.create('CC.layout.Layout', null, {
               this.attach(ct);
         },
 
-        <div id="method-CC.layout.Layout-beforeAdd"></div>/**
+        /**
          * 容器在添加子项前被调用。
          * @param {CC.Base} comp 子项
          * @param {Object} cfg 子项用布局的配置信息
          * @method beforeAdd
+         * @private
          */
         beforeAdd: fGo,
 
@@ -1088,13 +1089,15 @@ CC.create('CC.ui.ContainerBase', Base,
   /**@private*/
   bndActs : false,
 <div id="method-CC.ui.ContainerBase-itemAction"></div>/**
- * 在容器范围内为子项添加事件处理.
- * @param {String} evtName
- * @param {Function} callback
- * @param {Boolean} cancelBubble
- * @param {Object} scope
- * @param {String|HTMLElement} childId
- * @param {String} srcName
+ * 在容器范围内为子项添加事件处理.<br>
+ <pre>
+ * param {String} evtName
+ * param {Function} callback
+ * param {Boolean} cancelBubble
+ * param {Object} scope
+ * param {String|HTMLElement} childId
+ * param {String} srcName
+ </pre>
  * @return this
  */
   itemAction: function(eventName, callback, cancelBubble, caller, childId, srcName) {
@@ -1179,7 +1182,7 @@ CC.create('CC.ui.ContainerBase', Base,
  * 在处理完keydown事件后默认调用的回调函数,
  * 这是一个接口函数,默认为空函数,如果不想通过ct.on方式监听,
  * 可通过重写该方法快速处理按键事件.
- * @method
+ * @method onKeyPressing
  * @param {DOMEvent} event
  */
   onKeyPressing: fGo,
