@@ -1,4 +1,9 @@
-﻿(function(){
+﻿  /**
+   * @class CC.layout.BorderLayout
+   * 东南西北中布局, 与Java swing中的BorderLayout具有相同效果.
+   * @extends CC.layout.Layout
+   */
+(function(){
   var CC = window.CC,
       tpx = CC.Tpl,
       uix = CC.ui,
@@ -11,10 +16,6 @@
   tpx.def('CC.ui.BorderLayoutSpliter' , '<div class="g-layout-split"></div>')
      .def('CCollapseBarH' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td><td class="cb-r"></td></tr></table>')
      .def('CCollapseBarV' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td></tr><tr><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td></tr><tr><td class="cb-r"></td></tr></table>');
-  /**
-   * @name CC.ui.BorderLayoutSpliter
-   * @class
-   */
   uix.BorderLayoutSpliter = CC.create(CC.Base, function(spr) {
 
     //ghost 初始坐标
@@ -37,6 +38,7 @@
  * 计算拖动范围dx,dy
  * @private
  * @return {Array}
+ * @ignore
  */
       getRestrict: function() {
         var ly = this.layout,
@@ -199,13 +201,7 @@
     };
   });
 
-  /**
-   * @name CC.ui.BorderLayoutCollapseBar
-   * @class
-   * @extends CC.ui.ContainerBase
-   */
   uix.BorderLayoutCollapseBar = CC.create(ccx,
-   /**@lends CC.ui.BorderLayoutCollapseBar.prototype*/
    {
 
     type : 'CC.ui.BorderLayoutCollapseBar',
@@ -264,9 +260,7 @@
       this.pCt.layout.collapse(this, true);
     },
 
-    /**
-     * 收缩按钮点击
-     */
+    // 收缩按钮点击
     onNavBlockClick : function(){
       var c = this.comp;
       c.setXY(10000,10000);
@@ -275,9 +269,7 @@
       this.itsLayout.collapse(c, false);
     },
 
-    /**
-     * 使得面板浮动
-     */
+    // 使得面板浮动
     makeFloat : function(){
       var c = this.comp;
       c.addClass(this.compContextedCS)
@@ -325,9 +317,7 @@
       }
     },
 
-    /**
-     * 面板复原
-     */
+    // 面板复原
     unFloat : function(){
       var c = this.comp,
           cfg = c.lyInf;
@@ -339,17 +329,13 @@
       this.getShadow().detach();
     },
 
-    /**
-     * 点击区域范围外时回调
-     */
+    // 点击区域范围外时回调
     onCompReleaseContext : function(){
       var cfg = this.pCt.layout.cfgFrom(this);
       cfg.cbar.unFloat();
     },
 
-    /**
-     * 侧边栏点击
-     */
+    // 侧边栏点击
     onBarClick : function(){
       var c = this.comp;
       if(c.contexted)
@@ -361,9 +347,7 @@
       }
     },
 
-    /**
-     * 设置浮动面板浮动开始前位置与宽高
-     */
+    // 设置浮动面板浮动开始前位置与宽高
     setCompContextedBounds : function(){
       var c = this.comp, dir = this.dir;
       if(dir === 'west')
@@ -393,32 +377,22 @@
     }
 
   });
-/**
- * 与Java swing中的BorderLayout具有相同效果.
- * 将容器内控件作为沿边框布局.
- *
- * @name CC.layout.BorderLayout
- * @class
- * @extends CC.layout.Layout
- */
+
 CC.create('CC.layout.BorderLayout', CC.layout.Layout,
-  /**@lends CC.layout.BorderLayout#*/
   {
     /**
-     * 水平方向分隔条高度,利用面板布置设置可覆盖该值.
+     * @cfg {Number} hgap 水平方向分隔条高度,利用面板布置设置可覆盖该值,默认5.
      */
     hgap: 5,
     /**
-     * 垂直方向分隔条高度,利用面板布置设置可覆盖该值.
+     * @cfg {Number} vgap  垂直方向分隔条高度,利用面板布置设置可覆盖该值,默认5.
      */
     vgap: 5,
     /**
-     * 侧边栏宽度.
+     * @cfg {Number} cgap 侧边栏宽度,默认32.
      */
     cgap : 32,
-    /**
-     *
-     */
+
     cpgap : 5,
 
     wrCS : 'g-borderlayout-ct',
@@ -466,7 +440,10 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
 
       return this;
     },
-/***/
+/**
+ * 获得收缩栏.
+ * @return {CC.Base}
+ */
     getCollapseBar : function(c){
       var cfg,
           cg,

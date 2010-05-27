@@ -6,10 +6,18 @@ var superclass = B.prototype;
 var Math = window.Math;
 var Base = CC.Base;
 /**
- * CardLayout,容器内所有子项宽高与容器一致
- * @name CC.layout.CardLayout
+ * @class CC.layout.CardLayout
+ * CardLayout,容器内所有子项宽高与容器一致.<br>
+ <pre><code>
+   new CC.ui.Win({
+     // 使得子项iframepanel布满整个window客户区域.
+     layout:'card',
+     items : [
+       {ctype :'iframe', src:'http://www.g.cn' }
+     ]
+   });
+ </code></pre>
  * @extends CC.layout.Layout
- * @class
  */
 CC.create('CC.layout.CardLayout', B, {
   wrCS : 'g-card-ly-ct',
@@ -23,8 +31,41 @@ CC.create('CC.layout.CardLayout', B, {
 
 ly.def('card', ly.CardLayout);
 /**
- * @name CC.layout.QQLayout
- * @class
+ * @class CC.layout.QQLayout
+ *  
+ <pre><code>
+ 			var win = new CC.ui.Win({
+				layout:'qq',
+				title:'QQ布局管理器',
+				width:190,
+				height:450,
+				itemCls:'titlepanel',
+				lyCfg : {
+					items : [
+					 {ctype:'titlepanel',title:'我的好友', array:[
+	  					{ctype:'folder',
+	  					 selectionProvider : {mode:0},
+	  					 array:[
+				  			{title:'disabled item',icon:'iconRef',disabled:true},
+								{title:'粉红色',icon:'iconUser'},
+								{title:'蓝色',icon:'iconEdit'},
+								{title:'清除记录',icon:'iconLeaf'},
+								{title:'粉红色',icon:'iconTabs'},
+								{title:'蓝色',icon:'iconUser'},
+								{title:'清除记录',icon:'iconEdit'}
+	  	         ]
+	  				 }
+	  			]},
+					 {title:'陌生人'},
+					 {title:'黑名单'}
+					]
+				},
+				showTo:document.body
+			});
+      win.render();
+      win.layout.collapse(win.$(0), false);
+		});
+ </code></pre>
  * @extends CC.layout.Layout
  */
 CC.create('CC.layout.QQLayout', B, {
@@ -83,7 +124,7 @@ CC.create('CC.layout.QQLayout', B, {
     },
 /**
  * @param {CC.Base} component
- * @param {Boolean}
+ * @param {Boolean} collapseOrNot
  */
     collapse : function(comp, b){
       var cfg = comp.lyInf,fr = this.frontOne;
@@ -109,13 +150,25 @@ CC.create('CC.layout.QQLayout', B, {
 ly.def('qq', ly.QQLayout);
 
 /**
+ * @class CC.layout.RowLayout
  * 行布局,该布局将对子控件宽度/高度进行布局,不干预控件坐标.
- * 控件配置方面:
+ * 控件配置方面:<div class="mdetail-params"><ul>
  * <li>auto : 自动宽高,不进行干预</li>
  * <li>具体宽/高 : 如50px</li>
- * <li>leading : 平分宽高</li>
- * @name CC.layout.RowLayout
- * @class
+ * <li>leading : 平分宽高</li></ul></div><br>
+  <pre><code>
+var win = new CC.ui.Win({
+  showTo:document.body,
+  layout:'row',
+  lyCfg:{
+    items:[
+    {ctype:'base', template:'<div />', cs:'fix', css:'h:50', strHtml:'fixed height'},
+    {ctype:'base', template:'<div />', cs:'lead',strHtml:'lead',lyInf:{h:'lead'}},
+    ]
+  }
+});
+win.render();
+  </code></pre>
  * @extends CC.layout.Layout
  */
 CC.create('CC.layout.RowLayout', B, {
@@ -192,6 +245,7 @@ ly.RowLayout.prototype.layoutChild = ly.RowLayout.prototype.onLayout;
 ly.def('row', ly.RowLayout);
 
 /**
+ * @class CC.layout.TableLayout
  * 用HTML TABLE元素布局控件,主要用于表单设计中,
  * 布局信息用JSON表示,通过 lyCfg:{  items:  } 传入.
  * items为一个数组,数组每个元素代表一行(tr).
@@ -200,8 +254,8 @@ ly.def('row', ly.RowLayout);
  *  行为数组时,数组中每个元素表示每个单元(td)<br>
  *  行为object时,表示该行只有一个单元格,可以在object中定义td,tr的属性信息, object.td = {}, object.tr = {}<br>
  * 当一个配置信息既无ctype属性,亦无td属性时被看作是该行tr的信息
- * @example
- <pre>
+ * <br>
+ <pre><code>
 var win = new CC.ui.Win({
   showTo:document.body,
   layout:'table',
@@ -247,9 +301,8 @@ var win = new CC.ui.Win({
     ]
   }
 });
- </pre>
- * @name CC.layout.TableLayout
- * @class
+ </code></pre>
+ * @extends CC.layout.Layout
  */
 CC.create('CC.layout.TableLayout', B, {
 
@@ -296,16 +349,15 @@ CC.create('CC.layout.TableLayout', B, {
     news = null;
   },
 /**
- * @property {HTMLElement} tableEl
+ * @property tableEl
+ * @type HTMLElement
+ */
+/**
+ * @cfg {String} tblCs class name of main table node
  */
 /**
  * 一次性布局,生成table表
- * @override
- * @protected
- */
-/**
- * class name of main table node
- * @property {String} tblCs
+ * @private
  */
 	onLayout : function(){
 		if(!this.layouted){

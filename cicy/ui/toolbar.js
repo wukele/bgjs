@@ -4,12 +4,11 @@ CC.Tpl['CC.ui.Toolbar'] = '<div class="g-tbar"><div class="g-tbar-wr" id="_wrap"
 
 
 /**
- * 工具栏,32*32图标大小
  * @class CC.ui.Bigbar
  * @extends CC.ui.Panel
  */
 
-CC.create('CC.ui.Bigbar', CC.ui.Panel,  /**@lends CC.ui.Bigbar#*/{
+CC.create('CC.ui.Bigbar', CC.ui.Panel, {
 
    keyEvent:false,
 
@@ -65,9 +64,8 @@ CC.create('CC.ui.BigbarDropButton', CC.ui.DropButton, {
 
 CC.ui.def('bigbardropbtn', CC.ui.BigbarDropButton);
 /**
+ * @class CC.ui.Smallbar
  * 小型工具栏,16*16图标大小
- * @name CC.ui.Smallbar
- * @class
  * @extends CC.ui.Panel
  */
 CC.create('CC.ui.Smallbar', CC.ui.Panel, /**@lends CC.ui.Smallbar#*/{

@@ -1,13 +1,10 @@
 (function(){
 var FP = CC.ui.form.FormElement.prototype;
 var E = CC.Event;
-/**
-* Datepicker field element
-*/
+
 CC.Tpl.def('CC.ui.form.DatepickerField', '<div class="g-datepicker-field"><div class="field-wrap"><input type="text" class="g-corner" id="_el" /><a title="点击选择日期" tabindex="-1" class="trigger" id="_trigger" href="javascript:fGo();"></a></div></div>');
 /**
-* @name CC.ui.form.DatepickerField
-* @class
+* @class CC.ui.form.DatepickerField
 * @extends CC.ui.form.FormElement
 */
 CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
@@ -59,9 +56,7 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 		this.onBlurTrigger();
 	},
 
-	/**
-	* mousedown -> blur -> timeout
-	*/
+	// mousedown -> blur -> timeout
 	onFocusTriggerDelay: function() {
 		var self = this;
 		(function() {

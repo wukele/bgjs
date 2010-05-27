@@ -1,4 +1,9 @@
-﻿CC.util.ProviderFactory.create('Selection', null, function(father){
+﻿/**
+ * @class CC.util.SelectionProvider
+ * 为容器提供子项选择功能,子项是否选择的检测是一个 -- 由子项样式状态作向导的实时检测.
+ * @extends CC.util.ProviderBase
+ */
+CC.util.ProviderFactory.create('Selection', null, function(father){
 
   var Event = CC.Event;
 
@@ -6,34 +11,49 @@
     return !item.hidden && !item.disabled;
   }};
 
-  return /**@lends CC.util.SelectionProvider#*/{
+  return {
 /**
- * 当前选择模式(单选,多选),默认单选
+ * @cfg {Number} mode 当前选择模式(1单选,0多选),默认单选
  */
   mode : 1,
-
+/**@cfg {Boolean} tracker 是否应用选择跟踪器*/
   tracker : false,
-
+  
+/**@cfg {Number} UP 定义"向上"的按键值*/
   UP : Event.UP,
-
+  
+/**@cfg {Number} DOWN 定义"向下"的按键值*/
   DOWN : Event.DOWN,
-
+  
+/**@cfg {Number} selectedIndex 当前选择项下标*/
   selectedIndex : -1,
 /**
- * 子项选择后是否滚动到容器可视范围内,默认为true
+ * @cfg {Boolean} autoscroll 子项选择后是否滚动到容器可视范围内,默认为true
  */
   autoscroll : true,
+  
 /**
- * 选择后是否聚焦,默认为true
+ * @cfg {Boolean} autoFocus 选择后是否聚焦,默认为true
  */
  autoFocus : true,
 /**
- * @property {String} selectedCS 子项选择时子项样式
+ * @cfg {String} selectedCS=selected 子项选择时子项样式
  */
   selectedCS: 'selected',
-
 /**
- * 允许选择
+ * @property selected
+ * 当前选择项,如果多选模式,最后一个被选中选项.
+ * @type {CC.Base}
+ */
+ 
+/**
+ * @property previous
+ * 上一选择项
+ * @type {CC.Base}
+ */
+ 
+/**
+ * @cfg {Boolean} unselectable 是否允许选择
  */
   unselectable : false,
 
@@ -69,9 +89,11 @@
   }
  },
 /**
+ * @param {CC.Base} item
+ * @param {Boolean} selectOrNot
  * @param {Boolean} cancelscroll
  */
- setSelected : function(item, b, cancelscroll, /**@inner*/e){
+ setSelected : function(item, b, cancelscroll, e){
   if(b)
     this.select(item, cancelscroll, e);
   else this.unselect(item);
@@ -93,7 +115,7 @@
 
 /**
  * 当子项移除时提示选择器更新状态
- * @protected
+ * @private
  **/
  onItemRemoved : function(item){
   if(item === this.selected){
@@ -108,6 +130,7 @@
 
 /**
  * 重载该方法可以定义按键导航
+ * @private
  */
  navigateKey : function(e){
    var kc = e.keyCode;
@@ -120,14 +143,8 @@
    } else return this.defKeyNav(e);
  },
 
-/**@protected*/
+/**@private*/
  defKeyNav : fGo,
-
-/**
- * @name CC.util.SelectionProvider#t
- * @property {ContainerBase} t target目标容器
- * @protected
- */
 
 /**
  * 获得容器当前选区, 该操作会重新检测当前选择项
@@ -157,9 +174,9 @@
 /**
  * 选择某子项
  * @param {CC.Base} item
- * @param {Boolean} b
+ * @param {Boolean} cancelscroll
  */
- select : function(item, cancelscroll, /**@inner*/e){
+ select : function(item, cancelscroll, e){
 
   if(this.unselectable || this.disabled)
     return this;
@@ -183,27 +200,24 @@
     return this;
 
 /**
+ * @event select
  * 选择前发出,为空选时不发出
- * @name CC.ui.ContainerBase#select
- * @event
  * @param {CC.Base} item
  * @param {Boolean}  b
  */
 
 
 /**
+ * @event selected
  * 选择后发出,为空选时不发出
- * @name CC.ui.ContainerBase#selected
- * @event
  * @param {CC.Base} item
  * @param {CC.util.SelectionProvider} selectionProvider
- * @param {DomEvent} event 如果该选择事件由DOM事件触发,传递event
+ * @param {DOMEvent} event 如果该选择事件由DOM事件触发,传递event
  */
 
 /**
- * 选择后发出,为空选时不发出
- * @name CC.util.SelectionProvider#forceSelect
- * @property {Boolean} [forceSelect=false] 强制发送select事件,即使当前子项已被选中
+ * @cfg {Boolean} forceSelect 是否强制发送select事件,即使当前子项已被选中.<br>
+ * 默认是当某项选中后,再次选择并不触发selected事件,可强制设定即使已选时是否发送.
  */
   if((this.forceSelect || !this.isSelected(item))
       && this.t.fire('select', item, this, e) !== false){
@@ -219,9 +233,10 @@
   this.onSelectChanged(item, false);
   return this;
  },
+ 
 /**
- * @name CC.ui.Item#onselect 子项被选择时调用
- * @property {Function} onselect
+ * @cfg {Function} onselect 该属性由{@link CC.util.SelectionProvider}类处理,当项选中时,调用本方法.
+ * @member CC.Base
  */
  onSelect : function(item, cancelscroll) {
   if(this.autoFocus)
@@ -233,24 +248,14 @@
  },
 
 /**
- * @name CC.util.SelectionProvider#selected 当前被选择子项,如果多选模式,最后一个被选中选项
- * @property {CC.Base} selected
- */
-
-/**
- * @name CC.util.SelectionProvider#previous 前一个被选择子项
- * @property {CC.Base} previous
- */
-
-/**
- * 选择变更时发出,包括空选择
- * @name CC.ui.ContainerBase#selectchange
- * @event
+ * 选择变更时发出,包括空选择.
+ * @event selectchange
  * @param {CC.Base} item
- * @param {CC.Base}  pre
+ * @param {CC.Base}  previous
  * @param {CC.util.SelectionProvider} provider
  */
-/**@protected*/
+ 
+/**@private*/
  onSelectChanged : function(item , b){
   if(!this.hasChanged(item, b))
     return;
@@ -297,6 +302,7 @@
 
 /**
  * 测试选择项状态是否改变
+ * @private
  */
  hasChanged : function(item, b){
   return !((item === this.selected) && b) || !(item && this.isSelected(item) === b);
@@ -312,21 +318,22 @@
  },
 
 /**
- * 容器是否可选择
+ * 容器是否可选择.
  * @return {Boolean}
  */
  isSelectable : function(){
   return !this.unselectable;
  },
 /**
- * 容器是否可选择
+ * 设置容器是否可选择
  */
  setSelectable : function(b){
   this.unselectable = !b;
  },
 
 /**
- * 检测item是否能作为下一个选择项
+ * 检测item是否能作为下一个选择项.
+ * @param {CC.Base} item
  * @return {Boolean}
  */
  canNext : function(item){
@@ -335,6 +342,7 @@
 
 /**
  * 检测item是否能作为上一个选择项
+ * @param {CC.Base} item
  * @return {Boolean}
  */
  canPre : function(item){
@@ -342,7 +350,7 @@
  },
 
  /**
-  * @protected
+  * @private
   * 获得当前用于计算下|上一选项的下标,默认返回当前选项项selectedIndex
   */
  getStartIndex : function(){
@@ -403,7 +411,7 @@
   return n;
  },
 
-/**@protected*/
+/**@private*/
  selectAllInner : function(b){
   var s = this;
   this.t.each(function(){
@@ -413,6 +421,7 @@
 
 /**
  * 全选/全不选
+ * @param {Boolean}
  */
  selectAll : function(b){
   if(this.mode && !b){
@@ -428,7 +437,7 @@
 /**
  * 反选
  */
- selectOpp : function(b) {
+ selectOpp : function() {
   var s = this;
   this.t.each(function(){
     s.setSelected(this, !s.isSelected(this), false);

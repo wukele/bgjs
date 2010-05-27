@@ -27,12 +27,18 @@ CC.ready(function() {
     	ctype:'tree',
 	    showTo: document.body,
 	    shadow : true,
-	    rootCfg:{title: '树根目录', array:
+	    root:{title: '树根目录', array:
 	    	[{title: '禁用项',nodes: true,disabled: true},
-				  {title: '结点B'},
+				  {title: '结点bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbB'},
 				  {title: '添加图标',nodes: true}
 				]
-	    }
+	    },
+			//指定滚动时滑动至可见的视图结点
+			getScrollor : function(){
+			  if(!this.scrollor)
+			    this.scrollor = this.$$('_scrollor') || this.wrapper;
+			  return this.scrollor;
+			}
     },
     showTo:document.body,
     width:300,

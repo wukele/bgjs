@@ -1,14 +1,15 @@
 ﻿/**
+ * @class CC.ui.Viewport
  * 时刻布满整个浏览器客户区的面板
- * @class
- * @name CC.ui.Viewport
+ * @extends CC.ui.Panel
  */
-CC.create('CC.ui.Viewport', CC.ui.Panel, /**@lends CC.ui.Viewport#*/{
+CC.create('CC.ui.Viewport', CC.ui.Panel, {
 
   bodyCS : 'g-viewport-body',
 
   cs : 'g-viewport',
   
+/**@cfg {Array} mg margins*/
   mg : [0,0,0,0],
   
   initComponent : function(){

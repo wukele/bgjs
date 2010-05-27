@@ -22,11 +22,10 @@
 
   CC.Tpl.def('CC.ui.Datepicker', '<div class="g-datepicker" ><div style="position: relative;"><table cellspacing="0" cellpadding="0" class="entbox"><tbody><tr><td class="headline"><table width="100%" cellspacing="0" cellpadding="1" align="center" class="dxcalmonth"><tbody><tr><td align="left" class="month_btn_left"><span></span></td><td align="center"><table cellspacing="0" cellpadding="0" align="center"><tbody><tr><td><div id="_seltor" class="g-datepicker-selecor" style="display:none;"></div><div id="_planeY" class="planeYear" style="cursor: pointer;">1955</div></td><td class="comma">,</td><td><div id="_planeM" class="planeMonth" title="点击选择或直接输入年份值"></div></td></tr></tbody></table></td><td align="right" class="month_btn_right"><span></span></td></tr></tbody></table></td></tr><tr><td><table width="100%" cellspacing="0" cellpadding="0" class="g-datepicker-body"><tbody><tr><th class="month_spr"><span>月</span></th><th><span>日</span></th><th><span>一</span></th><th><span>二</span></th><th><span>三</span></th><th><span>四</span></th><th><span>五</span></th><th><span>六</span></th><th class="month_spr"><span>月</span></th></tr></tbody></table></td></tr><tr><td id="_monthWrap"></td></tr><tr><td style="text-align:center;padding-bottom:5px;" id="_tdytd"></td></tr></tbody></table><div class="leftsplit" id="_preBar" onmouseover="CC.addClass(this, \'leftsplitOn\')" onmouseout="CC.delClass(this, \'leftsplitOn\')" ></div><div class="rightsplit" onmouseover="CC.addClass(this, \'rightsplitOn\')" onmouseout="CC.delClass(this, \'rightsplitOn\')" id="_nxtBar"></div></div></div>');
 /**
- * @class
- * @name CC.ui.Datepicker
+ * @class CC.ui.Datepicker
  * @extends CC.ui.Panel
  */
-  CC.create('CC.ui.Datepicker', CC.ui.Panel, /**@lends CC.ui.Datepicker#*/{
+  CC.create('CC.ui.Datepicker', CC.ui.Panel, {
 
     shadow: true,
 
@@ -82,6 +81,7 @@
       : this.selectYear(this.yy - 1);
     },
 /**
+ * 选择年
  * @param {Number}
  */
     selectYear: function(yy) {
@@ -163,6 +163,7 @@
       else this.setValue(new Date(this.yy, parseInt(id), 1), true);
     },
 /**
+ * 设置日期.
  * @param {String|Date}
  */
     setValue: function(v, cancelEvent) {
@@ -332,9 +333,10 @@
 
   /**
  * 全局实例
- * 用法 <input type="text" onclick="Datepicker.show(this)" />
- * @name CC.ui.Datepicker.show
- * @function
+ * 用法 <pre><input type="text" onclick="Datepicker.show(this)" /></pre>
+ * @member CC.ui.Datepicker
+ * @method show
+ * @static
  */
   DP.show = function(input) {
     DP.getInstance();

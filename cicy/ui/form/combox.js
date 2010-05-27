@@ -1,8 +1,7 @@
 ﻿CC.Tpl.def('CC.ui.form.Combox', '<div class="g-panel g-combo" tabindex="1" hidefocus="on"><div class="g-panel-wrap g-combo-wrap" id="_wrap"><input type="hidden" id="_el" /><div class="unedit-txt" id="_uetxt"></div><span class="downIco" id="_trigger"></span></div></div>');
 
 /**
- * @name CC.ui.form.Combox
- * @class
+ * @class CC.ui.form.Combox
  * @extends CC.ui.form.FormElement
  */
 CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
@@ -25,9 +24,13 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
     maxH: 21,
 /**
- * 
+ * @cfg {Boolean} filterContent 输入时是否过滤子项,默认为true
  */
     filterContent : true,
+/**
+ * @cfg {CC.Base} selector 下拉面板控件.
+ */
+    selector : false,
     
     initComponent: function() {
 
@@ -141,11 +144,18 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       superclass.disable.call(this, b);
       this.editor.disable(b);
     },
-/***/
+/**
+ * 设置下拉面板滚动高度,主要是为了出现滚动条.
+ * @private
+ */
     setScrollorHeight: function(h) {
       this.selector.fly('_scrollor').setHeight(h).unfly();
     },
-/***/
+    
+/**
+ * 是否可编辑.
+ * @param {Boolean} editable
+ */
     setEditable: function(b) {
       if (this.uneditable !== undefined && this.uneditable == b) return this;
 
@@ -194,9 +204,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     leaveFocusOn: function() {
       if (this._leaveFocus !== true) this._leaveFocus = true;
     },
-/**
- * @param {CC.ui.ContainerBase}
- */
+
     attach: function(selector, selectioner) {
       this.selector = selector;
       this.selectioner = selectioner;
@@ -340,7 +348,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
    /**
    * 定位选择容器位置
-   * @protected
+   * @private
    */
     preferPosition: function() {
       var s = this.selector;
@@ -348,9 +356,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       s.anchorPos(this, 'lb', 'hr', null, true, true);
     },
 
-    /**
+  /**
    * 返回最佳宽度,重写该函数自定下拉选择容器的宽度
-   * 默认返回combox的宽度
+   * 默认返回combox的宽度.
+   * @private
    */
     preferWidth: function() {
       return this.getWidth();
@@ -377,12 +386,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     getItemTitle : function(item){
       return item.title!==undefined?item.title : item.value;
     },
-    /**
-     * @param v 值
-     * @param title 标题
-     * @param innerUsed 内部使用
-     * @override
-     */
+
     setValue : function(v, inner){
       superclass.setValue.call(this, v);
       if (this.selector && !inner) {
@@ -390,10 +394,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       }
       return this;
     },
-    
-/**
- * @return {String}
- */
+
     getText : function(){
       if(this.uneditable)
         return this.title||'';
@@ -409,8 +410,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
     
     /**
-     * @param innerUsed 内部使用
-     * @override
+     * @private
      */
     setValueFromItem: function(item, inner) {
       var v = this.getItemValue(item), 
@@ -420,17 +420,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       return this;
     },
 
-    /**
-     * 当前没选择,返回空或编辑框中的值.
-     * @override
-     */
     getValue: function() {
       return superclass.getValue.call(this);
     },
 
-  /**
-   * 自定过滤重写该函数即可.
-   */
+    // 自定过滤重写该函数即可.
     matcher: function(item) {
       var tle = this.getItemTitle(item);
       var v = this.editor.element.value;
@@ -447,7 +441,9 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       item.setTitle(tle);
       return false;
     },
-/***/
+/**
+ * 选择下拉项.
+ */
     select: function(id) {
       this.selectioner.selectionProvider.select(id);
     }

@@ -41,7 +41,7 @@ var C = {
    
   'z'  :function(c, v){c.view.style.zIndex = v;},
    
-/**常用于布局Border设置*/
+//常用于布局Border设置
   'lnl':['borderLeft',  '1px solid #CCC'],
   'lnt':['borderTop',   '1px solid #CCC'],
   'lnb':['borderBottom','1px solid #CCC'],
@@ -67,11 +67,10 @@ var C = {
 var S = /\s+/, B  = CC.borderBox, inst;
 
 /**
- * @name CC.util.CssParser
- * @class
+ * @class CC.util.CssParser
  * CssParser对于懒得写CSS或需要用脚本控制css的开发人员来说,是个好工具.
- * 它可以以一种非常简单的方式写元素的inline css style.
- * @example
+ * 它可以以一种非常简单的方式写元素的inline css style.<br>
+ * 例如<pre><code>
    parser.parse(comp, 'pa l:5 t:10 ofh ac w:25 $pd:5,3');
    上面这句将应用comp以下样式:
    {
@@ -86,8 +85,9 @@ var S = /\s+/, B  = CC.borderBox, inst;
    }
    CC.Base的cset方法已内嵌CSS Parser解析,以上可直接调用
    comp.parse('pa l:5 t:10 oh tc w:25 $p:5,3');
-系统自带的规则为:
-<pre>
+   </code></pre><br>
+系统自带的规则为:<br>
+<pre><code>
 {
 //1c, 占宽一列, 即width:95%
   '1c':['width','95%'],
@@ -150,21 +150,22 @@ var S = /\s+/, B  = CC.borderBox, inst;
   'oh':['overflow','hidden'],
   'oa':['overflow','auto']
 }
-</pre>
+</code></pre>
  */
 CC.util.CssParser = function(){};
 
-CC.extendIf(CC.util.CssParser.prototype, /**@lends CC.util.CssParser#*/{
+CC.extendIf(CC.util.CssParser.prototype, {
 /**
- * 定义规则
- * @param {String|Object} key 当为Object类型时批量定义规则
- * @param  {Object} value 可以是一个属生集的Object, 也可以是css属性组合的数组[attrName, attrValue],还可以是一个函数,该函数参数为 function(component, value){},其中component为应用样式的控件,value为当前解析得出的值,未设置则为空.
- @example
+ * 定义规则.<br>
+ <pre><code>
    parser.def('fl', ['float', 'left']);
    parser.def('bdred', {border:'1px red'});
    parser.def('bd', function(comp, value){
     comp.setStyle('border', value);
    });
+ </code></pre>
+ * @param {String|Object} key 当为Object类型时批量定义规则
+ * @param  {Object} value 可以是一个属生集的Object, 也可以是css属性组合的数组[attrName, attrValue],还可以是一个函数,该函数参数为 function(component, value){},其中component为应用样式的控件,value为当前解析得出的值,未设置则为空.
  */
   def : function(k, r){
     var rs = this.rules;
@@ -180,8 +181,9 @@ CC.extendIf(CC.util.CssParser.prototype, /**@lends CC.util.CssParser#*/{
     return this;
   },
 /**
- * @param {CC.Base}
- * @param {String} pattern 样式
+ * 解析指定规则.
+ * @param {CC.Base} taget 目标控件
+ * @param {String} pattern 规则样式字符串
  */
   parse : function(ct, cs){
     var cf, r,
@@ -276,6 +278,10 @@ CC.extendIf(CC.util.CssParser.prototype, /**@lends CC.util.CssParser#*/{
 });
 /**
  * 获得全局CSS解析器
+ * @member CC.util.CssParser
+ * @method getParser
+ * @static
+ * @return CC.util.CssParser
  */
 CC.util.CssParser.getParser = function(){
   if(!inst)

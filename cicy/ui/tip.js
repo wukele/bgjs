@@ -3,9 +3,8 @@
 else
   CC.Tpl.def('CC.ui.FloatTip', '<table class="g-float-tip g-clear"><tr><td><table class="tipbdy"><tr><td id="_tle" class="important_txt"></td></tr><tr><td id="_msg" class="important_subtxt"></td></tr></table></td></tr><tr><td class="btm_cap" id="_cap"></td></tr></table>');
 /**
+ * @class CC.ui.FloatTip
  * 浮动提示框,可用于一般的对话提示或鼠标悬浮提示
- * @name CC.ui.FloatTip
- * @class
  * @extends CC.ui.Panel
  */
 CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
@@ -27,29 +26,33 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     globalPos = Event.pageXY(event || window.event);
   }
   /**
-   * @function
+   * 显示消息提示.<br>
+   * 方法来自{@link CC.ui.FloatTip}<br>
+   <pre><code>CC.Util.ftip('密码不能为空.', '提示', 'input_el', true, 3000);</code></pre>
    * @param {String} msg 提示消息
    * @param {String} [title] 消息提示标题
    * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
    * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
    * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
-   * @example
-     CC.Util.ftip('密码不能为空.', '提示', 'input_el', true, 3000);
+   * @method ftip
+   * @member CC.Util
    */
   CC.Util.ftip = function(msg, title, proxy, getFocus, timeout){
     if(!instance)
-      instance = new CC.ui.FloatTip({showTo:document.body, autoRender:true});
+      instance = new CC.ui.instance({ctype:'tip', showTo:document.body, autoRender:true});
     CC.fly(instance.tail).show().unfly();
     instance.show(msg, title, proxy, getFocus, timeout);
 
     return instance;
   };
   /**
-   * 给目标对象绑定悬浮消息
+   * 给目标对象绑定悬浮消息.<br>
+   * 方法来自{@link CC.ui.FloatTip}<br>
+     <pre><code>CC.Util.qtip(input, '在这里输入您的大名');</code></pre>
    * @param {CC.ui.Base} target
    * @param {String} msg
-   @example
-     CC.Util.qtip(input, '在这里输入您的大名');
+   * @method qtip
+   * @member CC.Util
    */
   CC.Util.qtip = function(proxy, msg){
     if(!instance)
@@ -57,40 +60,37 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     instance.tipFor(proxy, msg);
   };
 
-  return /**@lends CC.ui.FloatTip#*/{
+  return {
     /**
-     * @property {Number} timeout = 2500 设置消失超时ms, 如果为0 或 false 不自动关闭.
+     * @cfg {Number} timeout=2500 设置消失超时ms, 如果为0 或 false 不自动关闭.
      */
     timeout: 2500,
   /**
-   * 显示提示消息的延迟,消息将鼠标位于目标延迟daly毫秒后出现
-   * @type Number
+   * @cfg {Number} delay 显示提示消息的延迟,消息将鼠标位于目标延迟daly毫秒后出现
    */
     delay : 500,
 
     /**
-     * @property {Boolean} [reuseable = true] 消息提示是否可复用,如果否,在消息隐藏后自动销毁
+     * @cfg {Boolean} [reuseable = true] 消息提示是否可复用,如果否,在消息隐藏后自动销毁
      */
     reuseable : true,
 
     shadow:true,
 
   /**
-   * 指定是哪种显示风格,一种为mouseover式提示,另一种为弹出提示
+   * @cfg {Boolean} qmode 指定是哪种显示风格,一种为mouseover式提示,另一种为弹出提示
    */
     qmode : false,
 
     zIndex : 10002,
+    
   /**
    * @private
    * mouseover式提示时样式
    */
     hoverTipCS : 'g-small-tip',
 
-    /**
-     * @private
-     * @override
-     */
+
     initComponent: function() {
       superclass.initComponent.call(this);
       if(this.msg)
@@ -185,6 +185,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     },
 
   /**
+   * 显示提示.
    * @param {String} msg 提示消息
    * @param {String} [title] 消息提示标题
    * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
@@ -231,11 +232,10 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
       }
     },
   /**
-   * 给目标对象绑定悬浮消息
+   * 给目标对象绑定悬浮消息.<br>
+   * <code>CC.Util.qtip(input, '在这里输入您的大名');</code>
    * @param {CC.ui.Base} target
    * @param {String} msg, 消息
-   @example
-     CC.Util.qtip(input, '在这里输入您的大名');
    */
     tipFor : function(proxy, msg, title){
       CC.fly(proxy)
@@ -279,12 +279,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
         docEvtBinded = false;
       }
       this.killPretimer();
-    },
-  /**
-   * 获得全局tip对象
-   */
-    getInstance : function(){
-      return instance;
     }
   };
 });
+CC.ui.def('tip', CC.ui.FloatTip);

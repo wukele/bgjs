@@ -1,9 +1,13 @@
-﻿(function(){
+﻿/*!
+ * Javascript Utility for web development.
+ * 反馈 : www.bgscript.com/forum
+ * www.bgscript.com ? 2010 - 构建自由的WEB应用
+ */
+(function(){
 	var CC = window.CC;
 /**
- * @name CC.Ajax
- * @class Ajax请求封装类
- @example
+ * @class CC.Ajax Ajax请求封装类<br>
+ <pre><code>
   //连接服务器并获得返回的JSON数据
   Ajax.connect({
     url : '/server/json/example.page?param=v',
@@ -36,14 +40,12 @@
    ....
   });
   ajax.connect('param=data');
+  </code></pre>
  */
 var Ajax = CC.Ajax = CC.create();
 /**
- * 快速Ajax调用
- *@static
- *@function
- *@memberOf CC.Ajax
-@example
+ * 快速Ajax调用<br>
+  <pre><code>
   //连接服务器并获得返回的JSON数据
   Ajax.connect({
     url : '/server/json/example.page?param=v',
@@ -68,6 +70,8 @@ var Ajax = CC.Ajax = CC.create();
     url : '/server/xml/example.page?param=v',
     displayPanel : 'panel'
   });
+  </code></pre>
+ * @member CC.Ajax
  */
 Ajax.connect = (function(option){
     var ajax = new Ajax(option);
@@ -75,69 +79,128 @@ Ajax.connect = (function(option){
     return ajax;
 });
 
+        /**
+         * @event final
+         * 请求结束后调用,无论成功与否.
+         * @param {CC.Ajax} ajax
+         */
+        /**
+         * @event open
+         * 在打开前发送
+         * @param {CC.Ajax} ajax
+         */
+ /**
+  * @event send
+  * 在发送数据前发送
+  * @param {CC.Ajax} ajax
+  */
+  
+        /**
+         * @event json
+         * 在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
+         * @param {Object} o json对象
+         * @param {Ajax} ajax
+         */
+        /**
+         * @event xmlDoc
+         * 在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
+         * @param {XMLDocument} doc
+         * @param {CC.Ajax} ajax
+         */
+        /**
+         * @event text
+         * 在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
+         * @param {String} responseText
+         * @param {CC.Ajax} ajax
+         */
+/**
+ * @event failure
+ * 数据请求失败返回后发送.
+ * @param {CC.Ajax} ajax
+ */
+ 
+/**
+ * @event success
+ * 数据成功返回加载后发送.
+ * @param {CC.Ajax} ajax
+ */
+ 
+/**
+ * @event load
+ * 请求响应返回加载后发送(此时readyState = 4).
+ * @param {CC.Ajax} ajax
+ */
+ 
+/**
+ * @event statuschange
+ * 在每个fire事件发送前该事件都会发送
+ * @param {String} status
+ * @param {CC.Ajax} j
+ */
 Ajax.prototype =
    /**
-    * @lends CC.Ajax.prototype
+    * @class CC.Ajax
     */
    {
 /**
- * GET 或者 POST,默认GET
- * @type String
+ * @cfg {String} method GET 或者 POST,默认GET.
  */
     method :'GET',
-/**@property {String}url 请求URL*/
+/**@cfg {String} url 请求URL*/
     url : null,
-/**@property {Boolean} [asynchronous=true] 是否异步,默认true*/
+/**@cfg {Boolean} asynchronous=true 是否异步,默认true*/
     asynchronous: true,
-/**@property {Number} [timeout=10000] 设置超时,默认10000ms*/
+/**@cfg {Number} timeout=10000 设置超时,默认10000ms*/
     timeout: 10000,
-/**@property {DOMElement} [disabledComp] 在请求过程中禁止的元素*/
+/**@cfg {DOMElement} disabledComp 在请求过程中禁止的元素,请求结束后解除*/
    disabledComp : undefined,
-/**@property {String} [contentType] 默认application/x-www-form-urlencoded*/
+/**@cfg {String} contentType 默认application/x-www-form-urlencoded*/
     contentType: 'application/x-www-form-urlencoded',
-/**@property {String} msg 提示消息*/
+/**@cfg {String} msg 提示消息*/
     msg: "数据加载中,请稍候...",
 
-/**@property {Boolean} [noCache=true] 是否忽略浏览器缓存,默认为true.*/
-    noCache:true,
+/**@cfg {Boolean} cache=true 是否忽略浏览器缓存,默认为true.*/
+    cache:true,
+
 /**
- * @name CC.Ajax#xmlReq
- * @property {XMLHttpRequest} [xmlReq]对象
- */
-/**
- * @name CC.Ajax#caller
- * @property {Function} [caller] 用于调用failure,success函数的this对象.
+ * @cfg {Function} caller 用于调用failure,success函数的this对象.
  */
 
 /**
- * @name CC.Ajax#failure
- * @property {Function} [failure]失败后的回调.
+ * @cfg {Function} failure 失败后的回调.
  */
 
 /**
- * @name CC.Ajax#data
- * @property {Object} [data] send发送的数据
+ * @cfg {Object} data POST时发送的数据
+ */
+
+/**
+ * @cfg {String|Object} params GET时提交的字符串参数或Map键值对,结果被追加到url尾.
  */
  /**
-  *@property {Function} [success] 设置成功后的回调,默认为运行服务器返回的数据内容.
+  *@cfg {Function} success 设置成功后的回调,默认为运行服务器返回的数据内容.
   */
     success: (function(ajax) {
         ajax.invokeHtml();
     }),
 
     /**
-     * @name CC.Ajax#onfinal
-     * @property {Function} [onfinal] 无论请求成功与否最终都被调用.
+     * @cfg {Function} onfinal 无论请求成功与否最终都被调用.
      */
 
-    /**@property {DOMElement|String} [displayPanel] 如果数据已加载,数据显示的DOM面板.*/
+    /**@cfg {DOMElement|String} displayPanel 如果数据已加载,数据显示的DOM面板.*/
     displayPanel: null,
 
-    /**
-     * @name CC.Ajax#busy
-     * @property {Boolean} busy 指明当前Ajax是否处理请求处理状态,在open后直至close前该值为真.
-     * @readonly
-     */
+/**
+ * @property xmlReq XMLHttpRequest对象
+ * @type XMLHttpRequest
+ */
+
+/**
+ * 指明当前Ajax是否处理请求处理状态,在open后直至close前该值为真.
+ * @property busy
+ * @type Boolean
+ */
 
     /**
      * @private
@@ -159,8 +222,8 @@ Ajax.prototype =
     ,
 
    /**
-   * @function
    * 重写以实现自定消息界面,用于进度的消息显示,默认为空调用.
+   * @method fGo
    */
     setMsg: fGo
     ,
@@ -184,12 +247,7 @@ Ajax.prototype =
                 this.onfinal.call(this.caller,this);
             else
                 this.onfinal.call(this,this);
-        /**
-         * 请求结束后调用,无论成功与否.
-         * @name CC.Ajax#final
-         * @event {String} final
-         * @param {CC.Ajax} ajax
-         */
+
         this._fire('final', this);
 
         if (this.disabledComp)
@@ -204,7 +262,6 @@ Ajax.prototype =
             delete this.text;
 
         this.disabledComp = null;
-        //CC.display(CC. $('ajaxProgressBar'), false);
         this.xmlReq = null;
         this.params = null;
         this.busy = 0;
@@ -239,18 +296,13 @@ Ajax.prototype =
         }
     }
     ,
+
    /**
-   * 建立XMLHttpRequest连接,在调用该方法后调用send方法前可设置HEADER.
-   */
+    * 建立XMLHttpRequest连接,在调用该方法后调用send方法前可设置HEADER.
+    */
     open: function() {
         this._req();
         this.busy = 1;
-        /**
-         * 在打开前发送
-         * @name CC.Ajax#open
-         * @event {String} open
-         * @param {CC.Ajax} ajax
-         */
         this._fire('open',this);
         
         if (this.timeout) {
@@ -261,7 +313,7 @@ Ajax.prototype =
             CC.disable(this.disabledComp, true);
         }
 
-        var ps = this.params, ch = this.noCache, theUrl = this.url;
+        var ps = this.params, ch = this.cache, theUrl = this.url;
         if(ps || ch){
             var isQ = theUrl.indexOf('?') > 0;
             if(ch){
@@ -291,12 +343,6 @@ Ajax.prototype =
  * @param {object} [data] 要传输的数据
  */
     send: function(data) {
- /**
-  * 在发送数据前发送
-  * @name CC.Ajax#send
-  * @event {String} send
-  * @param {CC.Ajax} ajax
-  */
         this._fire('send', this);
         this._setHeaders();
         this.xmlReq.onreadystatechange = this._onReadyStateChange.bind(this);
@@ -345,11 +391,16 @@ Ajax.prototype =
     ,
     
     _fire : function(e){
+/**
+ * 在每个事件发送后,事件名称记录在该属性下.
+ * @property status
+ * @type String
+ */
     	this.status = e;
     	
     	if(this.statuschange)
     	   this.statuschange.call(this.caller||this, e, this);
-    	
+    	   
     	Ajax.fire('statuschange', e, this);
     	this.fire('statuschange', e, this);
     	
@@ -365,12 +416,6 @@ Ajax.prototype =
         var req = this.xmlReq;
         if (req.readyState === 4) {
         	if(!this.aborted){
-/**
- * 请求响应返回加载后发送(此时readyState = 4).
- * @name CC.Ajax#load
- * @event {String} load
- * @param {CC.Ajax} ajax
- */
             if(this._fire('load', this) === false)
               return;
             var success = this.success;
@@ -378,12 +423,6 @@ Ajax.prototype =
             // req.status 为 本地文件请求
             try{
                 if (req.status == 200) {
-/**
- * 数据成功返回加载后发送.
- * @name CC.Ajax#success
- * @event {String} success
- * @param {CC.Ajax} ajax
- */
                     if(this._fire('success', this) === false)
                       return false;
                     if(success)
@@ -391,12 +430,6 @@ Ajax.prototype =
                             success.call(this.caller, this);
                         else success.call(this,this);
                 } else {
-/**
- * 数据请求失败返回后发送.
- * @name CC.Ajax#failure
- * @event {String} failure
- * @param {CC.Ajax} ajax
- */
                     if(this._fire('failure', this) === false)
                       return false;
                     if(failure)
@@ -424,17 +457,11 @@ Ajax.prototype =
             return this.text;
 
         /**
-         * @name CC.Ajax#text
-         * @property {String} text 调用{@link # getText}方法后保存的text文本,在{@link #close}方法调用后销毁
+         * 调用{@link #getText}方法后保存的text文本,在{@link #close}方法调用后销毁, 可重设以后某些过滤处理.
+         * @property text
+         * @type String
          */
         var s = this.text = this.xmlReq.responseText;
-        /**
-         * 在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
-         * @name CC.Ajax#text
-         * @event {String} text
-         * @param {String} responseText
-         * @param {CC.Ajax} ajax
-         */
         this._fire('text',s,this);
         return this.text;
     },
@@ -445,20 +472,14 @@ Ajax.prototype =
    */
     getXmlDoc : function() {
         /**
-         * @name CC.Ajax#xmlDoc
-         * @property {XMLDocument} xmlDoc
          * 调用{@link #getXmlDoc}方法后保存的XMLDocument对象,在{@link #close}方法调用后销毁.
+         * @property xmlDoc
+         * @type XMLDocument
          */
         if(this.xmlDoc)
             return this.xmlDoc;
+
         var doc = this.xmlDoc = this.xmlReq.responseXML.documentElement;
-        /**
-         * 在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
-         * @name CC.Ajax#xmlDoc
-         * @event {String} xmlDoc
-         * @param {XMLDocument} doc
-         * @param {CC.Ajax} ajax
-         */
         this._fire('xmlDoc', doc, this);
         return this.xmlDoc;
     },
@@ -474,31 +495,22 @@ Ajax.prototype =
         var o;
         try {
             /**
-             * @name CC.Ajax#json
-             * @property {Object} json
              * 调用{@link #getJson}方法后保存的json对象,在{@link #close}方法调用后销毁.
+             * @property json
+             * @type Object
              */
             this.json = o = eval("("+this.getText()+");");
         }catch(e) {
             if(__debug) { console.log('Internal server error : a request responsed with wrong json format:\n'+e+"\n"+this.getText()); }
             throw e;
         }
-        /**
-         * 在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
-         * @name CC.Ajax#json
-         * @event {String} json
-         * @param {Object} o json对象
-         * @param {Ajax} ajax
-         */
         this._fire('json',o,this);
         return this.json;
     }
     ,
   /**
-   * 运行返回内容中的JS,方法返回已剔除JS后的内容.
-   *@return {string} 返回已剔除JS后的内容
-   *@example
-   *<pre>
+   * 运行返回内容中的JS,方法返回已剔除JS后的内容.<br>
+   *<pre><code>
     //服务器返回的文本数据为
     &lt;script&gt;
       alert('Hello world!');
@@ -513,7 +525,8 @@ Ajax.prototype =
         var ss = this.invokeScript();
       }
     });
-   *</pre>
+   *</code></pre>
+   *@return {string} 返回已剔除JS后的内容
    */
     invokeScript: function() {
         return eval(this.getText());

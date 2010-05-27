@@ -1,22 +1,22 @@
 ﻿/**
- * @name CC.ui.Mask
- * @class 容器控件遮掩层
+ * @class CC.ui.Mask 容器控件遮掩层
  * @extends CC.Base
  */
-CC.create('CC.ui.Mask', CC.Base, /**@lends CC.ui.Mask#*/{
+CC.create('CC.ui.Mask', CC.Base, {
 
   innerCS: 'g-modal-mask',
 
   template : 'div',
 
 /**
- * 点击层时响应回调
- * @type function
+ * @cfg {Function} onactive 点击层时响应回调
  */
-  onActive : null,
+  onactive : null,
 
 /**
- * @property {CC.Base} target 目标容器
+ * @property target
+ * 目标容器
+ * @type CC.ui.ContainerBase
  */
 
   initComponent : function(){
@@ -31,12 +31,13 @@ CC.create('CC.ui.Mask', CC.Base, /**@lends CC.ui.Mask#*/{
   /**@private*/
   onMaskResponsed : function(){
      this.fire('active', this);
-     if(this.onActive)
-      this.onActive();
+     if(this.onactive)
+      this.onactive();
   },
 
 /**
  * 绑定目标容器
+ * @param {CC.ui.ContainerBase} target
  */
   attach : function(target){
 

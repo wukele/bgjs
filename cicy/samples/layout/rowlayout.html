@@ -1,0 +1,32 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>RowLayout布局</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/lan_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../../samples/resources/example.css" type="text/css"/>
+<style>
+	
+	.fix {background:red;}
+	.lead{text-align:center;overflow:hidden;background:black;color:white;}
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+	CC.ready(function(){
+    var win = new CC.ui.Win({
+    	showTo:document.body,
+      layout:'row',
+      lyCfg:{
+        items:[
+          {ctype:'base', template:'<div />', cs:'fix', css:'h:50', strHtml:'fixed height'},
+          {ctype:'base', template:'<div />', cs:'lead',strHtml:'lead',lyInf:{h:'lead'}},
+        ]
+      }
+    });
+    win.render();
+	});
+</script>

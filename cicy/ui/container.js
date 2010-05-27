@@ -5,15 +5,20 @@ var Base = CC.Base;
 var cptx = Base.prototype;
 var UX = CC.ui;
 /**
- * @name CC.layout
- * @namespace 容器类布局管理器
+ * @class CC.layout
+ * 容器布局管理器类库
+ * @namespace
  */
 if(!CC.layout)
   CC.layout = {};
 
 /**
- * @name CC.layout.def
- * @function
+ * 以一个简称注册布局管理器, 方便根据简称实例化类.
+ * @param {String} type 简称
+ * @param {Function} class 布局管理器类
+ * @method def
+ * @member CC.layout
+ * @static
  */
 CC.layout.def = function(type, cls){
   this[type] = cls;
@@ -21,43 +26,41 @@ CC.layout.def = function(type, cls){
 };
 
  /**
- * @name CC.ui.Item
- * @class
+ * @class CC.ui.Item
  * @extends CC.Base
  */
  CC.create('CC.ui.Item', Base, {});
  CC.ui.def('item', CC.ui.Item);
 
 /**
- * @name CC.layout.Layout
- * @class 布局管理器基类
+ * @class CC.layout.Layout
+ * 布局管理器基类
  */
-CC.create('CC.layout.Layout', null,
-/**@lends CC.layout.Layout.prototype*/ {
+CC.create('CC.layout.Layout', null, {
         /**
+         * @cfg {CC.Base} ct
          * 布局管理器对应的容器类
-         * @property {CC.Base} ct
          */
-        ct: null,
-        
-        items : false,
+        ct: false,
+
 /**
- * 如果每次布局都涉及所有容器子项,则该值应设为true,以便于当容器子项变更(add, remove, display)时重新布局容器
+ * @cfg {Array} items 初始化时由管理器加入到容器的子项列表, 该属性等同于{@link CC.ui.ContainerBase#items}.
+ */
+        items : false,
+
+/**
+ * @cfg {Boolean} layoutOnChange 如果每次布局都涉及所有容器子项,则该值应设为true,以便于当容器子项变更(add, remove, display)时重新布局容器
  */
         layoutOnChange : false,
 
 /**
- * @property {Boolean} [deffer=false]
+ * @cfg {Boolean} [deffer=false]
  * 延迟多少毫秒后再布局,有利于提高用户体验,
  * 但注意访问同步,例如容器子项在布局时才渲染,
  * 如果deffer已置,则子项渲染将会在JavaScript下一周期调用.
  */
         deffer : false,
 
-        /**
-         * 初始化布局
-         * @param {Object} opt 布局配置信息
-         */
         initialize: function(opt){
             if (opt)
                 CC.extend(this, opt);
@@ -70,20 +73,21 @@ CC.create('CC.layout.Layout', null,
          * 容器在添加子项前被调用。
          * @param {CC.Base} comp 子项
          * @param {Object} cfg 子项用布局的配置信息
-         * @function
+         * @method beforeAdd
+         * @private
          */
         beforeAdd: fGo,
+
 /**
- * @name CC.Base#lyInf
- * @property {Object} lyInf 布局配置数据,
-    如果控件被布局管理器所管理,
-    其布局相关的配置信息将存放在component.lyInf,
-    要访问子项当前布局信息,可通过layout.cfgFrom(component)方法获得.
- * @protected
- * @see #cfgFrom
- * @example
-   var ct = ct;
-   var borderLayoutInformation = item.lyInf;
+ * @cfg {String} itemCS 将子项被加进容器时添加到子项的CSS样式
+ */
+        itemCS : false,
+
+/**
+ * @cfg {Object} lyInf 布局配置数据,子项的父容器布局管理器根据该信息布局子项.<br>
+    如果控件被布局管理器所管理,其布局相关的配置信息将存放在component.lyInf,
+    要访问子项当前布局信息,可通过container.layout.cfgFrom(component)方法获得.
+ * @member CC.Base
  */
 
 /**
@@ -108,10 +112,7 @@ CC.create('CC.layout.Layout', null,
             CC.extend(cc, cfg);
          
           this.beforeAdd(comp, cc);
-/**
- * @name CC.layout.Layout#itemCS
- * @property {String} itemCS 将子项被加进容器时添加到子项的CSS样式
- */
+
           if(this.itemCS)
             comp.addClassIf(this.itemCS);
 
@@ -137,7 +138,9 @@ CC.create('CC.layout.Layout', null,
         },
 
 /**
- * 显示/隐藏子项,如果layoutOnChange为true则重新布局容器
+ * 显示/隐藏子项,如果layoutOnChange为true则重新布局容器.
+ * @param {CC.Base} component
+ * @param {Boolean} displayOrNot
  */
         display : function(c, b){
           c.display(b);
@@ -146,13 +149,15 @@ CC.create('CC.layout.Layout', null,
         },
 
 /**
- * @name CC.layout.Layout#invalidate
- * @property {Boolean} [invalidate=false] 指示当引发布局时是否执行布局,如大量引发重复布局的操作可先设置invalidate=true,执行完后再设置invalidate=false,再调用{@link #doLayout}布局.
- * 容器类不必直接设置该属性,可调用{@link CC.ui.ContainerBase#validate}和{@link CC.ui.ContainerBase#invalidate}方法设置.
+ * @cfg {Boolean} invalidate 指示当引发布局时是否执行布局,
+ * 如大量引发重复布局的操作可先设置invalidate=true,执行完后再设置invalidate=false,
+ * 再调用{@link #doLayout}布局.<br>
+ * 容器类不必直接设置该属性,
+ * 可调用{@link CC.ui.ContainerBase#validate}和{@link CC.ui.ContainerBase#invalidate}方法.
  */
 
 /**
- * 执行布局,要重写布局应重写onLayout方法.
+ * 布局容器,要重写布局应重写onLayout方法.
  */
         doLayout: function(){
           if(this.isUp()){
@@ -160,10 +165,8 @@ CC.create('CC.layout.Layout', null,
             //参见ct.display
             if(this.ct.hidden){
               if(__debug) console.log(this,'容器处于隐藏状态,未立即布局..');
-/**
- * @property {Array} defferArgs 延迟布局中寄存的布局方法参数
- * @private
- */
+              
+              // 延迟布局中寄存的布局方法参数
               this.defferArgs = arguments;
               return;
             }
@@ -182,9 +185,7 @@ CC.create('CC.layout.Layout', null,
 
 /**
  * 获得控件当前布局相关的属性配置信息, 该调用无论任何时候都会返回一个非null对象,即使相关配置不存在.
- * @param {CC.Base} item
- * @return {Object} 控件当前布局相关的属性配置信息
- * @example
+ * <pre><code>
    var item = ct.$(0);
    var layout = ct.layout;
    var cfg = layout.cfgFrom(item);
@@ -192,11 +193,16 @@ CC.create('CC.layout.Layout', null,
    if(cfg.collapsed) {
     //...
    }
+   </code></pre>
+ * @param {CC.Base} item
+ * @return {Object} 控件当前布局相关的属性配置信息
  */
         cfgFrom : function(item) {
           return item.lyInf || {};
         },
-
+/**
+ * @param {CC.Base} component
+ */
         insert : function(comp){
             if (this.layoutOnChange)
                  this.doLayout.bind(this).timeout(0);
@@ -204,7 +210,7 @@ CC.create('CC.layout.Layout', null,
 
         /**
          * 如没有针对单个控件布局的可直接忽略.
-         * @protected
+         * @private
          * @param {CC.Base} comp
          * @param {Object} cfg
          */
@@ -214,12 +220,16 @@ CC.create('CC.layout.Layout', null,
          * 除移子项时调用并重新布局,
          * 注意:从布局管理器移除子控件并不从容器移除.
          * 如果layoutOnChange设置为false时不调用。
+         * @param {CC.Base} component
          */
         remove: function(comp){
             if (this.layoutOnChange)
                 this.doLayout.bind(this).timeout(0);
         },
-
+/**
+ * 批量添加子控件到容器.
+ * @param {CC.Base} items
+ */
         fromArray : function(its){
            var ct = this.ct,
                cls = ct.itemCls,
@@ -249,24 +259,28 @@ CC.create('CC.layout.Layout', null,
             }
         },
 
+/**
+ * @cfg {String} ctCS 初始化时添加到容器的样式
+ */
+        ctCS : false,
+/**
+ * @cfg {String} wrCS 初始化时添加到容器ct.wrapper的样式
+ */
+        wrCS : false,
+        
         /**
          * 将布局管理器应用到一个容器控件中。
-         * @param {Object} ct
+         * @param {Object} ct container component
+         * @return this
          */
         attach: function(ct){
             this.ct = ct;
             if(ct.deffer !== undefined)
               this.deffer = ct.deffer;
-/**
- * @name CC.layout.Layout#ctCS
- * @property {String} ctCS 初始化时添加到容器的样式
- */
+              
             if (this.ctCS)
                 ct.addClass(this.ctCS);
-/**
- * @name CC.layout.Layout#wrCS
- * @property {String} wrCS 初始化时添加到容器ct.wrapper的样式
- */
+
             if(this.wrCS)
               ct.wrapper.addClass(this.wrCS);
 
@@ -298,6 +312,7 @@ CC.create('CC.layout.Layout', null,
 
         /**
          * 子项被容器布局后再渲染.
+         * @private
          */
         onLayout: function(){
             var i = 0, ch, chs = this.ct.children, len = chs.length;
@@ -312,10 +327,6 @@ CC.create('CC.layout.Layout', null,
 
 var lyx = CC.layout.Layout;
 
-/**
- * @name CC.layout.default
- * @Layout
- */
 CC.layout.def('default', lyx);
 //
 // WrapPanel模板, 设置wrap结点的padding,border而不会影响到panel层的宽高的计算,
@@ -325,28 +336,27 @@ CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>')
       .def( 'CC.ui.WrapPanel', '<div class="g-panel"><div class="g-panel-wrap" id="_wrap"></div></div>');
 
 /**
+ * @class CC.ui.ContainerBase
  * 容器类控件,容器是基类的扩展,可包含多个子组件,
  * 子组件也可是一个容器,形成了组件树
- * @name CC.ui.ContainerBase
- * @class 容器基类
  * @extends CC.Base
  */
 CC.create('CC.ui.ContainerBase', Base,
-/**@lends CC.ui.ContainerBase.prototype*/
 {
 
   /**
- * @property {Array} children 容器子控件存放处
- * @readonly
- */
+   * @property children
+   * 容器子控件存放处
+   * @type Array
+   */
   children: null,
 /**
- * @property {Boolean} [eventable=true] 可处理事件,即可通过on方法监听容器事件
- * @readonly
- * @example
+ * @cfg {Boolean} eventable=true 可处理事件,即可通过on方法监听容器事件<br>
+ * <pre><code>
    ct.on('resized', function(){
      //...
    });
+   </code></pre>
  */
   eventable: true,
 
@@ -364,64 +374,79 @@ CC.create('CC.ui.ContainerBase', Base,
 
   maxW: 65535,
  /**
- * @property {Base} [itemCls=CC.ui.Item] 容器子控件类, fromArray方法根据该子项类实例化子项
+ * @cfg {Base} itemCls=CC.ui.Item 容器子控件类, fromArray方法根据该子项类实例化子项
  * @see #fromArray
  */
   itemCls: CC.ui.Item,
-  /**
- * @property {Boolean} [autoRender=false] 容器子控件类
- */
+
   autoRender: false,
 
-/**
- * @property {Boolean|CC.util.SelectionProvider} selectionProvider 是否对容器应用子项选择功能
- */
-  selectionProvider : false,
 
 /**
+ * @cfg {Array} items
  * 预留给布局管理器初始化的子项,初始化后移除.
  * items与array初始化的区别仅在于是否通过布局管理器加载,如果是items时,由container.layout.fromArray加载,
- * 如果是array,直接由container.fromArray加载,忽略布管理器对子项进行布局.
+ * 如果是array,直接由container.fromArray加载,忽略布管理器对子项进行布局.<br>
+ * 该属性与{@link CC.layout.Layout#items}属性意义相同.
  */
   items : false,
+/**
+ * @cfg {Array} array 子项数据初始化组数, 由{@link #fromArray}装载.
+ */
+  array:false,
   
   initialize : function(){
     Base.prototype.initialize.apply(this, arguments);
     //pre load children
-/**
- * @name CC.ui.ContainerBase#array
- * @property {Array} array 子项数据初始化组数
- * @see #fromArray
- */
     if (this.array) {
       this.fromArray(this.array);
       delete this.array;
     }
   },
+  
+/**
+ * @cfg {Boolean} keyEvent 是否开启键盘监听事件.<br>
+ * 用于监听键盘按键的事件名称,如果该值在容器初始化时已设置,
+ * 可监听容器发出的keydown事件.
+ * <pre><code>
+   var ct = new CC.ui.ContainerBase({keyEvent:true});
+   ct.on('keydown', function(event){
+      this....
+   });
+   </code></pre>
+ */
+  keyEvent : undefined,
+  
+/**
+ * @cfg {Boolean} useContainerMonitor 是否在容器层上处理子项DOM事件
+ */  
+  useContainerMonitor : false,
 
+/**
+ * @cfg {Boolean|String} cancelClickBubble=false 是否停止容器clickEvent事件的DOM触发事件冒泡
+ */  
+  cancelClickBubble : false,
+
+/**
+ * @name CC.ui.ContainerBase#clickEvent
+ * @cfg {Boolean|String} clickEvent 设置子项单击事件,如果为true,默认事件为mousedown
+ */   
+  clickEvent : false,
+  
+/**
+ * @cfg {Boolean|CC.util.SelectionProvider} selectionProvider 属性由{@link CC.util.SelectionProvider}提供,指明是否开启容器选择子项的功能. 
+ */
+  selectionProvider : false,
+/**
+ * @cfg {Boolean|CC.util.ConnectionProvider} connectionProvider 属性由{@link CC.util.ConnectionProvider}提供,指明是否开启容器向服务器请求加载数据的功能. 
+ */
+  connectionProvider : false,
+  
   initComponent: function() {
     cptx.initComponent.call(this);
-
-    /**
- * @name CC.ui.ContainerBase#keyEvent
- * @property {Boolean} keyEvent 是否开启键盘监听事件
- */
     if (this.keyEvent)
       this.bindKeyInstaller();
 
-    /**
- * @name CC.ui.ContainerBase#useContainerMonitor
- * @property {Boolean} useContainerMonitor 是否在容器层上处理子项DOM事件
- */
-
-/**
- * @name CC.ui.ContainerBase#cancelClickBubble
- * @property {Boolean|String} [cancelClickBubble=false] 是否停止容器clickEvent事件的DOM触发事件冒泡
- */
-    /**
- * @name CC.ui.ContainerBase#clickEvent
- * @property {Boolean|String} clickEvent 设置子项单击事件,如果为true,默认事件为mousedown
- */
     if (this.useContainerMonitor && this.clickEvent) {
       this.bindClickInstaller();
     }
@@ -437,18 +462,19 @@ CC.create('CC.ui.ContainerBase', Base,
 
     this.createLayout();
   },
-
+  
+/**
+ * @cfg {Layout|String} layout='default' 容器布局管理器
+ */
+  layout : 'default',
+/**
+ * @cfg {Object} lyCfg 用于初始化布局管理器的数据
+ */
+  lyCfg : false,
+  
   createLayout : function(){
     if (this.layout) {
-      /**
- * @name CC.ui.ContainerBase#layout
- * @property {Layout|String} [layout='default'] 容器布局管理器
- */
       if (typeof this.layout === 'string') {
-/**
- * @name CC.ui.ContainerBase#lyCfg
- * @property {Object} lyCfg 布局管理器初始化配置
- */
         var cfg = this.lyCfg || {};
         cfg.ct = this;
         this.layout = new(CC.layout[this.layout])(cfg);
@@ -459,10 +485,17 @@ CC.create('CC.ui.ContainerBase', Base,
     else this.layout = new lyx({ ct: this });
 
   },
-
+  
 /**
- * 创建容器的DOM结点
+ * @cfg {String|DOMElement} 指定容器存放子项的dom结点.
  */
+  ct : false,
+
+ /**
+  * @property wrapper
+  * container.ct结点对应的Base对象,如果当前container.view === container.ct,则wrapper为容器自身.
+  * @type CC.Base
+  */
   createView: function() {
     cptx.createView.call(this);
     if (!this.ct) this.ct = this.view;
@@ -473,14 +506,13 @@ CC.create('CC.ui.ContainerBase', Base,
     //再一次检测
     if (!this.ct)
       this.ct = this.view;
- /**
-  * container.ct结点对应的Base对象,如果当前container.view === container.ct,则wrapper为容器自身.
-  * @name CC.ui.ContainerBase#wrapper
-  * @type CC.Base
-  */
+      
     this.wrapper = this.ct == this.view ? this: this.$$(this.ct);
   },
-
+  
+/**@private*/
+  destoryed : false,
+  
   destory: function() {
     this.destoryed = true;
     this.destoryChildren();
@@ -499,10 +531,6 @@ CC.create('CC.ui.ContainerBase', Base,
     cptx.destory.call(this);
   },
 
-/**
- * 此时调用fromArray(array)加入子项,当onRender后布局容器.
- * @override
- */
   onRender: function() {
     cptx.onRender.call(this);
     // layout ct
@@ -534,7 +562,7 @@ CC.create('CC.ui.ContainerBase', Base,
  * 布局管理就这样做,向容器加入后并未渲染子项,等待子项布局好后再渲染.
  * 控件即是本包中已实现的控件,具有基本的view属性.
  * 如果要批量加入子项,请调用fromArray方法.
- * @param {Base} a 子项
+ * @param {Base} item 子项
  */
   add: function(a) {
 
@@ -544,26 +572,28 @@ CC.create('CC.ui.ContainerBase', Base,
     }
 
 /**
- * 添加前发送
- * @name CC.ui.ContainerBase#beforeadd
- * @event
+ * @event beforeadd
+ * 添加子项前发送
  * @param {CC.Base} component
  */
       if(this.fire('beforeadd', a) !== false && this.beforeAdd(a) !== false){
         this.onAdd(a);
         this.afterAdd(a);
 /**
- * 添加后发出
- * @name CC.ui.ContainerBase#add
- * @event
+ * @event add
+ * 添加子项后发送
  * @param {CC.Base} component
  */
         this.fire('add', a);
       }
     return this;
   },
+  
+  /**@private*/
+  __click : false,
+  
 /**
- * @protected
+ * @private
  */
   onAdd : function(a){
     this.children.push(a);
@@ -587,17 +617,22 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * @protected
+ * @private
  */
-  beforeAdd : function(){
-    
-  },
+  beforeAdd : fGo,
   
 /**
- * @protected
+ * @private
  */
   afterAdd : fGo,
 
+/**
+ * @event itemclick
+ * 子项点击后发送.
+ * @param {CC.Base} item
+ * @param {DOMEvent} event
+ */
+ 
 /**
  * @private
  */
@@ -616,16 +651,14 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * 移除前发送
- * @name CC.ui.ContainerBase#beforeremove
- * @event
+ * @event beforeremove
+ * 子项移除前发送
  * @param {CC.Base} component
  */
 
 /**
- * 移除后发送
- * @name CC.ui.ContainerBase#remove
- * @event
+ * @event remove
+ * 子项移除后发送
  * @param {CC.Base} component
  */
 
@@ -633,7 +666,8 @@ CC.create('CC.ui.ContainerBase', Base,
  * 从容器移出但不销毁子项,移除的子项也包括托管的子控件.
  * 如果容器子项由布局管理器布局,在调用该方法后用
  * ct.doLayout重新布局, 或直接由ct.layout.remove(component)移除子项.
- * @param {String|CC.Base} 可为控件实例或控件ID
+ * @param {String|CC.Base} item 可为控件实例或控件ID
+ * @return this
  */
   remove: function(a){
     a = this.$(a);
@@ -644,12 +678,6 @@ CC.create('CC.ui.ContainerBase', Base,
     }
     else if(this.fire('beforeremove', a)!==false && this.beforeRemove(a) !== false){
       this.onRemove(a);
-  /**
-   * 移除子项后发出
-   * @name CC.ui.ContainerBase#removed
-   * @event
-   * @param {CC.Base} item
-   */
         this.fire('remove', a);
     }
     return this;
@@ -663,7 +691,7 @@ CC.create('CC.ui.ContainerBase', Base,
     this._removeNode(a.view);
   },
 
-  /**
+ /**
  * 移除所有子项.
  */
   removeAll: function() {
@@ -692,11 +720,12 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-     * 根据控件ID或控件自身或控件所在数组下标安全返回容器中该控件对象.
-     * <li>id为控件id,即字符串格式,返回id对应的子项,无则返回null
-     * <li>id为数字格式,返回数字下标对应子项,无则返回null
-     * <li>id为子项,直接返回该子项
+     * 根据控件ID或控件自身或控件所在数组下标安全返回容器中该控件对象<div class="mdetail-params"><ul>
+     * <li>id为控件id,即字符串格式,返回id对应的子项,无则返回null</li>
+     * <li>id为数字格式,返回数字下标对应子项,无则返回null</li>
+     * <li>id为子项,直接返回该子项</li></ul></div>
      * @param {CC.Base|String|Number} id 子控件
+     * @method $
      */
   $: function(id) {
     if (id === null || id === undefined || id === false) {
@@ -745,24 +774,25 @@ CC.create('CC.ui.ContainerBase', Base,
       }
   },
 
-  /**
+/**
  * 返回窗口中控件的索引.
  * @param {String|CC.Base} 参数a可为控件实例或控件ID
+ * @return {Number} index or -1, if not found.
  */
   indexOf: function(a) {
     a = this.$(a);
     return ! a ? -1 : this.children.indexOf(a);
   },
-  /**
+/**
  * 获得子项数量
- * @return {Number}
+ * @return {Number} size
  */
   size: function() {
     return this.children.length;
   },
   /**
  * 容器是否包含给出控件.
- * @param {String|CC.Base} 参数a可为控件实例或控件ID
+ * @param {String|CC.Base} component 可为控件实例或控件ID
  * @return {Boolean}
  */
   contains: function(a) {
@@ -772,10 +802,10 @@ CC.create('CC.ui.ContainerBase', Base,
     return a.pCt === this;
   },
 
-  /**
+/**
  * 子项b之前插入项a.
- * @param {CC.Base} a
- * @param {CC.Base} a
+ * @param {CC.Base} componentA
+ * @param {CC.Base} componentB
  */
   insertBefore: function(a, b) {
     var idx = this.indexOf(b);
@@ -784,7 +814,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
   /**
      * 方法与_addNode保持一致,定义DOM结点在容器结点中的位置.
-     * @param {DOMElement} n
+     * @param {DOMElement} new
      * @param {DOMElement} old
      */
   _insertBefore: function(n, old) {
@@ -818,7 +848,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
 
   /**
- * 同{@link #removeAll}
+ * 重写,同{@link #removeAll}
  * @override
  * @return this
  */
@@ -831,6 +861,8 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 /**
  * 交换两子项.
+ * @param {CC.Base} a1
+ * @param {CC.Base} a2
  * @return this
  */
   swap: function(a1, a2) {
@@ -904,7 +936,7 @@ CC.create('CC.ui.ContainerBase', Base,
 /**
  * 过滤方式隐藏子控件.
  * @param {Function} matcher
- * @param {Object} 调用matcher的this
+ * @param {Object} caller 调用matcher的this
  * @return this
  */
   filter: function(matcher, caller) {
@@ -963,6 +995,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
   /**
      * 是否为控件的父容器
+     * @param {CC.Base} child
      * @return {Boolean}
      */
   parentOf: function(child) {
@@ -976,7 +1009,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 /**
  * 批量生成子项, 不能在初始化函数里调用fromArray,因为控件未初始化完成时不能加入子控件.
- * 子类寻找优先级为 :
+ * 子类寻找优先级为 :<br>
  * {item option}.ctype -> 参数itemclass -> 容器.itemCls,
  * 容器的itemCls可以为ctype字符串, 也可以为具体类
  * @param {Array} array 子项实始化配置
@@ -990,8 +1023,7 @@ CC.create('CC.ui.ContainerBase', Base,
     }
 
 /**
- * @name CC.ui.ContainerBase#itemCfg
- * @property {Object} itemCfg 用于批量添加子项{@link #fromArray}时子项的配置
+ * @cfg {Object} itemCfg 用于批量添加子项{@link #fromArray}时子项的配置
  */
     var it, cfg = this.itemCfg || false;
 
@@ -1010,8 +1042,13 @@ CC.create('CC.ui.ContainerBase', Base,
     }
     return this;
   },
-
-  instanceItem : function(it, cls, /**@inner*/mixed){
+/**
+ * 实例化并返回容器子项,此时未添加子项.
+ * @param {Object} itemConfig
+ * @param {Function} [itemClass]
+ * @return {CC.Base} item
+ */
+  instanceItem : function(it, cls, mixed){
     
     if(!cls){
       cls = this.itemCls;
@@ -1041,41 +1078,59 @@ CC.create('CC.ui.ContainerBase', Base,
     return it;
   },
   
+  /**@private*/
+  bndActs : false,
 /**
- * @param {String} eventName
- * @param {Function} callback
- * @param {Boolean} cancelBubble
- * @param {Object} scope
- * @param {String|HTMLElement} childId
- * @param {String} srcName
+ * 在容器范围内为子项添加事件处理.<br>
+ <pre>
+ * param {String} evtName
+ * param {Function} callback
+ * param {Boolean} cancelBubble
+ * param {Object} scope
+ * param {String|HTMLElement} childId
+ * param {String} srcName
+ </pre><br>
+ callback 参数为
+ <pre>
+ * param {CC.ui.Base} childItem 子项
+ * param {DOMEvent} event dom 事件
+ </pre><br>
  * @return this
  */
   itemAction: function(eventName, callback, cancelBubble, caller, childId, srcName) {
+    caller = caller || this;
     var act = (function(e) {
       var el = e.target || e.srcElement;
 
       if((srcName === undefined || el.tagName === srcName) && el !== this.view){
           var item = this.$(el);
           if (item)
-            return item.disabled ? false : callback.call(this, item, e);
+            return item.disabled ? false : callback.call(caller, item, e);
       }
    });
+   
    if (!this.bndActs) {
       this.bndActs = [];
    }
-    this.bndActs.push([eventName, callback, act]);
-    this.domEvent(eventName, act, cancelBubble, caller, childId);
+    this.bndActs.push([eventName, callback, act, childId]);
+    this.domEvent(eventName, act, cancelBubble, null, childId);
+    act = null;
+    childId = null;
     return this;
   },
 /**
- *
+ * @param {String} evtName
+ * @param {Function} callback
+ * @param {String|HTMLElement} childId
+ * @return this
  */
   unItemAction: function(eventName, callback, childId) {
     var bnds = this.bndActs;
-    childId = childId !== undefined ? childId.tagName ? childId: this.dom(childId) : this.view;
+    
     for (var i = 0, len = bnds.length; i < len; i++) {
       var n = bnds[i];
-      if (n[0] == eventName && n[1] == callback(n[3] == childId || n[3] === undefined)) {
+      if (n[0] === eventName && n[1] === callback && n[3] === childId) {
+        childId = childId !== undefined ? childId.tagName ? childId: this.dom(childId) : this.view;
         this.unEvent(eventName, n[2], n[3]);
         bnds.remove(i);
         return this;
@@ -1084,22 +1139,13 @@ CC.create('CC.ui.ContainerBase', Base,
 
     return this;
   },
+
 /**
- * @property {Boolean|String} keyEvent
- * 用于监听键盘按键的事件名称,如果该值在容器初始化时已设置,
- * 可监听容器发出的keydown事件
- * @example
-   var ct = new CC.ui.ContainerBase({keyEvent:true});
-   ct.on('keydown', function(event){
-      this....
-   });
+ * @event keydown
+ * 如果已安装键盘监听器,键盘按键触发时发送该事件,参见{@link #bindKeyInstaller},{@link #keyEvent}.
+ * @param {DOMEvent} event
  */
-/**
- * @name CC.ui.ContainerBase#keydown
- * @event
- * 如果已安装键盘监听器,键盘按键触发时发送该事件
- * @param {DOMEvent} e
- */
+ 
 /**
  * 安装键盘事件监听器,用于发送容器的keydown事件,
  * 一些具有选择功能(CC.util.SelectionProvider)控件已默认开启了该功能.
@@ -1137,7 +1183,9 @@ CC.create('CC.ui.ContainerBase', Base,
 /**
  * 在处理完keydown事件后默认调用的回调函数,
  * 这是一个接口函数,默认为空函数,如果不想通过ct.on方式监听,
- * 可通过重写该方法快速处理按键事件
+ * 可通过重写该方法快速处理按键事件.
+ * @method onKeyPressing
+ * @param {DOMEvent} event
  */
   onKeyPressing: fGo,
 
@@ -1178,7 +1226,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-   * 布局当前容器,如果当前容器正处于布局变更中,并不执行布局
+   * 布局当前容器,如果当前容器正处于布局变更中,并不执行布局.
    * @return this
    */
   doLayout: function() {
@@ -1198,7 +1246,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
     /**
      * 相对父层居中,这里的居中是相对视角居中.
-     * @function
+     * @param {DOMElement|CC.Base} 相对居中锚点
      * @return this
      */
     center : function(anchor){
@@ -1224,13 +1272,8 @@ CC.create('CC.ui.ContainerBase', Base,
       return this;
     },
 /**
- * 根据ID或指定属性深层遍历寻找子控件.
- * @param {String} childId ID值或指定属性的值
- * @param {String} attributeName 不一定是id值,可以指定搜索其它属性
- * @param {Boolean} [returnMore] 是否返回第一个或多个 
- * @return {CC.Base|null|Array} 如果 returnMore 未设置,返回第一个匹配或null,否则返回一个数组,包含所有的匹配.
- @example
- <pre>
+ * 根据ID或指定属性深层遍历寻找子控件.<br>
+ <pre><code>
    input1 = form.layout.add(new CC.ui.Text({id:'idInput',  name:'nameInput'}));
    input2 = form.layout.add(new CC.ui.Text({id:'id2Input', name:'nameInput'}));
    // input1
@@ -1241,7 +1284,11 @@ CC.create('CC.ui.ContainerBase', Base,
    var input1 = form.byId('nameInput', name);
    // [input1, input2]
    var inputs = form.byId('nameInput', name, true);
- </pre>
+ </code></pre>
+ * @param {String} childId ID值或指定属性的值
+ * @param {String} attributeName 不一定是id值,可以指定搜索其它属性
+ * @param {Boolean} [returnMore] 是否返回第一个或多个 
+ * @return {CC.Base|null|Array} 如果 returnMore 未设置,返回第一个匹配或null,否则返回一个数组,包含所有的匹配.
  */
     byId : function(cid, key, loop){
       var tmp = [], els = null, chs = this.children, child = this.children[0];
@@ -1272,7 +1319,7 @@ CC.create('CC.ui.ContainerBase', Base,
     
 /**
  * 以广度优先遍历控件树
- * @param {Function} cb callback,  参数为 callback(idxOfItemContainer, totalCounter), 返回false时终止遍历;
+ * @param {Function} callback 参数为 callback(idxOfItemContainer, totalCounter), 返回false时终止遍历;
  * @override
  */
   eachH : function(cb){
@@ -1310,6 +1357,7 @@ CC.create('CC.ui.ContainerBase', Base,
  * 获得容器的滚动条所在控件,如果控件宽高已设置或父容器不存在,返回控件wrapper,否则返回父容器wrapper,
  * 明确容器的scrollor有利于控制容器内容的滚动,
  * 在设计控件时可根据控件自身结构特点指定scrollor.
+ * @return {DOMElement|CC.Base}
  */
     getScrollor : function(){
       return this.scrollor || 
@@ -1321,26 +1369,23 @@ var ccx = CC.ui.ContainerBase;
 var ccxp = CC.ui.ContainerBase.prototype;
 UX.def('ct', ccx);
 /**
- * 面板与容器的主要区别是可发送resized, reposed事件,可定制wrapper位置
- * @name CC.ui.Panel
- * @class 面板
+ * @class CC.ui.Panel
+ * 面板与容器的主要区别是可发送resized, reposed事件,resize后可重新设定容器内容结点的宽高和位置.
  * @extends CC.ui.ContainerBase
  */
 CC.create('CC.ui.Panel', ccx, function(superclass){
- return /**@lends CC.ui.Panel#*/{
+ return {
 /**
- * 默认为ID为_wrap,如果不存在该结点,则指向当前面板的view结点
- * @type HTMLElement|String
+ * @cfg {String|HTMLElement} ct 默认为ID为_wrap,如果不存在该结点,则指向当前面板的view结点
  */
         ct: '_wrap',
 /**
- * 是否延迟布局,该值attach到布局管理器时将覆盖布局管理器原有deffer设置,默认不延迟.
+ * @cfg {Boolean} deffer 是否延迟布局,该值attach到布局管理器时将覆盖布局管理器原有deffer设置,默认不延迟.
  */
         deffer : false,
 
 /**
- * 当面板宽高改变时是否同步计算并更新容器内容组件宽高,默认为true
- * @type Boolean
+ * @cfg {Boolean} syncWrapper 当面板宽高改变时是否同步计算并更新容器内容组件宽高,默认为true.
  */
         syncWrapper : true,
 
@@ -1365,9 +1410,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
                 t = this.top;
                 this.top = false;
             }
-/**
- * @type Array
- */
+
             if(this.insets){
               var m = this.insets;
               m[4] = m[0]+m[2];
@@ -1391,6 +1434,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
  * 得到容器距离边框矩形宽高.
  * 该值应与控件CSS中设置保持一致,
  * 用于在控件setSize中计算客户区宽高,并不设置容器的坐标(Left, Top).
+ * @return {Array} insetArray
  */
         getWrapperInsets: function(){
             var ins = this.insets;
@@ -1409,8 +1453,8 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
         },
 
 /**
- * @name CC.ui.Panel#resized
- * @event
+ * @event resized
+ * {@link #setSize}设置后触发.
  * @param {Number} contentWidth 面板容器结点内容宽度
  * @param {Number} contentHeight 面板容器结点内容高度
  * @param {Number} width  面板宽度
@@ -1419,8 +1463,9 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
 
 /**
  * 在设置宽高后发送resized事件,并调用布局管理器布局(layout.doLayout()).
+ * @param {Number|false} width
+ * @param {Number|false} height
  * @param {Boolean} uncheck 性能优化项,是否比较宽高,如果宽高未变,则直接返回
- * @override 计算容器和Wrapper或内容合适的宽高
  */
         setSize: function(a, b, uncheck){
             var w = this.width, h = this.height;
@@ -1456,8 +1501,8 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
             return this;
         },
 /**
- * @name CC.ui.Panel#reposed
- * @event
+ * @event reposed
+ * {@link #setXY}设置后触发.
  * @param {Number} left 设置后面板x坐标
  * @param {Number} top  设置后面板y坐标
  * @param {Number} deltaX
@@ -1510,11 +1555,6 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
     wrCS :'g-borderpanel-wrap'
   };
 
-/**
- *
- * @name CC.ui.BorderPanel
- * @class
- */
   CC.ui.BorderPanel = function(opt, cls){
     if(!opt)
       opt = {};

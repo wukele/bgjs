@@ -1,6 +1,5 @@
 ﻿/**
- * @name CC.util.AsynchronizeQueue
- * @class
+ * @class CC.util.AsynchronizeQueue
  */
 CC.create('CC.util.AsynchronizeQueue',null, {
   

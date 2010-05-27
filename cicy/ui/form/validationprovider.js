@@ -1,8 +1,6 @@
 ﻿CC.create('CC.ui.form.ValidationProvider', CC.util.ValidationProvider, function(father){
 return {
-/**
- * @implementation
- */
+  // @implementation
   validator : function(item, collector){
     var ret = item.validator ? 
       // cbase item
@@ -19,9 +17,8 @@ return {
   htmlValidator : function(item){
     return true;
   },
-/**
- * @override
- */
+  
+  // @override
   each : function(callback){
     this.t.eachH(function(){
       // filter form element

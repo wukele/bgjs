@@ -1,49 +1,51 @@
+/**
+ * @class CC.ui.TabItemLayout
+ * 用于布局{@link CC.ui.Tab}容器里的{@link CC.ui.TabItem},使得子项超出可视时出视导航条.
+ * @extends CC.layout.Layout
+ */
 CC.Tpl.def('CC.ui.TabItemLayout', '<div class="g-panel"><div class="auto-margin" id="_margin"><a href="javascript:fGo()" id="_rigmov" class="auto-rigmov" style="right:0px;"></a><a href="javascript:fGo()" style="left:0px;" id="_lefmov" class="auto-lefmov"></a><div class="auto-scrollor" id="_scrollor" tabindex="1" hidefocus="on"><div class="auto-offset" id="_wrap"></div></div></div></div>');
 CC.create('CC.ui.tab.TabItemLayout', CC.layout.Layout, function(father){
-return /**@lends CC.ui.tab.TabItemLayout#*/{
+return {
 
   layoutOnChange : true,
   /**
    * 该值须与 CSS 中的.auto-margin值保持同步,因为这里margin并不是由JS控制.
    * 出于性能考虑,现在把它固定下来
-   * @property horizonMargin {Number} 水平方向空位
-   * @protected
+   * @private
    */
   horizonMargin: 5,
 
   /**
    * 该值须与左边导航按钮宽度一致,出于性能考虑,现在把它固定下来
-   * @property {Number} navLeftWidth
-   * @protected
+   * @private
    */
   navLeftWidth: 24,
 
   /**
    * 该值须与右边导航按钮宽度一致,出于性能考虑,现在把它固定下来
-   * @property {Number} navLeftWidth
-   * @protected
+   * @private
    */
   navRightWidth: 24,
 
 /**
  * 布局加到容器的样式
- * @protected
+ * @private
  */
   ctCS : 'g-autoscroll-ly',
 /**
  * 导航按钮的disabled样式
- * @protected
+ * @private
  */
   disabledLeftNavCS: 'g-disabled auto-lefmov-disabled',
 
 /**
  * 导航按钮的disabled样式
- * @protected
+ * @private
  */
   disabledRightNavCS: 'g-disabled auto-rigmov-disabled',
 /**
  * 导航按钮所在结点的样式
- * @protected
+ * @private
  */
   navPanelCS: 'g-mov-tab',
 
@@ -51,7 +53,6 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
     return [this.marginLeft||this.horizonMargin, this.marginRight||this.horizonMargin];
   },
 
-/**@override*/
   attach: function(ct){
     father.attach.call(this, ct);
 
@@ -101,9 +102,9 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
 
 /**
  * 滚动至首个隐藏按钮,使得按钮处于可见状态
- * @param {String} l 或 r
+ * @param {String} dir l 或 r
  */
-  scrollToNext : function(dir, /**@inner*/norepeat){
+  scrollToNext : function(dir, norepeat){
     var nxt = this.getNextHiddenItem(dir);
     if(nxt){
       this.scrollItemIntoView(nxt);
@@ -153,7 +154,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
     this.scrollToNext(this.getDirFromEvent(e), true);
   },
 
-/**@override*/
+
   add: function(comp){
     //override & replace
     comp.scrollIntoView = this.scrollItemIntoView.bind(this);
@@ -279,8 +280,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
     this.scrollor.setWidth(w);
   },
 /**
- * @override
- * @protected
+ * @private
  */
   onLayout : function(w){
 
@@ -324,7 +324,8 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
 
 
 /**
- * 检查导航按钮状态，是否应显示或禁用。
+ * 检查导航按钮状态，是否应显示或禁用.
+ * @private
  */
   checkStatus : function(){
     var ct = this.ct,
@@ -339,9 +340,5 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
   }
 };
 });
-/**
- * 注册的CC.ui.tab.TabItemLayout布局
- * @name CC.layout#tabitem
- * @field
- */
+
 CC.layout.def('tabitem', CC.ui.tab.TabItemLayout);

@@ -1,6 +1,11 @@
-﻿CC.create('CC.ui.grid.ContentValidation', CC.util.ValidationProvider, {
+﻿/**
+ * @class CC.ui.grid.ContentValidation
+ * 提供表格数据视图的数据验证功能.
+ * @extends CC.util.ValidationProvider
+ */
+CC.create('CC.ui.grid.ContentValidation', CC.util.ValidationProvider, {
 	
-/**@override */
+  // @override
   decorateValidation : fGo,
   
   decorateCellValidation : function(cell, b, msg){
@@ -10,7 +15,7 @@
     else cell.setTip('');
   },
   
-/**@override */
+  // @override
   validator : function(row, collector){
   	var idx=0, 
   	    cols = this.t.pCt.header.children, 
@@ -34,9 +39,11 @@
   },
   
 /**
+ * 验证单元格数据.
+ * @param {CC.ui.grid.Cell} cell
  * @return {Boolean} true | false
  */
-  validateCell : function(cell, /**@inner*/ vd){
+  validateCell : function(cell, vd){
   	var r = true;
   	if(!vd){
   		vd = this.t.pCt.header.$(cell.pCt.indexOf(cell)).validator;

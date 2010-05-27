@@ -1,6 +1,4 @@
-﻿/**
- * 树型控件实现
- */
+﻿
 (function(){
 
 var CC = window.CC;
@@ -13,13 +11,14 @@ var cbx = CC.ui.ContainerBase;
 var spr = cbx.prototype;
 
 /**
- * @name CC.ui.TreeItem
- * @class
+ * 树项.
+ * @class CC.ui.TreeItem
  * @extends CC.ui.ContainerBase
  */
-CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
+CC.create('CC.ui.TreeItem', cbx, {
   /**
-   * 每个TreeItem都有一个指向根结点的指针以方便访问根结点
+   * 每个TreeItem都有一个指向根结点的指针以方便访问根结点.
+   * @type CC.ui.TreeItem
    */
   root : null,
 
@@ -47,7 +46,7 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
   /**
    * 鼠标掠过时添加样式的触发结点id
    * @private
-   *@see Base#bindAlternateStyle
+   * @see CC.Base#bindAlternateStyle
    */
   mouseoverNode : '_head',
 
@@ -57,7 +56,7 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
    */
   mouseoverTarget : '_head',
 
-  /**树结点是否为目录,默认false.*/
+  /**@cfg {Boolean} nodes 树结点是否为目录,默认false.*/
   nodes : false,
 
   clickEvent : 'mousedown',
@@ -87,8 +86,9 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     this._decElbowSt(false);
   },
 /**
- * @param {String} cssIcon
- * @param {Object} config
+ * 添加小图标.
+ * @param {String} cssIcon 图标样式.
+ * @param {Object} config  额外信息.
  */
   addIcon : function(icon, cfg){
     var cn = CC.Tpl.$('CC.ui.TreeItemSpacer');
@@ -105,8 +105,10 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     this.fly(this.titleNode).insertBefore(spring).unfly();
     CC.fly(spring).addClass(this.springCS).unfly();
   },
+  
 /**
- * @param {Boolean}
+ * 展开/收缩子项.
+ * @param {Boolean} expand
  */
   expand : function(b) {
     if(b !== true && b !== false)
@@ -241,8 +243,8 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
    },
 
 /**
- * 以深度优先遍历树目录
- * @param {Function} cb callback, this为treeItem, 参数为 callback(treeItem, counter), 返回false时终止遍历;
+ * 以深度优先遍历所有子项.
+ * @param {Function} callback this为treeItem, 参数为 callback(treeItem, counter), 返回false时终止遍历.
  * @override
  */
   eachH : function(cb, acc){
@@ -302,9 +304,9 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     return this;
   },
 /**
- * @name CC.ui.TreeItem#expanded
- * @property {Boolean} expanded 结点是否已展开
+ * @cfg {Boolean} expanded 是否展开结点.
  */
+ 
   /**
    * 只有在渲染时才能确定根结点
    * @private
@@ -363,15 +365,7 @@ CC.ui.def('treeitem', CC.ui.TreeItem);
 var sprs = CC.ui.ContainerBase.prototype;
 
 var undefined = window.undefined;
-/**
- * @name CC.ui.tree
- * @namespace
- */
-/**
- * @class
- * @name CC.ui.tree.TreeSelectionProvider
- * @extends CC.util.SelectionProvider
- */
+
 CC.create('CC.ui.tree.TreeSelectionProvider', CC.util.SelectionProvider, {
 
   selectedCS : 'g-tree-selected',
@@ -444,11 +438,7 @@ CC.create('CC.ui.tree.TreeSelectionProvider', CC.util.SelectionProvider, {
   }
 });
 
-/**
- * @name CC.ui.tree.TreeItemLoadingIndicator
- * @class
- * @extends CC.ui.Loading
- */
+
 CC.create('CC.ui.tree.TreeItemLoadingIndicator', CC.ui.Loading, {
 
   markIndicator : function(){
@@ -468,21 +458,40 @@ CC.create('CC.ui.tree.TreeItemLoadingIndicator', CC.ui.Loading, {
 CC.ui.TreeItem.prototype.indicatorCls = CC.ui.tree.TreeItemLoadingIndicator;
 
 /**
- * 树形控件, 可以指定一个根结点root,或者由树自己生成.
- * 当自己生成根结点时,它默认是CC.ui.TreeItem类,此时可以在树初始化时传入array生成根的子结点.
- * @name CC.ui.Tree
- * @class
- * @extends CC.ui.ContainerBase
- @example
+ * @class CC.ui.Tree
+ * 树形控件, 可以指定一个根结点root,或者由树自己生成.<br>
+ * <pre><code>
   var tree = new CC.ui.Tree({
-    title:'a tree',
-    array:[
-      {title:'leaf'},
-      {title:'nodes'}
-    ]
+    root:{
+      title:'title of tree'
+      // 子项数据
+      array:[
+        {title:'leaf'},
+        {title:'nodes', nodes:true}
+      ]
+    },
+    
+    // 展开自动ajax加载
+    autoLoad : true,
+    parentParamName : 'pnodeid',
+    url : 'http://www.example.com/tree'
   });
+   </code></pre>
+ * @extends CC.ui.ContainerBase
  */
 
+/**
+ * @event expand
+ * 展开/收缩前发送,可返回false取消操作.
+ * @param {CC.ui.TreeItem} treeItem 当前操作的树项.
+ * @param {Boolean} expand 指示当前操作是展开或收缩. 
+ */
+/**
+ * @event expanded
+ * 展开/收缩后发送
+ * @param {CC.ui.TreeItem} treeItem 当前操作的树项.
+ * @param {Boolean} expand 指示当前操作是展开或收缩. 
+ */
 var rootCfg = {
   nodes : true,
   draggable : false,
@@ -490,10 +499,20 @@ var rootCfg = {
   ctype:'treeitem'
 };
 
-CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
+CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
 
   ct : '_ctx',
-
+/**
+ * @cfg {String} url 设置自动加载子项数据时请求的url.参见{@link #autoLoad}, {@link #parentParamName}.
+ */
+  url : false,
+/**
+ * @cfg {Boolean} autoLoad 展开时是否自动加载子项数据,参见{@link #parentParamName}, {@link #url}.
+ */
+  autoLoad : false,
+/**
+ * @cfg {String} parentParamName 设置自动加载子项时父结点id提交参数的名称,默认为pid=pCt.id.
+ */
   parentParamName : 'pid',
 
   keyEvent : true,
@@ -554,6 +573,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
 /**
  * 当autoLoad为true时,结点展开即时加载,也可以调用该方法手动加载子结点
  * 加载子项, 该方法通过子项的connectionProvider来实现载入数据功能.
+ * @param {CC.ui.TreeItem} treeItem
  */
   loadItem : function(item){
       var url = this.getItemUrl(item);
@@ -565,10 +585,10 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
   },
 
 /**
- * 获得子项用于请求数据的url
+ * 获得子项用于请求数据的url,可重写该方法,自定义请定的URL.
  */
   getItemUrl : function(item){
-    var url = this.url;
+    var url = CC.templ(this, this.url);
     if(url){
       //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
       //contains '?' already ??

@@ -1,24 +1,30 @@
-﻿
-
-//~@ui/grid.js
-(function(){
+﻿(function(){
 
 var CC = window.CC,
     Math = window.Math,
     undefined,
     B = CC.Base,
     C = CC.Cache;
+/**
+ * @class CC.ui.grid
+ * @namespace
+ */
 
 /**
- * 表格中的列,包含在表头中,表格中所有对列的设宽操作都通过
- * {@link setWidth}方法实现
- * @name CC.ui.grid.Column
- * @class
+ * @class CC.ui.grid.plugin
+ * @namespace
+ */
+ 
+/**
+ * @class CC.ui.grid.Column
+ * 表格中的列,包含在表头中.
  */
 CC.create('CC.ui.grid.Column', B, function(father){
 
     return {
         // bdEl,
+/**@cfg {Boolean} resizeDisabled 是否禁止改变列宽*/
+        resizeDisabled : false,
         
         createView : function(){
           this.view = CC.$C({
@@ -52,33 +58,49 @@ CC.create('CC.ui.grid.Column', B, function(father){
         },
 
 /**
- * 可以统一设置该列数据的显示数据的具体内容, 返回字符串以innerHTML形式加进表单元格的内容元素中.
- * @field
- * @scope cell
- * @type Function
+ * @cfg {Function} cellBrush 可以统一设置该列数据的显示数据的具体内容, 返回字符串以innerHTML形式加进表单元格的内容元素中.
+ <pre><code>
+   header : {array:[ {title:'第一列' , cellBrush : function( v ){ return '<b>'+v+'</b>' } } ]}
+ </code></pre>
  * @param {Object} cellValue
  * @return {String}
- * @example
- <pre>
-   header : {array:[ {title:'第一列' , cellBrush : function( v ){ return '<b>'+v+'</b>' } } ]}
- </pre>
  */
         cellBrush : function(v){
           return v;
         },
+/**
+ * @event colwidthchange
+ * 列宽改变前发送.
+ * @param {Number} columnIndex
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} width
+ * @param {Number} dx 前后改变宽差
+ * @member CC.ui.Grid
+ */
 
+/**
+ * @event aftercolwidthchange
+ * 列宽改变后发送.
+ * @param {Number} columnIndex
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} width
+ * @param {Number} dx 前后改变宽差
+ * @member CC.ui.Grid
+ */
+ 
 /**
  * 此时Column的setWidth不再执行具体的设宽操作,
  * 而是向grid发送一个事件,让其它处理列宽的插件(通常是表头)来执行实际的设宽操作,
  * 这也是有理由的,因为单单一个Column它并不知道全局是如何安排列宽的.
  * 尽管这样,setWidth对话外部来说,还是可以正常调用,它并不影响方法来本的意义,只是
  * 具体操作托管了.
+ * @param {Number} width
+ * @private
  */
-        setWidth : function(w){
+        setWidth : function(w, autoLock){
           var p = this.pCt;
 
-          if(this.resizeDisabled ||
-             (p && p.fireUp('befcolwidthchange', p.indexOf(this), this, w) === false))
+          if(this.resizeDisabled)
             return this;
 
           var pr = this.preWidth, dx;
@@ -86,13 +108,19 @@ CC.create('CC.ui.grid.Column', B, function(father){
           dx = !pr ? false : w - pr;
 
           if(p){
+            
+            // 锁定列宽,使得列宽改变能正确完成.
+            if(autoLock) this.lock(true);
             p.fireUp('colwidthchange', this.pCt.indexOf(this), this, w, dx);
+            
             if(w !== this.width){
               w  = this.width;
               if(dx !== false)
                 dx = w - pr;
             }
             p.fireUp('aftercolwidthchange', this.pCt.indexOf(this), this, w, dx);
+            
+            if(autoLock) this.lock(false);
           }
           // cached the width for init.
           else this.width = w;
@@ -100,6 +128,22 @@ CC.create('CC.ui.grid.Column', B, function(father){
           this.preWidth = w;
           
           return this;
+       },
+/**
+ * @property locked
+ * 列是否已锁定,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link lock}.
+ * @type Boolean
+ */
+       locked : 0,
+ /**
+  * 锁定/解锁列宽,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link locked}.
+  */
+        lock : function(locked){
+          locked ? this.locked ++ : this.locked --;
+          if(this.locked<0){
+            if(__debug) throw 'lock operation failed: locked < 0';
+            this.locked = 0;
+          }
         }
     };
 });
@@ -107,16 +151,33 @@ CC.create('CC.ui.grid.Column', B, function(father){
 CC.Tpl.def('CC.ui.Grid', '<div class="g-grid"></div>');
 
 /**
- * 表,实体主要由 表头(Header) + 内容(Content) + 插件(plugins) 组成
+ * @class CC.ui.Grid
+ * 表,实体主要由 表头(Header) + 内容(Content) + 插件(plugins) 组成.
+ * @extends CC.ui.Panel
  */
 CC.create('CC.ui.Grid', CC.ui.Panel, function(father){
 
 return {
+  
   layout:'row',
 /**
- * 存放表内容的插件,
- * 通过 CC.ui.Grid.prototype.plugins.push(pluginDefinitions) 可以向全局表组件添加一个插件;
- * @type Array
+ * @cfg {Array} plugins 存放表内容的插件,
+ * 通过 CC.ui.Grid.prototype.plugins.push(pluginDefinitions) 可以向全局表组件添加一个插件.<br>
+ * 插件格式为:
+ <pre><code>
+  plugins : [
+    {
+      // name ,名称,以后可通过grid[name]访问插件
+      name:'header', 
+      // 权重,影响插件初始化顺序
+      weight:-100, 
+      // 插件类
+      ctype:'gridhd'
+    },
+    
+    {name:'content',weight:-80,  ctype:'gridcontent'}
+  ]
+ </code></pre>
  */
   plugins : [
     {name:'header', weight:-100, ctype:'gridhd'},
@@ -158,6 +219,7 @@ return {
 /**
  * 从对象实例到对象原型链接枚举事件处理函数,并注册到表格中.
  * @param {CC.Base} component
+ * @private
  */
   extraRegisterEventMaps : function(comp){
     var maps = CC.getObjectLinkedValues(comp, 'gridEventHandlers', true);
@@ -211,16 +273,29 @@ return {
     return pls;
   },
 /**
- * @name CC.ui.Grid#beforeaddplugin
- * @event
- * @param {CC.Base} pluginUI 添加到表格的控件,该控件由initPlugin返回
- * @param {Object} plugin
+ * @event beforeaddPLUGINNAME
+ * 在附有UI的插件当UI添加到表格前该事件都会发送,如添加了一个工具条插件,名称为tb,就会发送beforeaddtb.
+ * @param {CC.Base} pluginUI 添加到表格的控件,该控件由{@link #initPlugin}返回
+ * @param {Object} plugin 当前插件实例
  */
 /**
- * @name CC.ui.Grid#afteraddplugin
- * @event
- * @param {CC.Base} pluginUI 添加到表格的控件,该控件由initPlugin返回
- * @param {Object} plugin
+ * @event afteraddPLUGINNAME
+ * 在附有UI的插件当UI添加到表格后该事件都会发送,如添加了一个工具条插件,名称为tb,就会发送afteraddtb.
+ * @param {CC.Base} pluginUI 添加到表格的控件,该控件由{@link #initPlugin}返回
+ * @param {Object} plugin 当前插件实例
+ */
+/**
+ * @event beforeinitPLUGINNAME
+ * 在初始化插件前,发送该事件.如一个工具条插件,名称为tb,初始化前就会发送beforeinittb.
+ * @param {Object} plugin 当前插件实例
+ * @param {CC.ui.Grid} grid
+ */
+ 
+/**
+ * @event afterinitPLUGINNAME
+ * 在初始化插件后,发送该事件.如一个工具条插件,名称为tb,初始化后就会发送afterinittb.
+ * @param {Object} plugin 当前插件实例
+ * @param {CC.ui.Grid} grid
  */
 /**
  * 批量添加插件
@@ -306,10 +381,7 @@ return {
     pl = this.addPluginsInner([pl]);
     this.plugins.push(pl[0]);
   },
-  
-/**
- * @private
- */
+
   destoryPlugins : function(){
     var g = this;
     CC.each(this.plugins, function(){
@@ -330,9 +402,9 @@ CC.ui.Grid.SCROLLBAR_WIDTH = 17;
 
 CC.ui.def('grid', CC.ui.Grid);
 /**
+ * @class CC.ui.grid.Cell
  * 单元格
- * @name CC.ui.grid.Cell
- * @class
+ * @extends CC.Base
  */
 C.register('CC.ui.grid.Cell', function(){
   var td = CC.$C({
@@ -350,43 +422,26 @@ C.register('CC.ui.grid.Cell', function(){
 
 CC.create('CC.ui.grid.Cell', CC.Base, function(father){
 return {
-
-/**
- * 设为空,内容交给CC.grid.Column填充,也可以非空自定义填充方式
- */
+  
+  // 设为空,内容交给CC.grid.Column填充,也可以非空自定义填充方式
   brush : false,
 
   getTitleNode : function(){
     return this.view.firstChild;
   },
 
-/**
- * 忽略自身设置标题方式
- * @override
- */
-  setTitle : function(t){
+  // 忽略自身设置标题方式
+  setTitle : function(){
     //ignore
     return this;
-  },
-
-/**
- * @private
- */
-  findBrush : function(){
-    if(this.brush)
-      return this.brush;
-    var b;
-    try {
-      b = this.pCt.pCt.pCt.header.$(this.pCt.indexOf(this)).cellBrush;
-    }catch(e){}
-    return b;
   }
 };
 });
 
 /**
- * @name CC.ui.grid.Row
- * @class
+ * 表格行
+ * @class CC.ui.grid.Row
+ * @extends CC.ui.ContainerBase
  */
 C.register('CC.ui.grid.Row', function(){
   return CC.$C({
@@ -407,6 +462,7 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
   
   //display:'' 
   blockMode  : 0,
+  
   displayMode:3,
   
   createView : function(){
@@ -427,7 +483,9 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
     this.pCt.onRowOut(this, e);
   },
 /**
- *
+ * 根据列id获得单元格.
+ * @param {String} columnId 列ID
+ * @return {CC.ui.grid.Cell}
  */
   getCell : function(colId){
     var hd = this.pCt.pCt.header;

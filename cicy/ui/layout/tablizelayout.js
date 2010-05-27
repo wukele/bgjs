@@ -1,4 +1,10 @@
-﻿CC.create('CC.layout.TablizeLayout', CC.layout.Layout, {
+﻿/**
+ * @class CC.layout.TablizeLayout
+ * 只有一行的table布局,主要用于toolbar的布局,使得任何类型的元素排列的都比较整齐.
+ * 也常用于form布局,当需要并排表单组件时,此布局就能派上用场了.
+ * @extends CC.layout.Layout
+ */
+CC.create('CC.layout.TablizeLayout', CC.layout.Layout, {
 
   attach : function(ct){
   	var self = this;
@@ -29,7 +35,9 @@
 	    CC.layout.Layout.prototype.onLayout.apply(this, arguments);
     }
   },
-  
+/**
+ * 添加分隔条.
+ */
   addSeparator : function(){
   	var td = CC.$C({
   	  tagName:'TD',

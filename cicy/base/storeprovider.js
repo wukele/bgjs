@@ -1,35 +1,40 @@
 ﻿/**
- * @name CC.util.StoreProvider
- * @class
+ * @class CC.util.StoreProvider
+ * 提供容器子项数据存储(添加,修改,删除)功能.
  */
 CC.util.ProviderFactory.create('Store', null, {
 /**
- * 
+ * @cfg {String} modifyUrl
  */
   modifyUrl : false,
 /**
- * 
+ * @cfg {String} addUrl
  */  
   addUrl  : false,
 /**
- * 
+ * @cfg {String} delUrl
  */  
   delUrl : false,
-  
-  updateIdOnAdd : true,
 /**
- * @type {Object}
- @example
+ * @cfg {Boolean} updateIdOnAdd
+ */  
+  updateIdOnAdd : true,
+  
+/**
+ * @cfg {Object} shareParams 每次更新都会提交的键值对数据.
+ <pre><code>
   shareParams : {appName:'cicy'}
+ </code></pre>
  */
   shareParams : false,
 /**
- * 
+ * @cfg {Boolean} setupUrlFromItem 每次提交前是否将子项数据影射到URL中,默认为true.
  */  
   setupUrlFromItem : true,
 
 /**
- * 
+ * @cfg {Function} isResponseOk 可以重写该函数,以定义返回的数据是否正常.
+ * @return {Boolean}
  */
   isResponseOk : function(ajax){
     return (CC.util.StoreProvider.isResponseOk && 
@@ -45,18 +50,14 @@ CC.util.ProviderFactory.create('Store', null, {
     if( this[name+'QueueCfg'] )
       delete this[name+'QueueCfg'];
   },
-/**
- * 
- */
+
   getDelQueue : function(){
     if(!this.delQueue){
       this.createAsycQueue('del');
     }
     return this.delQueue;
   },
-/**
- * 
- */  
+
   getSaveQueue : function(){
     if(!this.saveQueue){
       this.createAsycQueue('save');
@@ -80,15 +81,11 @@ CC.util.ProviderFactory.create('Store', null, {
     return url;
   },
   
-/**
- * http://www.example.com/del.jsp?itemId={id}
- */
+  //
   getDelUrl : function(item){
     return this.mappingUrl(this.delUrl, item);
   },
-/**
- * getpost data for item deleting
- */
+
   getDelQuery : function(item){
     var q = '';
     if(item){
@@ -111,24 +108,21 @@ CC.util.ProviderFactory.create('Store', null, {
     }
     return q;
   },
-/**
- * 
- */  
+ 
   getSaveUrl : function(item, isNew){
     return this.mappingUrl(isNew?this.addUrl:this.modifyUrl, item);
   },
 /**
- * 
- */  
+ * @cfg {Function} onSaveFail
+ */
   onSaveFail : fGo,
-/**
- * 
- */  
+
   beforeDel : function(item){
     return this.t.getValidationProvider().isInvalid(item, 'del')===false;
   },
 /**
- * 
+ * 删除某子项.
+ * @param {CC.Base} item
  */  
   del : function(item){
     if(item && this.isNew(item)){
@@ -162,10 +156,6 @@ CC.util.ProviderFactory.create('Store', null, {
     });
   },
 
-  
-/**
- * 
- */
   onDel : function(item){
     CC.Ajax.connect({
       url:this.getDelUrl(item),
@@ -190,11 +180,9 @@ CC.util.ProviderFactory.create('Store', null, {
     });
     this.getDelQueue().increase();
   },
-  
+/**@cfg {Function} onDelFail */
   onDelFail : fGo,
-/**
- * 
- */
+
   afterDel : function(item){
     if(item){
       item.pCt.remove(item);
@@ -202,7 +190,7 @@ CC.util.ProviderFactory.create('Store', null, {
     }
   },
 /**
- * 
+ * @param {CC.Base} item
  */
   save : function(item){
     var isNew = this.isNew(item),
@@ -247,6 +235,8 @@ CC.util.ProviderFactory.create('Store', null, {
     return this;
   },
 /**
+ * @param {Object} itemOption
+ * @param {Boolean} scrollIntoView
  * @return {CC.ui.Item}
  */
   createNew : function(itemOption, scrollIntoView){
@@ -259,15 +249,10 @@ CC.util.ProviderFactory.create('Store', null, {
     return item;
   },
   
-/**
- * @protected
- */
   beforeSave : function(item, isNew){
     return this.t.getValidationProvider().isInvalid(item, 'save')===false;
   },
-/**
- * 
- */
+
   onSave : function(item, isNew){
       CC.Ajax.connect({
         url : this.getSaveUrl(item, isNew),
@@ -299,31 +284,25 @@ CC.util.ProviderFactory.create('Store', null, {
   },
   
 /**
- * @name CC.util.StoreProvider#updateIdOnAdd
- * @property {Boolean} [updateIdOnAdd=true]
+ * @cfg {Boolean} updateIdOnAdd 默认为true
  */
   afterSave  : function(item, isNew, ajax){
     if(isNew && this.updateIdOnAdd)
       item.id = this.getCreationId(ajax);
   },
 /**
- * 
+ * param {CC.Ajax} ajax
  */
   getCreationId : function(ajax){
     return (ajax.getText()||'').trim();
   },
   
-/**
- * @protected
- */
   decorateNew : function(item, b){
     if(item)
       item.newed = b;
     return this;
   },
-/**
- * @protected
- */
+
   decorateModified : function(item, b){
     if(item)
       item.modified = b;
@@ -331,13 +310,15 @@ CC.util.ProviderFactory.create('Store', null, {
   },
 
 /**
- * 
+ * @param {CC.Base} item
+ * @return {Boolean}
  */
   isModified : function(item){
     return item ? item.modified : false;
   },
 /**
  * 容器数据是否被修改过.
+ * @return {Boolean} 
  */
   isModifiedAll : function(){
   	var self = this, md = false;
@@ -351,22 +332,21 @@ CC.util.ProviderFactory.create('Store', null, {
   },
   
 /**
- * 
+ * @param {CC.Base} item
+ * @return {Boolean}  
  */
   isNew : function(item){
     return item ? item.newed : false;
   },
 
+  itemQueryTempl : false,
 /**
- * @name CC.util.StoreProvider#shareParams
- */ 
-
-/**
- * @name CC.util.StoreProvider#itemQueryTempl
+ * @cfg  {String} itemQueryTempl
  */ 
  
 /**
- * 
+ * @param {CC.Base} item
+ * @return String
  */
   queryString : function(item){
     var q = '';

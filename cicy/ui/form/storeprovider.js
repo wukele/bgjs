@@ -1,12 +1,12 @@
 ﻿/**
- * @name CC.ui.form.StoreProvider
- * @class
- * @super CC.util.StoreProvider
+ * @class CC.ui.form.StoreProvider
+ * @extends CC.util.StoreProvider
  */
 CC.create('CC.ui.form.StoreProvider', CC.util.StoreProvider, function(father){
-return /**@lends CC.ui.form.StoreProvider#*/{
+return {
 /**
  * 调用CC.formQuery 获得提交数据
+ * @return {String}
  * @override
  */
   queryString : function(){
@@ -16,7 +16,6 @@ return /**@lends CC.ui.form.StoreProvider#*/{
 
 /**
  * 保存时提交整个表单数据
- * @override
  */
   save : function(){
     if(this.beforeSave()!== false && 
@@ -24,10 +23,7 @@ return /**@lends CC.ui.form.StoreProvider#*/{
          this.onSave();
     }
   },
-/**
- * 忽略addUrl与modifyUrl,统一利用saveUrl提交
- * @override
- */
+  // 忽略addUrl与modifyUrl,统一利用saveUrl提交
   getSaveUrl : function(){
     return this.mappingUrl(this.saveUrl);
   },

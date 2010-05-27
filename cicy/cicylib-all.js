@@ -17,7 +17,7 @@
  * 空调用有什么用?
  * 常见的就有在一个超链接中,
  * 其次当一个类未实现它的某个方法,但其它类又可能调用到该方法时,为了避免null调用,就可把这方法设为fGo.
- * @function
+ * @method
  * @example
    &lt;a href=&quot;Javascript:fGo()&quot; onclick=&quot;funcToRun()&quot;&gt;&lt;/a&gt;
  */
@@ -2019,7 +2019,7 @@ var Eventable = CC.Eventable = (function(opt){
 /**
  * 发送对象事件.
  * @name CC.Eventable#fire
- * @function
+ * @method
  * @param {Object} eid 事件名称
  * @param {Object} [args] 传递的回调参数
  @example
@@ -2077,7 +2077,7 @@ Eventable.prototype.fire = function(eid/**,arg1,arg2,arg3,...,argN*/){
  * @param {Function} callback 事件回调函数
  * @param {Object} [ds] this范围对象
  * @param {Object} [objArgs] 传递参数,该参数将作为回调最后一个参数传递
- * @function
+ * @method
  * @name CC.Eventable#on
  * @return this
  @example
@@ -2120,7 +2120,7 @@ Eventable.prototype.on = (function(eid,callback,ds,objArgs){
  * 移除事件监听.
  * @param {Object} eid
  * @param {Function} callback
- * @function
+ * @method
  * @name CC.Eventable#un
  * @return this
  */
@@ -2150,7 +2150,7 @@ Eventable.prototype.un = (function(eid,callback){
 /**
  * 发送一次后移除所有监听器,有些事件只通知一次的,此时可调用该方法发送事件
  * @param {Object} eid
- * @function
+ * @method
  * @name CC.Eventable#fireOnce
  * @return this
  */
@@ -2163,7 +2163,7 @@ Eventable.prototype.fireOnce = function(eid){
 /**
  * 订阅当前对象所有事件
  * @param {Object} target 订阅者,订阅者也是可Eventable的对象
- * @function
+ * @method
  * @name CC.Eventable#to
  * @return this
  */
@@ -2178,7 +2178,7 @@ Eventable.prototype.to = (function(target){
 
 /**
  * 默认为fire,自定订阅方式可重写.
- * @function
+ * @method
  * @name CC.Eventable#fireSubscribe
  * @return this
  @example
@@ -2596,7 +2596,7 @@ CC.extend(Event,
 
 /**
  * 添加DOM加载完成后回调函数
- * @function
+ * @method
  */
 CC.ready = function(){
   Event.ready.apply(Event, arguments);
@@ -2661,7 +2661,7 @@ CC.extendIf(console,
   */
   {
       /**
-       *@function
+       *@method
        *@param {arguments} 类似C语言中printf语法
        *@example
        * //%o表示参数为一个对象
@@ -2682,7 +2682,7 @@ CC.extendIf(console,
     assert:fGo,
       /**
        * 列出对象所有属性.
-       *@function
+       *@method
        *@param {object} javascript对象
       */
     dir:fGo,
@@ -2758,7 +2758,7 @@ var Ajax = CC.Ajax = CC.create();
 /**
  * 快速Ajax调用
  *@static
- *@function
+ *@method
  *@memberOf CC.Ajax
 @example
   //连接服务器并获得返回的JSON数据
@@ -2876,7 +2876,7 @@ Ajax.prototype =
     ,
 
    /**
-   * @function
+   * @method
    * 重写以实现自定消息界面,用于进度的消息显示,默认为空调用.
    */
     setMsg: fGo
@@ -3366,7 +3366,7 @@ CC.extend(Tpl,
  * @param {Function} [prehandler] 模板字符串的预处理函数, 调用方式为 return function(strTemplate, objParam),返回处理后的html模板
  * @param {Object} [Object] prehandler 传递给prehandler的参数
  * @see #forNode
- * @function
+ * @method
  * @return {DOMElement} 模板字符串对应的HTML结点集
  * @example
   Tpl['MyComp'] = &lt;div class=&quot;fd&quot;&gt;&lt;a href=&quot;javascript:void(0)&quot; id=&quot;_tle&quot;&gt;&thorn;&yen;&lt;/a&gt;&lt;/div&gt;
@@ -3954,7 +3954,7 @@ CC.extend(Base.prototype,
 
     fireOnce : fGo,
 
-/**@function*/
+/**@method*/
     un : fGo,
 
 /**
@@ -4229,7 +4229,7 @@ CC.extend(Base.prototype,
      return this;
    },
 /**
- * @protected
+ * @private
  */
    onShow : function(){
       this.delClass(hidCS[this.displayMode]);
@@ -4245,7 +4245,7 @@ CC.extend(Base.prototype,
       }
    },
 /**
- * @protected
+ * @private
  */
    onHide : function(){
      if(!this.hasClass(hidCS[this.displayMode])){
@@ -4664,7 +4664,7 @@ CC.extend(Base.prototype,
  * 该值主要用于布局计算,当调用{@link #getOuterW}方法时缓存该值
  * @name CC.Base#outerW
  * @property {Number}  outerW
- * @protected
+ * @private
  */
 
 /**
@@ -4688,7 +4688,7 @@ CC.extend(Base.prototype,
  * 该值主要用于布局计算,当调用{@link #getOuterH}方法时缓存该值
  * @name CC.Base#outerH
  * @property {Number}  outerH
- * @protected
+ * @private
  */
 
 /**
@@ -5559,10 +5559,10 @@ CC.extend(Base.prototype,
  * 注意如果直接用new Base创建的类没控件初始化过程.
  * 该方法已被设为 protected, 不建议直接调用,要创建基类实例请调用
  * CC.ui.instance(option)方法.
- * @protected
+ * @private
  * @param {Object} opt 类初始化信息
  * @name CC.Base.create
- * @function
+ * @method
  */
 Base.create = function(opt){
     var comp;
@@ -5587,7 +5587,7 @@ Base.applyOption = function(el, opt){
 
 /**
  * 根据DOM快速转化为控件对象方法，该方法将具有控件生命周期，但略去了初始化和渲染.
- * @function
+ * @method
  * @memberOf CC
  */
 CC.$$ = (function(dom, p) {
@@ -5622,7 +5622,7 @@ Cache.register('flycomp', function(){
   return c;
 });
 /**
- * @function
+ * @method
  * @memberOf CC
  */
 CC.fly = function(dom){
@@ -6308,7 +6308,7 @@ var E = CC.Event,
   var mgr = CC.util.dd.Mgr = /**@lends CC.util.dd.Mgr*/{
 /**
  * 矩域缓存
- * @protected
+ * @private
  */
         zmCache : {root:new CC.util.d2d.RectZoom()},
 
@@ -6573,7 +6573,7 @@ var E = CC.Event,
 
 /**
 * 是否安装结点拖放效果
-* @function
+* @method
 * @param {Boolean} true | false
 */
     installDrag : function(b){
@@ -6758,7 +6758,7 @@ if(!CC.layout)
 
 /**
  * @name CC.layout.def
- * @function
+ * @method
  */
 CC.layout.def = function(type, cls){
   this[type] = cls;
@@ -6813,7 +6813,7 @@ CC.create('CC.layout.Layout', null,
          * 容器在添加子项前被调用。
          * @param {CC.Base} comp 子项
          * @param {Object} cfg 子项用布局的配置信息
-         * @function
+         * @method
          */
         beforeAdd: fGo,
 /**
@@ -6822,7 +6822,7 @@ CC.create('CC.layout.Layout', null,
     如果控件被布局管理器所管理,
     其布局相关的配置信息将存放在component.lyInf,
     要访问子项当前布局信息,可通过layout.cfgFrom(component)方法获得.
- * @protected
+ * @private
  * @see #cfgFrom
  * @example
    var ct = ct;
@@ -6947,7 +6947,7 @@ CC.create('CC.layout.Layout', null,
 
         /**
          * 如没有针对单个控件布局的可直接忽略.
-         * @protected
+         * @private
          * @param {CC.Base} comp
          * @param {Object} cfg
          */
@@ -7295,7 +7295,7 @@ CC.create('CC.ui.ContainerBase', Base,
     return this;
   },
 /**
- * @protected
+ * @private
  */
   onAdd : function(a){
     this.children.push(a);
@@ -7319,14 +7319,14 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * @protected
+ * @private
  */
   beforeAdd : function(){
     
   },
   
 /**
- * @protected
+ * @private
  */
   afterAdd : fGo,
 
@@ -7930,7 +7930,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
     /**
      * 相对父层居中,这里的居中是相对视角居中.
-     * @function
+     * @method
      * @return this
      */
     center : function(anchor){
@@ -8524,7 +8524,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
     connect : fGo
   }
   </pre>
- * @protected
+ * @private
  */
   bindConnector : function(cfg){
 
@@ -8541,7 +8541,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
   },
 /**
  * 创建并返回连接器
- * @protected
+ * @private
  */
   createConnector : function(cfg){
     return new CC.Ajax(cfg);
@@ -8660,7 +8660,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 
 /**
  * 当子项移除时提示选择器更新状态
- * @protected
+ * @private
  **/
  onItemRemoved : function(item){
   if(item === this.selected){
@@ -8687,13 +8687,13 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
    } else return this.defKeyNav(e);
  },
 
-/**@protected*/
+/**@private*/
  defKeyNav : fGo,
 
 /**
  * @name CC.util.SelectionProvider#t
  * @property {ContainerBase} t target目标容器
- * @protected
+ * @private
  */
 
 /**
@@ -8817,7 +8817,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
  * @param {CC.Base}  pre
  * @param {CC.util.SelectionProvider} provider
  */
-/**@protected*/
+/**@private*/
  onSelectChanged : function(item , b){
   if(!this.hasChanged(item, b))
     return;
@@ -8909,7 +8909,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
  },
 
  /**
-  * @protected
+  * @private
   * 获得当前用于计算下|上一选项的下标,默认返回当前选项项selectedIndex
   */
  getStartIndex : function(){
@@ -8970,7 +8970,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
   return n;
  },
 
-/**@protected*/
+/**@private*/
  selectAllInner : function(b){
   var s = this;
   this.t.each(function(){
@@ -9018,7 +9018,7 @@ CC.util.ProviderFactory.create('Validation', null, {
   focusOnError : true,
   
 /**
- * @protected
+ * @private
  */
   decorateValidation : function(b, item, collector, type){
     if(item){
@@ -9374,7 +9374,7 @@ CC.util.ProviderFactory.create('Store', null, {
   },
   
 /**
- * @protected
+ * @private
  */
   beforeSave : function(item, isNew){
     return this.t.getValidationProvider().isInvalid(item, 'save')===false;
@@ -9428,7 +9428,7 @@ CC.util.ProviderFactory.create('Store', null, {
   },
   
 /**
- * @protected
+ * @private
  */
   decorateNew : function(item, b){
     if(item)
@@ -9436,7 +9436,7 @@ CC.util.ProviderFactory.create('Store', null, {
     return this;
   },
 /**
- * @protected
+ * @private
  */
   decorateModified : function(item, b){
     if(item)
@@ -10550,43 +10550,43 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
    * 该值须与 CSS 中的.auto-margin值保持同步,因为这里margin并不是由JS控制.
    * 出于性能考虑,现在把它固定下来
    * @property horizonMargin {Number} 水平方向空位
-   * @protected
+   * @private
    */
   horizonMargin: 5,
 
   /**
    * 该值须与左边导航按钮宽度一致,出于性能考虑,现在把它固定下来
    * @property {Number} navLeftWidth
-   * @protected
+   * @private
    */
   navLeftWidth: 24,
 
   /**
    * 该值须与右边导航按钮宽度一致,出于性能考虑,现在把它固定下来
    * @property {Number} navLeftWidth
-   * @protected
+   * @private
    */
   navRightWidth: 24,
 
 /**
  * 布局加到容器的样式
- * @protected
+ * @private
  */
   ctCS : 'g-autoscroll-ly',
 /**
  * 导航按钮的disabled样式
- * @protected
+ * @private
  */
   disabledLeftNavCS: 'g-disabled auto-lefmov-disabled',
 
 /**
  * 导航按钮的disabled样式
- * @protected
+ * @private
  */
   disabledRightNavCS: 'g-disabled auto-rigmov-disabled',
 /**
  * 导航按钮所在结点的样式
- * @protected
+ * @private
  */
   navPanelCS: 'g-mov-tab',
 
@@ -10823,7 +10823,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
   },
 /**
  * @override
- * @protected
+ * @private
  */
   onLayout : function(w){
 
@@ -11459,7 +11459,7 @@ CC.create('CC.ui.DropButton', CC.ui.Button, {
 
   downCS : 'g-btn-dwn',
 /**
- * @protected
+ * @private
  */
   _onclick : function(e){
     if(this.array)
@@ -12059,7 +12059,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     globalPos = Event.pageXY(event || window.event);
   }
   /**
-   * @function
+   * @method
    * @param {String} msg 提示消息
    * @param {String} [title] 消息提示标题
    * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
@@ -12601,7 +12601,7 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, /**@lends CC.ui.IFramePanel#*/{
   /**
    * 根据结点id返回IFrame页面内元素dom结点.
    * 注:必须在IFrame加载完成后才可正常访问.
-   * @function
+   * @method
    * @return {DOMElement}
    */
   $ : function(id){
@@ -13413,7 +13413,7 @@ CC.extendIf(CC.Util, (function(){
   /**
    * 根据对话框类型过滤按钮
    * 当前this为过滤字符串
-   * @function
+   * @method
    * @private
    * @see CC.ui.ContainerBase#filter
    */
@@ -13430,7 +13430,7 @@ return /**@lends CC.Util*/{
   /**
    * 返回系统全局唯一对话框.
    * 该对话框为系统消息窗口.
-   * @function
+   * @method
    * @return {Dialog} 系统对话框
    */
   getSystemWin: function() {
@@ -13462,7 +13462,7 @@ return /**@lends CC.Util*/{
       /**
        * 得到inputBox中input元素
        * @memberOf CC.Util._sysWin
-       * @function
+       * @method
        * @return {Element} inputBox中input元素
        */
       w.getInputEl  = (function(){
@@ -13474,7 +13474,7 @@ return /**@lends CC.Util*/{
 
   /**
    * 弹出对话框.
-   * @function
+   * @method
    * @param {String} msg 消息
    * @param {String} 标题
    * @param {String} 显示按钮ID,用|号分隔,如ok|cancel|yes|no
@@ -13508,7 +13508,7 @@ return /**@lends CC.Util*/{
 
   /**
    * 弹出输入对话框.
-   * @function
+   * @method
    * @param {String} msg 消息
    * @param {String} 标题
    * @param {String} 显示按钮ID,用|号分隔,如ok|cancel|yes|no,默认为ok|cancel
@@ -13768,7 +13768,7 @@ return {/**@lends CC.ui.MenuItem# */
     return this.pCt.onItem === this;
   },
 
-/**@protected*/
+/**@private*/
   decorateActive : function(b){
   	this.checkClass(this.pCt.activeCS, b);
   },
@@ -15107,7 +15107,7 @@ CC.ui.def('tree', CC.ui.Tree);
  * 全局实例
  * 用法 <input type="text" onclick="Datepicker.show(this)" />
  * @name CC.ui.Datepicker.show
- * @function
+ * @method
  */
   DP.show = function(input) {
     DP.getInstance();
@@ -15711,7 +15711,7 @@ return /**@lends CC.ui.grid.Content#*/{
 /**
  * 是否正在批量更新中
  * @name CC.ui.grid.Content#batchUpdating
- * @protected
+ * @private
  */
    this.batchUpdating = true;
    this.updateView();
@@ -16659,7 +16659,7 @@ CC.create('CC.ui.form.FormElement', Bx,
     },
 /**
  * 设置聚焦,失焦时样式切换效果
- * @protected
+ * @private
  */
     bindFocusCS : function(cs){
       if(cs)
@@ -16679,13 +16679,13 @@ CC.create('CC.ui.form.FormElement', Bx,
 
     /**
      * 用于修改聚焦样式时回调,如果子项有聚焦效果并需要监听聚焦的话,就不用重新监听一次,直接重写该函数即可.
-     * @protected
+     * @private
      */
     focusCallback : fGo,
 
     /**
      * 继承的FormElement控件必要实现控件失去/获得焦点时事件的发送.
-     * @protected
+     * @private
      */
     onFocusTrigger : function(){
       if(this.focused)
@@ -16697,7 +16697,7 @@ CC.create('CC.ui.form.FormElement', Bx,
       this.fire('focus');
     },
 
-    /**@protected*/
+    /**@private*/
     onBlurTrigger : function(){
       if(this.focused){
         this.focused = false;
@@ -16715,7 +16715,7 @@ CC.create('CC.ui.form.FormElement', Bx,
 
     /**
      * 继承的FormElement控件必要实现控件按件事件的发送.
-     * @protected
+     * @private
      */
     onKeydownTrigger : function(evt){
       this.fire('keydown', evt);
@@ -16776,7 +16776,7 @@ CC.create('CC.ui.form.FormElement', Bx,
     
     deactive : fGo,
     
-/**@protected*/
+/**@private*/
     mouseupCallback: function(evt) {
       if (this.onclick) this.onclick(evt, this.element);
     }
@@ -17339,7 +17339,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
    /**
    * 定位选择容器位置
-   * @protected
+   * @private
    */
     preferPosition: function() {
       var s = this.selector;

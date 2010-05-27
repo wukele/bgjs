@@ -1,14 +1,14 @@
 ﻿CC.Tpl.def('CC.ui.form.Progressbar' , '<table class="g-progressbar" cellspacing="0" cellpadding="0" border="0"><tr><td class="g-progress-l"><i>&nbsp;</i><input type="hidden" id="_el" /></td><td class="g-progress-c"><img id="_img" src="http://www.bgscript.com/s.gif" alt=""/></td><td class="g-progress-r"><i>&nbsp;</i></td></tr></table>');
 /**
- * @name CC.ui.form.Progressbar
+ * @class CC.ui.form.Progressbar
  * @extends CC.ui.form.FormElement
  */
 CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
   if(!CC.ui.form.Progressbar.img)
     CC.ui.form.Progressbar.img = 'http://www.bgscript.com/images/progressbar.gif';
 
-  return /**@lends CC.ui.form.Progressbar*/{
-    /**@type {Number}*/
+  return {
+    /**@cfg {Number} range 范围,默认100*/
     range : 100,
 
     value : 0,
@@ -26,7 +26,7 @@ CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
     setValue : function(v){
       if(v>=100){
         CC.fly(this.img).fastStyleSet('width','100%').unfly();
-        this.onStop();
+        this.onstop();
         this.fire('progressstop', this);
         return father.setValue.call(this, 100);
       }
@@ -34,8 +34,8 @@ CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
       CC.fly(this.img).fastStyleSet('width',v+'%').unfly();
       return father.setValue.call(this, v);
     },
-/**callback*/
-    onStop : fGo
+/**@cfg {Function} onstop*/
+    onstop : fGo
   };
 });
 

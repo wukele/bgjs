@@ -1,25 +1,32 @@
-﻿
-//~@base/d2d.js
-/**
+﻿/**
+ * @class CC.util.d2d
  * 平面2D相关类库
- * @name CC.util.d2d
  * @namespace
  */
  CC.util.d2d = {};
 /**
+ * @class CC.util.d2d.Point
  * 点类,描述平面空间上的一个点
- * @name CC.util.d2d.Point
- * @class
+ * @cfg {Number} x x坐标
+ * @cfg {Number} y y坐标
+ * @constructor
+ * @param {Number} x x坐标
+ * @param {Number} y y坐标
  */
   CC.util.d2d.Point = function(x, y){
     this.x = x || 0;
     this.y = y || 0;
   };
+
 /**
- * 矩形类,l,t,w,h
- * @name CC.util.d2d.Rect
+ * @class CC.util.d2d.Rect
+ * 矩形类,l,t,w,h<br>
+ * <pre><code>
+    var rect  = new CC.util.d2d.Rect(left, top, width, height);
+    var rect2 = new CC.util.d2d.Rect([left, top, width, height]);
+   </code></pre>
  * @param {Array|Number} data 传入一个数组或left, top, width, height
- * @class
+ * @constructor
  */
   CC.util.d2d.Rect = function(l, t, w, h){
     var len = arguments.length;
@@ -36,26 +43,27 @@
     }
   };
 
-  CC.extend(CC.util.d2d.Rect.prototype, /**@lends CC.util.d2d.Rect.prototype*/{
+  CC.extend(CC.util.d2d.Rect.prototype, {
 /**
- * @type Number
+ * @cfg {Number} l left值
  */
     l : 0,
 /**
- * @type Number
+ * @cfg {Number} t top值
  */
     t : 0,
 /**
- * @type Number
+ * @cfg {Number} w width值
  */
     w: 0,
 /**
- * @type Number
+ * @cfg {Number} h height值
  */
     h : 0,
 /**
- * 点p是位于矩形内
+ * 判断点p是位于矩形内.
  * @param {CC.util.Point} 点
+ * @return {Boolean}
  */
     isEnter : function(p){
       var x = p.x, y = p.y;
@@ -64,33 +72,40 @@
              y>=this.t && y<=this.t+this.h;
     },
 /**
- * 刷新矩形缓存数据,默认为空调用
+ * 接口,刷新矩形缓存数据,默认为空调用
+ * @method
  */
     update : fGo,
-
+/**
+ * @return  this.valueOf() + ''
+ */
     toString : function(){
       return this.valueOf() + '';
     },
-
+/**
+ * @return [this.l,this.t,this.w,this.h]
+ */
     valueOf : function(){
       return [this.l,this.t,this.w,this.h];
     }
   });
 
 /**
- * 矩域, 由多个矩形或矩域组成树型结构
+ * @class CC.util.d2d.RectZoom
+ * 矩域, 由多个矩形或矩域组成树型结构,
  * 矩域大小由矩形链内最小的left,top与最大的left+width,top+height决定
- * @name CC.util.d2d.RectZoom
- * @class
  * @extends CC.util.d2d.Rect
+ * @constructor
+ * @param {Array} rects 由矩形数组创建矩域
  */
   CC.create('CC.util.d2d.RectZoom', CC.util.d2d.Rect, function(father){
 
    var Math = window.Math, max = Math.max, min = Math.min;
 
-   return /**@lends CC.util.d2d.RectZoom#*/{
+   return {
 /**
  * 父层矩域
+ * @type {CC.util.d2d.RectZoom}
  */
      pZoom : null,
 /**
@@ -108,8 +123,9 @@
       },
 
 /**
- * 返回域内所有矩形
- * @return {Array}
+ * 返回域内所有矩形, 返回的并不是矩形的复制,
+ * 而是实例内所有矩形的引用,所以对返回矩形数据的修改也就是对矩域内矩形数据的修改.
+ * @return {Array} rects
  */
       getRects : function(){
         return this.rects;
@@ -118,7 +134,7 @@
 /**
  * 矩形加入矩域
  * @param {CC.util.d2d.Rect} rect
- * @param {Boolean} update 是否更新
+ * @param {Boolean} update 加入后是否重新计算域数据
  */
       add : function(r, update){
         if(r.pZoom)
@@ -133,7 +149,7 @@
 /**
  * 矩形移出矩域
  * @param {CC.util.d2d.Rect} rect
- * @param {Boolean} update 是否更新
+ * @param {Boolean} update 移出后是否重新计算域数据
  */
       remove : function(r, update){
         delete r.pZoom;
@@ -144,6 +160,8 @@
       },
 /**
  * 是否包含某矩形(域),深层检测
+ * @param {CC.util.d2d.Rect} rect
+ * @return {Boolean}
  */
       contains : function(r){
         var c = false, ch;
@@ -164,6 +182,7 @@
 
   /**
    * 检测点是否位于当前矩形链中,如果点已进入范围,点所在的矩形
+   * @param {CC.util.d2d.Point} point
    * @return [Boolean|CC.util.d2d.Rect] false或矩形类
    */
       isEnter : function(p){
@@ -203,7 +222,10 @@
         this.w = x2 - x1;
         this.h = t2 - t1;
      },
-
+/**
+ * 刷新计算域数据.
+ * @override
+ */
      update : function(){
       var i, rs = this.rects, len = rs.length;
       for(i=0;i<len;i++){
@@ -216,21 +238,25 @@
   });
 
 /**
+ * @class CC.util.d2d.ComponentRect
  * 组件封装后的矩形
- * @name CC.util.d2d.ComponentRect
- * @class
  * @extends CC.util.d2d.Rect
+ * @constructor
+ * @param {CC.Base} component 与矩形关联的控件
  */
-  CC.create('CC.util.d2d.ComponentRect', CC.util.d2d.Rect,/**@lends CC.util.d2d.ComponentRect#*/ {
+  CC.create('CC.util.d2d.ComponentRect', CC.util.d2d.Rect, {
 /**
+ * @property z 
+ * zIndex值
  * @type Number
- * zIndex
  */
     z : -1,
 /**
- * 如果控件已注册拖放区域,引用指向封装该控件的矩形CC.util.d2d.ComponentRect
- * @name CC.Base#ownRect
+ * @property ownRect
+ * 如果控件已注册拖放区域,引用指向封装该控件的矩形CC.util.d2d.ComponentRect.<br>
+ * 该属性是由{@link CC.util.d2d.ComponentRect}类引入的.
  * @type {CC.util.d2d.ComponentRect}
+ * @member CC.Base
  */
     initialize : function(comp){
       this.comp = comp;
@@ -239,7 +265,8 @@
     },
 
 /**
- * 刷新矩形缓存数据
+ * 刷新矩形缓存数据.
+ * @override
  */
     update : function(){
       if(this.hidden){
