@@ -39,7 +39,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
    */
   CC.Util.ftip = function(msg, title, proxy, getFocus, timeout){
     if(!instance)
-      instance = new CC.ui.instance({ctype:'tip', showTo:document.body, autoRender:true});
+      instance = CC.ui.instance({ctype:'tip', showTo:document.body, autoRender:true});
     CC.fly(instance.tail).show().unfly();
     instance.show(msg, title, proxy, getFocus, timeout);
 
