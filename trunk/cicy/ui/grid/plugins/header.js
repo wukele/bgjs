@@ -1,9 +1,9 @@
 ﻿CC.Tpl.def('CC.ui.grid.Header', '<div class="g-grid-hd"><div class="hd-inner" id="_hd_inner"><table class="hd-tbl" id="_hd_tbl" cellspacing="0" cellpadding="0" border="0"><tbody><tr id="_ctx"></tr></tbody></table></div><div class="g-clear"></div></div>');
 
 /**
+ * @class CC.ui.grid.Header
  * 表头
- * @name CC.ui.grid.Header
- * @class
+ * @extends CC.ui.ContainerBase
  */
 CC.create('CC.ui.grid.Header', CC.ui.ContainerBase, function(father){
 	
@@ -20,10 +20,6 @@ return {
     this.hdTbl = this.$$('_hd_tbl');
   },
 
-/**
- * @name CC.ui.Grid#header
- * @property {CC.ui.grid.Header} header
- */
   initPlugin : function(grid){
     // add to grid container
     return true;
@@ -61,9 +57,7 @@ return {
     }
   },
 
-/**
- * 发送父层表格事件,如果此时存在父组件,调用父组件的fire发送事件
- */
+  // 发送父层表格事件,如果此时存在父组件,调用父组件的fire发送事件
   fireUp : function(){
     var p = this.pCt;
     if(p){
@@ -71,18 +65,10 @@ return {
     }
   },
 
-/**
- * 获得列数
- * @param {Number}
- */
   getColumnCount : function(){
     return this.children.length;
   }
 };
 });
 
-/**
- * @name CC.ui.gridhd
- * @field
- */
 CC.ui.def('gridhd', CC.ui.grid.Header);

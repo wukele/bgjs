@@ -1,27 +1,24 @@
 ﻿CC.Tpl.def('CC.ui.Resizer', '<div class="g-panel g-resizer"><div class="g-win-e" id="_xe"></div><div class="g-win-s" id="_xs"></div><div class="g-win-w" id="_xw"></div><div class="g-win-n" id="_xn"></div><div class="g-win-sw" id="_xsw"></div><div class="g-win-es" id="_xes"></div><div class="g-win-wn" id="_xwn"></div><div class="g-win-ne" id="_xne"></div><div class="g-panel-wrap g-resizer-wrap" id="_wrap"></div></div>');
 
 /**
- * 边框缩放控件
- * @name CC.ui.Resizer
- * @class
+ * @class CC.ui.Resizer
+ * 八个方向都可以缩放的面板.
  * @extends CC.ui.Panel
  */
 CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
   var CC = window.CC, G = CC.util.dd.Mgr, H = G.resizeHelper, E = CC.Event;
-    return /**@lends CC.ui.Resizer#*/{
+    return {
+
 /**
- * 是否允许缩放
- * @type Boolean
+ * @cfg {Boolean} resizeable 是否允许缩放.
  */
         resizeable : true,
 /**
- * 是否允许纵向缩放
- * @type Boolean
+ * @cfg {Boolean} enableH 是否允许纵向缩放
  */
         enableH:true,
 /**
- * 是否允许横向缩放
- * @type Boolean
+ * @cfg {Boolean} enableW 是否允许横向缩放
  */
         enableW:true,
 
@@ -36,10 +33,10 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
         minH:6,
 
 /**
- * @name CC.ui.Resizer#resizestart
- * @event
- * 缩放触发时发送
+ * @event resizestart
+ * 缩放开始时发送.
  */
+ 
 /**
  * @private
  */
@@ -53,22 +50,25 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
             }
             //记录初始数据,坐标,宽高
             this.initPS = {pos:a,size:b};
-            H.applyResize(true);
+            H.applyResize(true, nd.fastStyle('cursor'));
             H.layer.setXY(a)
                    .setSize(b);
-            H.masker.fastStyleSet('cursor', nd.fastStyle('cursor'));
             this.fire('resizestart');
           }
         },
 
 /**
- * @name CC.ui.Resizer#resizeend
- * @event
+ * @event resizeend
  * @param {Array} xy [current_x, current_y]
  * @param {Array} dxy [delta_x, delta_y]
- * 缩放触发时发送
+ * 缩放结束后发送.
  */
-
+/**
+ * @property initPS
+ * 记录缩放开始时控件位置,长度等相关信息.
+ * 结构为 {pos:[x,y],size:{width:w, height:h}}
+ * @type Object
+ */
 /**
  * @private
  */
@@ -109,22 +109,14 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
 
             this.fire('resizeend', dlt, dxy);
 
-            H.applyResize(false);
-            H.masker.fastStyleSet('cursor', '');
+            H.applyResize(false, '');
             delete this.initPS;
           }
         },
 
-/**
- * @name CC.ui.Resizer#initPS
- * @property {Object} initPS 保存缩放开始时的数据,结构为{pos:[x, y], size:{width, height}}
- */
-
         initComponent : function() {
           superclass.initComponent.call(this);
-/**
- * @name CC.ui.Resizer#cornerSprites
- */
+          
           this.cornerSprites = [];
           this.resizeable ? this.bindRezBehavior() : this.setResizable(false);
         },
@@ -227,12 +219,7 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
             }
         },
 /**
- * @name CC.ui.Resizer#resizeable
- * @property {Boolean} resizeable 获得控件是否可缩放,只读,设置时可调用setResizeable方法
- */
-
-/**
- * 设置是否可以缩放
+ * 设置是否可缩放.
  * @param {Boolean} resizeable
  */
         setResizable : function(resizeable) {

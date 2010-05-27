@@ -1,19 +1,17 @@
 ﻿CC.Tpl.def('CC.ui.Foldable', '<div class="g-foldable"><div class="g-foldablewrap"><b title="隐藏" id="_trigger" class="icos icoCls"></b><div id="_tle"></div></div></div>');
 /**
- * @name CC.ui.Foldable
- * @class
+ * @class CC.ui.Foldable
  * @extends CC.Base
  */
 
-CC.create('CC.ui.Foldable', CC.Base, /**@lends CC.ui.Foldable#*/{
+CC.create('CC.ui.Foldable', CC.Base, {
 
     clsGroupCS: 'g-gridview-clsview',
 
     unselectable: true,
-  /**
-   * @property nodeBlockMode 指定收缩结点的displayMode:''或block
-   */
-  //nodeBlockMode:1,
+   
+   //指定收缩结点的displayMode:''或block
+   //nodeBlockMode:1,
     initComponent: function(){
         this.createView();
         CC.Base.prototype.initComponent.call(this);
@@ -24,6 +22,7 @@ CC.create('CC.ui.Foldable', CC.Base, /**@lends CC.ui.Foldable#*/{
         }
     },
 /**
+ * 收缩内容区域.
  * @param {Boolean} foldOrNot
  */
     foldView: function(b){

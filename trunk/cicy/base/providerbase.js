@@ -1,12 +1,18 @@
 ﻿(function(){
 var ccxp = CC.ui.ContainerBase.prototype;
 
-//~@base/providers.js
 /**
- * @name CC.util.ProviderBase
- * @class
+ * @class CC.util.ProviderBase
+ * 容器{@link CC.ui.ContainerBase}功能增强类的基类.
  */
-CC.create('CC.util.ProviderBase', null, /**@lends CC.util.ProviderBase#*/{
+ 
+/**
+ * @property t
+ * 已绑定的目标容器
+ * @type CC.ui.ContainerBase
+ */
+ 
+CC.create('CC.util.ProviderBase', null, {
 	
 	initialize : function(opt){
 /**
@@ -17,22 +23,28 @@ CC.create('CC.util.ProviderBase', null, /**@lends CC.util.ProviderBase#*/{
 		if(opt)
 			CC.extend(this, opt);
 	},
-
+/**
+ * 绑定容器.
+ * @param {CC.ui.ContainerBase} targetContainer
+ */
 	setTarget : function(container){
 		this.t = container;
 	},
-	
+
 	each : function(){
 	  this.t.each.apply(this.t, arguments);
 	}
 });
 
 /**
- * @name CC.util.ProviderFactory
- * @class
+ * @class CC.util.ProviderFactory
  */
 CC.util.ProviderFactory = {
-	
+/**
+ * @param {String} name Provider name
+ * @param {Function} baseClass base class
+ * @param {Object} attrset attribute set
+ */
 	create : function(name, base, attrs){
 		var full      = name + 'Provider', low = name.toLowerCase();
 		//lowProvider

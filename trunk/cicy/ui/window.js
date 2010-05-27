@@ -1,7 +1,6 @@
 ﻿/**
+ * @class CC.ui.Win
  * window控件
- * @name CC.ui.Win
- * @class
  * @extends CC.ui.Resizer
  */
 CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
@@ -16,19 +15,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         Base = CC.Base,
         SX = Base.prototype.setXY,
         IPXY;
-/**
- * @name CC.ui.Win#unmoveable
- * @property {Boolean} unmoveable 设置该值操纵当前窗口是否允许移动
- */
-/**
- * @namespace
- * @name CC.ui.win
- */
-/**
- * @name CC.ui.win.Titlebar
- * @class
- * @extends CC.ui.ContainerBase
- */
+
     var wtbDef = {
       ctype:'ct',
       autoRender: true,
@@ -49,8 +36,14 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
       id:'_cls'
     };
     
-    return /**@lends CC.ui.Win#*/{
-
+    return {
+/**
+ * @cfg {Boolean} unmoveable 设置该值操纵当前窗口是否允许移动.
+ */
+        unmoveable : false,
+/**
+ * @cfg {Boolean} closeable 是否可关闭.
+ */
         closeable : true,
 
         shadow : {ctype:'shadow', inpactY:-1,inpactH:5},
@@ -70,7 +63,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
 
         minH:30,
 /**
- * 指定内容溢出时是否显示滚动条(overflow:hidden|auto),默认为显示
+ * @cfg {String} overflow 指定内容溢出时是否显示滚动条(overflow:hidden|auto),默认为显示
  */
         overflow:false,
 
@@ -143,7 +136,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         },
         
 /**
- * @interface
+ * @private
  * 重写该接口实现自定义标题栏位置
  * @param {CC.ui.ContainerBase} titlebar
  */
@@ -213,10 +206,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         onClsBtnClick : function(){
           this.pCt.pCt.close();
         },
-/**
- * 设置标题,实际上调用了titlebar设置标题
- * @override
- */
+
         setTitle : function(tle) {
           this.titlebar.setTitle(tle);
           return this;
@@ -251,13 +241,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
 
             return this;
         },
-/**
- * 改变窗口状态
- * 可选状态有<br>
- * <li>max
- * <li>min
- * <li>normal
- */
+
         switchState : function(){
           if(this.win_s != 'max')
             this.max();
@@ -275,9 +259,17 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
             }
             return this;
         },
-
+/**
+ * @event close
+ * 关闭前发送,返回false取消关闭当前窗口.
+ */
+ 
+/**
+ * @event closed
+ * 关闭后发送.
+ */
         /**
-         * 关闭当前窗口,发送close, closed事件.
+         * 关闭当前窗口.
          * @return this;
          */
         close : function(){
@@ -339,10 +331,26 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         max : function(){
           return this.setState('max');
         },
-        /**
-         * 切换窗口状态
-         * @param {String} st 状态选项, 值为max,min或空,为空时正常状态.
-         */
+/**
+ * @event statechange
+ * 窗口状态改变时前发送.
+ * @param {String} status
+ * @param {String} previousStatus
+ */
+/**
+ * @event statechanged
+ * 窗口状态改变时后发送.
+ * @param {String} status
+ * @param {String} previousStatus
+ */
+/**
+ * 改变窗口状态
+ * 可选状态有<br><div class="mdetail-params"><ul>
+ * <li>max</li>
+ * <li>min</li>
+ * <li>normal</li></ul></div>
+ * @param {String} status
+ */
         setState : function(st) {
           var ws = this.win_s;
 

@@ -1,9 +1,10 @@
-﻿//~@base/Tracker.js
-/**
- * 状态变更跟踪器
+﻿/**
+ * @class CC.util.Tracker
+ * 状态变更跟踪器.<br>
+ * 内部维护一个后进先出数据结构来记录数据,该类目前用于记录{@link CC.ui.Tab}类的TAB选项打开顺序.
  */
 CC.create('CC.util.Tracker', null, {
-  /**历史记录最大条数*/
+  /**@cfg {Number} max 历史记录最大条数*/
   max : 20,
 
   initialize : function(opt){
@@ -12,7 +13,10 @@ CC.create('CC.util.Tracker', null, {
       CC.extend(this, opt);
   },
 
-/**记录数据*/
+/**
+ * 记录数据
+ * @param {Object} data
+ */
   track : function(data){
     var a = this.area;
     if(a.indexOf(data) !== -1)
@@ -26,19 +30,19 @@ CC.create('CC.util.Tracker', null, {
   },
 
 /**
- * 测试当前记录数据是可用
- * @param data
- * @type function
+ * 接口,测试当前记录数据是可用
+ * @param {Object} data
+ * @method isValid
  */
   isValid : fGo,
 
 /**
- * isValid的this对象
+ * @cfg {Object} validCaller {@link #isValid}的this对象
  */
   validCaller : null,
 
 /**
- * 弹出最近记录的数据
+ * 弹出最近记录的数据.
  */
   pop : function(){
     var vc = this.validCaller || this, as = this.area, len = as.length, i = len - 1;
@@ -51,12 +55,16 @@ CC.create('CC.util.Tracker', null, {
   },
 
 /**
- * 移除指定记录数据
+ * 移除指定记录数据.
+ * @param {Object} data
  */
   remove : function(data){
     this.area.remove(data);
   },
 
-/**当前记录数据大小*/
+/**
+ * 当前记录数据大小
+ * @return {Number}
+ */
   size : function() {return this.area.length;}
 });

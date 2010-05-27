@@ -1,12 +1,12 @@
 ﻿/**
- * @class
- * @name CC.ui.TitlePanel
+ * 具有标题栏的面板容器.
+ * @class CC.ui.TitlePanel
  * @extends CC.ui.Panel
  */
 CC.Tpl.def('CC.ui.TitlePanel', '<div class="g-panel g-titlepanel"><h3 class="g-titlepanel-hd" id="_tleBar"><a id="_btnFN" class="g-icoFld" href="javascript:fGo()"></a><a id="_tle" class="g-tle" href="javascript:fGo()"></a></h3><div id="_scrollor" class="g-panel-wrap g-titlepanel-wrap"></div></div>');
 
 CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
-    return /**@lends CC.ui.TitlePanel#*/{
+    return {
 
         unselectable : '_tleBar',
 
@@ -14,10 +14,8 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
 
         minH : 29,
 
-/**foldNode展开时样式*/
         openCS : 'g-icoOpn',
 
-/**foldNode折叠时样式*/
         clsCS  : 'g-icoFld',
 
         foldNode : '_btnFN',
@@ -39,13 +37,13 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
           return [29 , 0, 0, 0, 29, 0];
         },
 
-/**点击收缩图标时触发,可重写自定*/
+/**@cfg {Function} onTriggerClick 点击收缩图标时触发,可重写自定*/
         onTriggerClick: function() {
             var v = !this.wrapper.hidden;
             this.collapse(v, true);
         },
 /**
- * 标题点击时触发,默认执行缩放面板
+ * @cfg {Function} onTitleClick 标题点击时触发,默认执行缩放面板
  */
         onTitleClick : function(){
           this.onTriggerClick();

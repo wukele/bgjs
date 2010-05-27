@@ -7,15 +7,15 @@
 CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"><tbody><tr id="_ctx"><td class="tLe" id="_tLe"></td><td class="bdy"><nobr id="_tle" class="g-tle">选卡1</nobr></td><td class="btn" id="_btnC"><a href="javascript:fGo()" title="关闭" id="_trigger" class="g-ti-btn"></a></td><td class="tRi" id="_tRi"></td></tr></tbody></table>');
 
 /**
- * @name CC.ui.TabItem
- * @class
+ * @class CC.ui.TabItem
  * @extends CC.ui.ContainerBase
  */
   CC.create('CC.ui.TabItem', CC.ui.ContainerBase, {
 
     hoverCS: false,
 /**
- * @type Boolean
+ * 是否可关闭.
+ * @cfg {Boolean} closeable
  */
     closeable: true,
 
@@ -24,9 +24,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     ct: '_ctx',
 
     blockMode: 2,
-/**
- * 加载时样式
- */
+
     loadCS: 'g-tabitem-loading',
 
     initComponent: function() {
@@ -43,8 +41,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 
 /**
- * 增加按钮
- * @param {Object} config
+ * 增加按钮,如关闭按钮,还可以增加其它类似的按钮.
+ * @param {Object} config button config
  */
     addButton: function(cfg) {
       var td = this.cacheBtnNode.cloneNode(true);
@@ -56,6 +54,12 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       this.add(td);
       return td;
     },
+    
+		/**
+		 * @cfg {Boolean} syncPanelDestory tab item 销毁时是否连同对应的Panel一起销毁, 当tabitem.panel被自动加入tab.contentPanel面板时,如果该值未设置,则置为true.
+		 */
+	  syncPanelDestory : undefined,
+		
 /**
  * 获得tabItem对应的内容面板
  * @param {Boolean} autoCreate 如果没有,是否自动创建
@@ -74,16 +78,13 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
         if((ct = this.pCt) && (tct = ct.getContentPanel())){
         	tct.layout.add(p);
         }
-			/**
-			 * tab item 销毁时是否连同对应的Panel一起销毁, 当tabitem.panel被自动加入tab.contentPanel面板时,如果该值未设置,则置为true.
-			 * @type Boolean
-			 */
         if(this.syncPanelDestory === undefined)
           this.syncPanelDestory = true;
       }
       
       return p;
     },
+    
 /**
  * 设置TabItem对应的内容面板,设置后,panel有一个bindingTabItem属性指向该TabItem
  * @param {CC.ContainerBase} contentPanel 内容面板,可以是CC.ui.IFramePanel或其它容器
@@ -131,7 +132,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 /**
  * 设置是否可关闭
- * @param {Boolean}
+ * @param {Boolean} closeable
  */
     setCloseable: function(b) {
       if (this.cacheBtnNode) {
@@ -142,13 +143,14 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 
       return this;
     },
+ 
 /**
+ * @cfg {String} loadType
  * 如果允许自动创建内容面板,loadType设置创建的内容面板加载的内容,默认为html
  * 这个loadType将设置面板的connectionProvider.loadType.
- * @name CC.ui.TabItem#loadType
- * @property {String} loadType
  */
-
+   loadType : 'html',
+   
 /**
  * 加载项面板内容
  * @return this
@@ -176,6 +178,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 
     /**
      * TabItem内容面板加载时样式设置,这里主要在TabItem上显示一个loading图标.
+     * @private
      */
     onIndicatorStart: function() {
       var item = this.target.bindingTabItem;
@@ -204,8 +207,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 
   CC.ui.def('tabitem', CC.ui.TabItem);
 /**
- * @name CC.ui.Tab
- * @class
+ * @class CC.ui.Tab
  * @extends CC.ui.Panel
  */
   CC.create('CC.ui.Tab', CC.ui.Panel, {
@@ -233,34 +235,24 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     itemCls: CC.ui.TabItem,
 
 /**
- * 子项选择时是否自动加载子项内容, 默认为true
+ * @cfg {Boolean} autoLoad 子项选择时是否自动加载子项内容, 默认为true
  */
     autoLoad: true,
 /**
- * 当关闭子项时是否销毁子项,默认为false, 子项也可以设置tabItem.destoryOnClose覆盖设置.
- * @type Boolean
+ * @cfg {Boolean} destoryItemOnclose 当关闭子项时是否销毁子项,默认为false, 子项也可以设置tabItem.destoryOnClose覆盖设置.
  */
-    destoryItemOnclose: false,
+    destoryItemOnclose : false,
 
-    /**
-     * 主要用于TabItemLayout布局
-     */
     lyCfg: {
 
       navPanelCS: 'g-mov-tab',
 
       horizonMargin: 5,
 
-      /**
-         * 该值须与左边导航按钮宽度一致,出于性能考虑,现在把它固定下来。
-         * @property {Number} navLeftWidth
-         */
+      // 该值须与左边导航按钮宽度一致,出于性能考虑,现在把它固定下来
       navLeftWidth: 24,
 
-      /**
-         * 该值须与右边导航按钮宽度一致,出于性能考虑,现在把它固定下来。
-         * @property {Number} navLeftWidth
-         */
+      // 该值须与右边导航按钮宽度一致,出于性能考虑,现在把它固定下来
       navRightWidth: 24
     },
 
@@ -293,6 +285,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 
     /**
      * 关闭指定TabItem,当只有一个TabItem时忽略.
+     * @param {CC.ui.TabItem} tabItem
      */
     close: function(item) {
       item = this.$(item);
@@ -308,7 +301,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 
 /**
- * 获得内容面板
+ * 获得内容面板.
+ * @return {CC.ui.ContainerBase}
  */
     getContentPanel : function(){
       var cp = this.contentPanel;
@@ -319,16 +313,12 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       return cp;
     },
 
-    //@override
-//    beforeAdd: function(it) {
-//      if(SP.beforeAdd.call(this, it) !== false){
-//        if (it.getContentPanel())
-//          it.panel.display(false);
-//      }
-//    },
-
-    //是否显示指定的TabItem,
-    //参数a可为TabItem实例也可为TabItem的id,b为true或false.
+/**
+ * 是否显示指定的TabItem,
+ * 参数a可为TabItem实例也可为TabItem的id,b为true或false.
+ * @param {CC.ui.TabItem|String} tabItem
+ * @param {Boolean} displayOrNot
+ */
     displayItem: function(a, b) {
       a = this.$(a);
       //Cann't change this attribute.
@@ -374,7 +364,10 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       }
     },
 
-    //返回显示的TabItem个数.
+/**
+ * 返回显示的TabItem个数.
+ * @return {Number}
+ */
     getDisc: function() {
       var cnt = 0;
       var chs = this.children;

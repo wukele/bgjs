@@ -1,50 +1,43 @@
 ﻿/**
- * @name CC.ui.grid.plugins.Pagenation
- * @class 表格分页插件
+ * @class CC.ui.grid.plugins.Pagenation
+ * 表格分页插件
  */
-CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pagenation#*/{
+CC.create('CC.ui.grid.plugins.Pagenation', null, {
 /**
- * 当前页
- * @type Number
+ * @cfg {Number} current 当前页
  */
 	current : false,
 	
 /**
+ * @property count
  * 总页数
  * @type Number
  */
 	count : 0,
 /**
- * 每页记录数
- * @type Number
+ * @cfg {Number} size 每页记录数
  */
 	size : 10,
 /**
- * 表格后渲染后是否立即连接请求分页数据,默认为true.
+ * @cfg {Boolean} autoLoad 表格后渲染后是否立即连接请求分页数据,默认为true.
  */
   autoLoad : true,
 
 /**
- * 在每次发起请求时共享的提交参数对象键值对
- * @type Object
+ * @cfg {Object} params 在每次发起请求时共享的提交参数对象键值对
  */
   params : false,
 
 /**
- * 创建并返回自定义的查询字符串
- * @type Function
+ * 可重写该方法创建并返回自定义的查询字符串
  * @param {Object} queryObject key:value的提交键值对,可在里面定义提交的数据
  * @return {String}
+ * @method customQuery
  */
   customQuery : false,
 
 /**
- * 分页提交参数
- * @type Object
- */
-  params : null,
-/**
- * 是否允许响应分页
+ * @cfg {Boolean} disabled 是否允许响应分页
  */
   disabled : false,
   
@@ -93,6 +86,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   },
 /**
  * 设置每页记录条数
+ * @param {Number} size
  * @return this
  */
   setSize : function(sz){
@@ -100,13 +94,6 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
     return this;
   },
 
-/**
- * @return this
- */  
-  setCount : function(cnt){
-    this.count = cnt;
-    return this;
-  },
 /**
  * @return this;
  */
@@ -116,16 +103,23 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
     return this;
   },
 /**
- * @name CC.ui.grid#page:beforechange
+ * @event page:beforechange
+ * 事件由{@link CC.ui.grid.plugins.Pagenation}提供,分页改变前发送.
  * @param {Object} pageInformation
  * @param {Object} pagenationPlugin
- * @event
+ * @member CC.ui.Grid
  */
+
 /**
- * @param {Object | Number} pageInfo
- * @param {Boolean} fource fourceToLoad
- * @return this
+ * @event page:afterchange
+ * 事件由{@link CC.ui.grid.plugins.Pagenation}提供,分页改变,数据加载完成后发送.<br/>
+ * @param {Object} pageInformation
+ * @param {Object} returnedJsonObject
+ * @param {CC.Ajax} ajax
+ * @member CC.ui.Grid
  */
+
+ 
   go : function(inf, fource){
     if(!this.disabled){
     	if(!inf || typeof inf === 'number')
@@ -185,16 +179,6 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
     return pageInf;
   },
   
-/**
- * @name CC.ui.grid#page:afterchange
- * @event
- * @param {CC.ui.grid.plugin.Pagenation} 分页插件实例
- * @param {CC.Ajax} j
- */
- 
- /**
-  * 
-  */
   _onSuccess : function(j){
   	// 注意当前的this是content.getConnectionProvider()
     var page = this.t.pCt.pagenation;
@@ -218,6 +202,9 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
     }
   },
   
+/**
+ * 更新UI状态.
+ */
   updateUIStatus : function(){
   	var tb = this.tb, cur = this.current, cnt = this.count;
   	//has pre

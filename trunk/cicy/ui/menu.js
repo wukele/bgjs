@@ -4,18 +4,12 @@ var CC = window.CC;
 var Event = CC.Event;
 var SPP = CC.util.SelectionProvider.prototype;
 /**
- * @name CC.ui.menu
- * @namespace
+ * @class CC.ui.menu
  */
 CC.Tpl.def('CC.ui.Menu', '<div class="g-panel g-menu"><div id="_wrap" class="g-panel-wrap"><ul class="g-menu-opt" id="_bdy"  tabindex="1" hidefocus="on"></ul></div></div>')
       .def('CC.ui.MenuItem', '<li class="g-menu-item"><span id="_tle" class="item-title"></span></li>');
-/**
- * @class
- * @name CC.ui.menu.MenuSelectionProvider
- * @extends CC.util.SelectionProvider
- */
-CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
-/**@lends CC.ui.menu.MenuSelectionProvider#*/{
+
+CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider, {
 /**
  * 无论选中与否都强迫选择
  */
@@ -66,10 +60,7 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
    }
  },
 
-/**
- * 展开菜单当前项或激活第一个能激活的菜单项
- * @private
- */
+  // 展开菜单当前项或激活第一个能激活的菜单项
   tryActive : function(menu, exp){
     var o = menu.onItem;
     if(o && o.subMenu){
@@ -82,29 +73,24 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
     }
   },
 
-/**
- * @override
- */
+  // @override
   getStartIndex : function(){
     var m = this.t, o = m.onItem;
     return o?m.indexOf(o) : -1;
   },
 
-/**@private*/
   next : function(){
     var t = this.t, it = this.getNext();
     if(!it) it = t.$(0);
     if(it) it.active(t.menubar);
   },
 
-/**@private*/
   pre : function(){
     var t = this.t, it = this.getPre();
     if(!it) it = t.$(t.size() - 1);
     if(it)  it.active(t.menubar);
   },
 
-/**@private*/
   left : function(){
     var m = this.t;
     if(m.menubar)
@@ -120,7 +106,6 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
     }
   },
 
-/**@private*/
   right : function(){
     var m = this.t;
     if(m.menubar)
@@ -135,7 +120,6 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
     }
   },
 
-/**@private*/
   esc : function(){
     var m = this.t, o = m.onItem;
     if(m.menubar){
@@ -154,24 +138,23 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
     }
   },
 
-/**@private*/
   enter : function(){
     var t = this.t, o = t.onItem;
     if(o) this.select(o);
   }
 });
+
 /**
+ * @class CC.ui.MenuItem
  * 菜单项被添加到菜单中,它可以被激活,激活后的菜单可方便键盘导航,
- * 菜单项可附有子菜单,菜单项有多种状态,每种状态可有不同的CSS样式:
- * <li>normal(deactive) -- 常态
- * <li>active  -- 激活
- * <li>sub menu expanded -- 子项展开
- * @name CC.ui.MenuItem
- * @class 菜单项
+ * 菜单项可附有子菜单,菜单项有多种状态,每种状态可有不同的CSS样式:<div class="mdetail-params"><ul>
+ * <li>normal(deactive) -- 常态</li>
+ * <li>active  -- 激活</li>
+ * <li>sub menu expanded -- 子项展开</li></ul>
  * @extends CC.Base
  */
 CC.create('CC.ui.MenuItem', CC.Base, function(superclass){
-return {/**@lends CC.ui.MenuItem# */
+return {
 
 /**
  * 子菜单
@@ -182,13 +165,12 @@ return {/**@lends CC.ui.MenuItem# */
 /**
  * 如果菜单项存在子菜单,附加到菜单项上的样式
  * @type String
+ * @private
  */
   subCS : 'sub-x',
 
 /**
- * @private
- * 激活菜单项
- * 要设置激活菜单项样式,可设置父层菜单的activeCS属性
+ * 激活菜单项,要设置激活菜单项样式.
  * @param {Boolean} expand 激活时是否展开子菜单
  */
   active : function(expand){
@@ -223,7 +205,7 @@ return {/**@lends CC.ui.MenuItem# */
     return this.pCt.onItem === this;
   },
 
-/**@protected*/
+/**@private*/
   decorateActive : function(b){
   	this.checkClass(this.pCt.activeCS, b);
   },
@@ -361,18 +343,15 @@ return {/**@lends CC.ui.MenuItem# */
 });
 
 /**
- * 默认添加在document.body中,菜单按键导航功能由CC.ui.menu.MenuSelectionProvider提供.
- * @name CC.ui.Menu
- * @class 菜单
+ * @class CC.ui.Menu 
+ * 菜单控件,默认添加在document.body中.
  * @extends CC.ui.Panel
  */
 CC.create('CC.ui.Menu', CC.ui.Panel, function(superclass) {
 return /**@lends CC.ui.Menu#*/{
 
   hidden : true,
-/**
- * 默认宽度设为115px
- */
+
   width : 115,
 /**
  * 父菜单项,如果存在
@@ -380,15 +359,10 @@ return /**@lends CC.ui.Menu#*/{
  */
   pItem: null,
 
-/**
- * 菜单项激活时CSS样式
- */
+  // 菜单项激活时CSS样式
   activeCS :  'itemOn',
 
-/**
- * 当子菜单显示时,附加到菜单项上的样式
- * @type String
- */
+  // 当子菜单显示时,附加到菜单项上的样式
   expandCS : 'subHover',
 
   clickEvent : 'mousedown',
@@ -409,10 +383,7 @@ return /**@lends CC.ui.Menu#*/{
 
   menubarCS : 'g-menu-bar',
 
-/**
- * 分隔条结点样式
- * @type String
- */
+  // 分隔条结点样式
   separatorCS : 'g-menu-separator',
 
   initComponent: function() {
@@ -470,8 +441,9 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * 把子菜单menu添加到tar项上,tar可为一个index,或一个MenuItem对象,还可为MenuItem的id
- * 附加子菜单时要按从最先至最后附加,这样事件才会被父菜单接收
+ * 把子菜单menu添加到tar项上, 附加子菜单时要按从最先至最后附加,这样事件才会被父菜单接收.
+ * @param {CC.ui.Menu} menu
+ * @param {CC.ui.MenuItem|Number|String} targetItem 可为一个index,或一个MenuItem对象,还可为MenuItem的id
  */
   attach: function(menu, tar) {
     tar = this.$(tar);
@@ -508,7 +480,7 @@ return /**@lends CC.ui.Menu#*/{
   ,
 
 /**
- * 获得最顶层菜单
+ * 获得最顶层菜单.
  * @return {CC.ui.Menu}
  */
   getRoot : function(){
@@ -519,7 +491,7 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * 隐藏所有关联菜单
+ * 隐藏所有关联菜单.
  */
   hideAll : function(){
     var r = this.getRoot();
@@ -544,37 +516,39 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * 可重写该方法添加其它控件的一些样式
+ * @cfg {Function} onDisplay 可重写该方法添加其它控件的一些样式.
  */
   onDisplay : fGo,
 
 /**
- * 是否自动展开子菜单
- * @private
+ * 是否自动展开子菜单.
+ * @param {Boolean} autoExpand
  */
   setAutoExpand : function(b){
     this.autoExpand = b;
   },
 
 /**
- * 添加分隔条
+ * 添加分隔条.
  */
   addSeparator : function(){
     this._addNode(CC.ui.Menu.Separator.view.cloneNode(true));
   },
 
 /**
- * 在指定坐标或控件下显示菜单
- * @param {CC.Base|Number} x
- * @param {Number|Boolean} y
- * @param {Boolean} contexted
- * @example
+ * 在指定坐标或控件下显示菜单.
+ <pre><code>
    //在指定坐标显示菜单
    menu.at(110, 120);
    //在指定控件下显示菜单
    menu.at(text);
    //在指定坐标显示菜单,并且点击菜单外部时取消隐藏
    menu.at(110,120,false);
+ </code></pre>
+ * @param {CC.Base|Number} x
+ * @param {Number|Boolean} y
+ * @param {Boolean} contexted
+
  */
   at : function(a,b){
     this.display(true);
@@ -604,8 +578,8 @@ return /**@lends CC.ui.Menu#*/{
 
 CC.ui.Menu.Separator = CC.$$(CC.$C({tagName:'LI', className:CC.ui.Menu.prototype.separatorCS}));
 /**
- * @name CC.ui.Menubar
- * @class
+ * 菜单条
+ * @class CC.ui.Menubar
  * @extends CC.ui.Menu
  */
 CC.create('CC.ui.Menubar', CC.ui.Menu, {
@@ -623,6 +597,7 @@ CC.create('CC.ui.Menubar', CC.ui.Menu, {
   },
 
 /**
+ * @private
  * @override
  */
   bindContext : function(){

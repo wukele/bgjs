@@ -1,13 +1,32 @@
 ﻿(function(){
 /**
+ * @class CC.Eventable
  * 事件处理模型的实现.
- * @name CC.Eventable
- * @class 事件处理模型的实现
+ * @constructor
+ * @param {Object} config config object
  */
 var Eventable = CC.Eventable = (function(opt){
     /**
-     * @name CC.Eventable#events
-     * @property {Object} events 保存的事件列表
+     * @cfg {Object} events 保存的事件列表,格式为
+     <pre><code>
+       events : {
+         // names
+         'eventName' : [ //Array, handler list
+           // handler data
+           {  
+             // callback 简写
+             cb : function(arguments){
+               // ...
+             },
+             
+             // <b>this</b> caller
+             caller : object
+           },
+           ...
+         ],
+         ...
+       }
+     </code></pre>
      */
      if(opt)
       CC.extend(this, opt);
@@ -15,19 +34,19 @@ var Eventable = CC.Eventable = (function(opt){
 });
 
 /**
- * 发送对象事件.
- * @name CC.Eventable#fire
- * @function
- * @param {Object} eid 事件名称
- * @param {Object} [args] 传递的回调参数
- @example
+ * 发送对象事件.<br>
+ <pre><code>
   var e = new Eventable();
   e.on('selected', function(arg){
    //handling..
   });
   e.fire('selected', arg);
+  </code></pre>
+ * @method fire
+ * @param {Object} eid 事件名称
+ * @param {Object, Object, ...} args 传递的回调参数
  */
-Eventable.prototype.fire = function(eid/**,arg1,arg2,arg3,...,argN*/){
+Eventable.prototype.fire = function(eid){
 
 	if(__debug) {console.log('发送:%s,%o,源:%o',eid, arguments,this);}
 
@@ -70,15 +89,8 @@ Eventable.prototype.fire = function(eid/**,arg1,arg2,arg3,...,argN*/){
 };
 
 /**
- * 监听对象事件,如果回调函数返回false,取消后续的事件处理.
- * @param {Object} eid 事件名称
- * @param {Function} callback 事件回调函数
- * @param {Object} [ds] this范围对象
- * @param {Object} [objArgs] 传递参数,该参数将作为回调最后一个参数传递
- * @function
- * @name CC.Eventable#on
- * @return this
- @example
+ * 监听对象事件,如果回调函数返回false,取消后续的事件处理. <br>
+ <pre><code>
    var self = {name:'Rock'};
    var cfg = {message:'Good boy!'};
    var e = new CC.Eventable();
@@ -95,6 +107,13 @@ Eventable.prototype.fire = function(eid/**,arg1,arg2,arg3,...,argN*/){
 
    var item = {title:'an item'};
    e.fire('selected', item);
+   </code></pre>
+ * @param {Object} eid 事件名称
+ * @param {Function} callback 事件回调函数
+ * @param {Object} [ds] this范围对象
+ * @param {Object} [objArgs] 传递参数,该参数将作为回调最后一个参数传递
+ * @method on
+ * @return this
  */
 Eventable.prototype.on = (function(eid,callback,ds,objArgs){
     if(!eid || !callback){
@@ -118,8 +137,7 @@ Eventable.prototype.on = (function(eid,callback,ds,objArgs){
  * 移除事件监听.
  * @param {Object} eid
  * @param {Function} callback
- * @function
- * @name CC.Eventable#un
+ * @method un
  * @return this
  */
 Eventable.prototype.un = (function(eid,callback){
@@ -148,8 +166,7 @@ Eventable.prototype.un = (function(eid,callback){
 /**
  * 发送一次后移除所有监听器,有些事件只通知一次的,此时可调用该方法发送事件
  * @param {Object} eid
- * @function
- * @name CC.Eventable#fireOnce
+ * @method fireOnce
  * @return this
  */
 Eventable.prototype.fireOnce = function(eid){
@@ -161,8 +178,7 @@ Eventable.prototype.fireOnce = function(eid){
 /**
  * 订阅当前对象所有事件
  * @param {Object} target 订阅者,订阅者也是可Eventable的对象
- * @function
- * @name CC.Eventable#to
+ * @method to
  * @return this
  */
 Eventable.prototype.to = (function(target){
@@ -175,11 +191,8 @@ Eventable.prototype.to = (function(target){
 });
 
 /**
- * 默认为fire,自定订阅方式可重写.
- * @function
- * @name CC.Eventable#fireSubscribe
- * @return this
- @example
+ * 默认为fire,自定订阅方式可重写.<br>
+ <pre><code>
   var source = new Eventable();
   var subscriber = new Eventable();
 
@@ -187,6 +200,9 @@ Eventable.prototype.to = (function(target){
   subscriber.on('load', function(){});
 
   source.fire('load');
+  </code></pre>
+ * @method fireSubscribe
+ * @return this
  */
 Eventable.prototype.fireSubscribe = Eventable.prototype.fire;
 })();

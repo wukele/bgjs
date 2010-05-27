@@ -1,11 +1,12 @@
 ﻿/**
- * @name CC.ui.grid.Content
- * @class
+ * @class CC.ui.grid.Content
+ * 表格数据视图控件.
+ * @extends CC.ui.ContainerBase
  */
 CC.Tpl.def('CC.ui.grid.Content', '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup><tbody id="_ctx"></tbody></table></div>');
 CC.create('CC.ui.grid.Content', CC.ui.Panel, function(father){
 	var undefined, C = CC.Cache, CX = CC.ui.ContainerBase.prototype;
-return /**@lends CC.ui.grid.Content#*/{
+return {
 
  itemCls : CC.ui.grid.Row,
 
@@ -68,9 +69,10 @@ return /**@lends CC.ui.grid.Content#*/{
    this.setup();
    father.onRender.call(this);
 /**
+ * @property batchUpdating
  * 是否正在批量更新中
- * @name CC.ui.grid.Content#batchUpdating
- * @protected
+ * @type {Boolean}
+ * @private
  */
    this.batchUpdating = true;
    this.updateView();
@@ -130,9 +132,8 @@ return /**@lends CC.ui.grid.Content#*/{
       cws[idx] = width;
     }
   },
-/**
- * @override
- */
+  
+  // @override
   getScrollor : function(){
     return this;
   },
@@ -146,6 +147,15 @@ return /**@lends CC.ui.grid.Content#*/{
       this.updateRow(c);
     }
   },
+  
+/**
+ * @event contentscroll
+ * 数据视图grid.content滚动条滚动时发送.
+ * @param {DOMEvent} event
+ * @param {Number} scrollLeft
+ * @param {CC.ui.grid.plugin.Content} content
+ * @member CC.ui.Grid
+ */
 /**
  * @private
  */
@@ -154,17 +164,30 @@ return /**@lends CC.ui.grid.Content#*/{
   },
 
 /**
- * 是否禁止本单元的cellclick事件的发送,如果为true,当点击该单元时Grid并不发送cellclick事件,默认未置值
- * @name CC.ui.grid.Cell#ignoreClick
- * @property {Boolean} ignoreClick
+ * @cfg {Boolean} ignoreClick 是否禁止本单元的cellclick事件的发送,如果为true,当点击该单元时Grid并不发送cellclick事件,默认未置值
+ * @member CC.ui.grid.Cell
  */
 
 /**
- * 是否禁止本行的itemclick事件的发送,如果为true,当点击该行时Grid并不发送itemclick事件,默认未置值
- * @name CC.ui.grid.Row#ignoreClick
- * @property {Boolean} ignoreClick
+ * @cfg {Boolean} ignoreClick 是否禁止本行的itemclick事件的发送,如果为true,当点击该行时Grid并不发送itemclick事件,默认未置值
+ * @member CC.ui.grid.Row
  */
 
+/**
+ * @event cellclick
+ * 单元格点击事件
+ * @param {CC.ui.grid.Cell} cell
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowclick
+ * 行点击事件
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
  /**
   * 发送表格cellclick, itemclick事件
   * @private
@@ -181,13 +204,35 @@ return /**@lends CC.ui.grid.Content#*/{
       }
     }
   },
+  
+  hoverEvent : false,
 
+/**@cfg {Boolean} hoverEvent 是否允许发送rowover,rowout事件.*/
+
+/**
+ * @event rowover
+ * 允许content.hoverEvent后,鼠标mouseover时发送.
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowout
+ * 允许content.hoverEvent后,鼠标mouseout时发送.
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+ 
+  // @interface
   onRowOver : function(r, e){
     if(this.hoverEvent === true){
       this.grid.fire('rowover', r, e);
     }
   },
-
+  
+  // @interface
   onRowOut : function(r, e){
     if(this.hoverEvent === true){
       this.grid.fire('rowout', r, e);
@@ -252,10 +297,11 @@ return /**@lends CC.ui.grid.Content#*/{
   },
 
 /**
- * 定义更新单元格html方式
- * @param
+ * 更新单元格html
+ * @param {CC.ui.grid.Cell} cell
+ * @param {String} title
  */
-  updateCell : function(cell, title, /**@inner*/brush){
+  updateCell : function(cell, title, brush){
     if(!brush)
     	brush = cell.brush || this.grid.header.$(cell.pCt.indexOf(cell)).cellBrush;
     if(title === undefined){
@@ -263,34 +309,34 @@ return /**@lends CC.ui.grid.Content#*/{
     }
     cell.getTitleNode().innerHTML = brush.call(cell, title);
   },
+
 /**
- *
+ * 获得位置i行,j列上的单元格.
+ * @param {Number} rowIndex
+ * @param {Number} cellIndex
+ * @return {CC.ui.grid.Cell} cell
  */
-  insertAt : function(afIdx, bfIdx){
-
-  },
-/**
- * 该方法由外部调用,隐藏数据表列
- */
-  hideCol : function(idx, b){
-
-  },
-
-  getCell : function(i, j){
+  cellAt : function(i, j){
     return this.children[i].children[j];
   },
 
-  getRow : function(i){
-    return this.children[i];
-  },
-
+/**
+ * 获得第i行j列的数据.
+ * @param {Number} rowIndex
+ * @param {Number} cellIndex
+ * @return {Object}
+ */
   dataAt : function(i, j){
-    var c = this.getCell();
-    return c.getValue();
+    return this.$(i).$(j).getValue();
   },
-
+/**
+ * 获得第i行j列的标题.
+ * @param {Number} rowIndex
+ * @param {Number} cellIndex
+ * @return {String}
+ */
   textAt : function(i, j){
-    return this.getCell().title;
+    return this.$(i).$(j).getTitle();
   }
 };
 });

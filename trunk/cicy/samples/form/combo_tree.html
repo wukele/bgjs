@@ -50,7 +50,7 @@ CC.ready(function() {
 		var tree = new CC.ui.Tree({
 			  cs:'combo-tree',
 			  showTo:document.body, hidden:true,filter:treeFilter,
-		  	rootCfg:{
+		  	root:{
 		    title:'tree', array:[
 					{title:'disabled item',nodes:true,disabled:true},
 					{title:'B'},
@@ -72,7 +72,7 @@ CC.ready(function() {
 			cs:'combo-tree',
 			shadow:true,
 			/*url:'/q?bg_q=test_group', autoLoad:false, */showTo:document.body, hidden:true,filter:treeFilter,
-			rootCfg:{title:'tree2', array:[
+			root:{title:'tree2', array:[
 			  {title:'Back Light 点击展开', nodes:true},
 			  {title:'BCDEFJDFL;AJSDL'},
 				{title:'disabled item',nodes:true,disabled:true},

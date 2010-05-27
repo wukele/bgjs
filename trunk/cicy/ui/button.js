@@ -1,11 +1,10 @@
 ﻿CC.Tpl.def('CC.ui.Button', '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>');
 /**
- * @name CC.ui.Button
- * @class
+ * @class CC.ui.Button
  * @extends CC.Base
  */
 CC.create('CC.ui.Button', CC.Base, function(superclass){
-    return /**@lends CC.ui.Button#*/{
+    return {
         iconNode: '_tle',
         focusNode: '_tle',
         hoverCS: 'g-btn-over',
@@ -63,17 +62,23 @@ CC.create('CC.ui.Button', CC.Base, function(superclass){
         }
     };
 });
-
+/**
+ * @class CC.ui.DropButton
+ */
 CC.create('CC.ui.DropButton', CC.ui.Button, {
 
   downCS : 'g-btn-dwn',
 /**
- * @protected
+ * @private
  */
   _onclick : function(e){
     if(this.array)
       this.createMenu();
-
+/**
+ * @property menu
+   下拉菜单
+ * @type CC.ui.Menu
+ */
     if(this.menu){
       CC.Event.stop(e);
       this.showMenu(!!this.menu.hidden);
@@ -81,7 +86,7 @@ CC.create('CC.ui.DropButton', CC.ui.Button, {
 
     CC.ui.DropButton.superclass._onclick.apply(this, arguments);
   },
-
+/***/
   showMenu : function(b){
     if(b){
       this.menu.at(this, true);
@@ -90,7 +95,7 @@ CC.create('CC.ui.DropButton', CC.ui.Button, {
       this.menu.hide();
     }
   },
-
+/***/
   decorateDown : function(b){
     this.checkClass(this.downCS, b);
   },

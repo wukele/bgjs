@@ -1,22 +1,18 @@
 ﻿/**
- * @name CC.util.IFrameConnectionProvider
- * @class
+ * @class CC.util.IFrameConnectionProvider
+ * 封装IFramePanel容器的连接处理.
  * @extends CC.util.ConnectionProvider
  */
-CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@lends CC.util.IFrameConnectionProvider#*/{
+CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
 
 /**
- * 是否监听IFRAME加载事件,默认为true
- * @type Boolean
+ * @cfg {Boolean} traceLoad 是否监听IFRAME加载事件,默认为true
  */
   traceLoad : true,
 
-/**indicatorDisabled:true*/
   indicatorDisabled : true,
 
-/**
- * 默认不处理
- */
+  // 默认不处理,重写
   defaultLoadSuccess : fGo,
   
   setTarget : function(t){
@@ -63,7 +59,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
         break;
     }
   },
-/***/
+/**中止当前连接.*/
   abort : function(){
     this.t.getFrameEl().src = CC.ie?'about:blank':'';
     this.onFinal();
@@ -102,21 +98,19 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
 
 CC.Tpl.def('CC.ui.IFramePanel', '<iframe class="g-framepanel" frameBorder="no" scrolling="auto" hideFocus=""></iframe>');
 /**
- * IFRAME面板封装
- * @name CC.ui.IFramePanel
- * @class
+ * @class CC.ui.IFramePanel
+ * 面板主要维护一个iframe结点.
  * @extends  CC.ui.Panel
  */
-CC.create('CC.ui.IFramePanel', CC.ui.Panel, /**@lends CC.ui.IFramePanel#*/{
+CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
 /**
- * 是否跟踪IFramePanel父容器宽高改变以便调整自身宽高,默认值为false,
+ * @cfg {Boolean} traceResize 是否跟踪IFramePanel父容器宽高改变以便调整自身宽高,默认值为false,
  * 通常并不需要该项,IFramePanel往往是通过父容器的布局管理器来调整它的大小.
- * @type Boolean
  */
   traceResize : false,
 
   connectionProvider : CC.util.IFrameConnectionProvider,
-
+  // 取消父层默认的_ctx
   ct : undefined,
 
   onRender : function(){
@@ -130,7 +124,8 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, /**@lends CC.ui.IFramePanel#*/{
     }
   },
 /**
- * 获得iframe html结点
+ * 获得iframe html结点.
+ * @return {HTMLElement} iframe
  */
   getFrameEl : function(){
     return this.view;
@@ -146,8 +141,8 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, /**@lends CC.ui.IFramePanel#*/{
   /**
    * 根据结点id返回IFrame页面内元素dom结点.
    * 注:必须在IFrame加载完成后才可正常访问.
-   * @function
    * @return {DOMElement}
+   * @method $
    */
   $ : function(id){
     return CC.frameDoc(this.view).getElementById(id);

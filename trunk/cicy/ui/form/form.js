@@ -4,27 +4,46 @@ var CC = window.CC;
 var Bx = CC.Base;
 var Tpl = CC.Tpl;
 /**
- * @name CC.ui.form
+ * @class CC.ui.form
  * @namespace
  */
+
 /**
+ * @class CC.ui.form.FormElement
  * 表单元素基类
- * @name CC.ui.form.FormElement
- * @class
  * @extends CC.Base
  */
-CC.create('CC.ui.form.FormElement', Bx,
-/**@lends CC.ui.form.FormElement#*/{
+ 
+/**
+ * @event focus
+ */
+/**
+ * @event blur
+ */
+CC.create('CC.ui.form.FormElement', Bx, {
 
-    elementNode: '_el',
-
-    eventable : true,
-
-    /**
-     * 验证状态,默认为true,只读
-     */
-    isValid : true,
+/**@cfg {String} name 指定提交字段的名称*/
+    name : false,
     
+    value : undefined,
+/**
+ * @property element
+ * 提交数据放在这个html form element里.
+ * @type {HTMLElement}
+ */
+    element : false,
+    
+    elementNode: '_el',
+    
+/**@cfg {Boolean} eventable=true*/
+    eventable : true,
+/**
+ * @cfg {Function} validator 数据验证函数.
+ */
+    validator : false,
+/**
+ * @cfg {Boolean} validateOnblur 失去焦点时是否验证.
+ */
     validateOnblur : true,
     
     elementCS: 'g-form-el',
@@ -64,7 +83,7 @@ CC.create('CC.ui.form.FormElement', Bx,
     },
 /**
  * 设置聚焦,失焦时样式切换效果
- * @protected
+ * @private
  */
     bindFocusCS : function(cs){
       if(cs)
@@ -84,13 +103,13 @@ CC.create('CC.ui.form.FormElement', Bx,
 
     /**
      * 用于修改聚焦样式时回调,如果子项有聚焦效果并需要监听聚焦的话,就不用重新监听一次,直接重写该函数即可.
-     * @protected
+     * @private
      */
     focusCallback : fGo,
 
     /**
      * 继承的FormElement控件必要实现控件失去/获得焦点时事件的发送.
-     * @protected
+     * @private
      */
     onFocusTrigger : function(){
       if(this.focused)
@@ -102,7 +121,7 @@ CC.create('CC.ui.form.FormElement', Bx,
       this.fire('focus');
     },
 
-    /**@protected*/
+    /**@private*/
     onBlurTrigger : function(){
       if(this.focused){
         this.focused = false;
@@ -120,7 +139,7 @@ CC.create('CC.ui.form.FormElement', Bx,
 
     /**
      * 继承的FormElement控件必要实现控件按件事件的发送.
-     * @protected
+     * @private
      */
     onKeydownTrigger : function(evt){
       this.fire('keydown', evt);
@@ -138,7 +157,7 @@ CC.create('CC.ui.form.FormElement', Bx,
     },
 
 /**
- * 重写该方法可自定义修饰"错误提示"的方法
+ * 验证失败后修饰控件的"错误"状态.重写该方法可自定义修饰"错误提示"的方法
  * @param {Boolean} isValid
  */
     decorateValid : function(b){
@@ -148,7 +167,8 @@ CC.create('CC.ui.form.FormElement', Bx,
     },
 /**
  * 置值
- * @return this;
+ * @param {Object} value
+ * @return this
  */
     setValue: function(v) {
       this.element.value = v;
@@ -157,18 +177,22 @@ CC.create('CC.ui.form.FormElement', Bx,
     },
 
 /**
- * 获得html form element元素值
+ * 获得html form element元素值.
+ * @return {Object}
  */
     getValue : function(){
       return this.element.value;
     },
 
-/**获得控件文本显示值,返回this.getValue()*/
+/**获得控件文本显示值
+ * @return {Object}
+ */
     getText : function(){
       return this.getValue();
     },
 /**
- * 设置提交字段名称
+ * 设置提交字段名称.
+ * @param {String} name
  * @return this
  */
     setName: function(n) {
@@ -181,7 +205,7 @@ CC.create('CC.ui.form.FormElement', Bx,
     
     deactive : fGo,
     
-/**@protected*/
+    // @override
     mouseupCallback: function(evt) {
       if (this.onclick) this.onclick(evt, this.element);
     }
@@ -198,8 +222,7 @@ Tpl.def('Text', '<input type="text" id="_el" class="g-ipt-text g-corner" />')
    .def('Checkbox', '<span tabindex="0" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>')
    .def('Select', '<select class="g-corner"/>');
 /**
- * @class
- * @name CC.ui.form.Text
+ * @class CC.ui.form.Text
  * @extends CC.ui.form.FormElement
  */
 CC.create('CC.ui.form.Text', cf, {
@@ -214,6 +237,7 @@ CC.create('CC.ui.form.Text', cf, {
     maxH : 20,
 
     focusCS: 'g-ipt-text-hover',
+    
     focusCallback: function(evt) {
       spr.focusCallback.call(this, evt);
       //fix chrome browser.
@@ -228,8 +252,7 @@ CC.create('CC.ui.form.Text', cf, {
 
 CC.ui.def('text', fr.Text);
 /**
- * @class
- * @name CC.ui.form.Textarea
+ * @class CC.ui.form.Textarea
  * @extends CC.ui.form.FormElement
  */
 CC.create('CC.ui.form.Textarea', cf, fr.Text.constructors, {
@@ -240,11 +263,13 @@ CC.create('CC.ui.form.Textarea', cf, fr.Text.constructors, {
 
 CC.ui.def('textarea', fr.Textarea);
 /**
- * @class
- * @name CC.ui.form.Checkbox
+ * @class CC.ui.form.Checkbox
  * @extends CC.ui.form.FormElement
  */
-CC.create('CC.ui.form.Checkbox', cf, /**@lends CC.ui.form.Checkbox*/{
+CC.create('CC.ui.form.Checkbox', cf, {
+/**
+ * @cfg {Boolean} checked 是否选中状态,参见{@link #setChecked}
+ */
     template : 'Checkbox',
     hoverCS: 'g-check-over',
     clickCS: 'g-check-click',
@@ -261,7 +286,9 @@ CC.create('CC.ui.form.Checkbox', cf, /**@lends CC.ui.form.Checkbox*/{
       this.setChecked(!this.checked);
       spr.mouseupCallback.call(this, evt);
     },
-/***/
+/**
+ * @param {Boolean} checked
+ */
     setChecked: function(b) {
       this.checked = b;
       this.element.checked = b;
@@ -272,11 +299,17 @@ CC.create('CC.ui.form.Checkbox', cf, /**@lends CC.ui.form.Checkbox*/{
 
 CC.ui.def('checkbox', fr.Checkbox);
 /**
- * @class
- * @name CC.ui.form.Radio
+ * @class CC.ui.form.Radio
  * @extends CC.ui.form.FormElement
  */
+/**
+ * @param {Boolean} checked
+ * @method setChecked
+ */
 CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
+/**
+ * @cfg {Boolean} checked 是否选中状态,参见{@link #setChecked}
+ */
   innerCS: 'g-radio',
   template: 'Checkbox',
   hoverCS: 'g-radio-over',
@@ -287,9 +320,10 @@ CC.ui.def('radio', fr.Radio);
 
 
 /**
+ * @class CC.ui.form.Select
  * 对html select元素的轻量封装
- * @class
- * @name CC.ui.form.Select
+ * @extends CC.ui.form.FormElement
+ * @cfg {Array} array options
  */
 CC.create('CC.ui.form.Select', cf, {
     template:'Select',

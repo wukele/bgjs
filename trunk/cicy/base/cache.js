@@ -1,20 +1,19 @@
 ﻿(function(){
 var CC = window.CC;
 /**
- * 缓存类.
- * 数据结构为:
+ * 缓存类,数据结构为:<br>
+ * <pre>
  * Cache[key] = [dataObjectArray||null, generator];
  * dataObjectArray[0] = 预留位,保存该key数据最大缓存个数, 默认为5.
  * generator = 生成数据回调
- * @name CC.Cache
- * @class 缓存类
+ * </pre>
+ * @class CC.Cache
  * @singleton
  */
 CC.Cache =
-   /**@lends CC.Cache */
    {
 
-    /**@config {Number} MAX_ITEM_SIZE 某类设置的最大缓存数量.*/
+    /**@cfg {Number} MAX_ITEM_SIZE 某类设置的最大缓存数量.*/
     MAX_ITEM_SIZE: 5,
 
     /**@private 获取缓存数据的回调函数.*/
@@ -37,7 +36,7 @@ CC.Cache =
 /**
  * 根据键获得对应的缓存数据.
  * @param {String} key
- * @return data 或 null
+ * @return {Object|null}
  */
     get: function(k) {
         var a = this[k];
@@ -107,6 +106,11 @@ CC.Cache =
 
 /**
  * 缓存DIV结点,该结点可方便复用其innerHTML功能.
+ * <pre><code>
+   var divNode = CC.Cache.get('div');
+ * </code></pre>
+ * @property div
+ * @type DOMElement
  */
 CC.Cache.register('div', function() {
     return CC. $C('DIV');

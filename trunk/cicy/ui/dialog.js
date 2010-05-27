@@ -1,28 +1,26 @@
 ﻿CC.Tpl.def('CC.ui.Dialog.Bottom', '<div class="g-win-bottom"><div class="bottom-wrap"></div></div>');
 /**
+ * @class CC.ui.Dialog
  * 对话框是一个特殊的窗体，底部具有按钮栏，并且可指定是否模式，即是否有掩层。
  * @extends CC.ui.Win
- * @class
- * @name CC.ui.Dialog
- * @param {Object} superclass
  */
 CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
   var CC = window.CC;
   var Event = CC.Event;
-  return /**@lends CC.ui.Dialog#*/{
+  return {
     /**
      * 内部高度，与CSS一致
      * @private
      */
     bottomHeight: 51,
     /**
-     * 返回状态值, 可自定,如ok,cancel...,当对话框某个按钮点击并可返回时,返回值为该按钮ID
+     * 返回状态值, 可自定,如ok,cancel...,当对话框某个按钮点击并可返回时,返回值为该按钮ID.
+     * @type String|Boolean
      */
     returnCode : false,
 
     /**
-     * 设置默认按钮,该按钮必须在当前按钮列表中
-     * @type {String}
+     * @cfg {String} defaultButton 设置默认按钮,该按钮必须在当前按钮列表中
      */
     defaultButton : false,
 
@@ -88,6 +86,7 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
     },
 
     /**
+     * @private
      * @override
      */
     onClsBtnClick : function(){
@@ -103,7 +102,10 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
       this.close();
     },
 /**
- *
+ * 显示对话框.
+ * @param {CC.Base} parent 应用模式掩层的控件,为空时应用到document.body中.
+ * @param {Boolean} modal 是否为模态显示.
+ * @param {Function} callback 关闭前回调.
  */
     show: function(parent, modal, callback){
       this.modal = modal;

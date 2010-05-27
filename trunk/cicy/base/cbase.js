@@ -5,14 +5,15 @@ var CPC = {};
 var Cache = CC.Cache;
 var Event = CC.Event;
 /**
+ * @class CC.Base
+ * 为所有控件的基类,定义控件的基本属性与方法,管理控件的生命周期.<br>
  * 控件表现为属性+方法(行为)+视图(view),为了简单起见,在库控件的实现中控件属性和行为,可通过控件对象实例直接访问,而视图,即DOM部分可通过控件其中一个view属性访问.<br>
  * 一般来说,控件的私有属性和方法用下划线+名称表示.<br>
  * 控件的视图,即view,是表征控件外观,在页面中具体表现为html,从设计上来说,有两种方法可改变控件的视图,一是通过CSS控制控件的外观,二是改变控件视图的HTML.<br>
  * 第一种改变CSS有时达不到预期效果,它改变的仅仅是风格,如果两种都可运用则可使定义外观方式变得强大.<br>
  * 为了使得控件具体有多种外观而保持不变的行为,在库的控件实现中采用模板的方式定义控件的外观,在模板数据中可以定义控件具体的HTML,CSS,当改变控件的外观时,只需改变控件的模板,而必定义更多的代码.<br>
  * 例如将126风格的控件换成EXT风格控件,只需将它们的模板换成EXT相似的即可.
- * @name CC.Base
- * @class 为所有控件的基类,定义控件的基本属性与方法,管理控件的生命周期.
+ * @abstract
  * @author Rock
  */
 var Base = CC.Base = (function(dom){
@@ -21,9 +22,12 @@ var Base = CC.Base = (function(dom){
 });
 
 /**
- * @name CC.Base.find
  * 根据控件ID获得控件,该方法将遍历控件缓存,速度并不快
  * @param {String} componentId
+ * @static
+ * @return {CC.Base|null}
+ * @member CC.Base
+ * @method find
  */
 Base.find = function(id){
   for(var i in CPC){
@@ -33,17 +37,24 @@ Base.find = function(id){
   return null;
 };
 /**
- * @name CC.Base.byCid
- * 根据控件缓存ID(唯一)获得控件,该缓存id在控件初始化时设置,保存在 component.cacheId 和 component.view.cicyId中.
- * @param {String} componentId
+ * 根据控件缓存ID(cacheId, 唯一)获得控件,该缓存id在控件初始化时设置,保存在 component.cacheId 和 component.view.cicyId中.
+ * @param {String} componentCacheId
+ * @static
+ * @return {CC.Base|null}
+ * @member CC.Base
+ * @method byCid
  */
 Base.findByCid = Base.byCid = function(cid){
   return CPC[cid];
 };
+
 /**
  * 根据DOM元素返回一个控件, 如果已指定pCt,返回该容器子控件中的匹配控件
  * @param {HTMLElement} dom
  * @param {CC.ui.ContainerBase} pCt, 如果已指定,返回该容器子控件中的匹配控件
+ * @static
+ * @member CC.Base
+ * @method byDom
  */
 Base.byDom = function(dom, pCt){
       //find cicyId mark
@@ -66,11 +77,13 @@ Base.byDom = function(dom, pCt){
 };
 
 /**
- * 控件html模板定义类, 存放格式为 Tpl[component type] = strHtml.
- * @name CC.Tpl
- * @class 控件html模板定义类
- * @example
-   Tpl['MyComp'] = '&lt;div class=&quot;cus&quot;&gt;&lt;/div&gt;';
+ * @class CC.Tpl
+ * 控件html模板定义类, 通过{@link #def}方式存放.
+ * <pre><code>
+   CC.Tpl.def('MyComp') = '&lt;div class=&quot;cus&quot;&gt;&lt;/div&gt;';
+   </code></pre>
+ * <br>
+ * 不宜在注册CC.Cache缓存时调用模板方法{@link CC.Tpl.$}, {@link CC.Tpl.$$},{@link CC.Tpl.remove},这将引起循环的递归调用,因为模板生成的结点缓存在Cache里的.
  */
 var Tpl = CC.Tpl;
 
@@ -78,34 +91,33 @@ if(!Tpl){
   Tpl = CC.Tpl = {};
 }
 
-/**
- * 不宜在注册Cache缓存时调用模板方法Tpl.$, Tpl.$$,Tpl.remove,这将引起循环的递归调用,因为模板生成的结点缓存在Cache里的.
- */
+
 CC.extend(Tpl,
-    /**@lends CC.Tpl*/
-    {
+{
 /**
+ * @cfg {String} BLANK_IMG
  * 为什么要有空图片?
  * 用于填充img标签.为什么要用到img标签,用其它标签的background-url定位不行么?
- * img标签主要优点是可放大,缩小图片,目前兼容的css难做到这点
+ * img标签主要优点是可放大,缩小图片,目前兼容的css难做到这点.<br>
+ * 可以通过window.BLANK_IMG指定空图片.
  */
       BLANK_IMG : window.BLANK_IMG || 'http://www.bgscript.com/bgjs/default/s.gif',
 /**
- * 根据模板名称获得模板字符串对应的HTML结点集,该结点生成只有一次,第二次调用时将从缓存克隆结点数据.
- * @param {String} keyName 模板在Tpl中的键值,即属性名称
- * @param {String} compName
- * @param {Function} [prehandler] 模板字符串的预处理函数, 调用方式为 return function(strTemplate, objParam),返回处理后的html模板
- * @param {Object} [Object] prehandler 传递给prehandler的参数
- * @see #forNode
- * @function
- * @return {DOMElement} 模板字符串对应的HTML结点集
- * @example
-  Tpl['MyComp'] = &lt;div class=&quot;fd&quot;&gt;&lt;a href=&quot;javascript:void(0)&quot; id=&quot;_tle&quot;&gt;&thorn;&yen;&lt;/a&gt;&lt;/div&gt;
+ * 根据模板名称获得模板字符串对应的HTML结点集,该结点生成只有一次,第二次调用时将从缓存克隆结点数据.<br>
+ * <pre><code>
+  CC.Tpl.def('MyComp', '&lt;div class=&quot;fd&quot;&gt;&lt;a href=&quot;javascript:void(0)&quot; id=&quot;_tle&quot;&gt;&thorn;&yen;&lt;/a&gt;&lt;/div&gt');
 
   var  domNode = Tpl.$('MyComp');
 
   //显示 _tle
   alert(domNode.firstChild.id);
+  </code></pre>
+ * @param {String} keyName 模板在Tpl中的键值,即属性名称
+ * @param {String} compName
+ * @param {Function} [prehandler] 模板字符串的预处理函数, 调用方式为 return function(strTemplate, objParam),返回处理后的html模板
+ * @param {Object} [Object] prehandler 传递给prehandler的参数
+ * @method $
+ * @return {DOMElement} 模板字符串对应的HTML结点集
  */
     $ : (function(keyName,compName, prehandler, objParam){
         var node = Cache.get(keyName);
@@ -129,6 +141,7 @@ CC.extend(Tpl,
  * 获得模板DOM结点经Base封装后的对象
  * @param key 模板在Tpl中的键值,即属性名称
  * @return {CC.Base}
+ * @method $$
  */
     $$ : function(key) {
         return CC.$$(this.$(key));
@@ -144,13 +157,8 @@ CC.extend(Tpl,
 
 
 /**
- * 根据html字符串返回由该字符串生成的HTML结点集.
- * @param {String} strHtml
- * @param {Object} [dataObj]
- * @param {String} [st] 模板替换方式, 参见{@link CC.templ}
- * @see CC.templ
- * @example
-
+ * 根据html字符串返回由该字符串生成的HTML结点集.<br>
+<pre><code>
  var dataObj = {id:'Rock', age : 2};
  var strHtml = &lt;div class=&quot;fd&quot;&gt;&lt;a href=&quot;javascript:void(0)&quot; id=&quot;{title}&quot;&gt;年龄:{age}&lt;/a&gt;&lt;/div&gt;
 
@@ -163,6 +171,11 @@ CC.extend(Tpl,
 
  //显示 年龄:2
  alert(link.innerHTML);
+ </code></pre>
+ * @param {String} strHtml
+ * @param {Object} [dataObj]
+ * @param {String} [st] 模板替换方式, 参见{@link CC.templ}
+ * @see CC.templ
  */
     forNode : function(strHtml, dataObj, st) {
       if(dataObj)
@@ -177,7 +190,7 @@ CC.extend(Tpl,
  * 定义模板.
  * @param {String} key 模板在Tpl中的键值,即属性名称
  * @param {String} 模板字符串,可以多个参数,方便查看
- * @return this
+ * @return {Object} this
  */
     def : function(key, str) {
       if(arguments.length>=3){
@@ -227,100 +240,152 @@ var undefined;
 var Math = window.Math, parseInt = window.parseInt;
 
 var CPR = CC.util.CssParser.getParser();
-
+/**
+ * @class CC.Base
+ */
 CC.extend(Base.prototype,
-  /**@lends CC.Base.prototype*/
   {
-/**@property {String} type 控件类型标识符*/
+/*
+ * @cfg type
+ * 控件类型标识符,与类钱称相同,eg:CC.ui.Grid
+ * @type String
+ */
     type: 'CC.Base',
 /**
- * @property {DOMElement} view * 控件对应的DOM结点,即控件视图部份,如果未设置,默认创建一个DIV结点作为视图,初始化时可为DOM元素或页面元素中的ID值
+ * @cfg {DOMElement|String} view 
+ * 控件对应的DOM结点,即控件视图部份,如果未设置,默认创建一个DIV结点作为视图,初始化时可为DOM元素或页面元素中的ID字符串作为值.
  */
- view: null,
+ view: false,
+ 
 /**
- * @name CC.Base#clickCS
- * @property {String} clickCS 点击效果修饰样式
+ * @cfg {String} clickCS 点击效果修饰样式
  */
 
 /**
- * @name CC.Base#hoverCS
- * @property {String} hoverCS 鼠标悬浮样式
+ * @cfg {String} hoverCS 鼠标悬浮样式
  */
 /**
- * @name CC.Base#height
- * @property {Number} [height=false] 控件高度,为false时忽略
+ * @cfg {Number} height=false 控件高度,默认为fase,忽略设置
  */
     height:false,
+    
 /**
- * @property {Number} [width=false] 控件宽度,为false时忽略
+ * @cfg {Number} width=false 控件宽度,为false时忽略
  */
     width : false,
 /**
- * @property {Number} [left=false]  控件x值,为false时忽略
+ * @cfg {Number} left=false  控件x值,为false时忽略
  */
     left:false,
 
 /**
- * @property {Number} [top=false] 控件top值,为false时忽略
+ * @cfg {Number} top=false 控件top值,为false时忽略
  */
     top:false,
 /**
- * @property {Number} [minW=0] 控件最小宽度
+ * @cfg {Number} minW=0 控件最小宽度
  */
     minW:0,
 /**
- * @property {Number} [minH=0] 控件最小高度
+ * @cfg {Number} minH=0 控件最小高度
  */
     minH:0,
 /**
- * @property {Number} [maxH=Math.MAX] 控件最大高度
+ * @cfg {Number} maxH=Math.MAX 控件最大高度
  */
     maxH:Math.MAX,
 /**
- * @property {Number} [maxW=Math.MAX] 控件最大宽度
+ * @cfg {Number} maxW=Math.MAX 控件最大宽度
  */
     maxW:Math.MAX,
 
 /**
- * @name CC.Base#template
- * @property {String} template 设置控件视图view的HTML模板名称,利用这些模板创建DOM结点作为控件视图内容,该设置值不会被保留到控件属性中
+ * @cfg {String} template 
+ * 设置控件视图view的HTML模板名称,利用这些模板创建DOM结点作为控件视图内容,
+ * 该设置值不会被保留到控件属性中,应用模板获得view结点后属性被移除.<br>
+ * 可以传入一个模块索引名称,系统会利用这个名称获得对应的DOM结点作为view的值;
+ * 也可以传入一串html字符串,系统会生成这些html字符串对应的DOM结点作为view的值. <br>
+ * <pre><code>
+   // 定义模板
+   CC.Tpl.def('MyComponent', '<div><h1 id="_tle"></h1></div>');
+   // 创建控件
+   var myComponent = CC.Base.instance({
+     ctype:'base',
+     template:'myComponent'
+   });
+   myComponent.setTitle('Hello world!');
+   
+   // 也可直接利用一串html字符串作为模板生成view视图结点
+   var myComponent = CC.Base.instance({
+     ctype:'base',
+     template : '<div><h1 id="_tle"></h1></div>'
+   });
+   
+   第一种方式可充分利用缓存快速生成结点.
+   第二种可灵活生成不同结构的结点.
+ </code></pre>
+ */
+   clickDisabled : false,
+/**
+ * @cfg {Boolean} clickDisabled 存在clickEvent事件的控件时，如果 clickDisabled 为 false,则消取该事件的发送.
  */
 
 /**
- * @name CC.Base#clickDisabled
- * @property {Boolean} clickDisabled 存在clickEvent事件的控件时，如果 clickDisabled 为 false,则消取该事件的发送.
+ * @property pCt 
+ * 父容器.<br>
+ * 以下情形将使得当前控件获得一个指向父容器的引用.<div class="mdetail-params">
+ * <ul>
+ * <li>通过父容器或父容器的布局管理器{@link CC.ui.ContainerBase#add}方式添加的子控件</li>
+ * <li>通过{@link #follow}方式委托另一个控件("父"容器)管理自身控件周期的子控件</li>
+ * </ul></div>
+ * <pre><code>
+    // 通过父控件的follow方法
+    var ca = new CC.ui.Panel();
+    var cb = new CC.ui.Button();
+    ca.follow(cb);
+    
+    //显示true
+    alert(cb.pCt === ca);
+    
+    // 通过add
+    var ca = new CC.ui.Panel();
+    var cb = new CC.ui.Button();
+    ca.layout.add(cb);
+ * </code?</pre>
+ * @type {CC.Base}
  */
+    pCt : false,
 
 /**
- * @name CC.Base#pCt
- * @property {CC.Base} pCt 父容器
+ * @cfg {Boolean} eventable 是否实现事件模型,实现事件模型的控件具有发送,注册处理事件功能.
  */
+    eventable : false,
 
+        
 /**
- * @constructor
+ * @cfg {Boolean} autoRender 是否自动渲染,自动渲染时在控件初始化后就立即调用{@link #render}进行渲染.
+ */
+ 
+/**
  * @private
  */
     initialize: function(opts) {
         if (opts){
           CC.extend(this, opts);
         }
-        /**
-         * @name CC.Base#eventable
-         * @property {Boolean} eventable 是否实现事件模型,实现事件模型的控件具有发送,注册处理事件功能.
-         */
+
         if(this.eventable)
             Eventable.apply(this);
+
         this.initComponent();
-        /**
-         * @name CC.Base#autoRender
-         * @property {Boolean} [autoRender=false] 是否自动渲染,自动渲染时在控件初始化后就立即调用{@link # render}进行渲染.
-         */
+
         if(this.autoRender)
             this.render();
     },
+
 /**
- * 生成控件DOM结点(view)部分.
- * @prototected
+ * 生成控件DOM结点(view)部分,调用该方法后创建this.view结点.
+ * @private
  */
     createView : function(){
 
@@ -349,7 +414,6 @@ CC.extend(Base.prototype,
         this.view = CC.$C('DIV');
     },
 
-    //prototected
     createView0 : function(superclass){
       if(!superclass)
         return null;
@@ -365,15 +429,99 @@ CC.extend(Base.prototype,
         return v;
       return arguments.callee(superclass.superclass);
     },
+    
+    cacheId : undefined,
+/**
+* @property cacheId
+* 全局控件唯一id,也可用于判断对象是否是类的实例化对象,在控件初始化时分配.
+* @type String
+*/
+
+/**@private*/
+    __flied : undefined,
+    
+/**
+ * @cfg {String} strHtml 可以通过一段html文本来创建view内容,初始化时通过view.innerHTML方式加载到view结点中. 
+ */
+    strHtml : false,
 
 /**
+ * @cfg {String} innerCS 控件自身内在的css类设置,常用于控件的设计中,如果无继承控件创建新控件类,不必理会该属性.
+ * @private
+ */
+    innerCS : false,
+
+/**
+* @cfg {String} cs 控件css类,它将添加在{@link #innerCS}类后面,通过{@link #addClass},{@link #switchClass}方法.
+*/
+    cs : false,
+
+/**
+ * @cfg {String} id 控件id,如果无,系统会生成一个.
+ */
+    id : undefined,
+
+/**
+* @cfg {String} title 控件标题.<br>
+* 如果控件有标题的话,就必须定义一个标题结点存放标题,以便控件在初始化时能够找到该结点并应用title值到结点中.
+* 系统通过标题结点id寻找该结点,默认的标题结点id为'_tle',也可以指定{@link #titleNode}来定义新的ID值.<br>
+<pre><code>
+    //定义MyButton类的视图模板,该类是有标题的
+    CC.Tpl.def('MyButton') = '&lt;div class=&quot;button&quot;&gt;&lt;span id=&quot;_tle&quot;&gt;这里是标题&lt;/span&gt;&lt;/div&gt;';
+    //这样就可以设置控件标题了,标题将被添加到结点id为_tle的元素上.
+    myButton.setTitle('button title');
+</code></pre>
+*/
+    title : undefined,
+/**
+ * @cfg {String} titleNode 可以指定控件标题所在控件的id,该id在控件初始化创建view时唯一.
+ */  
+    titleNode : false,
+
+    hoverCS : false,
+    
+/**
+ * @cfg {String} icon 控件图标css类.
+ */
+    icon : false,
+
+/**
+ * @cfg {String} css 设置控件inline style规则字符串,
+ * 将调用{@link CC.util.CssParser}类进行解析,
+ * 并将inline style应用到控件的view结点中.<br>
+ * 具体可参见{@link CC.util.CssParser}类.
+ */
+    css : false,
+
+/**
+* @cfg {Boolean} unselectable 是否允许选择控件的文本区域.
+*/
+    unselectable : false,
+
+/**
+ * @cfg {Boolean} disabled 是否允许使用该控件.
+ */
+    disabled : false,
+/**
+ * @cfg {String} tip 设置提示
+ */
+    tip : false,
+    
+/**
+ * @cfg {String} qtip 设置控件库内置提示方式
+ */
+    qtip : false,
+
+/**
+ * @cfg {Boolean|Object|CC.ui.Shadow} shadow 控件是否具有阴影效果.
+ */
+    shadow : false,
+/**
  * 初始化控件.
+ * @private
  */
     initComponent : function() {
-/**
-* @property {String} cacheId 控件全局唯一id,用于缓存识别,也可用于对象是否是类的实例化对象.
-* @readonly
-*/      
+      
         // if not initializing from fly element
         if(this.__flied === undefined){
 	        var cid = this.cacheId = 'c' + CC.uniqueID();
@@ -381,50 +529,17 @@ CC.extend(Base.prototype,
 	        
 	        this.createView();
         }
-/**
-* @name CC.Base#strHtml
-* @property {String} [strHtml] 控件html内容,如果存在,在控件初始化时生成.
-*/
+
         if(this.strHtml){
             this.html(this.strHtml);
             delete this.strHtml;
         }
-/**
- *@name CC.Base#viewAttr
- * @property {Object} viewAttr 控件view属性配置,用于初始化视图view结点,在应用后被移除.
- @example
-  var comp = new Base({
-   viewAttr:{
-     className : 'vs',
-     innerHTML : '<b>text</b>'
-   }
-  });
 
-  //显示vs
-  alert(comp.view.className);
-*/
-        if (this.viewAttr) {
-            CC.extend(this.view, this.viewAttr);
-            delete this.viewAttr;
-        }
-/**
-* @name CC.Base#innerCS
-* @property {String} innerCS 控件自身内在的css类设置,常用于控件的设计中.
-*/
         if(this.innerCS)
           this.addClass(this.innerCS);
-/**
-* @name CC.Base#cs
-* @property {String} cs 控件css类,它将添加在{@link # innerCS}类后面.
-*/
+
         if(this.cs)
             this.addClass(this.cs);
-/**
-* @name CC.Base#id
-* @property {String} id 控件id,如果无,系统会生成一个.
-*/
-        //if(!this.id)
-        //    this.id = 'comp'+CC.uniqueID();
 
         if(this.id && !this.view.id)
             this.view.id=this.id;
@@ -436,7 +551,6 @@ CC.extend(Base.prototype,
         this.view.cicyId = cid;
 
         //cache the title node for latter rendering.
-
         if(this.title){
           if(!this.titleNode)
             this.titleNode = this.dom('_tle');
@@ -444,10 +558,6 @@ CC.extend(Base.prototype,
             this.titleNode = this.dom(this.titleNode);
         }
 
-/**
-* @name CC.Base#icon
-* @property {String} icon 控件图标css类.
-*/
         if(this.icon) {
             this.setIcon(this.icon);
         }
@@ -460,32 +570,12 @@ CC.extend(Base.prototype,
             this.bindHoverStyle(this.hoverCS);
         }
         
-/**
-* @name CC.Base#css
-* @property {String} css 设置控件inline style字符串
-*/
         if(this.css)
          this.cset(this.css);
-/**
-* @name CC.Base#unselectable
-* @property {Boolean} [unselectable=false] 是否允许选择控件的文本区域.
-*/
+         
         if(this.unselectable)
             this.noselect();
 
-/**
-* @name CC.Base#title
-* @property {String} title 控件标题.
-* 如果控件具有标题栏,将设置控件标题.基类是怎样知道一个控件具有标题的?这是个有趣的问题,它涉及到库中编写控件的一个小小的约定,
-*  如调用基类setTitle方法设置标题时,类方法会在控件视图view结点中寻找一个id为'_tle'的子结点,如果没找到就返回,如果找到就设置它的内容为标题,这个id为'_tle'就是一个约定,
-*  也就是说,控件如果有标题的话,就必须定义一个标题结点ID为'_tle'才能被找到,这个工作是轻松的,可以直接在视图view的模板里定义,例如<br>
-<pre>
-    //定义MyButton类的视图模板,该类是有标题的
-    Tpl['MyButton'] = '&lt;div class=&quot;button&quot;&gt;&lt;span id=&quot;_tle&quot;&gt;这里是标题&lt;/span&gt;&lt;/div&gt;';
-    //这样就可以设置控件标题了
-    myButton.setTitle('button title');
-</pre>
-*/
         if(this.title)
           this.setTitle(this.title);
 
@@ -495,11 +585,6 @@ CC.extend(Base.prototype,
         if(this.left !== false)
             this.setLeft(this.left);
 
-
-/**
-* @name CC.Base#disabled
-* @property {Boolean} disabled 是否允许使用该控件.
-*/
         if(this.disabled){
             this.disabled = 1;
             this.disable(true);
@@ -509,27 +594,33 @@ CC.extend(Base.prototype,
             //设置鼠标提示.
             this.setTip(this.tip===true?this.title:this.tip);
         }
-/**
-* @name CC.Base#qtip
-* @property {String} qtip 设置控件库内置提示方式
-*/
+        
         if(this.qtip && CC.Util.qtip)
             CC.Util.qtip(this);
-
-/**
-* @name CC.Base#shadow
-* @property {Boolean|Shadow} shadow 控件是否具有阴影效果.
-*/
+            
         if(this.shadow){
           this.shadow = CC.ui.instance(this.shadow===true?'shadow':this.shadow);
           this.follow(this.shadow);
         }
     },
+
+/**@private*/
+    __delegations : false,
+
+/**@private*/
+    delegated : false,
+
 /**
- * 将部件a纳入当前控件的管理范畴,纳入后部件a的渲染和销毁与控件一致.
- * 当某些部件不是以add方式加进容器控件的,就比如适合采用这方法将部件纳入管理范畴,使得它和宿主控件一起渲染和销毁.
- * @param {CC.Base} a 跟随控件的部件
- * @return this
+ * <p>
+ * 将部件a纳入当前控件的管理范畴,
+ * 纳入后部件a的渲染和销毁与控件一致.
+ * </p><p>
+ * 当某些部件不是以add方式加进容器控件的,
+ * 就比如适合采用这方法将部件纳入管理范畴,
+ * 使得它和宿主控件一起渲染和销毁.
+ * </p>
+ * @param {CC.Base} component 跟随控件的部件
+ * @return {Object} this
  */
     follow : function(a){
       var ls = this.__delegations;
@@ -545,8 +636,12 @@ CC.extend(Base.prototype,
         a.render();
       return this;
     },
+
+/**@private*/  
+    observes : false,
+    
 /**
- * 销毁控件,包括:移出DOM;移除控件注册的所有事件;销毁与控件关联的部件(参见{@link # follow}).
+ * 销毁控件,包括:移出DOM;移除控件注册的所有事件;销毁与控件关联的部件.
  */
     destory : function(){
       if(this.pCt && !this.delegated){
@@ -591,23 +686,36 @@ CC.extend(Base.prototype,
       delete this.view;
       delete this.cacheId;
     },
+    
+    
+/**
+ * @property hidden
+ * 当前控件是否可见
+ * @type Boolean
+ */   
+    hidden : undefined,
+
+/**
+ * @cfg {DOMElement|String} showTo 将控件渲染到该结点上,应用后showTo被移除.
+ */   
+    showTo : false,
+    
     /**
+     * <p>
      * 渲染方式的实现方法,子类要自定渲染时,重写该方法即可.
-     * <ul>主要步骤有:</ul>
+     * <div class="mdetail-params"><ul>主要步骤有:
        <li>应用控件的显示/隐藏属性</li>
        <li>将控件view添加到showTo属性中</li>
        <li>如果需要,设置鼠标提示</li>
        <li>如果存在阴影,将阴影附加到控件中</li>
        <li>渲染跟随部件(参见{@link # follow})</li>
+       </ul></div>
+       </p>
+     * @private
      */
     onRender : function(){
-
-/**
-* @name CC.Base#hidden
-* @property {String} hidden 当前控件是否可见
-* @readonly
-*/
         if(this.hidden){
+          // 防止display不起作用,重置
           this.hidden = undefined;
           this.display(false);
         }
@@ -645,26 +753,40 @@ CC.extend(Base.prototype,
         this.shadow.attach(this);
       }
     },
+
 /**
- * 渲染前发送.
- * @name CC.Base#render
- * @event {String} render
- */
-/**
- * 渲染后发送.
- * @name CC.Base#rendered
- * @event {String} rendered
+ * @event render
+ * 当控件具有{@link #eventable}后,渲染前发送该事件.
  */
 
 /**
- * 渲染方法,子类要定义渲染方式应该重写{@link # onRender}方法,
+ * @event rendered
+ * 当控件具有{@link #eventable}后,渲染后发送该事件.
+ */
+
+/**
+ * @property rendered
+ * 指示控件是否已渲染.
+ * @type Boolean
+ */
+    rendered : false,
+
+/**
+ * 渲染控件到DOM文档,子类要定义渲染方式应该重写{@link #onRender}方法.<br>
+       <div class="mdetail-params"><ul>主要步骤有:
+       <li>应用控件的显示/隐藏属性</li>
+       <li>将控件view添加到showTo属性中</li>
+       <li>如果需要,设置鼠标提示</li>
+       <li>如果存在阴影,将阴影附加到控件中</li>
+       <li>渲染跟随部件(参见{@link # follow})</li>
+       </ul></div>
  */
     render : function() {
         if(this.rendered || this.fireOnce('render')===false)
             return false;
         /**
          * @name CC.Base#rendered
-         * @property {Boolean} rendered  标记控件是否已渲染.
+         * @cfg {Boolean} rendered  标记控件是否已渲染.
          * @readonly
          */
         this.rendered = true;
@@ -678,47 +800,72 @@ CC.extend(Base.prototype,
           }).timeout(0);
         }
     },
+
 /**
- * Base类默认是没有事件处理模型的,预留fire为接口,方便一些方法如{@link # render}调用,当控件已实现事件处理模型时,即{@link # eventable}为true时,此时事件就变得可用.
+ * <p>
+ * Base类默认是没有事件处理模型的,
+ * 预留fire为接口,方便一些方法如{@link # render}调用,
+ * 当控件已实现事件处理模型时,即{@link # eventable}为true时,
+ * 此时事件就变得可用.
+ * </p>
+ * @method fire
  */
     fire : fGo,
-
+/**
+ * <p>
+ * Base类默认是没有事件处理模型的,
+ * 预留fire为接口,方便一些方法如{@link # render}调用,
+ * 当控件已实现事件处理模型时,即{@link # eventable}为true时,
+ * 此时事件就变得可用.
+ * </p>
+ * @method fire
+ */
     fireOnce : fGo,
 
-/**@function*/
+/**
+ * <p>
+ * Base类默认是没有事件处理模型的,
+ * 预留fire为接口,方便一些方法如{@link # render}调用,
+ * 当控件已实现事件处理模型时,即{@link # eventable}为true时,
+ * 此时事件就变得可用.
+ * </p>
+ * @method fire
+ */
     un : fGo,
 
 /**
  * 隐藏控件.
- * @return this
+ * @return {Object} this
  */
     hide : function(){
       return this.display(false);
     },
 /**
  * 显示控件.
- * @return this
+ * @return {Object} this
  */
     show : function(){
       return this.display(true);
     },
+
 /**
- * 取出视图view结点内的子元素,对其进行Base封装,以便利用,与{@link # unfly对应}.
- * @param {String|DOMElement} childId 子结点.
- * @see CC.Base#fly
- * @return {CC.Base} 封装后的对象,如果childId为空,返回null.
- @example
+ * 取出视图view结点内指定的子元素,对其进行CC.Base封装,以便利用,与{@link #unfly}对应.<br/>
+ * <code>
   &lt;div id=&quot;content&quot;&gt;
    Content Page
    &lt;span id=&quot;sub&quot;&gt;&lt;/span&gt;
   &lt;/div&gt;
   &lt;script&gt;
-    var c = new Base({view:'content', autoRender:true});
+    var c = new CC.Base({view:'content', autoRender:true});
     c.fly('sub')
      .setStyle('color','red')
      .html('this is anothor text!')
      .unfly();
   &lt;/script&gt;
+ * </code>
+ * @param {String|DOMElement} childId 子结点.
+ * @see CC.Base#fly
+ * @return {CC.Base} 封装后的对象,如果childId为空,返回null.
  */
     fly : function(childId){
       var el = this.dom(childId);
@@ -732,19 +879,20 @@ CC.extend(Base.prototype,
       return null;
     },
 /**
- * 解除结点的Base封装,与{@link # fly}成对使用.
- @example
+ * 解除结点的Base封装,与{@link # fly}成对使用.<br/>
+ <code>
   &lt;div id=&quot;content&quot;&gt;
    Content Page
    &lt;span id=&quot;sub&quot;&gt;&lt;/span&gt;
   &lt;/div&gt;
   &lt;script&gt;
-    var c = new Base({view:'content', autoRender:true});
+    var c = new CC.Base({view:'content', autoRender:true});
     c.fly('sub')
      .setStyle('color','red')
      .html('this is anothor text!')
      .unfly();
   &lt;/script&gt;
+  </code>
  */
     unfly : function(){
       if(this.__flied !== undefined){
@@ -761,13 +909,11 @@ CC.extend(Base.prototype,
     },
 
 /**
-* 添加控件view元素样式类.
-* @param {String} s css类名
-* @see #delClass
-* @see #addClassIf
-* @return this
-* @example
-  comp.addClass('cssName');
+* 添加控件view元素样式类.<br>
+* 参见{@link #delClass},{@link #addClassIf},{@link #checkClass},{@link #hasClass}<br>
+ * <pre><code>comp.addClass('cssName');</code></pre><br>
+* @param {String} css css类名
+* @return {Object} this
 */
     addClass: function(s) {
         var v = this.view;
@@ -780,7 +926,7 @@ CC.extend(Base.prototype,
 /**
  * 检查是否含有某个样式,如果有,添加或删除该样式.
  * @param {String} css
- * @param {Boolean} true -> add, or else remove
+ * @param {Boolean} addOrRemove true -> add, or else remove
  */
     checkClass : function(cs, b){
 			if(cs){
@@ -794,12 +940,10 @@ CC.extend(Base.prototype,
 		  }
     },
 /**
-* 如果控件view元素未存在该样式类,添加元素样式类,否则忽略.
-* @param {String} s css类名
-* @see #addClass
-* @return this
-* @example
-  comp.addClassIf('cssName');
+* 如果控件view元素未存在该样式类,添加元素样式类,否则忽略.<br>
+* 参见{@link #delClass},{@link #addClass},{@link #switchClass},{@link #checkClass},{@link #hasClass}
+* @param {String} css css类名
+* @return {Object} this
 */
     addClassIf: function(s) {
         if(this.hasClass(s))
@@ -812,12 +956,10 @@ CC.extend(Base.prototype,
     }
     ,
 /**
-* 删除view元素样式类.
-* @param {String} s css类名
-* @see #addClass
-* @return this
-* @example
-  comp.delClass('cssName');
+* 删除view元素样式类.<br>
+* 参见{@link #addClass},{@link #switchClass},{@link #addClassIf},{@link #checkClass},{@link #hasClass}
+* @param {String} css css类名
+* @return {Object} this
 */
     delClass: function(s) {
         var v = this.view;
@@ -826,22 +968,21 @@ CC.extend(Base.prototype,
     }
     ,
 /**
-* 测试view元素是否存在指定样式类.
-* @param {String} s css类名
+* 测试view元素是否存在指定样式类.<br/>
+* 参见{@link #delClass},{@link #addClassIf},{@link #checkClass},{@link #addClass},{@link #switchClass}
+* @param {String} css css类名
 * @return {Boolean}
-* @example
-  comp.hasClass('cssName');
 */
     hasClass : function(s) {
         return s && (' ' + this.view.className + ' ').indexOf(' ' + s + ' ') != -1;
     },
 /**
-* 替换view元素样式类.
+* 替换view元素样式类.<br/>
+* <code>comp.switchClass('mouseoverCss', 'mouseoutCss');</code><br/>
+* 参见{@link #delClass},{@link #addClassIf},{@link #checkClass},{@link #addClass},{@link #switchClass}
 * @param {String} oldSty 已存在的CSS类名
 * @param {String} newSty 新的CSS类名
-* @return this
-* @example
-  comp.switchClass('mouseoverCss', 'mouseoutCss');
+* @return {Object} this
 */
     switchClass: function(oldSty, newSty) {
         this.delClass(oldSty);
@@ -851,21 +992,20 @@ CC.extend(Base.prototype,
     ,
 /**
 * 重置元素样式类.
-* @param {String} s CSS类名
-* @return this
-* @example
-  comp.switchClass('mouseoverCss', 'mouseoutCss');
+* @param {String} css CSS类名
+* @return {Object} this
 */
     setClass: function(s) {
         this.view.className = s;
         return this;
     }
     ,
+
 /**
  * this.view.getElementsByTagName(tagName);
  * @param {String} tagName
- * @see CC.Base#$T
  * @return {DOMCollection} doms
+ * @method $T
  */
     $T: function(tagName) {
         return this.view.getElementsByTagName(tagName);
@@ -874,8 +1014,6 @@ CC.extend(Base.prototype,
 /**
  * 获得控件视图下任一子结点.
  * @param {String|DOMElement} childId
- * @return CC.$(childId, this.view);
- * @see CC#$
  * @return {DOMElement} dom
  */
     dom : function(childId) {
@@ -885,15 +1023,15 @@ CC.extend(Base.prototype,
      * 常用于取消DOM事件继续传送,内在调用了Event.stop(ev||window.event);
      * @param {String} eventName 事件名称
      * @param {String|DOMElement} 子结点
-     * @return this
+     * @return {Object} this
      */
     noUp : function(eventName, childId) {
         return this.domEvent(eventName || 'click', Event.noUp, true, null, childId);
     },
 /**
  * 清空view下所有子结点.
- * @return this
- * @type function
+ * @return {Object} this
+ * @method clear
  */
     clear: CC.ie ? function() {
         var dv = Cache.get('div');
@@ -920,34 +1058,43 @@ CC.extend(Base.prototype,
     },
 
 /**
- * @property {String} [disabledCS='g-disabled'] 禁用时元素样式
+ * @cfg {String} disabledCS='g-disabled' 禁用时元素样式
  */
     disabledCS : 'g-disabled',
 
 /**
- * @property {Boolean} [displayMode=1] 显示模式0,1,可选有display=1,visibility=0
- * @see #setDisplayMode
+ * @cfg {Boolean} displayMode=1 显示模式0,1,可选有display=1,visibility=0<br>
+ * 另见{@link #setDisplayMode},{@link #setBlockMode}
  */
     displayMode : 1,
+
 /**
- * @property {Number} 可选的有block=1,inline=2和''=0
+ * @cfg {Number} blockMode=1, style.display值模式,可选的有block=1,inline=2和''=0
  * @see #setBlockMode
  */
     blockMode : 1,
 
 /**
- * 显示或隐藏或获得控件的显示属性.
- * @param {Boolean} [b] 设置是否可见
- * @return {this|Boolean}
- * @example
-   //测试元素是否可见
+ * 显示或隐藏或获得控件的显示属性.<br/>
+ * <pre><code>
+   // 测试元素是否可见
    alert(comp.display());
 
-   //设置元素可见,模式为block
+   // 设置元素可见,模式为block
    comp.display(true);
 
-   //设置元素可见,模式为inline
-   comp.setBlockMode('inline').display(true);
+   // 设置元素可见,模式为inline
+   comp.setBlockMode(2).display(true);
+   
+   // 设置元素可见模式为display=''
+   comp.setBlockMode(0).display(true);
+   
+   // 设置元素可见模式为visiblity=visible
+   comp.setDisplayMode(0).display(true);
+   
+ * </code></pre>
+ * @param {Boolean} [b] 设置是否可见
+ * @return {this|Boolean}
 */
    display: function(b) {
      if (b === undefined) {
@@ -959,8 +1106,9 @@ CC.extend(Base.prototype,
      }
      return this;
    },
+
 /**
- * @protected
+ * @private
  */
    onShow : function(){
       this.delClass(hidCS[this.displayMode]);
@@ -976,7 +1124,7 @@ CC.extend(Base.prototype,
       }
    },
 /**
- * @protected
+ * @private
  */
    onHide : function(){
      if(!this.hasClass(hidCS[this.displayMode])){
@@ -994,8 +1142,8 @@ CC.extend(Base.prototype,
    },
 
 /**
- * @param {String} bl
- * @see #blockMode
+ * 参见{@link #blockMode}
+ * @param {String} blockMode
  * return this
  */
    setBlockMode : function(bl){
@@ -1003,8 +1151,8 @@ CC.extend(Base.prototype,
       return this;
    },
 /**
- * @param {String} dm
- * @see #displayMode
+ * 参见{@link #displayMode}
+ * @param {String} displayMode
  * return this
  */
    setDisplayMode : function(dm){
@@ -1050,19 +1198,21 @@ CC.extend(Base.prototype,
     },
 
      /**
-      * this.view.appendChild(oNode.view || oNode); * @param {DOMElement} oNode
-      * @return this;
+      * this.view.appendChild(oNode.view || oNode); 
+      * @param {DOMElement} oNode
+      * @return {Object} this;
       */
     append : function(oNode){
         this.view.appendChild(oNode.view || oNode);
         return this;
     },
 /**
- * (this.ct||this.view).innerHTML = ss;
+ * 应用一段html文本到视图view结点.<br/>
+ * 方式为(this.ct||this.view).innerHTML = ss;
  * @param {String} ss html内容
  * @param {Boolean} [invokeScript] 是否运行里面的脚本
  * @param {Function} [callback] 回调
- * @return this
+ * @return {Object} this
  */
     html : function(ss, invokeScript, callback) {
         if(invokeScript){
@@ -1093,10 +1243,11 @@ CC.extend(Base.prototype,
         (this.ct||this.view).innerHTML = ss;
         return this;
     },
+    
     /**
      * where.appendChild(this.view);
      * @param {DOMElement|CC.Base} where
-     * @return this
+     * @return {Object} this
      */
     appendTo : function(where) {
         where.type ? where.append(this.view) : CC.$(where).appendChild(this.view);
@@ -1105,7 +1256,7 @@ CC.extend(Base.prototype,
 /**
  * 在结点之后插入oNew
  * @param {DOMElement|CC.Base} oNew
- * @return this
+ * @return {Object} this
  */
     insertAfter: function(oNew) {
         var f = CC.fly(oNew);
@@ -1129,7 +1280,7 @@ CC.extend(Base.prototype,
  /**
   * 设置控件的zIndex值.
   * @param {Number} zIndex
-  * @return this
+  * @return {Object} this
   */
     setZ : function(zIndex) {
         this.fastStyleSet("zIndex", zIndex);
@@ -1145,15 +1296,16 @@ CC.extend(Base.prototype,
       return this.fastStyle('zIndex')|0;
     },
 /**
- * 设置或获得控件样式.
- * @return {Mixed}
- @example
+ * 设置或获得控件样式.<br>
+<pre><code>
   var div = CC.$('someid');
   var f = CC.fly(div);
   f.style('background-color','red');
   //显示red
   alert(f.style('background-color');
   f.unfly();
+</code></pre>
+ * @return {Mixed}
  */
     style : function(style,value) {
         //getter
@@ -1173,9 +1325,9 @@ CC.extend(Base.prototype,
         return this;
     },
 
-    /*设置view结点风格.
-     *@example
-      comp.setStyle('position','relative');
+    /*设置view结点风格.<br>
+     * comp.setStyle('position','relative');<br>
+     * 另见{@link #fastStyleSet},{@link #getStyle}
      */
     setStyle : function (key, value) {
         if (key === 'opacity') {
@@ -1190,7 +1342,10 @@ CC.extend(Base.prototype,
     },
 
 
-/***/
+    /*获得view结点风格.<br>
+     * comp.getStyle('position');<br>
+     * 另见{@link #fastStyle},{@link #setStyle}
+     */
     getStyle : function(){
         return view && view.getComputedStyle ?
             function(prop){
@@ -1238,20 +1393,22 @@ CC.extend(Base.prototype,
             };
     }(),
 /**
- * 快速获得元素样式,比setStyle更轻量级,但也有如下例外
+ * 快速获得元素样式,比setStyle更轻量级,但也有如下例外<br><div class="mdetail-params"><ul>
  * <li>不能设置float
  * <li>传入属性名必须为JS变量格式,如borderLeft,非border-width
  * <li>不能设置透明值
+ * </ul></div>
  */
     fastStyleSet : function(k, v){
       this.view.style[k] = v;
       return this;
     },
 /**
- * 快速获得元素样式,比getStyle更轻量级,但也有如下例外
+ * 快速获得元素样式,比getStyle更轻量级,但也有如下例外<br><div class="mdetail-params"><ul>
  * <li>不能获得float
  * <li>传入属性名必须为JS变量格式,如borderLeft,非border-width
  * <li>不能处理透明值
+ * </ul></div>
  */
     fastStyle : function(){
         return view && view.getComputedStyle ?
@@ -1280,12 +1437,12 @@ CC.extend(Base.prototype,
     /**
      * 先添加默认图标样式this.iconCS，再添加参数样式.
      * @param {String} cssIco
-     * @return this
+     * @return {Object} this
      */
     setIcon: function(cssIco) {
       /**
        * @name CC.Base#iconNode
-       * @property {DOMElement|String} iconNode 图标所在结点
+       * @cfg {DOMElement|String} iconNode 图标所在结点
        */
         var o = this.fly(this.iconNode || '_ico');
         if(this.iconCS)
@@ -1302,8 +1459,8 @@ CC.extend(Base.prototype,
     }
     ,
 /**
-* @param {String} ss
-* @return this
+* @param {String} tip
+* @return {Object} this
 */
     setTip:function(ss){
       if(this.view && !this.qtip){
@@ -1321,22 +1478,18 @@ CC.extend(Base.prototype,
     },
     
 /**
-* @param {String} ss
-* @return this
-*/
-    setTitle: function(ss) {
-/**
-* @name CC.Base#titleNode
-* @property {DOMElement|String} titleNode 标题所在结点
-*/
-
-/**
-* @name CC.Base#brush
-* @property {Function} brush 渲染标题的
-* @type Function
+* @cfg {Function} brush 渲染标题的函数<br>
+* 参见 {@link CC.util.BrushFactory}
 * @param {Object} v
 * @return {String} html string of title
 */
+    brush : false,
+    
+/**
+* @param {String} title
+* @return {Object} this
+*/
+    setTitle: function(ss) {
         this.title = ss;
         if(!this.titleNode)
           this.titleNode = this.dom('_tle');
@@ -1354,7 +1507,7 @@ CC.extend(Base.prototype,
     ,
 /**
  * @param {Number} width
- * @return this
+ * @return {Object} this
  */
     setWidth: function(width) {
         this.setSize(width, false);
@@ -1372,7 +1525,7 @@ CC.extend(Base.prototype,
     },
 /**
  * @param {Number} height
- * @return this
+ * @return {Object} this
  */
     setHeight: function(height) {
         this.setSize(false, height);
@@ -1390,16 +1543,19 @@ CC.extend(Base.prototype,
     },
 
 /**
+ * @property outerW
+ * <p>
  * border + padding 的宽度,除非确定当前
  * 值是最新的,否则请通过{@link #getOuterW}方法来获得该值.
  * 该值主要用于布局计算,当调用{@link #getOuterW}方法时缓存该值
- * @name CC.Base#outerW
- * @property {Number}  outerW
- * @protected
+ * </p>
+ * @private
+ * @type Number
  */
 
 /**
- * 得到padding+border 所占宽度, 每调用一次,该函数将缓存值在outerW属性中
+ * 得到padding+border 所占宽度, 每调用一次,该函数将缓存值在outerW属性中.
+ * @return {Number}
  */
     getOuterW : function(cache){
       var ow = this.outerW;
@@ -1414,17 +1570,20 @@ CC.extend(Base.prototype,
     },
 
 /**
+ * @property outerH
+ * <p>
  * border + padding 的高度,除非确定当前
  * 值是最新的,否则请通过{@link #getOuterH}方法来获得该值.
  * 该值主要用于布局计算,当调用{@link #getOuterH}方法时缓存该值
- * @name CC.Base#outerH
- * @property {Number}  outerH
- * @protected
+ * </p>
+ * @private
+ * @type Number
  */
 
 /**
  * 得到padding+border 所占高度, 每调用一次,该函数将缓存该值在outerH属性中
  * @param {Boolean} cache 是否使用缓存值
+ * @return {Number}
  */
     getOuterH : function(cache){
       var oh = this.outerH;
@@ -1449,12 +1608,13 @@ CC.extend(Base.prototype,
     },
 
 /**
- * @param {Number|Object|false} a number或{width:number,height:number},为false时不更新
- * @return this
- @example
+ *<pre><code>
   comp.setSize(50,100);
   comp.setSize(false,100);
   comp.setSize(50,false);
+ * </code></pre>
+ * @param {Number|Object|false} a number或{width:number,height:number},为false时不更新
+ * @return {Object} this
  */
     setSize : function(a, b) {
         if(a.width !== undefined){
@@ -1493,12 +1653,13 @@ CC.extend(Base.prototype,
         return this;
     },
 /**
- * @param {Number|Array|false} a number或[x,y],为false时不更新.
- * @return this
- @example
+<pre><code>
   comp.setXY(50,100);
   comp.setXY(false,100);
   comp.setXY(50,false);
+</code></pre>
+ * @param {Number|Array|false} a number或[x,y],为false时不更新.
+ * @return {Object} this
  */
     setXY : function(a, b){
         if(CC.isArray(a)){
@@ -1530,7 +1691,7 @@ CC.extend(Base.prototype,
     },
 /**
  * this.setXY(false, top);
- * @return this
+ * @return {Object} this
  */
     setTop: function(top) {
         this.setXY(false, top);
@@ -1549,7 +1710,7 @@ CC.extend(Base.prototype,
         return this.top;
     },
 /**
- * @return this
+ * @return {Object} this
  */
     setLeft: function(left) {
         this.setXY(left, false);
@@ -1570,6 +1731,7 @@ CC.extend(Base.prototype,
 /**
  * 得到style.left,style.top坐标.
  * @param {Boolean} usecache 是否使用缓存值
+ * @return {Array} [left, top]
  */
     xy : function(usecache) {
         return [this.getLeft(usecache), this.getTop(usecache)];
@@ -1577,7 +1739,7 @@ CC.extend(Base.prototype,
     ,
 /**
  * 得到相对页面x,y坐标值.
- * @return [x, y]
+ * @return {Array} [x, y]
  */
     absoluteXY: function() {
             var p, b, scroll, bd = (document.body || document.documentElement), el = this.view;
@@ -1644,12 +1806,14 @@ CC.extend(Base.prototype,
             return [x, y];
     }
     ,
-/** @return {Number}
+/** 
+ * @return {Number}
  */
     absoluteX : function(){
         return this.absoluteXY()[0];
     },
-/** * @return {Number}
+/**
+ * @return {Number}
  */
     absoluteY : function() {
         return this.absoluteXY()[1];
@@ -1689,7 +1853,7 @@ CC.extend(Base.prototype,
 
 /**
  * 连续应用 setXY, setSize方法
- * @return this
+ * @return {Object} this
  */
     setBounds : function(x,y,w,h) {
         this.setXY(x,y);
@@ -1759,7 +1923,8 @@ CC.extend(Base.prototype,
       return w;
   },
 /**
- *
+ * 利用{@link CC.util.CssParser}设置inline style
+ * @param {String} css 适用于{@link CC.util.CssParser}的规则字符串
  */
   cset : function(css){
     CPR.parse(this, css);
@@ -1789,7 +1954,7 @@ CC.extend(Base.prototype,
 /**
  * 设置left, top, width, height到目标元素中.
  * @param {CC.Base|DOMElement} des
- * @return this
+ * @return {Object} this
  */
     copyViewport : function(des){
         des = CC.$$(des);
@@ -1801,14 +1966,14 @@ CC.extend(Base.prototype,
 /**
  * 控件获得焦点.
  * @param {Number} [timeout] 设置聚焦超时
- * @return this
+ * @return {Object} this
  */
     focus : function(timeout){
             if(this.disabled)
               return this;
             /**
              * @name CC.Base#focusNode
-             * @property {DOMElement|String} focusNode 当控件调用{@link #focus}聚焦时,控件中实际触发聚焦的DOM元素.
+             * @cfg {DOMElement|String} focusNode 当控件调用{@link #focus}聚焦时,控件中实际触发聚焦的DOM元素.
              */
             var el = this.focusNode?this.dom(this.focusNode):this.view;
             if(timeout)
@@ -1819,7 +1984,7 @@ CC.extend(Base.prototype,
 /**
  * 应用CSS样式字符串到控件
  * @param {String|Object|Function} styles
- * @return this
+ * @return {Object} this
  */
     cssText : function(styles) {
         if(styles){
@@ -1841,7 +2006,7 @@ CC.extend(Base.prototype,
     },
 /**
  * 禁止可选择控件选择文本.
- * @return this
+ * @return {Object} this
  */
     noselect : function() {
         var v = this, t = typeof this.unselectable, mt = false;
@@ -1927,7 +2092,7 @@ CC.extend(Base.prototype,
  * @param {Boolean} cancel 是否取消事件冒泡和默认操作
  * @param {String|DOMElement} childId 事件所在的元素
  * @param {Function} handler 事件回调
- * @return this
+ * @return {Object} this
  */
     domEvent : function(evName, handler, cancel, caller, childId, useCapture) {
         if (evName == 'keypress' && (navigator.appVersion.match( / Konqueror | Safari | KHTML / )
@@ -1981,7 +2146,7 @@ CC.extend(Base.prototype,
  * @param {String} evName
  * @param {Function} handler 事件回调
  * @param {String|DOMElement} childId 事件所在的元素
- * @return this
+ * @return {Object} this
  * @see domEvent
  */
     unEvent : function(evName, handler, childId){
@@ -2008,7 +2173,11 @@ CC.extend(Base.prototype,
     },
 /**
  * 绑定回车事件处理
- * @return this
+ * @param {Function} callback
+ * @param {Boolean} cancelBubble
+ * @param {Object} caller
+ * @param {DOMElement|String} childId
+ * @return {Object} this
  */
     bindEnter : function(callback,cancel, caller, childId){
         return this.domEvent('keydown',(function(ev){
@@ -2020,16 +2189,21 @@ CC.extend(Base.prototype,
             }
         }),false, caller, childId);
     },
-    /**
-   * 为相对事件设置样式效果,如果控件disbled为true,效果被忽略.
+   /**
+   * 为相对事件设置样式效果,如果控件disbled为true,效果被忽略.<br>
    * 相对事件如onmouseup,onmousedown;onmouseout,onmouseover等等.
-   * 可选参数为
-   * cancel: 指示是否允许事件冒泡.
-   * onBack : over时回调.
-   * offBack: out时回调.
-   * 回调返回true时不改变样式.
-   * caller  : 用于调用回调函数的对象.
-   * @return this
+   <pre>
+   param {String} evtHover
+   param {String} evtOff
+   param {String} css
+   param {Boolean} cancelBubble
+   param {Function} onBack
+   param {Function} offBack
+   param {Object} caller
+   param {DOMElement|String} childId
+   param {DOMElement|String} targetId
+   <pre>
+   * @return {Object} this
    */
     bindAlternateStyle: function(evtHover, evtOff, css, cancel, onBack, offBack, caller, childId, targetId) {
         var a = evtHover+'Node',b=evtHover+'Target';
@@ -2068,23 +2242,50 @@ CC.extend(Base.prototype,
         }), cancel, caller, obj);
         return this;
     },
-    /**
+  /**
    * 设置鼠标划过时元素样式.
-   *@param onMouseHover
-   *@param onMouseOff
-   * @return this
+   <pre>
+   param {String} css
+   param {Boolean} cancelBubble
+   param {Function} onBack
+   param {Function} offBack
+   param {Object} caller
+   param {DOMElement|String} childId
+   param {DOMElement|String} targetId
+   <pre>
+   * @return {Object} this
    */
     bindHoverStyle: function( css, cancel, onBack, offBack, oThis, childId, targetId) {
         return this.bindAlternateStyle('mouseover', 'mouseout', css || this.hoverCS, cancel, onBack || this.onMouseHover, offBack || this.onMouseOff, oThis || this, childId, targetId);
     }
     ,
-/***/
+  /**
+   <pre>
+   param {String} css
+   param {Boolean} cancelBubble
+   param {Function} onBack
+   param {Function} offBack
+   param {Object} caller
+   param {DOMElement|String} childId
+   param {DOMElement|String} targetId
+   <pre>
+   * @return {Object} this
+   */
     bindFocusStyle : function( css, cancel, onBack, offBack, oThis, childId, targetId) {
         return this.bindAlternateStyle('focus', 'blur', css, cancel, onBack || this.onfocusHover, offBack || this.onfocusOff, oThis || this, childId, targetId);
     },
-    /**
+  /**
    * 设置鼠标按下/松开时元素样式.
-   * @return this
+   <pre>
+   param {String} css
+   param {Boolean} cancelBubble
+   param {Function} onBack
+   param {Function} offBack
+   param {Object} caller
+   param {DOMElement|String} childId
+   param {DOMElement|String} targetId
+   <pre>
+   * @return {Object} this
    */
     bindClickStyle: function(css, cancel, downBack, upBack, oThis, childId, targetId) {
         this.bindAlternateStyle('mousedown', 'mouseup', css, cancel, downBack, upBack, oThis, childId, targetId);
@@ -2097,15 +2298,23 @@ CC.extend(Base.prototype,
     }
     ,
 /**
- * @name CC.Base#contexted
- * @event
+ * @event contexted
+* 当控件具有{@link #eventable}后,切换上下文效果时发送该事件.
  * @param {Boolean} isContexted true|false
- * 当isContexted=true时,随后传递触发该事件的结点
- * 当isContexted=false时,随后传递触发释放事件的DOM事件,接着是DOM结点
+ * @param {DOMElement|DOMEvent} mixed fire('contexted', false, evt, tar),fire('contexted', true, tar), 其中tar为触发结点. 
  */
+ 
 /**
  * 添加上下文切换效果,当点击控件区域以外的地方时隐藏控件.
- * @return this
+ <pre>
+ * param {Function} callback
+ * param {Boolean}  cancelBubble
+ * param {Object}   caller
+ * param {DOMElement|String} childNode 触发结点
+ * param {DOMElement|String} cssTarget
+ * param {String} cssName
+ </pre>
+ * @return {Object} this
  */
     bindContext : function(callback,cancel, caller, childId, cssTarget, cssName) {
         if(this.contexted)
@@ -2154,8 +2363,10 @@ CC.extend(Base.prototype,
     },
 
 /**
- * Base包装控件内的子结点元素
+ * CC.Base包装控件内的子结点元素
+ * @param {String|DOMElement} node
  * @return {CC.Base}
+ * @method $$
  */
     $$ : function(id) {
         var c = CC.$$(id, this.view);
@@ -2164,19 +2375,17 @@ CC.extend(Base.prototype,
         }
         return c;
     },
- /**访问或设置view中任一子层id为childId的子结子的属性.
-  *属性也可以多层次.
-  *@param {element|string} childId 子结点ID或dom元素
-  *@param {string} childAttrList 属性列,可连续多个,如'style.display'
-  *@param [attrValue] 如果设置该置,则模式为设置,设置属性列值为该值,如果未设置,为访问模式,返回视图view给出的属性列值
-  *@return 如果为访问模式,即attrValue未设置,返回视图view给出的childAttrList属性列值
-  *@see CC#attr
-  *@example
-  *<pre>
+ /**
+  * 访问或设置view中任一子层id为childId的子结子的属性,属性也可以多层次.<br>
+  * <pre><code>
     //如存在一id为this.iconNode || '_ico'子结点,设置其display属性为
     comp.inspectAttr(this.iconNode || '_ico','style.display','block');
-  *</pre>
-   */
+  * </code></pre>
+  * @param {element|string} childId 子结点ID或dom元素
+  * @param {string} childAttrList 属性列,可连续多个,如'style.display'
+  * @param {Object} [attrValue] 如果设置该置,则模式为设置,设置属性列值为该值,如果未设置,为访问模式,返回视图view给出的属性列值
+  * @return {Object} value 如果为访问模式,即attrValue未设置,返回视图view给出的childAttrList属性列值
+  */
     attr: function(childId, childAttrList, attrValue) {
         var obj = this.dom(childId);
         //??Shoud do this??
@@ -2186,7 +2395,11 @@ CC.extend(Base.prototype,
         obj = CC.attr(obj, childAttrList, attrValue);
         return obj;
     },
-/***/
+/**
+ * @private
+ * @param {Boolean} closeable
+ * @return {Object} this
+ */
     setCloseable: function(b) {
         this.closeable = b;
         var obj = this.fly(this.closeNode || '_cls');
@@ -2194,7 +2407,12 @@ CC.extend(Base.prototype,
             obj.display(b).unfly();
         return this;
     },
-/**得到相对位移*/
+    
+/**
+ * 得到相对位移
+ * @param {DOMElement|CC.Base} offsetToTarget
+ * @return [offsetX, offsetY]
+ */
     offsetsTo : function(tar){
         var o = this.absoluteXY();
         tar = CC.fly(tar);
@@ -2206,6 +2424,7 @@ CC.extend(Base.prototype,
  * 滚动控件到指定视图
  * @param {DOMElement|CC.CBase} ct 指定滚动到视图的结点
  * @param {Boolean} hscroll 是否水平滚动,默认只垂直滚动
+ * @return {Object} this
  */
     scrollIntoView : function(ct, hscroll){
       var c = ct?ct.view||ct:CC.$body.view;
@@ -2226,6 +2445,7 @@ CC.extend(Base.prototype,
  * 滚动指定控件到当前视图
  * @param {DOMElement|CC.CBase} child 指定滚动到视图的结点
  * @param {Boolean} hscroll 是否水平滚动,默认只垂直滚动
+ * @return {Object} this
  */
     scrollChildIntoView : function(child, hscroll){
         this.fly(child).scrollIntoView(this.view, hscroll).unfly();
@@ -2233,8 +2453,11 @@ CC.extend(Base.prototype,
     },
 
   /**
-   * 检测元素是否在某个容器的可见区域内,如果在可见区域内，返回false,
+   * 检测元素是否在某个容器的可见区域内.
+   * <br>如果在可见区域内,返回false,
    * 否则返回元素偏离容器的scrollTop,利用该scrollTop可将容器可视范围滚动到元素处。
+   * @param {DOMElement|CC.Base} [container]
+   * @return {Boolean}
    */
   getHiddenAreaOffsetVeti : function(ct){
         var c = ct.view || ct;
@@ -2262,7 +2485,13 @@ CC.extend(Base.prototype,
 
     return false;
   },
-/***/
+  /**
+   * 检测元素是否在某个容器的可见区域内.
+   * <br>如果在可见区域内，返回false,
+   * 否则返回元素偏离容器的scrollLeft,利用该scrollLeft可将容器可视范围滚动到元素处。
+   * @param {DOMElement|CC.Base} [container]
+   * @return {Boolean}
+   */
   getHiddenAreaOffsetHori : function(ct){
     var c = ct.view || ct;
     var el = this.view;
@@ -2286,14 +2515,15 @@ CC.extend(Base.prototype,
 });
 
 /**
- * 创建一个具有完整生命周期的基本类实例,
- * 注意如果直接用new Base创建的类没控件初始化过程.
+ * 创建一个具有完整生命周期的基本类实例.<br>
+ * 注意如果直接用new CC.Base创建的类没控件初始化过程.
  * 该方法已被设为 protected, 不建议直接调用,要创建基类实例请调用
  * CC.ui.instance(option)方法.
- * @protected
+ * @private
  * @param {Object} opt 类初始化信息
- * @name CC.Base.create
- * @function
+ * @method create
+ * @member CC.Base
+ * @static
  */
 Base.create = function(opt){
     var comp;
@@ -2306,8 +2536,12 @@ Base.create = function(opt){
     return comp;
 };
 /**
- * @parma {HTMLElement} element
+ * 用CC.Base初始化结点
+ * @param {HTMLElement} element
  * @param {Object} options
+ * @method applyOption
+ * @member CC.Base
+ * @static
  */
 Base.applyOption = function(el, opt){
   var f = CC.fly(el);
@@ -2318,8 +2552,10 @@ Base.applyOption = function(el, opt){
 
 /**
  * 根据DOM快速转化为控件对象方法，该方法将具有控件生命周期，但略去了初始化和渲染.
- * @function
- * @memberOf CC
+ * @param {DOMElement|String} dom
+ * @param {DOMElement} parentNode
+ * @method $$
+ * @member CC
  */
 CC.$$ = (function(dom, p) {
     if(!dom || dom.view)
@@ -2352,9 +2588,11 @@ Cache.register('flycomp', function(){
   c.__flied = 0;
   return c;
 });
+
 /**
- * @function
- * @memberOf CC
+ * 这是CC.Base类加上去的,参见{@link CC.Base#fly}
+ * @method fly
+ * @member CC
  */
 CC.fly = function(dom){
   if(dom){
@@ -2408,16 +2646,18 @@ if (CC.ie){
 }
 
 /**
- * @name CC.ui
- * @class 控件包
+ * @class CC.ui
+ * 控件包
  */
 
-CC.ui = /**@lends CC.ui*/{
+CC.ui = {
 /**@private*/
   ctypes : {},
 
 /**
  * 注册控件类标识,方便在未知具体类的情况下生成该类,也方便序列化生成类实例.
+ * @param {String} ctype 类标识
+ * @param {Function} 类
  */
   def : function(ctype, clazz){
     this.ctypes[ctype] = clazz;
@@ -2427,8 +2667,7 @@ CC.ui = /**@lends CC.ui*/{
  * 根据类初始化信息返回类实例,如果初始化信息未指定ctype,默认类为CC.Base,
  * 如果初始化信息中存在ctype属性,在实例化前将移除该属性.
  * 如果传入的参数已是某个类的实例,则忽略.
- @example
-  <pre>
+  <pre><code>
   通过该类创建类实例方式有几种
   1. var inst = CC.ui.instance('shadow');
     或
@@ -2438,7 +2677,8 @@ CC.ui = /**@lends CC.ui*/{
 
   //得到CC.ui.ContainerBase类实例,假定该类的ctype为ct
      var inst = CC.ui.instance({ ctype : 'ct', showTo : document.body });
-  </pre>
+  </code></pre>
+ * @param {Object} option
  */
   instance : function(opt){
     if(typeof opt === 'string')
@@ -2468,9 +2708,10 @@ CC.ui.def('base', function(opt){
 });
   
 /**
- * document.body的Base封装
+ * @property $body
+ * document.body的Base封装,在DOMReady后由CC.Base生成.
+ * @member CC
  * @type CC.Base
- * @name CC.$body
  */
 Event.defUIReady = function(){
   CC.$body = CC.$$(document.body);

@@ -4,64 +4,54 @@ var CC = window.CC;
 var PR = CC.Base.prototype;
 
 /**
- * 阴影类
- * 阴影类须在文档创建后(DOM Ready)生成.
- * @name CC.ui.Shadow
- * @class 阴影类
+ * @class CC.ui.Shadow
+ * 阴影类, 阴影类须在文档创建后(DOM Ready)生成.
  * @extends CC.Base
  */
 CC.Tpl.def('CC.ui.Shadow' , CC.ie6 ? '<div class="g-dxshadow"></div>' : '<div class="g-shadow" style="display:none;"><div class="g-shadow-t" id="_t"></div><div class="g-shadow-lt" id="_lt"></div><div class="g-shadow-rt" id="_rt"></div><div class="g-shadow-l" id="_l"></div><div class="g-shadow-lb" id="_lb"></div><div class="g-shadow-r" id="_r"></div><div class="g-shadow-rb" id="_rb"></div><div class="g-shadow-b" id="_b"></div></div>');
 CC.create('CC.ui.Shadow', CC.Base,
-/**@lends CC.ui.Shadow.prototype*/
 {
 /**
- * @property {Number} [inpactW=8] 阴影宽度相关参数
+ * @cfg {Number} [inpactW=8] 阴影宽度相关参数
  */
   inpactW : 8,
 /**
- * @property {Number} [inpactH=0] 阴影高度相关参数
+ * @cfg {Number} [inpactH=0] 阴影高度相关参数
  */
   inpactH : 0,
 /**
- * @property {Number} [inpactX=-4] 阴影x方向位移相关参数
+ * @cfg {Number} [inpactX=-4] 阴影x方向位移相关参数
  */
   inpactX : -4,
 /**
- * @property {Number} [inpactY=8] 阴影y方向位移相关参数
+ * @cfg {Number} [inpactY=8] 阴影y方向位移相关参数
  */
   inpactY : 4,
 /**
- * @property {Number} [shadowWidth=8] 阴影边沿宽度,该值只对IE有效
+ * @cfg {Number} [shadowWidth=8] 阴影边沿宽度,该值只对IE有效
  */
   shadowWidth : 6,
 
   /**
-   * 变换引起的偏移量, 专为IE6采用的滤镜设置,非IE6时忽略该值,默认为4, 参见CSS滤镜中Blur(pixelradius).
-   * @property {Number}
+   * @cfg {Number} offset 变换引起的偏移量, 专为IE6采用的滤镜设置,非IE6时忽略该值,默认为4, 参见CSS滤镜中Blur(pixelradius).
    * @private
    */
   offset : 4,
-/**
- * @property {Boolean} [hidden=true] 默认隐藏
- */
+
   hidden : true,
 
-
-  initComponent : function(){
 /**
- * @name CC.ui.Shadow#showTo
- * @property {DOMElement} [showTo=document.body] 默认显示在document.body中
+ * @cfg {CC.Base} target 阴影附加的目标控件
  */
+  target : false,
+  
+  initComponent : function(){
 
     PR.initComponent.call(this);
-/**
- * @name CC.ui.Shadow#target
- * @property {CC.Base} [target] 阴影附加的目标控件
- */
+
     if(this.target)
         this.attach(this.target);
     if(CC.ie && !CC.ie6){
-      //@private
       this.shadowR = this.dom('_r');
       this.shadowB = this.dom('_b');
       this.shadowL = this.dom('_l');
@@ -172,10 +162,7 @@ CC.create('CC.ui.Shadow', CC.Base,
     return this;
   },
 
-  /**
-   * 只有target显示时才显示阴影,否则忽略.
-   * @override
-   */
+  // 只有target显示时才显示阴影,否则忽略.
   display : function(b){
     if(b===undefined)
       return PR.display.call(this);

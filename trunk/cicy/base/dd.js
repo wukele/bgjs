@@ -1,13 +1,14 @@
 ﻿/**
+ * @class CC.util.dd
  * 库drag & drop效果实现
- * drag & drop实现有两种方法,
- * <li>基于空间划分检测
- * <li>一种基于浏览器自身的mouse over + mouse out检测
- * 这里采用第一种
- * @class
- * @name CC.util.dd
+ * drag & drop实现有两种方法<ul>
+ * <li>基于空间划分检测</li>
+ * <li>一种基于浏览器自身的mouse over + mouse out检测</li></ul>
+ * 这里采用第一种.
+ * @namespace
  */
 (function(){
+
 var CC = window.CC;
 CC.util.dd = {};
 
@@ -64,11 +65,6 @@ var E = CC.Event,
       return false;
     }
 
-/**
- * @name CC.Base#draggable
- * @property {Boolean} draggable 是否允许拖动功能,该值只有在已安装拖动功能情况下才生效
- */
-
     function before(e){
       if(this.draggable){
         IXY = PXY = E.pageXY(e);
@@ -113,7 +109,7 @@ var E = CC.Event,
           }
     }
 
-/**@inner*/
+
     function drag(e){
       e = e || _w.E;
       PXY = E.pageXY(e);
@@ -163,7 +159,6 @@ var E = CC.Event,
       }
     }
 
-/**@inner*/
     function drop(e){
       if(dragEl){
         e = e || _w.E;
@@ -206,14 +201,13 @@ var E = CC.Event,
 
 
 /**
+ * @class CC.util.dd.Mgr
  * Drag & Drop 管理器
- * @name CC.util.dd.Mgr
- * @class
  */
-  var mgr = CC.util.dd.Mgr = /**@lends CC.util.dd.Mgr*/{
+  var mgr = CC.util.dd.Mgr = {
 /**
  * 矩域缓存
- * @protected
+ * @private
  */
         zmCache : {root:new CC.util.d2d.RectZoom()},
 
@@ -222,6 +216,7 @@ var E = CC.Event,
  * @param {String} name 矩域名称
  * @param {String} parent 父层矩域,如果该参数为非空,并且name域未存在,则创建一个新域并返回该域
  * @return {CC.util.d2d.RectZoom}
+ * @method $
  */
         $ : function(k, p){
           var z = this.zmCache[k];
@@ -248,7 +243,8 @@ var E = CC.Event,
  * 设置拖动区域后,超出区域的行为将被忽略,也就是并不回调
  * component.drag方法,所以,在drag方法内的操作都是安全的.
  * 受限区域在拖放结束后清空.
- * @type Array
+ * @param {Array} constrainBounds
+ * @return this
  */
         setBounds : function(arr){
           bounds = arr;
@@ -358,7 +354,7 @@ var E = CC.Event,
         },
 
 /**
- * 更新当前拖动zoom
+ * 更新当前拖动的矩域数据.
  * @return this
  */
     update : function(){
@@ -394,35 +390,42 @@ var E = CC.Event,
           return ing;
         },
 /**
+ * @class CC.util.dd.Mgr.resizeHelper
  * 当控件需要resize时调用,可以创建resize相关的掩层和映像,防止其它干扰resize的因素,如iframe
- * @name CC.util.dd.Mgr.resizeHelper
- * @class
+ * @singleton
  */
 
-        resizeHelper : /**@lends CC.util.dd.Mgr.resizeHelper*/{
+        resizeHelper : {
 
           resizeCS : 'g-resize-ghost',
 
           maskerCS : 'g-resize-mask',
 /**
- * @property {CC.Base} layer 映像层,只读,当调用applyLayer方法后可直接引用
+ * @property  layer
+ * 映像层,只读,当调用applyLayer方法后可直接引用
+ * @type CC.Base
  */
 
 /**
- * @property {CC.Base} masker 页面掩层,只读,当调用applyMasker方法后可直接引用
+ * @property masker
+ * 页面掩层,只读,当调用applyMasker方法后可直接引用
+ * @type CC.Base
  */
 
 /**
  * 在resize开始或结束时调用
- * @param {Boolean} apply
+ * @param {Boolean} applyOrNot
+ * @param {String}  [maskerCursor] 掩层的style.cursor值
  */
-          applyResize : function(b){
+          applyResize : function(b, cursor){
             this.resizing = b;
             this.applyLayer(b);
-            this.applyMasker(b);
+            this.applyMasker(b, cursor);
           },
 /**
  * 是否应用映像层
+ * @param {Boolean} apply
+ * @return this
  */
           applyLayer : function(b){
             var y = this.layer;
@@ -437,13 +440,16 @@ var E = CC.Event,
             }
             b ? y.appendTo(doc.body) : y.del();
             y.display(b);
+            return this;
           },
 /**
  * 创建或移除页面掩层,在resize拖动操作开始时,创建一个页面掩层,
  * 以防止受iframe或其它因素影响resize
  * @param {Boolean} cor 创建或移除页面掩层
+ * @param {String}  cursor 掩层style.cursor值
+ * @return this
  */
-          applyMasker : function(b){
+          applyMasker : function(b, cursor){
             var r = this.masker;
             if(!r)
               r = this.masker =
@@ -459,34 +465,42 @@ var E = CC.Event,
               r.setSize(CC.getViewport());
             b ? r.appendTo(doc.body) : r.del();
             r.display(b);
+            
+            if(cursor !== undefined)
+              r.fastStyleSet('cursor', cursor);
+            return this;
           }
         }
   };
-
-  CC.extendIf(CC.Base.prototype,/**@lends CC.Base.prototype*/ {
 /**
-* @name CC.Base#dragNode
-* @property {String|HTMLElement} dragNode 触发控件拖动开始的结点或结点ID
+ * @class CC.Base
+ */
+  CC.extendIf(CC.Base.prototype, {
+/**
+ * @cfg {String|HTMLElement} dragNode 触发控件拖动开始的结点或结点ID,属性由{@link CC.util.dd.Mgr}引入
+ */
+
+/**
+ * @cfg {Boolean} draggable 是否允许拖动功能,该值只有在已安装拖动功能情况下才生效.<br>
+ * 属性由{@link CC.util.dd.Mgr}类引入.
+ */
+ 
+/**
+* @cfg {String} dragZoom 设置或获取控件目标拖放区域名称(组),只有控件已安装拖动功能该设置才生效.<br>
+* 属性由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}
 */
 
 /**
-* @name CC.Base#dragZoom
-* @property {String} dragZoom 设置或获取控件目标拖放区域名称(组)
-* 只有控件已安装拖动功能该设置才生效
-* @see #installDrag
-*/
-
-/**
-* 是否安装结点拖放效果
-* @function
+* 是否安装结点拖放效果,方法由{@link CC.util.dd.Mgr}引入.
 * @param {Boolean} true | false
+* @return this
 */
     installDrag : function(b){
       mgr.installDrag(this, b);
       return this;
     },
 /**
-* 获得drag & drop 管理器
+* 获得drag & drop 管理器,由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
 * @return {CC.util.dd.Mgr}
 */
     getDDProvider : function(){
@@ -495,57 +509,77 @@ var E = CC.Event,
 
 /**
  * 如果已安装拖放,
- * 函数在鼠标按下时触发
- * @type function
+ * 函数在鼠标按下时触发,方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method beforedrag
  */
     beforedrag : fGo,
 /**
- * 如果已安装拖放
- * 拖动开始时触发
- * @type function
+ * 如果已安装拖放,拖动开始时触发.方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method dragstart
  */
     dragstart : fGo,
 /**
  * 如果已安装拖放,
- * 函数在鼠标松开时触发,拖动曾经发生过
- * @type function
+ * 函数在鼠标松开时触发,拖动曾经发生过.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method dragend
  */
     dragend : fGo,
 /**
  * 如果已安装拖放,
- * 函数在鼠标松开时触发,拖动不一定发生过
- * @type function
+ * 函数在鼠标松开时触发,拖动不一定发生过.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method afterdrag
  */
     afterdrag : fGo,
 /**
  * 如果已安装拖放,
- * 函数在鼠标拖动时触发
- * @type function
+ * 函数在鼠标拖动时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @param {CC.Base} overComponent 在下方的控件,无则为空
+ * @method drag
  */
     drag : fGo,
 
 /**
  * 如果已加入拖放组,
- * 函数在目标进入时触发
- * @type function
+ * 函数在目标进入时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {DOMEvent} event
+ * @method sbover
  */
     sbover : fGo,
 /**
  * 如果已加入拖放组,
- * 函数在目标离开时触发
- * @type function
+ * 函数在目标离开时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {DOMEvent} event
+ * @method sbout
  */
     sbout : fGo,
 /**
  * 如果已加入拖放组,
- * 函数在目标丢下时触发
- * @type function
+ * 函数在目标丢下时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {DOMEvent} event
+ * @method sbdrop
  */
     sbdrop : fGo,
 /**
  * 如果已加入拖放组,
- * 函数在目标移动时触发
- * @type function
+ * 函数在目标移动时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {DOMEvent} event
+ * @method sbmove
  */
     sbmove : fGo
   });

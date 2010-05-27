@@ -1,8 +1,7 @@
 ﻿(function(){
 /**
+ * @class CC.Event
  * DOM事件处理实用函数库,更多关于浏览器DOM事件的文章请查看<a href="http://www.bgscript.com/archives/369" target="_blank">http://www.bgscript.com/archives/369</a>
- * @name CC.Event
- * @class DOM事件处理实用函数库
  * @singleton
  */
 var Event = CC.Event = {};
@@ -10,58 +9,81 @@ var document = window.document;
 var opera = CC.opera, chrome = CC.chrome, ie = CC.ie;
 
 CC.extend(Event,
-  /**@lends CC.Event*/
   {
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     BACKSPACE: 8,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     TAB: 9,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     ENTER: 13,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     ESC: 27,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     LEFT: 37,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     UP: 38,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     RIGHT: 39,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     DOWN: 40,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     DELETE: 46,
     /**
-     *@config
      *@private
      */
     readyList : [],
     /**@private*/
     contentReady : false,
     /**
-     * 常用于取消DOM事件继续传送,内在调用了Event.stop(ev||window.event);
-     * @param {Event} ev
-     * @example
+     * @property
+     * 常用于取消DOM事件继续传送,内在调用了Event.stop(ev||window.event);<br>
        div.onmousedown = Event.noUp;
+     * @type Function
+     * @private
      */
     noUp : function(ev) {
         Event.stop(ev||window.event);
         return false;
     },
-
+/**
+ * @property
+ * preventDefault(ev||window.event)
+ * @type Function
+ * @param {DOMEvent} event
+ * @private
+ */
     noDef : function(ev){
       Event.preventDefault(ev||window.event);
     },
 
 /**
  * 获得DOM事件源
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {DOMElement}
  */
     element: function(ev) { return ev.srcElement || ev.target; }
     ,
 /**
  * 获得事件发生时页面鼠标x坐标.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Number} pageX
  */
     pageX : function(ev) {
@@ -73,7 +95,7 @@ CC.extend(Event,
     },
 /**
  * 获得事件发生时页面鼠标y坐标.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Number} pageY
  */
     pageY : function(ev) {
@@ -85,7 +107,7 @@ CC.extend(Event,
     },
 /**
  * 获得事件发生时页面鼠标xy坐标.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Array} [pageY,pageY]
  */
     pageXY : function(ev) {
@@ -98,7 +120,7 @@ CC.extend(Event,
     },
 /**
  * 获得事件发生时的键盘按键.
- * @param {Event} ev
+ * @param {DOMEvent} event
  */
     which : function(ev) {
         if ( !ev.which && ((ev.charCode || ev.charCode === 0) ? ev.charCode : ev.keyCode) )
@@ -107,7 +129,7 @@ CC.extend(Event,
 
 /**
  * 是否左击.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Boolean}
  */
     isLeftClick: function(ev) {
@@ -116,7 +138,7 @@ CC.extend(Event,
     }
 /**
  * 是否按下回车键.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Boolean}
  */
     ,
@@ -125,19 +147,22 @@ CC.extend(Event,
     },
 /**
  * 是否按下ESC键
+ * @param {DOMEvent} event
+ * @return {Boolean}
  */
     isEscKey : function(ev){
       return ev.keyCode === 27;
     },
 /**
  * 获得滚轮增量
+ * @param {DOMEvent} event
  * @return {Number}
  */
     getWheel : function(ev){
-       /* IE或者Opera. */
+       // IE或者Opera
        if (ev.wheelDelta) {
          delta = ev.wheelDelta/120;
-         /*在Opera9中，事件处理不同于IE*/
+         // 在Opera9中，事件处理不同于IE
          if (opera)
           delta = -delta;
        } else if (ev.detail)
@@ -148,7 +173,7 @@ CC.extend(Event,
     },
 /**
  * 停止事件传递和取消浏览器对事件的默认处理.
- * @param {Event} ev
+ * @param {DOMEvent} event
  */
     stop: function(ev) {
         if (ev.preventDefault)
@@ -165,7 +190,7 @@ CC.extend(Event,
     ,
 /**
  * 取消浏览器对事件的默认处理.
- * @param {Event} ev
+ * @param {DOMEvent} event
  */
     preventDefault : function(ev) {
         if(ev.preventDefault)
@@ -174,7 +199,7 @@ CC.extend(Event,
     },
 /**
  * 停止事件传递.
- * @param {Event} ev
+ * @param {DOMEvent} event
  */
     stopPropagation : function(ev) {
         if (ev.stopPropagation)
@@ -182,15 +207,8 @@ CC.extend(Event,
         ev.cancelBubble = true;
     },
 /**
- * 切换元素样式(展开,收缩等效果)
- * @param {DOMElement|String} 源DOM
- * @param {DOMElement|String} 目标DOM
- * @param {String} cssExpand 展开时样式
- * @param {String} cssFold   闭合时样式
- * @param {String} [msgExp] src.title = msgExp
- * @param {String} [msgFld] src.title =  msgFld
- * @param {String} [hasText] src显示文本
- @example
+ * 切换元素样式(展开,收缩等效果).<br>
+ <pre><code>
    &lt;style&gt;
     .expand {background-image:'open.gif'}
     .fold {background-image:'fold.gif'}
@@ -204,6 +222,16 @@ CC.extend(Event,
    &lt;script&gt;
     Event.toggle('src','des','expand', 'fold', '点击展开','点击收缩', '标题栏');
    &lt;/script&gt;
+   </code></pre>
+   <br><pre>
+ * param {DOMElement|String} 源DOM
+ * param {DOMElement|String} 目标DOM
+ * param {String} cssExpand 展开时样式
+ * param {String} cssFold   闭合时样式
+ * param {String} [msgExp] src.title = msgExp
+ * param {String} [msgFld] src.title =  msgFld
+ * param {String} [hasText] src显示文本
+ </pre>
  */
     toggle : function(src, des, cssExpand, cssFold, msgExp, msgFld, hasText) {
         src = CC.$(src);
@@ -219,9 +247,7 @@ CC.extend(Event,
         if(hasText) src.innerHTML = txt;
         src.title = txt;
     },
-/**@private
- *@config
- */
+/**@private*/
     observers: false,
 /**@private*/
     _observeAndCache: function(element, name, observer, useCapture) {
@@ -251,16 +277,17 @@ CC.extend(Event,
     }
     ,
 /**
- * 添加DOM元素事件监听函数.
- * Warning : In IE6 OR Lower 回调observer时this并不指向element.
+ * 添加DOM元素事件监听函数.<br>
+ * Warning : In IE6 OR Lower 回调observer时this并不指向element.<br>
+ <code>
+   Event.on(document, 'click', function(event){
+    event = event || window.event;
+   });
+ </code>
  * @param {DOMElement} element
  * @param {String} name 事件名称,无on开头
  * @param {Function} observer 事件处理函数
  * @param {Boolean} [useCapture]
- @example
-   Event.on(document, 'click', function(event){
-    event = event || window.event;
-   });
  */
     on: function(element, name, observer, useCapture) {
         useCapture = useCapture || false;
@@ -294,13 +321,15 @@ CC.extend(Event,
         }
     },
 /**
- * 提供元素拖动行为,在RIA中不建议用该方式实现元素拖放,而应实例化一个Base对象,使之具有一个完整的控件生命周期.
- * @param {DOMElement} dragEl
- * @param {DOMElement} moveEl
- * @param {Boolean} enable or not?
- * @param {Function} [onmovee] callback on moving
- * @param {Function} [ondrag] callback on drag start
- * @param {Function} [ondrog] callback when drogged
+ * 提供元素拖动行为,在RIA中不建议用该方式实现元素拖放,而应实例化一个Base对象,使之具有一个完整的控件生命周期.<br>
+ <pre>
+ * param {DOMElement} dragEl
+ * param {DOMElement} moveEl
+ * param {Boolean} enable or not?
+ * param {Function} [onmovee] callback on moving
+ * param {Function} [ondrag] callback on drag start
+ * param {Function} [ondrog] callback when drogged
+ </pre>
  */
     setDragable: function(dragEl, moveEl, b, onmove, ondrag, ondrog) {
         if (!b) {
@@ -375,7 +404,8 @@ CC.extend(Event,
         };
     },
 /**
- * 页面加载完成后回调.
+ * @private
+ * 页面加载完成后回调,CC.ready将调用本方法
  */
     ready : function(callback) {
       this.readyList.push(callback);
@@ -402,7 +432,8 @@ CC.extend(Event,
 
 /**
  * 添加DOM加载完成后回调函数
- * @function
+ * @member CC
+ * @method ready
  */
 CC.ready = function(){
   Event.ready.apply(Event, arguments);
