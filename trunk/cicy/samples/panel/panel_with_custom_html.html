@@ -1,0 +1,72 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+  
+  <!-- html 演示用到的css,非cicy库部份 -->
+  <link rel="stylesheet" href="http://mimg.126.net/p/js35/1005181203/css/global.css" type="text/css"/>
+  <link rel="stylesheet" href="http://mimg.126.net/p/js35/1005181203/css/skin_sakura.css" type="text/css"/>
+<style>
+	body {overflow:hidden;} .gSidebar{height:auto;}
+</style>
+</head>
+<body>
+	<!--
+	  cicy并不是所有页面都是JS生成,还支持其它方式丰富页面内容.
+	  有时候需要通过后台生成html,放到相应的控件中,这过程在cicy中有多种方法.
+	  a). 传递页面中的dom结点,作为视图view结点.
+	  b). 直接往容器的dom内容节点添加html.
+	  c). 直接输入html生成控件的视图view结点.
+	-->
+	
+	<!--
+	  假设这段html由后台输出,接下来我们把它放到一个面板去
+	-->
+
+<div class="gFToptd" id="server_output_html"><div class="gTop theme-tr"><div class="theme-tl"><div class="fn-bg top-tl"></div><div class="links"><div class="chl"><a target="_blank" href="http://www.163.com/">网易首页</a>&nbsp;|&nbsp;<a target="_blank" href="http://news.163.com/">网易新闻</a>&nbsp;|&nbsp;<a target="_blank" href="http://www.youdao.com/?keyfrom=newtxt.mail.163">有道搜索</a>&nbsp;|&nbsp;<a target="_blank" href="http://blog.163.com/">网易博客</a>&nbsp;|&nbsp;<a  href="javascript:fGo();">更多▼</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a style="color: rgb(217, 0, 0); text-decoration: underline;" target="_blank" href="http://allyes.nie.163.com/main/adfclick?db=afanie&amp;bid=8823,4368,134&amp;cid=637,4,1&amp;sid=9054&amp;show=ignore&amp;url=http://server.zg.163.com/zgtrack/click.php?cid=27">玩游戏玩“变身”！《战国风云》“换形系统”传奇上线！</a></div><div class="ext"><span style="display: none;" id="lockscreen"><b class="ico ico-screensaver"></b>&nbsp;<a  href="javascript:fGo()">邮箱锁屏</a>&nbsp;|&nbsp;</span><a target="_blank" id="lnkFeedback" href="http://zhidao.mail.126.com/zhidao/labfeedback.jsp?tname=%E6%9E%81%E9%80%9F3.5%E7%89%88%E6%9C%AC">反馈意见</a>&nbsp;|&nbsp;<a id="lnkOption"  href="javascript:fGo();">设置</a>&nbsp;|&nbsp;<a id="lnkhelp" target="_blank" href="http://help.163.com/special/007525FQ/126mail.html?b09akh1&amp;sid=TBxWWIpnVMAAkEpgCInnzRuaDNBEPpbn&amp;uid=email@126.com&amp;host=tg1a62.mail.126.com&amp;ver=js35&amp;style=1&amp;skin=163blue_css">帮助</a>&nbsp;|&nbsp;<a id="lnkexit"  href="javascript:fGo();">退出</a></div></div><h1 class="logo logo-ext-126"><a id="lnkHome"  href="javascript:fGo();"><img border="0" id="imgLogo" class="gLogo" alt="126邮箱" src="http://mimg.126.net/logo/126logo.gif"></a></h1><div class="info"> <div id="dvShowMobileAccountMenu"  onmouseout="this.className='g-addr g-addr-arr'" onmouseover="this.className='g-addr g-addr-active'" class="g-addr g-addr-arr"><strong style="" id="bUid">email@126.com</strong><b id="bArrowMobileAccount" class="arr"></b></div>&nbsp; [&nbsp;<a  href="javascript:fGo();">首页</a>&nbsp;|&nbsp;<a  href="javascript:fGo();">换肤<span class="fn-ib fn-bg ico-lab-new"></span></a>&nbsp;|&nbsp;<a  href="javascript:fGo();">实验室</a>&nbsp;|&nbsp;<a  href="javascript:fGo();">切换到原逍遥3.0版本</a>&nbsp;] <span id="spnIMEntry"><span style="" id="spnIMInfo" class="webIM-tinfo"><span id="spnChatWith"></span><span id="spnOnlineInfo">[<a  class="Astate im-online" href="javascript:i_qh();">在线0人</a>]</span> </span></span></div><div><a style="position: absolute; top: 54px; right: 218px;" href="http://g.163.com/a?CID=1052&amp;Values=206156283&amp;Redirect=http://daozhu.qiandaohu.cc/" target="_blank"><img alt="" src="http://img1.126.net/channel6/007450/qdh100510_5416_126.jpg"></a></div><div class="tip"><div id="dvShowMsgInfo" class="t"></div></div><div class="ser"><span class="g-srch"><input type="text"  onblur="this.className='ipt-t ipt-t-dft';if(this.value==''){this.value=gTxtKeyValue;this.style.color='#999';}" onkeydown="fGo('CC.searchMouseDown();')" onkeyup="if(event.keyCode==13){}else{fGo('CC.showSearchAutoAddr();')}" maxlength="100" onfocus="this.className='ipt-t ipt-t-dft ipt-t-dft-hover';this.style.color='';if(searchid&amp;&amp;searchid=='true'){fGo('MM.ajaxRequest(\'mbox:prepareSearch\',{sync:window.prepareSearch},function(){},true);');window.prepareSearch = true;}this.onclick();" style="color: rgb(153, 153, 153);" id="txtKey" class="ipt-t ipt-t-dft" title="搜索邮件"><span class="btn btn-sml btn-sml-pd"><span title="搜索邮件" >搜索</span><span title="高级搜索"  class="arr"></span></span></span></div></div></div></div>
+
+</body>
+</html>
+<script>
+		CC.ready(function(){
+     
+    var vp = new CC.ui.Viewport({
+       layout:'border',
+       items:[
+         {ctype:'panel', height:83,/**这是第一种方法,直接指定view视图为页面上的一个DOM结点*/view:'server_output_html', lyInf:{dir:'north', gap:0}},
+         // west
+         {ctype:'panel', css:'lnr', width:190, maxW:190, lyInf:{dir:'west', split:true,collapsed:true}, layout:'row', items:[
+           /**第二种方法:如果将html写在JS中,可以直接插入到面板容器中作为内容.*/
+           { ctype:'titlepanel', title:'插入一段html作为内容', 
+             strHtml:'<div class="gSidebar theme-sb-top"><div class="cnav gSb-sfolder"><ul id="ulSysFolders"><li onmouseout="this.className=\'\'" onmouseover="this.className=\'over\'" class="" orgclass="" id="liNav_inbox"><a  hidefocus="true" title="收件箱" class="ct" href="javascript:void(0)">收件箱&nbsp;</a></li><li onmouseout="this.className=\'\'" onmouseover="this.className=\'over\'" class="" orgclass="" id="liNav_draft"><a  hidefocus="true" title="草稿箱" class="ct" href="javascript:void(0)">草稿箱&nbsp;</a></li><li onmouseout="this.className=\'\'" onmouseover="this.className=\'over\'" class="" orgclass="" id="liNav_sended"><a  hidefocus="true" title="已发送" class="ct" href="javascript:void(0)">已发送&nbsp;</a></li><li onmouseout="this.className=\'\'" onmouseover="this.className=\'over\'" class="" orgclass="" id="liNav_deleted"><a  hidefocus="true" title="已删除" class="ct" href="javascript:void(0)">已删除&nbsp;</a><a  hidefocus="true" title="清空" class="fn-bg Aept" href="javascript:void(0)">清空</a></li><li onmouseout="this.className=\'\'" onmouseover="this.className=\'over\'" class="" orgclass="" id="liNav_defined5"><a  hidefocus="true" title="垃圾邮件" class="ct" href="javascript:void(0)">垃圾邮件&nbsp;</a></li><li onmouseout="this.className=\'\'" onmouseover="this.className=\'over\'" class="" orgclass="" id="liNav_defined7"><a  hidefocus="true" title="广告邮件" class="ct" href="javascript:void(0)">广告邮件&nbsp;</a></li></ul></div></div>'
+           },
+           /**第三种方法,直接设置html模板,生成整个控件的视图*/
+           { ctype: 'base', template:'<div class="gSidebar theme-sb-top"><div class="cnav gSb-sOTmail"><div class="gSb-cnav-tit"><a  id="lnkDefToggle" hidefocus="true" title="收起其他文件夹" class="fn-bg opned" href="javascript:fGo();"></a><a hidefocus="true"  class="ct" href="javascript:fGo();">其他文件夹&nbsp;<span style="display: none;" id="spnDefCount"></span></a><a  hidefocus="true" title="添加" class="fn-bg Aadd" href="javascript:fGo();">添加</a><a  hidefocus="true" title="管理" class="fn-bg Amag" href="javascript:fGo();">管理</a></div><ul class="ulDefFolders" id="ulDefFolders"><li onmouseout="this.className=\'\'" onmouseover="this.className=\'over\'" class="" orgclass="" id="liNav_defined8037939"><b class="ico-account ico-act-default"></b><a  hidefocus="true" title="我的帐单" class="ct" href="javascript:void(0)">我的帐单</a></li></ul></div></div>'},
+           
+           /**此外,还可以结合库其它ui布局*/
+           {ctype:'ct',layout:'table',lyCfg:{
+             group:{
+               cols:2,
+               0 : {width:50}
+             },
+             items:[
+               // row one
+               [{ctype:'label', title:'账 号'}, {ctype:'text'}],
+               // row two
+               [{ctype:'label', title:'密 码'}, {ctype:'text'}],
+               // row three
+               [{ctype:'textarea', css:'w:100%', td:{cols:2}}]
+             ]
+           }}
+         ]},
+         // center : 放一个iframe页面
+         {ctype:'iframe', css:'lnl', lyInf:{dir:'center'}, src:'http://www.g.cn'}
+       ]
+     });
+     
+     vp.render();
+		});
+</script>

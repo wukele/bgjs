@@ -310,7 +310,7 @@ CC.create('CC.layout.TableLayout', B, {
 		// cache the items
 	  this._items = ct.lyCfg && ct.lyCfg.items;
 	  // 自由添加结点到容器
-	  ct._addNode = fGo;
+	  ct._addNode = ct._removeNode = fGo;
 	  superclass.attach.apply(this, arguments);
 	},
 	

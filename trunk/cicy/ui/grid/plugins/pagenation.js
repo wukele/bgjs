@@ -139,18 +139,20 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
   },
   
   onPageChange : function(pageInf){
-    if(!pageInf)
-       pageInf = {};
-    
-    // 收集提交的分页信息
-    // copy page info to temp object
-    pageInf = this.createQuery(pageInf);
-
-    this.grid.content.getConnectionProvider()
-        .connect(
-           CC.templ(this, this.url), 
-           { success : this._onSuccess, params  : pageInf}
-        );
+    if(this.url){
+      if(!pageInf)
+         pageInf = {};
+      
+      // 收集提交的分页信息
+      // copy page info to temp object
+      pageInf = this.createQuery(pageInf);
+  
+      this.grid.content.getConnectionProvider()
+          .connect(
+             CC.templ(this, this.url), 
+             { success : this._onSuccess, params  : pageInf}
+          );
+    }
   },
   
   _onConnectorStatusChange : function(s){

@@ -104,14 +104,14 @@ return {
      IDX     = cxy[0] + currentCol.view.offsetWidth - Math.floor(rdc.getWidth(true)/2);
      y       = cxy[1] + currentCol.view.offsetHeight;
      
-     rdc.setXY(IDX, y).display(true);
-     ldc.setXY(cxy[0] - Math.floor(rdc.getWidth(true)/2), y).display(true);
+     rdc.setXY(IDX, y).appendTo(document.body);
+     ldc.setXY(cxy[0] - Math.floor(rdc.getWidth(true)/2), y).appendTo(document.body);
   },
   
   onColResizeEnd : function(e){
      currentCol.setWidth(currentCol.getWidth(true) + CX, true);
-     this.leftIndicator.display(false);
-     this.rightIndicator.display(false);
+     this.leftIndicator.del();
+     this.rightIndicator.del();
      this.grid.fire('colresizeend', this, currentCol.pCt.indexOf(currentCol));
   },
 
@@ -167,11 +167,9 @@ return {
     var rdc = this.rightIndicator;
     if(!rdc){
       var cfg = {
-        hidden: true,
         view:'div',
         ctype:'base',
-        cs: this.indicatorCS,
-        showTo: document.body
+        cs: this.indicatorCS
       };
       rdc = this.rightIndicator = CC.ui.instance(cfg);
       this.leftIndicator        = CC.ui.instance(cfg);
