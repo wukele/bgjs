@@ -1,32 +1,29 @@
-﻿/**
+﻿/*!
  * Javascript Utility for web development.
  * 反馈 : www.bgscript.com/forum
- * @author Rock - javeejy@126.com
  * www.bgscript.com ? 2010 - 构建自由的WEB应用
  */
-//~@base/base.js
 /**
- * @fileOverview 定义库功能函数和控件基类(元素封装类).
- * @author <a href="mailto:javeejy@126.com">Rock</a>
- * @version 1.0.1
+ * @class global 全局对象
  */
-
-
 /**
  * 空函数,什么也不干,象征意义居多.
  * 空调用有什么用?
  * 常见的就有在一个超链接中,
- * 其次当一个类未实现它的某个方法,但其它类又可能调用到该方法时,为了避免null调用,就可把这方法设为fGo.
- * @method
- * @example
+ * 其次当一个类未实现它的某个方法,但其它类又可能调用到该方法时,为了避免null调用,就可把这方法设为fGo.<br/>
+ * <code>
    &lt;a href=&quot;Javascript:fGo()&quot; onclick=&quot;funcToRun()&quot;&gt;&lt;/a&gt;
+ * </code>
+ * @member global
+ * @method fGo
  */
 function fGo(){};
 
 /**
- * 调试开关,默认false,可在Firefox下的firebug控制台输入__debug=true|false切换开关.
- *@global
- *@name __debug
+ *调试开关,默认false,可在Firefox下的firebug控制台输入__debug=true|false切换开关.
+ * @member global
+ * @property __debug
+ * @type Boolean
  */
 if(window.__debug === undefined)
   var __debug = false;
@@ -36,12 +33,9 @@ if(window.__debug === undefined)
 
     var document = window.document,
 
-    /**@inner*/
     ua = navigator.userAgent.toLowerCase(),
 
-    /**产生全局一个唯一ID, 参见CC.uniqueID().
-      * @inner
-      */
+    // 产生全局一个唯一ID, 参见CC.uniqueID()
     uniqueId = 0,
 
     String = window.String,
@@ -63,7 +57,7 @@ if(window.__debug === undefined)
     isBorderBox = (isIE && !isStrict) || (!isIE && !isStrict),
     /**是否合法EMAIL字符串.
      * 参见 CC.isMail().
-     * @inner
+     * @ignore
      */
     mailReg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
     
@@ -79,7 +73,7 @@ if(window.__debug === undefined)
    /**
     * 该方法在创建新类时被调用,依次执行父类构造函数以给子类添加父类属性.
     * 参见 CC.create()
-    * @inner
+    * @ignore
     */
     function applyCustructors(obj, superclass, cts){
         for(var i=0,len=cts.length;i<len;i++){
@@ -95,31 +89,36 @@ if(window.__debug === undefined)
     }
     
     /**
-     * CC, Cicy缩写,所有类包根目录.
-     * @name CC
-     * @class 所有类包根目录
+     * @class CC
+     * Cicy缩写,所有类包根目录.
      */
     var CC =
-       /**@lends CC*/
     {
-        /**@property version 当前版本号*/
-        version : '2010.4',
+        /**
+         * 当前版本号
+         * @type String
+         */
+        version : '2010.5',
 
         /**
          * 根据结点ID值返回该DOM结点.
          * 该遍历为广度优先
          * 如果只有一个参数,返回id相同的结点(只一个).
          * 如 var objDiv = CC.$('idDiv');
-         * 当参数为2时, 返回包含在父结点中的属性id孩子结点,孩子结点可在深层,id在父结点中需唯一.
-         * 如 var objDiv = CC.$('idOfAncestor', 'idOfChild');
-         *@param {String|DOMElement} a id 结点ID,直接一个DOM也没关系
-         *@param {DOMElement} b 父结点,如果该值指定,将在该结点下查找
-         *@returns {DOMElement} 对应ID的结点,如果不存在返回null
-         *@example
-           //结果为true
-           alert(CC.$('idDIV')==document.getElementById('idDIV'));
-           //在结点oDiv中寻找id为childDiv的结点
-           CC.$('childDiv',oDiv);
+         * 当参数为2时, 返回包含在父结点中的属性id孩子结点,孩子结点可在深层,id在父结点中需唯一.<br/>
+         * 如
+         * <pre><code>
+         *  var objDiv = CC.$('idOfChild', ancestorNode);
+         *  //结果为true
+         *  alert(CC.$('idDIV')==document.getElementById('idDIV'));
+         *  //在结点oDiv中寻找id为childDiv的结点
+         *  CC.$('childDiv',oDiv);
+         *  </code></pre>
+         * @param {String|DOMElement} id 结点ID,直接一个DOM也没关系
+         * @param {DOMElement} ancestorNode 父结点,如果该值指定,将在该结点下查找
+         * @return {DOMElement} 对应ID的结点,如果不存在返回null
+         * @member CC
+         * @method $
          */
         $: function(a,b) {
             var iss = typeof a === "string" || a instanceof String;
@@ -153,13 +152,14 @@ if(window.__debug === undefined)
         ,
         /**
          * 遍历可以枚举的对象.
+         *<pre><code>
+         *    CC.each(array, funtion(obj, i){
+         *      //true
+         *       alert(this === array[i] && this === obj) ;
+         *   });
+         * </code></pre>
          *@param {Object} object 可枚兴的对象,如果为数组或arguments时遍历下标数据,为普通对象时遍历对象所有属性.
          *@param {Function} callback
-         *@example
-             CC.each(array, funtion(obj, i){
-                //true
-                alert(this === array[i] && this === obj) ;
-             });
          */
         each: function(object, callback) {
                 if (object.length === undefined) {
@@ -172,18 +172,17 @@ if(window.__debug === undefined)
 
         /**
          * 沿上层对象某属性遍历.
-         * @param {Object} obj
-         * @param {String} nextAttr
-         * @param {Function} callback
-         * @return 如果callback有返回值,则中断当前遍历返回该值.
-         * @example
-
+         * <pre><code>
          CC.eachH(element, 'parentNode', function(){
             alert('当前级父结点为:'+ this);
             if(this === document.body)
               return false;
          });
-
+         *</code></pre>
+         * @param {Object} obj
+         * @param {String} nextAttr 属性名称
+         * @param {Function} callback
+         * @return 如果callback有返回值,则中断当前遍历返回该值.
          */
         eachH : function(obj, nextAttr, callback){
             var p = obj,b;
@@ -198,7 +197,9 @@ if(window.__debug === undefined)
         ,
         /**
          * 复制src对象属性到des对象中,des对象中相同名称的属性被覆盖.
-         * @return 如果des为空,返回src属性副本,否则返回des
+         * @param {Object} dest 目标对象
+         * @param {Object} src  源对象
+         * @returns 如果des为空,返回src属性副本,否则返回des
          */
         extend: function(des, src) {
             if (!des) {
@@ -217,8 +218,8 @@ if(window.__debug === undefined)
          * 该方法是用for..in..遍历对象属性的.
          * @param {Object} des 目标对象
          * @param {Object} src 源对象
-         * @see CC#extend
-         * @return {Object} 返回目标对象,如果目标为空,返回一个新对象
+         * @see CC.extend
+         * @returns {Object} 返回目标对象,如果目标为空,返回一个新对象
          */
         extendIf : function(des, src) {
           if(!des)
@@ -283,9 +284,7 @@ if(window.__debug === undefined)
               this.attr(window, type, clazz);
             } else window[type] = clazz;
           }
-
           clazz.constructors = ags;
-
           applyCustructors(absObj, superclass, ags);
           absObj.constructor = clazz;
           return clazz;
@@ -320,12 +319,13 @@ if(window.__debug === undefined)
         ,
         /**
          * 获得或设置对象任意层次属性.
-         * @example
+         * <pre><code>
            var obj = {name:'xiaoming', car : {color:'black'}};
            //set
            CC.attr(obj, 'car.color', 'white');
            //get
            alert( CC.attr(obj, 'car.color'));
+         *  </code></pre>
          */
         attr: function(obj, attrList, value) {
             if (typeof attrList === 'string') {
@@ -346,13 +346,14 @@ if(window.__debug === undefined)
         ,
         /**
          * 返回对象查询字符串表示形式.
-         * @param {Object} obj
-         * @return 对象的查询字符串表示形式
-         * @example
+         * <pre><code>
            var obj = {name:'rock', age:'25'};
 
            //显示 name=rock&age=25
            alert(CC.queryString(obj));
+         * </code></pre>
+         * @param {Object} obj
+         * @return 对象的查询字符串表示形式
          */
         queryString : function(obj) {
             if(!obj)
@@ -380,9 +381,8 @@ if(window.__debug === undefined)
         },
         /**
          * 获得一个表单所有表单元素的数据,并返回表单的查询字符串表示.
-         * @param {FormElement|String} f form或form的id
-         * @return {String} 所有表单元素的查询字符串表示
-         * @example
+         * <br/>
+         <code>
            &lt;form id=&quot;f&quot;&gt;
              &lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;rock&quot;/&gt;
              &lt;input type=&quot;text&quot; name=&quot;password&quot; value=&quot;123&quot;/&gt;
@@ -391,6 +391,9 @@ if(window.__debug === undefined)
              //&gt;: username=rock&amp;password=123
              alert(CC.formQuery('f'));
            &lt;/script&gt;
+           </code>
+         * @param {FormElement|String} f form或form的id
+         * @return {String} 所有表单元素的查询字符串表示
          */
         formQuery: function(f) {
             var formData = "", elem = "", f = CC.$(f), qid;
@@ -420,8 +423,7 @@ if(window.__debug === undefined)
         ,
 /**
  * 表单验证函数.
- * @example
-
+ * <pre><code>
 //密码长度>=6
 function checkPassword(v) {
   return v.length >= 6;
@@ -470,7 +472,8 @@ function testNoForm() {
 
   return result;
 }
-
+ * </code></pre>
+ * @return {false|Object} 如果设置的queryString:true并通过验证,就返回form的提交字符串,验证失败返回false
  */
         validate: function() {
           var args = CC.$A(arguments),
@@ -554,15 +557,16 @@ function testNoForm() {
         }
         ,
         /**
-         * 应用对象替换模板内容.
+         * 应用对象替换模板内容.<br/>
+         * <pre><code>
+           CC.templ({name:'Rock'},'&#60;html&#62;&#60;title&#62;{name}&#60;/title&#62;&#60;/html&#62;');
+           st:0,1:未找到属性是是否保留
+         * </code></pre>
          * @param {Object} obj 数据对象
          * @param {String} str 模板字符串
          * @param {undefined|Number} [st] 控制开并 undefined 或 0 或 1 或其它
          * @param {Boolean} [urlencode] 是否用encodeURIComponent方法进行编码
          * @return {String}
-         * @example
-           CC.templ({name:'Rock'},'&#60;html&#62;&#60;title&#62;{name}&#60;/title&#62;&#60;/html&#62;');
-           st:0,1:未找到属性是是否保留
          */
         templ : function(obj, str, st, urlencode) {
             return str.replace(/\{([\w_$]+)\}/g,function(c,$1){
@@ -614,6 +618,7 @@ function testNoForm() {
         /**
          * 系统对话框.
          * @param {Object} msg 显示的消息
+         * @private
          */
         alert: function(msg) {
             alert(msg);
@@ -621,6 +626,7 @@ function testNoForm() {
         ,
         /**
          * 系统小提示.
+         * @private
          */
         tip: function(msg, title, proxy, timeout, getFocus) {
             alert(msg);
@@ -641,12 +647,13 @@ function testNoForm() {
 
         /**
          * 添加元素样式类.
+         * <pre><code>
+           CC.addClass(oDiv, 'cssName');
+         * </code></pre>
          * @param {DOMElement} o
          * @param {String} s css类名
          * @see CC#delClass
          * @see CC#addClassIf
-         * @example
-           CC.addClass(oDiv, 'cssName');
          */
         addClass: function(o, s) {
             var ss = o.className.replace(s, '').trim();
@@ -656,11 +663,12 @@ function testNoForm() {
         ,
         /**
          * 如果元素未存在该样式类,添加元素样式类,否则忽略.
+         * <pre><code>
+           CC.addClassIf(oDiv, 'cssName');
+           </code></pre>
          * @param {DOMElement} o
          * @param {String} s css类名
-         * @see CC#addClass
-         * @example
-           CC.addClassIf(oDiv, 'cssName');
+         * @see CC.addClass
          */
         addClassIf: function(o, s) {
           if(this.hasClass(o,s))
@@ -672,11 +680,12 @@ function testNoForm() {
 
         /**
          * 删除元素样式类.
+         * <pre><code>
+           CC.delClass(oDiv, 'cssName');
+         * </code></pre>
          * @param {DOMElement} o
          * @param {String} s css类名
          * @see CC#addClass
-         * @example
-           CC.delClass(oDiv, 'cssName');
          */
         delClass: function(o, s) {
             o.className = o.className.replace(s, "").trim();
@@ -684,22 +693,24 @@ function testNoForm() {
         ,
         /**
          * 测试元素是否存在指定样式类.
+         * <pre><code>
+           CC.hasClass(oDiv, 'cssName');
+           </code></pre>
          * @param {DOMElement} o
          * @param {String} s css类名
          * @return {Boolean}
-         * @example
-           CC.hasClass(oDiv, 'cssName');
          */
         hasClass : function(o, s) {
             return s && (' ' + o.className + ' ').indexOf(' ' + s + ' ') != -1;
         },
         /**
          * 替换元素样式类.
+         * <pre><code>
+           CC.switchClass(oDiv, 'mouseoverCss', 'mouseoutCss');
+         *  </code></pre>
          * @param {DOMElement} o
          * @param {String} oldSty 已存在的CSS类名
          * @param {String} newSty 新的CSS类名
-         * @example
-           CC.switchClass(oDiv, 'mouseoverCss', 'mouseoutCss');
          */
         switchClass: function(a, oldSty, newSty) {
             CC.delClass(a, oldSty);
@@ -708,10 +719,11 @@ function testNoForm() {
         ,
         /**
          * 重置元素样式类.
+         * <pre><code>
+           CC.switchClass(oDiv, 'mouseoverCss', 'mouseoutCss');
+           </code></pre>
          * @param {DOMElement} o
          * @param {String} s CSS类名
-         * @example
-           CC.switchClass(oDiv, 'mouseoverCss', 'mouseoutCss');
          */
         setClass: function(o, s) {
             o.className = s;
@@ -719,34 +731,38 @@ function testNoForm() {
         /**
          * 获得或设置元素style.display属性.
          * 以style.display方式设置元素是否可见.
-         * @param {DOMElement} v dom结点
-         * @param {Boolean} [b] 设置是否可见
-         * @param {Boolean} [inline] inline为true时将display设为空,而不是block
-         * @example
+         * <pre><code>
            //测试元素是否可见
            alert( CC.display(div) );
            //设置元素可见,模式为block
            CC.display(div, true);
-           //设置元素可见,模式为inline
-           CC.display(div, true, true);
+           //设置元素可见,模式为display=''
+           CC.display(div, true, '');
+           //设置元素可见,模式为display='inline'
+           CC.display(div, true, 'inline');
+           </code></pre>
+         * @param {DOMElement} v dom结点
+         * @param {Boolean} [b] 设置是否可见
+         * @param {Boolean} [inline] inline为true时将display设为空,而不是block
          */
         display: function(v, b, inline) {
             if (b === undefined) {
                 return CC.$(v).style.display != 'none';
             }
-            var blm = inline !== undefined ? '' : 'block';
+            var blm = inline !== undefined ? inline : 'block';
             CC.$(v).style.display = b ? blm : 'none';
         }
         ,
         /**
          * 测试或设置元素是可用.
-         * @param {DOMElement} v
-         * @param {Boolean} [b]
-         * @example
+         * <pre><code>
            //禁用元素
            CC.disable(div, true);
            //测试元素是否可用.
            var b = CC.disable(div);
+           </code></pre>
+         * @param {DOMElement} v
+         * @param {Boolean} [b]
          */
         disable: function(v, b) {
           if(b === undefined)
@@ -873,11 +889,8 @@ function testNoForm() {
             return newDate;
         },
 /**
- * 创建一个DOM元素.
- * @param {String|Object} 为字符串时,传递tagName,为对象时,传递属性集.
- * @param {Document} document
- * @return {DOMElement} 新创建的DOM结点
- * @example
+ * 创建一个DOM元素.<br/>
+ * <pre><code>
    //简单方式创建一个DIV结点.
    var div = CC.$C('DIV');
    //以属性集创建一个DIV结点.
@@ -887,6 +900,12 @@ function testNoForm() {
      className : 'cs-div',
      onclick : function(){alert(this.innerHTML);}
    });
+ *  </code></pre>
+ * @param {String|Object} 为字符串时,传递tagName,为对象时,传递属性集.
+ * @param {Document} document
+ * @return {DOMElement} 新创建的DOM结点
+ * @member CC
+ * @method $C
  */
         $C: function(a, doc) {
             if (typeof a === 'string') {
@@ -902,6 +921,7 @@ function testNoForm() {
  * document.getElementsByName的快速调用.
  * @param name DOM元素的name
  * @return {DOMCollection}
+ * @member CC $N
  */
         ,
         $N: function(name) {
@@ -912,18 +932,20 @@ function testNoForm() {
  * @param {String} tagName 标签名
  * @param {DOMElement} [dom] 在该标签下查找,未设置时为document
  * @return {DOMCollection}
+ * @member CC $T
  */
         $T: function(tagName, dom) {
           return (dom || document).getElementsByTagName(tagName);
         }
         ,
 /**
- * 沿dom结点往上遍历,以寻找标签名为tag的结点,没找到返回null.
+ * 沿dom结点往上遍历,以寻找标签名为tag的结点,没找到返回null.<br/>
+ <pre><code>
+ var dom = CC.tagUp(div, 'TD');
+ </code></pre>
  * @param {DOMElement} dom 往该结点上遍历(包括该结点)
  * @param {String} tag 查找的标签名
  * @return {DOMElement} 匹配标签的结点
- @example
- var dom = CC.tagUp(div, 'TD');
  */
         tagUp : function(dom, tag){
           while(dom && dom.tagName !== tag){
@@ -935,30 +957,33 @@ function testNoForm() {
         },
 /**
  * 获得对象和对象原型链上某个属性的所有值,方法只适合用本库创建具有superclass属性的类实例.
- * @param {Object} object
- * @param {String} attributeName
- * @return {Array} 返回链上该属性的所有值
- * @example
- <pre>
+ <pre><code>
    A.prototype.name = 'Smart';
    a = new A();
    a.name = 'Rock';
    // ['Rock', 'Smart']
    CC.getObjectLinkedValues(a, 'name');
- </pre>
+ </code></pre>
+ * @param {Object} object
+ * @param {String} attributeName
+ * @return {Array} 返回链上该属性的所有值
  */
         getObjectLinkedValues : function(obj, name, check){
 			    var maps = [], check = !!check, o;
+          if(obj.hasOwnProperty(name)){
+            o = obj[name];
+            if(!check || o) maps.push(obj[name]);
+          }
+          if(obj.constructor.prototype.hasOwnProperty(name)){
+            o = obj.constructor.prototype[name];
+            if(!check || o) maps.push(o);
+          }
+          obj = obj.superclass;
 			    while(obj){
-			      if(obj.hasOwnProperty(name)){
-			      	o = obj[name];
-			      	if(!check || o) maps.push(obj[name]);
-			      }
-			      if(obj.constructor.prototype.hasOwnProperty(name)){
-			      	o = obj.constructor.prototype[name];
-			      	if(!check || o) maps.push(o);
-			      }
-			      
+            if(obj.hasOwnProperty(name)){
+              o = obj[name];
+              if(!check || o) maps.push(obj[name]);
+            }
 			      obj = obj.superclass;
 			    }
 			    return maps;
@@ -971,38 +996,41 @@ function testNoForm() {
  * @param {Document} document
  */
  
-				loadResource : function(attr, callback, doc) {
+				loadResource : function(attr, callback, autoremove, doc) {
 					// javascript , img..
 					var src = CC.delAttr(attr, 'src');
 					// css style sheet
 					var href = CC.delAttr(attr, 'href');
 					// tag
 					var res = this.$C(attr, doc);
-					
-					if(res.readyState) {
-						//IE
-						res.onreadystatechange = function() {
-							if (res.readyState == "loaded" ||
-							res.readyState == "complete") {
-								res.onreadystatechange = null;
-								setTimeout(function(){res.parentNode.removeChild(res)},1)
-								if(callback)
-								callback.call(res);
-							}
-						};
-					}else{
-						//Others
-						res.onload = function() {
-							setTimeout(function(){res.parentNode.removeChild(res)},1)
-							if(callback)
-							callback.call(res);
-						};
-					}
+					if(callback || autoremove){
+  					if(res.readyState) {
+  						//IE
+  						res.onreadystatechange = function() {
+  							if (res.readyState == "loaded" ||
+  							res.readyState == "complete") {
+  								res.onreadystatechange = null;
+  								if(autoremove)
+  								  setTimeout(function(){res.parentNode.removeChild(res)},1)
+  								if(callback)
+  								callback.call(res);
+  							}
+  						};
+  					}else{
+  						//Others
+  						res.onload = function() {
+  							if(autoremove)
+  							  setTimeout(function(){res.parentNode.removeChild(res)},1)
+  							if(callback)
+  							  callback.call(res);
+  						};
+  					}
+				  }
 					
 					if(src)
 					 res.src = src;
 					
-					if(rel)
+					if(href)
 					 res.href = href;
 					
 					this.$T('head')[0].appendChild(res);
@@ -1020,7 +1048,7 @@ function testNoForm() {
                 tagName: 'script',
                 src: url,
                 type: 'text/javascript'
-          }, callback);
+          }, callback, true);
           
           if(id) 
           	nd.id = id;
@@ -1046,37 +1074,34 @@ function testNoForm() {
         }
         ,
 /**
- * 应用一段CSS样式文本
- * @param {String} id 生成的样式style结点ID\
- * @param {String} 样式文本内容
- @example
+ * 应用一段CSS样式文本.
+ * <pre><code>
    CC.loadStyle('customCS', '.g-custom {background-color:#DDD;}');
    //在元素中应用新增样式类
    &lt;div class=&quot;g-custom&quot;&gt;动态加载样式&lt;/div&gt;
+   </code></pre>
+ * @param {String} id 生成的样式style结点ID\
+ * @param {String} 样式文本内容
  */
-        loadStyle: function(id, ss) {
-            var o;
-            if (document.createStyleSheet) {
-                window[id] = ss;
-                o = document.createStyleSheet('javascript:' + id);
-                return o;
-            }
-            var css = this.$C( {
-                tagName: 'style',
-                id: id,
-                type: 'text/css'
-            }
-            );
-            css.innerHTML = ss;
-            this.$T('head')[0].appendChild(css);
-            return css;
+        loadStyle: function(ss, doc) {
+          var styleEl = this._styleEl;
+          if(!styleEl){
+            styleEl = this._styleEl = this.$C( {
+              tagName: 'style',
+              type: 'text/css'
+            });
+            this.$T('head')[0].appendChild(styleEl);
+          }
+          styleEl.styleSheet && (styleEl.styleSheet.cssText += ss) || styleEl.appendChild((doc||document).createTextNode(ss));
+          return styleEl;
         }
         ,
 /**
  * 获得一个请求字符串,该字符串用于避免浏览器缓存请求页面,追加在URL尾部.
- * @return {String} 避免浏览器缓存请求页面的字符串.
- * @example
+ * <pre><code>
  * var requestUrl = 'http://www.site.com/?name=rock'+CC.noCache();
+   </code></pre>
+ * @return {String} 避免浏览器缓存请求页面的字符串.
  */
         noCache: function() {
             return '&noCacheReq=' + (new Date()).getTime();
@@ -1086,13 +1111,15 @@ function testNoForm() {
  * 将可枚举对象内容复制到新数组中,并返回该数组,可枚举对象是指可用[index]访问,并具有length属性的,常见的有arguments对象.
  * @param {Object} iterable 可枚举对象
  * @return {Array} 新数组
+ * @member CC
+ * @method $A
  */
         $A : function(a) {
             return Slice.call(a);
         },
 /**
  * 获得iframe中的document结点.
- * @param {DOMElement} frame iframe结点
+ * @param {DOMElement} iframe iframe结点
  * @return {DOMElement} iframe页面中的document结点
  */
         frameDoc : function(frame) {
@@ -1100,8 +1127,8 @@ function testNoForm() {
         },
 /**
  * 获得iframe中的window对象.
- * @param {IFrame} frame iframe结点
- * @return {DOMElement} iframe页面中的document结点
+ * @param {DOMElement} iframe iframe结点
+ * @return {DOMElement} window iframe页面中的window对象
  */
         frameWin : function(frame){
             return frame.contentWindow;
@@ -1147,22 +1174,30 @@ function testNoForm() {
         },
 /**
  * 获得视图可见区域域宽高.
- * @return {Object} obj.width,obj.height
- @example
+ <pre><code>
    var vp = CC.getViewport();
    alert(vp.width+','+vp.height);
+ </code></pre>
+ * @return {Object} obj.width,obj.height
  */
         getViewport : function(){
           return {width:this.getViewportWidth(), height:this.getViewportHeight()};
         },
-
+/**是否IE浏览器*/
         ie : isIE,
+/**是否IE7*/
         ie7 : isIE7,
+/**是否IE6*/
         ie6 : isIE6,
+/**是否strict模式*/
         strict : isStrict,
+/**是否safari*/
         safari : isSafari,
+/**是否gecko*/
         gecko : isGecko,
+/**是否opera*/
         opera : isOpera,
+/**是否border box模型*/
         borderBox:isBorderBox
     };
 
@@ -1172,26 +1207,24 @@ CC.extend(CC, window.CC);
 
 window.CC = CC;
 /**
-* UI相关功能函数存放类.
-* @name CC.Util
-* @class UI相关功能函数存放类
-*/
+ * @class CC.Util
+ * UI相关功能函数存放类
+ * @singleton
+ */
 if(!CC.Util)
 CC.Util = {};
 /**
- * @name CC.util
- * @class
+ * @class CC.util
+ * 实用功能类库集合
  */
 CC.util = {};
-//~#
 return CC;
 })();
 
 ﻿(function(){
 	var Slice = Array.prototype.slice;
 /**
- * @name String
- * @class
+ * @class String
  */
 CC.extendIf(String.prototype,  (function(){
     var allScriptText = new RegExp('<script[^>]*>([\\S\\s]*?)<\/script>', 'img');
@@ -1200,7 +1233,7 @@ CC.extendIf(String.prototype,  (function(){
     var onceStyleText = new RegExp('<style[^>]*>([\\S\\s]*?)<\/style>', 'im');
     var trimReg = new RegExp("(?:^\\s*)|(?:\\s*$)", "g");
 
-    return (/**@lends String.prototype*/{
+    return ({
 /**
  * 删除两头空格
  * @return {String} 新字符串
@@ -1236,14 +1269,15 @@ CC.extendIf(String.prototype,  (function(){
             return true;
         },
 /**
- * 截短字符串,使得不超过指定长度,如果已截短,则用特定字符串追加.
- * @param {Number} length 截短的长度
- * @param {String} [truncation] 追加的字符串,默认为三个点,表示省略
- * @return {String}
- @example
+ * 截短字符串,使得不超过指定长度,如果已截短,则用特定字符串追加.<br>
+ <pre><code>
    var str = "这是一个长长的字符串,非常非常长";
    //显示:这是一个长长的字符串...
    alert(str.truncate(10));
+ </code></pre>
+ * @param {Number} length 截短的长度
+ * @param {String} [truncation] 追加的字符串,默认为三个点,表示省略
+ * @return {String}
  */
         truncate: function(length, truncation) {
             length = length || 30;
@@ -1279,11 +1313,12 @@ CC.extendIf(String.prototype,  (function(){
         }
         ,
 /**
- * 返回字符串JavaScript脚本标签内容.
- @example
+ * 返回字符串JavaScript脚本标签内容.<br>
+ <pre><code>
    var s = '&lt;script type=&quot;javascript&quot;&gt;var obj = {};&lt;/script&gt;';
    //显示 var obj = {};
    alert(s.innerScript());
+   </code></pre>
  */
         innerScript: function() {
             this.match(onceScriptText); return RegExp.$1;
@@ -1291,20 +1326,22 @@ CC.extendIf(String.prototype,  (function(){
         ,
 /**
  * 返回字符串style标签内容.
- @example
+ <pre><code>
    var s = '&lt;style&gt;.css {color:red;}&lt;/style&gt;';
    //显示 .css {color:red;}
    alert(s.innerStyle());
+ </code></pre>  
  */
         innerStyle: function() {
             this.match(onceStyleText); return RegExp.$1;
         }
         ,
 /**
- * 执行字符串script标签中的内容.
- @example
+ * 执行字符串script标签中的内容.<br>
+ <pre><code>
    var s = '&lt;script type=&quot;text/javascript&quot;&gt;alert('execute some script code');&lt;/script&gt;';
    s.execScript();
+</code></pre>
  */
         execScript: function() {
             return this.replace(allScriptText, function(ss) {
@@ -1321,12 +1358,13 @@ CC.extendIf(String.prototype,  (function(){
         }
         ,
 /**
- * 执行字符串style标签中的内容.
- @example
+ * 执行字符串style标签中的内容.<br>
+ <pre><code>
    var s = '&lt;style &gt;.css {color:red;}&lt;/style&gt;';
    s.execStyle();
    //应用
    div.innerHTML = '&lt;span class=&quot;css&quot;&gt;Text&lt;/span&gt;';
+</code></pre>
  */
         execStyle: function() {
             return this.replace(allStyleText, function(ss) {
@@ -1337,11 +1375,12 @@ CC.extendIf(String.prototype,  (function(){
             );
         },
 /**
- * 将css文件属性名形式转换成js dom中style对象属性名称.
- * @return {String}
- @example
+ * 将css文件属性名形式转换成js dom中style对象属性名称.<br>
+ <pre><code>
  //显示backgroundPosition
  alert('background-position'.camelize());
+ </code></pre> 
+ * @return {String}
  */
         camelize: function() {
             var parts = this.split('-'), len = parts.length;
@@ -1360,14 +1399,12 @@ CC.extendIf(String.prototype,  (function(){
 })());
 
 /**
- * @name Function
- * @class
+ * @class Function
  */
-CC.extendIf(Function.prototype, /**@lends Function.prototype*/{
+CC.extendIf(Function.prototype, {
 /**
- * 绑定this对象到函数
- * @return 绑定this后的新函数
- @example
+ * 绑定this对象到函数 <br>
+ <pre><code>
   var self = {name:'Rock'};
   function getName(){
    return this.name;
@@ -1377,6 +1414,9 @@ CC.extendIf(Function.prototype, /**@lends Function.prototype*/{
 
   //显示Rock
   alert(binded());
+  </code></pre>
+ * @return 绑定this后的新函数
+
  */
   bind : function() {
     var _md = this, args = Slice.call(arguments, 1), object = arguments[0];
@@ -1385,15 +1425,16 @@ CC.extendIf(Function.prototype, /**@lends Function.prototype*/{
     }
   },
 /**
- * 绑定事件处理函数,使其具有指定this范围功能,并传递event参数
- * @return 绑定this后的新函数
- @example
+ * 绑定事件处理函数,使其具有指定this范围功能,并传递event参数 <br>
+ <pre><code>
    var self = {name:'Rock'};
    function onclick = function(event){
      alert("name:" + this.name + ', event:'+event);
    }
 
    dom.onclick = onclick.bindAsListener(self);
+   </code></pre>
+ * @return 绑定this后的新函数
  */
   bindAsListener : function(self) {
       var _md = this;
@@ -1403,11 +1444,8 @@ CC.extendIf(Function.prototype, /**@lends Function.prototype*/{
   },
 
 /**
- * 超时调用.
- * @param {Number} seconds 毫秒
- * @param {Boolean} 是否为interval
- * @return {Number} timer id
- @example
+ * 超时调用. <br>
+ <pre><code>
    //setTimeout方式调用
    var timerId = (function(){
     alert('timeout came!');
@@ -1417,6 +1455,10 @@ CC.extendIf(Function.prototype, /**@lends Function.prototype*/{
     alert('interval came!');
     clearInterval(intervalTimerId);
    }).timeout(2000, true);
+</code></pre>
+ * @param {Number} seconds 毫秒
+ * @param {Boolean} 是否为interval
+ * @return {Number} timer id
  */
   timeout : function(seconds, interval){
     if(interval)
@@ -1427,22 +1469,21 @@ CC.extendIf(Function.prototype, /**@lends Function.prototype*/{
 
 /**
  * 扩充Array原型,原型的扩充是通过CC.extendIf来实现的,所以如果数组原型中在扩充前就具有某个方法时,并不会覆盖掉.
- * @class 扩充Array原型
- * @name Array
+ * @class Array
  * @see CC.extendIf
  */
 CC.extendIf(Array.prototype,
-/**@lends Array.prototype*/
 {
 
 /**
- * 移除数组中的某个元素.
- * @param {Number|Object} 数组下标或数组元素
- * @return {Number} 移除元素后的数组长度
- @example
+ * 移除数组中的某个元素.<br>
+ <pre><code>
   var arr = ['A','B',5,'C'];
   arr.remove(0);
   arr.remove('B');
+ </code></pre> 
+ * @param {Number|Object} 数组下标或数组元素
+ * @return {Number} 移除元素后的数组长度
  */
     remove: function(p) {
         if (typeof p === 'number') {
@@ -1464,14 +1505,15 @@ CC.extendIf(Array.prototype,
     }
     ,
 /**
- * 获得某元素在数组中的下标,如果数组存在该元素,返回下标,否则返回-1,该方法使用绝对等(===)作比较.
- * @param {Object} 查找元素
- * @return {Number} 如果数组存在该元素,返回下标,否则返回-1
- @example
+ * 获得某元素在数组中的下标,如果数组存在该元素,返回下标,否则返回-1,该方法使用绝对等(===)作比较.<br>
+  <pre><code>
   var arr = ['A','B',5,'C'];
   arr.indexOf('C');
   arr.indexOf('B');
   arr.indexOf('F');
+ </code></pre>
+ * @param {Object} 查找元素
+ * @return {Number} 如果数组存在该元素,返回下标,否则返回-1
  */
     indexOf: function(obj) {
         for (var i = 0, length = this.length; i < length; i++) {
@@ -1481,17 +1523,23 @@ CC.extendIf(Array.prototype,
     }
     ,
 /**
- *
+ * @param {Number} index
+ * @param {Object} object
  */
     insert: function(idx, obj) {
         return this.splice(idx, 0, obj);
     }
     ,
-
+/**
+ * @param {Object} object
+ * @return {Boolean}
+ */
     include: function(obj) {
         return (this.indexOf(obj) !=  - 1);
     },
-
+/**
+ * 清除所有元素
+ */
     clear : function(){
         this.splice(0,this.length);
     }
@@ -1501,20 +1549,19 @@ CC.extendIf(Array.prototype,
 ﻿(function(){
 var CC = window.CC;
 /**
- * 缓存类.
- * 数据结构为:
+ * 缓存类,数据结构为:<br>
+ * <pre>
  * Cache[key] = [dataObjectArray||null, generator];
  * dataObjectArray[0] = 预留位,保存该key数据最大缓存个数, 默认为5.
  * generator = 生成数据回调
- * @name CC.Cache
- * @class 缓存类
+ * </pre>
+ * @class CC.Cache
  * @singleton
  */
 CC.Cache =
-   /**@lends CC.Cache */
    {
 
-    /**@config {Number} MAX_ITEM_SIZE 某类设置的最大缓存数量.*/
+    /**@cfg {Number} MAX_ITEM_SIZE 某类设置的最大缓存数量.*/
     MAX_ITEM_SIZE: 5,
 
     /**@private 获取缓存数据的回调函数.*/
@@ -1537,7 +1584,7 @@ CC.Cache =
 /**
  * 根据键获得对应的缓存数据.
  * @param {String} key
- * @return data 或 null
+ * @return {Object|null}
  */
     get: function(k) {
         var a = this[k];
@@ -1607,6 +1654,11 @@ CC.Cache =
 
 /**
  * 缓存DIV结点,该结点可方便复用其innerHTML功能.
+ * <pre><code>
+   var divNode = CC.Cache.get('div');
+ * </code></pre>
+ * @property div
+ * @type DOMElement
  */
 CC.Cache.register('div', function() {
     return CC. $C('DIV');
@@ -1616,25 +1668,35 @@ CC.Cache.register('div', function() {
 ﻿(function(){
  var cvtMap = {};
 /**
+ * @class CC.util.TypeConverter
  * 数据类型转换器
- * @class
- * @example
- <pre>
+ * <pre><code>
   var cvt = CC.util.TypeConverter.get('int');
   var num = cvt('123456');
   alert(typeof num);
- </pre>
+ * </code></pre><br>系统自带类型转换有
+ <div class="mdetail-params"><ul>
+ <li>string</li>
+ <li>int</li>
+ <li>float</li>
+ <li>bool</li>
+ <li>date</li>
+ </ul></div>
  */
 CC.util.TypeConverter = {
 /**
- * 注册一个类型转换函数
+ * 注册一个类型转换函数.
+ * @param {String} type
+ * @param {Function} converter
  */
   reg : function(type, cvt){
     cvtMap[type] = cvt;
   },
 
 /**
- * 获得类型转换函数
+ * 根据type获得类型转换函数.
+ * @param {String} type
+ * @return {Function}
  */
   get : function(type){
     var c = cvtMap[type];
@@ -1650,7 +1712,9 @@ CC.util.TypeConverter = {
 
   /**
   * 数据类型转换器,创建后存在属性converter中,用于比较器比较两列值.
+  * @param {String} type
   * @return {Object} 该列的数据类型转换器
+  * @private
   */
   create: function(type){
     var numReg = /[\$,%]/g, cv;
@@ -1757,7 +1821,7 @@ var C = {
    
   'z'  :function(c, v){c.view.style.zIndex = v;},
    
-/**常用于布局Border设置*/
+//常用于布局Border设置
   'lnl':['borderLeft',  '1px solid #CCC'],
   'lnt':['borderTop',   '1px solid #CCC'],
   'lnb':['borderBottom','1px solid #CCC'],
@@ -1783,11 +1847,10 @@ var C = {
 var S = /\s+/, B  = CC.borderBox, inst;
 
 /**
- * @name CC.util.CssParser
- * @class
+ * @class CC.util.CssParser
  * CssParser对于懒得写CSS或需要用脚本控制css的开发人员来说,是个好工具.
- * 它可以以一种非常简单的方式写元素的inline css style.
- * @example
+ * 它可以以一种非常简单的方式写元素的inline css style.<br>
+ * 例如<pre><code>
    parser.parse(comp, 'pa l:5 t:10 ofh ac w:25 $pd:5,3');
    上面这句将应用comp以下样式:
    {
@@ -1802,8 +1865,9 @@ var S = /\s+/, B  = CC.borderBox, inst;
    }
    CC.Base的cset方法已内嵌CSS Parser解析,以上可直接调用
    comp.parse('pa l:5 t:10 oh tc w:25 $p:5,3');
-系统自带的规则为:
-<pre>
+   </code></pre><br>
+系统自带的规则为:<br>
+<pre><code>
 {
 //1c, 占宽一列, 即width:95%
   '1c':['width','95%'],
@@ -1866,21 +1930,22 @@ var S = /\s+/, B  = CC.borderBox, inst;
   'oh':['overflow','hidden'],
   'oa':['overflow','auto']
 }
-</pre>
+</code></pre>
  */
 CC.util.CssParser = function(){};
 
-CC.extendIf(CC.util.CssParser.prototype, /**@lends CC.util.CssParser#*/{
+CC.extendIf(CC.util.CssParser.prototype, {
 /**
- * 定义规则
- * @param {String|Object} key 当为Object类型时批量定义规则
- * @param  {Object} value 可以是一个属生集的Object, 也可以是css属性组合的数组[attrName, attrValue],还可以是一个函数,该函数参数为 function(component, value){},其中component为应用样式的控件,value为当前解析得出的值,未设置则为空.
- @example
+ * 定义规则.<br>
+ <pre><code>
    parser.def('fl', ['float', 'left']);
    parser.def('bdred', {border:'1px red'});
    parser.def('bd', function(comp, value){
     comp.setStyle('border', value);
    });
+ </code></pre>
+ * @param {String|Object} key 当为Object类型时批量定义规则
+ * @param  {Object} value 可以是一个属生集的Object, 也可以是css属性组合的数组[attrName, attrValue],还可以是一个函数,该函数参数为 function(component, value){},其中component为应用样式的控件,value为当前解析得出的值,未设置则为空.
  */
   def : function(k, r){
     var rs = this.rules;
@@ -1896,8 +1961,9 @@ CC.extendIf(CC.util.CssParser.prototype, /**@lends CC.util.CssParser#*/{
     return this;
   },
 /**
- * @param {CC.Base}
- * @param {String} pattern 样式
+ * 解析指定规则.
+ * @param {CC.Base} taget 目标控件
+ * @param {String} pattern 规则样式字符串
  */
   parse : function(ct, cs){
     var cf, r,
@@ -1992,6 +2058,10 @@ CC.extendIf(CC.util.CssParser.prototype, /**@lends CC.util.CssParser#*/{
 });
 /**
  * 获得全局CSS解析器
+ * @member CC.util.CssParser
+ * @method getParser
+ * @static
+ * @return CC.util.CssParser
  */
 CC.util.CssParser.getParser = function(){
   if(!inst)
@@ -2002,14 +2072,33 @@ CC.util.CssParser.getParser = function(){
 })();
 ﻿(function(){
 /**
+ * @class CC.Eventable
  * 事件处理模型的实现.
- * @name CC.Eventable
- * @class 事件处理模型的实现
+ * @constructor
+ * @param {Object} config config object
  */
 var Eventable = CC.Eventable = (function(opt){
     /**
-     * @name CC.Eventable#events
-     * @property {Object} events 保存的事件列表
+     * @cfg {Object} events 保存的事件列表,格式为
+     <pre><code>
+       events : {
+         // names
+         'eventName' : [ //Array, handler list
+           // handler data
+           {  
+             // callback 简写
+             cb : function(arguments){
+               // ...
+             },
+             
+             // <b>this</b> caller
+             caller : object
+           },
+           ...
+         ],
+         ...
+       }
+     </code></pre>
      */
      if(opt)
       CC.extend(this, opt);
@@ -2017,19 +2106,19 @@ var Eventable = CC.Eventable = (function(opt){
 });
 
 /**
- * 发送对象事件.
- * @name CC.Eventable#fire
- * @method
- * @param {Object} eid 事件名称
- * @param {Object} [args] 传递的回调参数
- @example
+ * 发送对象事件.<br>
+ <pre><code>
   var e = new Eventable();
   e.on('selected', function(arg){
    //handling..
   });
   e.fire('selected', arg);
+  </code></pre>
+ * @method fire
+ * @param {Object} eid 事件名称
+ * @param {Object, Object, ...} args 传递的回调参数
  */
-Eventable.prototype.fire = function(eid/**,arg1,arg2,arg3,...,argN*/){
+Eventable.prototype.fire = function(eid){
 
 	if(__debug) {console.log('发送:%s,%o,源:%o',eid, arguments,this);}
 
@@ -2072,15 +2161,8 @@ Eventable.prototype.fire = function(eid/**,arg1,arg2,arg3,...,argN*/){
 };
 
 /**
- * 监听对象事件,如果回调函数返回false,取消后续的事件处理.
- * @param {Object} eid 事件名称
- * @param {Function} callback 事件回调函数
- * @param {Object} [ds] this范围对象
- * @param {Object} [objArgs] 传递参数,该参数将作为回调最后一个参数传递
- * @method
- * @name CC.Eventable#on
- * @return this
- @example
+ * 监听对象事件,如果回调函数返回false,取消后续的事件处理. <br>
+ <pre><code>
    var self = {name:'Rock'};
    var cfg = {message:'Good boy!'};
    var e = new CC.Eventable();
@@ -2097,6 +2179,13 @@ Eventable.prototype.fire = function(eid/**,arg1,arg2,arg3,...,argN*/){
 
    var item = {title:'an item'};
    e.fire('selected', item);
+   </code></pre>
+ * @param {Object} eid 事件名称
+ * @param {Function} callback 事件回调函数
+ * @param {Object} [ds] this范围对象
+ * @param {Object} [objArgs] 传递参数,该参数将作为回调最后一个参数传递
+ * @method on
+ * @return this
  */
 Eventable.prototype.on = (function(eid,callback,ds,objArgs){
     if(!eid || !callback){
@@ -2120,8 +2209,7 @@ Eventable.prototype.on = (function(eid,callback,ds,objArgs){
  * 移除事件监听.
  * @param {Object} eid
  * @param {Function} callback
- * @method
- * @name CC.Eventable#un
+ * @method un
  * @return this
  */
 Eventable.prototype.un = (function(eid,callback){
@@ -2150,8 +2238,7 @@ Eventable.prototype.un = (function(eid,callback){
 /**
  * 发送一次后移除所有监听器,有些事件只通知一次的,此时可调用该方法发送事件
  * @param {Object} eid
- * @method
- * @name CC.Eventable#fireOnce
+ * @method fireOnce
  * @return this
  */
 Eventable.prototype.fireOnce = function(eid){
@@ -2163,8 +2250,7 @@ Eventable.prototype.fireOnce = function(eid){
 /**
  * 订阅当前对象所有事件
  * @param {Object} target 订阅者,订阅者也是可Eventable的对象
- * @method
- * @name CC.Eventable#to
+ * @method to
  * @return this
  */
 Eventable.prototype.to = (function(target){
@@ -2177,11 +2263,8 @@ Eventable.prototype.to = (function(target){
 });
 
 /**
- * 默认为fire,自定订阅方式可重写.
- * @method
- * @name CC.Eventable#fireSubscribe
- * @return this
- @example
+ * 默认为fire,自定订阅方式可重写.<br>
+ <pre><code>
   var source = new Eventable();
   var subscriber = new Eventable();
 
@@ -2189,14 +2272,16 @@ Eventable.prototype.to = (function(target){
   subscriber.on('load', function(){});
 
   source.fire('load');
+  </code></pre>
+ * @method fireSubscribe
+ * @return this
  */
 Eventable.prototype.fireSubscribe = Eventable.prototype.fire;
 })();
 ﻿(function(){
 /**
+ * @class CC.Event
  * DOM事件处理实用函数库,更多关于浏览器DOM事件的文章请查看<a href="http://www.bgscript.com/archives/369" target="_blank">http://www.bgscript.com/archives/369</a>
- * @name CC.Event
- * @class DOM事件处理实用函数库
  * @singleton
  */
 var Event = CC.Event = {};
@@ -2204,58 +2289,81 @@ var document = window.document;
 var opera = CC.opera, chrome = CC.chrome, ie = CC.ie;
 
 CC.extend(Event,
-  /**@lends CC.Event*/
   {
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     BACKSPACE: 8,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     TAB: 9,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     ENTER: 13,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     ESC: 27,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     LEFT: 37,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     UP: 38,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     RIGHT: 39,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     DOWN: 40,
-    /**@config*/
+    /**@property
+     * @type Number
+     */
     DELETE: 46,
     /**
-     *@config
      *@private
      */
     readyList : [],
     /**@private*/
     contentReady : false,
     /**
-     * 常用于取消DOM事件继续传送,内在调用了Event.stop(ev||window.event);
-     * @param {Event} ev
-     * @example
+     * @property
+     * 常用于取消DOM事件继续传送,内在调用了Event.stop(ev||window.event);<br>
        div.onmousedown = Event.noUp;
+     * @type Function
+     * @private
      */
     noUp : function(ev) {
         Event.stop(ev||window.event);
         return false;
     },
-
+/**
+ * @property
+ * preventDefault(ev||window.event)
+ * @type Function
+ * @param {DOMEvent} event
+ * @private
+ */
     noDef : function(ev){
       Event.preventDefault(ev||window.event);
     },
 
 /**
  * 获得DOM事件源
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {DOMElement}
  */
     element: function(ev) { return ev.srcElement || ev.target; }
     ,
 /**
  * 获得事件发生时页面鼠标x坐标.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Number} pageX
  */
     pageX : function(ev) {
@@ -2267,7 +2375,7 @@ CC.extend(Event,
     },
 /**
  * 获得事件发生时页面鼠标y坐标.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Number} pageY
  */
     pageY : function(ev) {
@@ -2279,7 +2387,7 @@ CC.extend(Event,
     },
 /**
  * 获得事件发生时页面鼠标xy坐标.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Array} [pageY,pageY]
  */
     pageXY : function(ev) {
@@ -2292,7 +2400,7 @@ CC.extend(Event,
     },
 /**
  * 获得事件发生时的键盘按键.
- * @param {Event} ev
+ * @param {DOMEvent} event
  */
     which : function(ev) {
         if ( !ev.which && ((ev.charCode || ev.charCode === 0) ? ev.charCode : ev.keyCode) )
@@ -2301,7 +2409,7 @@ CC.extend(Event,
 
 /**
  * 是否左击.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Boolean}
  */
     isLeftClick: function(ev) {
@@ -2310,7 +2418,7 @@ CC.extend(Event,
     }
 /**
  * 是否按下回车键.
- * @param {Event} ev
+ * @param {DOMEvent} event
  * @return {Boolean}
  */
     ,
@@ -2319,19 +2427,22 @@ CC.extend(Event,
     },
 /**
  * 是否按下ESC键
+ * @param {DOMEvent} event
+ * @return {Boolean}
  */
     isEscKey : function(ev){
       return ev.keyCode === 27;
     },
 /**
  * 获得滚轮增量
+ * @param {DOMEvent} event
  * @return {Number}
  */
     getWheel : function(ev){
-       /* IE或者Opera. */
+       // IE或者Opera
        if (ev.wheelDelta) {
          delta = ev.wheelDelta/120;
-         /*在Opera9中，事件处理不同于IE*/
+         // 在Opera9中，事件处理不同于IE
          if (opera)
           delta = -delta;
        } else if (ev.detail)
@@ -2342,7 +2453,7 @@ CC.extend(Event,
     },
 /**
  * 停止事件传递和取消浏览器对事件的默认处理.
- * @param {Event} ev
+ * @param {DOMEvent} event
  */
     stop: function(ev) {
         if (ev.preventDefault)
@@ -2359,7 +2470,7 @@ CC.extend(Event,
     ,
 /**
  * 取消浏览器对事件的默认处理.
- * @param {Event} ev
+ * @param {DOMEvent} event
  */
     preventDefault : function(ev) {
         if(ev.preventDefault)
@@ -2368,7 +2479,7 @@ CC.extend(Event,
     },
 /**
  * 停止事件传递.
- * @param {Event} ev
+ * @param {DOMEvent} event
  */
     stopPropagation : function(ev) {
         if (ev.stopPropagation)
@@ -2376,15 +2487,8 @@ CC.extend(Event,
         ev.cancelBubble = true;
     },
 /**
- * 切换元素样式(展开,收缩等效果)
- * @param {DOMElement|String} 源DOM
- * @param {DOMElement|String} 目标DOM
- * @param {String} cssExpand 展开时样式
- * @param {String} cssFold   闭合时样式
- * @param {String} [msgExp] src.title = msgExp
- * @param {String} [msgFld] src.title =  msgFld
- * @param {String} [hasText] src显示文本
- @example
+ * 切换元素样式(展开,收缩等效果).<br>
+ <pre><code>
    &lt;style&gt;
     .expand {background-image:'open.gif'}
     .fold {background-image:'fold.gif'}
@@ -2398,6 +2502,16 @@ CC.extend(Event,
    &lt;script&gt;
     Event.toggle('src','des','expand', 'fold', '点击展开','点击收缩', '标题栏');
    &lt;/script&gt;
+   </code></pre>
+   <br><pre>
+ * param {DOMElement|String} 源DOM
+ * param {DOMElement|String} 目标DOM
+ * param {String} cssExpand 展开时样式
+ * param {String} cssFold   闭合时样式
+ * param {String} [msgExp] src.title = msgExp
+ * param {String} [msgFld] src.title =  msgFld
+ * param {String} [hasText] src显示文本
+ </pre>
  */
     toggle : function(src, des, cssExpand, cssFold, msgExp, msgFld, hasText) {
         src = CC.$(src);
@@ -2413,9 +2527,7 @@ CC.extend(Event,
         if(hasText) src.innerHTML = txt;
         src.title = txt;
     },
-/**@private
- *@config
- */
+/**@private*/
     observers: false,
 /**@private*/
     _observeAndCache: function(element, name, observer, useCapture) {
@@ -2445,16 +2557,17 @@ CC.extend(Event,
     }
     ,
 /**
- * 添加DOM元素事件监听函数.
- * Warning : In IE6 OR Lower 回调observer时this并不指向element.
+ * 添加DOM元素事件监听函数.<br>
+ * Warning : In IE6 OR Lower 回调observer时this并不指向element.<br>
+ <code>
+   Event.on(document, 'click', function(event){
+    event = event || window.event;
+   });
+ </code>
  * @param {DOMElement} element
  * @param {String} name 事件名称,无on开头
  * @param {Function} observer 事件处理函数
  * @param {Boolean} [useCapture]
- @example
-   Event.on(document, 'click', function(event){
-    event = event || window.event;
-   });
  */
     on: function(element, name, observer, useCapture) {
         useCapture = useCapture || false;
@@ -2488,13 +2601,15 @@ CC.extend(Event,
         }
     },
 /**
- * 提供元素拖动行为,在RIA中不建议用该方式实现元素拖放,而应实例化一个Base对象,使之具有一个完整的控件生命周期.
- * @param {DOMElement} dragEl
- * @param {DOMElement} moveEl
- * @param {Boolean} enable or not?
- * @param {Function} [onmovee] callback on moving
- * @param {Function} [ondrag] callback on drag start
- * @param {Function} [ondrog] callback when drogged
+ * 提供元素拖动行为,在RIA中不建议用该方式实现元素拖放,而应实例化一个Base对象,使之具有一个完整的控件生命周期.<br>
+ <pre>
+ * param {DOMElement} dragEl
+ * param {DOMElement} moveEl
+ * param {Boolean} enable or not?
+ * param {Function} [onmovee] callback on moving
+ * param {Function} [ondrag] callback on drag start
+ * param {Function} [ondrog] callback when drogged
+ </pre>
  */
     setDragable: function(dragEl, moveEl, b, onmove, ondrag, ondrog) {
         if (!b) {
@@ -2569,7 +2684,8 @@ CC.extend(Event,
         };
     },
 /**
- * 页面加载完成后回调.
+ * @private
+ * 页面加载完成后回调,CC.ready将调用本方法
  */
     ready : function(callback) {
       this.readyList.push(callback);
@@ -2596,7 +2712,8 @@ CC.extend(Event,
 
 /**
  * 添加DOM加载完成后回调函数
- * @method
+ * @member CC
+ * @method ready
  */
 CC.ready = function(){
   Event.ready.apply(Event, arguments);
@@ -2644,61 +2761,78 @@ CC.ready = function(){
   Event.on(window, "load", Event._onContentLoad);
 })();
 ﻿/**
+ * @class console
  * 系统控制台,如果存在firebug,利用firebug输出调试信息,否则忽略.
  * 在firbug中可直接进行对某个对象进行监视,
  * 无console时就为空调用,可重写自定输出.
- * @name console
- * @class 系统控制台,如果存在firebug,利用firebug输出调试信息,否则忽略
+ * @singleton
  */
 if(!window.console)
       window.console = {};
 
 if(!window.tester)
   window.tester = window.fireunit || {};
+
 CC.extendIf(console,
-  /**
-   @lends console
-  */
   {
       /**
-       *@method
-       *@param {arguments} 类似C语言中printf语法
-       *@example
-       * //%o表示参数为一个对象
+       * %o表示参数为一个对象
        * console.log('This an string "%s",this is an object , link %o','a string', CC);
+       *@param {arguments} 类似C语言中printf语法
+       *@method
        */
     debug : fGo,
-    /**@type function*/
+/**
+ * @method info
+ */
     info : fGo,
-    /**@type function*/
+/**
+ * @method trace
+ */
     trace : fGo,
-    /**@type function*/
+/**
+ * @method log
+ */
     log : fGo,
-    /**@type function*/
+/**
+ * @method warn
+ */
     warn : fGo,
-    /**@type function*/
+/**
+ * @method error
+ */
     error : fGo,
-    /**@type function*/
+/**
+ * @method assert
+ */
     assert:fGo,
       /**
        * 列出对象所有属性.
-       *@method
        *@param {object} javascript对象
+       *@method dir
       */
     dir:fGo,
-    /**@type function*/
-    count : fGo,
-    /**@type function*/
-    group:fGo,
-    /**@type function*/
-    groupEnd:fGo,
-    /**@type function*/
-    time:fGo,
-    /**@type function*/
-    timeEnd:fGo});
 /**
- * 基于firebug插件fireunit
+ * @method count
  */
+    count : fGo,
+/**
+ * @method group
+ */
+    group:fGo,
+/**
+ * @method groupEnd
+ */
+    groupEnd:fGo,
+/**
+ * @method time
+ */
+    time:fGo,
+/**
+ * @method timeEnd
+ */
+    timeEnd:fGo});
+//基于firebug插件fireunit
 CC.extendIf(tester, {
   ok : function(a, b){
     if(typeof a === 'function')
@@ -2715,12 +2849,16 @@ CC.extendIf(tester, {
   },
   testDone : fGo
 });
-﻿(function(){
+﻿/*!
+ * Javascript Utility for web development.
+ * 反馈 : www.bgscript.com/forum
+ * www.bgscript.com ? 2010 - 构建自由的WEB应用
+ */
+(function(){
 	var CC = window.CC;
 /**
- * @name CC.Ajax
- * @class Ajax请求封装类
- @example
+ * @class CC.Ajax Ajax请求封装类<br>
+ <pre><code>
   //连接服务器并获得返回的JSON数据
   Ajax.connect({
     url : '/server/json/example.page?param=v',
@@ -2753,14 +2891,12 @@ CC.extendIf(tester, {
    ....
   });
   ajax.connect('param=data');
+  </code></pre>
  */
 var Ajax = CC.Ajax = CC.create();
 /**
- * 快速Ajax调用
- *@static
- *@method
- *@memberOf CC.Ajax
-@example
+ * 快速Ajax调用<br>
+  <pre><code>
   //连接服务器并获得返回的JSON数据
   Ajax.connect({
     url : '/server/json/example.page?param=v',
@@ -2785,6 +2921,8 @@ var Ajax = CC.Ajax = CC.create();
     url : '/server/xml/example.page?param=v',
     displayPanel : 'panel'
   });
+  </code></pre>
+ * @member CC.Ajax
  */
 Ajax.connect = (function(option){
     var ajax = new Ajax(option);
@@ -2792,69 +2930,128 @@ Ajax.connect = (function(option){
     return ajax;
 });
 
+        /**
+         * @event final
+         * 请求结束后调用,无论成功与否.
+         * @param {CC.Ajax} ajax
+         */
+        /**
+         * @event open
+         * 在打开前发送
+         * @param {CC.Ajax} ajax
+         */
+ /**
+  * @event send
+  * 在发送数据前发送
+  * @param {CC.Ajax} ajax
+  */
+  
+        /**
+         * @event json
+         * 在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
+         * @param {Object} o json对象
+         * @param {Ajax} ajax
+         */
+        /**
+         * @event xmlDoc
+         * 在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
+         * @param {XMLDocument} doc
+         * @param {CC.Ajax} ajax
+         */
+        /**
+         * @event text
+         * 在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
+         * @param {String} responseText
+         * @param {CC.Ajax} ajax
+         */
+/**
+ * @event failure
+ * 数据请求失败返回后发送.
+ * @param {CC.Ajax} ajax
+ */
+ 
+/**
+ * @event success
+ * 数据成功返回加载后发送.
+ * @param {CC.Ajax} ajax
+ */
+ 
+/**
+ * @event load
+ * 请求响应返回加载后发送(此时readyState = 4).
+ * @param {CC.Ajax} ajax
+ */
+ 
+/**
+ * @event statuschange
+ * 在每个fire事件发送前该事件都会发送
+ * @param {String} status
+ * @param {CC.Ajax} j
+ */
 Ajax.prototype =
    /**
-    * @lends CC.Ajax.prototype
+    * @class CC.Ajax
     */
    {
 /**
- * GET 或者 POST,默认GET
- * @type String
+ * @cfg {String} method GET 或者 POST,默认GET.
  */
     method :'GET',
-/**@property {String}url 请求URL*/
+/**@cfg {String} url 请求URL*/
     url : null,
-/**@property {Boolean} [asynchronous=true] 是否异步,默认true*/
+/**@cfg {Boolean} asynchronous=true 是否异步,默认true*/
     asynchronous: true,
-/**@property {Number} [timeout=10000] 设置超时,默认10000ms*/
+/**@cfg {Number} timeout=10000 设置超时,默认10000ms*/
     timeout: 10000,
-/**@property {DOMElement} [disabledComp] 在请求过程中禁止的元素*/
+/**@cfg {DOMElement} disabledComp 在请求过程中禁止的元素,请求结束后解除*/
    disabledComp : undefined,
-/**@property {String} [contentType] 默认application/x-www-form-urlencoded*/
+/**@cfg {String} contentType 默认application/x-www-form-urlencoded*/
     contentType: 'application/x-www-form-urlencoded',
-/**@property {String} msg 提示消息*/
+/**@cfg {String} msg 提示消息*/
     msg: "数据加载中,请稍候...",
 
-/**@property {Boolean} [noCache=true] 是否忽略浏览器缓存,默认为true.*/
-    noCache:true,
+/**@cfg {Boolean} cache=true 是否忽略浏览器缓存,默认为true.*/
+    cache:true,
+
 /**
- * @name CC.Ajax#xmlReq
- * @property {XMLHttpRequest} [xmlReq]对象
- */
-/**
- * @name CC.Ajax#caller
- * @property {Function} [caller] 用于调用failure,success函数的this对象.
+ * @cfg {Function} caller 用于调用failure,success函数的this对象.
  */
 
 /**
- * @name CC.Ajax#failure
- * @property {Function} [failure]失败后的回调.
+ * @cfg {Function} failure 失败后的回调.
  */
 
 /**
- * @name CC.Ajax#data
- * @property {Object} [data] send发送的数据
+ * @cfg {Object} data POST时发送的数据
+ */
+
+/**
+ * @cfg {String|Object} params GET时提交的字符串参数或Map键值对,结果被追加到url尾.
  */
  /**
-  *@property {Function} [success] 设置成功后的回调,默认为运行服务器返回的数据内容.
+  *@cfg {Function} success 设置成功后的回调,默认为运行服务器返回的数据内容.
   */
     success: (function(ajax) {
         ajax.invokeHtml();
     }),
 
     /**
-     * @name CC.Ajax#onfinal
-     * @property {Function} [onfinal] 无论请求成功与否最终都被调用.
+     * @cfg {Function} onfinal 无论请求成功与否最终都被调用.
      */
 
-    /**@property {DOMElement|String} [displayPanel] 如果数据已加载,数据显示的DOM面板.*/
+    /**@cfg {DOMElement|String} displayPanel 如果数据已加载,数据显示的DOM面板.*/
     displayPanel: null,
 
-    /**
-     * @name CC.Ajax#busy
-     * @property {Boolean} busy 指明当前Ajax是否处理请求处理状态,在open后直至close前该值为真.
-     * @readonly
-     */
+/**
+ * @property xmlReq XMLHttpRequest对象
+ * @type XMLHttpRequest
+ */
+
+/**
+ * 指明当前Ajax是否处理请求处理状态,在open后直至close前该值为真.
+ * @property busy
+ * @type Boolean
+ */
 
     /**
      * @private
@@ -2876,8 +3073,8 @@ Ajax.prototype =
     ,
 
    /**
-   * @method
    * 重写以实现自定消息界面,用于进度的消息显示,默认为空调用.
+   * @method fGo
    */
     setMsg: fGo
     ,
@@ -2901,12 +3098,7 @@ Ajax.prototype =
                 this.onfinal.call(this.caller,this);
             else
                 this.onfinal.call(this,this);
-        /**
-         * 请求结束后调用,无论成功与否.
-         * @name CC.Ajax#final
-         * @event {String} final
-         * @param {CC.Ajax} ajax
-         */
+
         this._fire('final', this);
 
         if (this.disabledComp)
@@ -2921,7 +3113,6 @@ Ajax.prototype =
             delete this.text;
 
         this.disabledComp = null;
-        //CC.display(CC. $('ajaxProgressBar'), false);
         this.xmlReq = null;
         this.params = null;
         this.busy = 0;
@@ -2956,18 +3147,13 @@ Ajax.prototype =
         }
     }
     ,
+
    /**
-   * 建立XMLHttpRequest连接,在调用该方法后调用send方法前可设置HEADER.
-   */
+    * 建立XMLHttpRequest连接,在调用该方法后调用send方法前可设置HEADER.
+    */
     open: function() {
         this._req();
         this.busy = 1;
-        /**
-         * 在打开前发送
-         * @name CC.Ajax#open
-         * @event {String} open
-         * @param {CC.Ajax} ajax
-         */
         this._fire('open',this);
         
         if (this.timeout) {
@@ -2978,7 +3164,7 @@ Ajax.prototype =
             CC.disable(this.disabledComp, true);
         }
 
-        var ps = this.params, ch = this.noCache, theUrl = this.url;
+        var ps = this.params, ch = this.cache, theUrl = this.url;
         if(ps || ch){
             var isQ = theUrl.indexOf('?') > 0;
             if(ch){
@@ -3008,12 +3194,6 @@ Ajax.prototype =
  * @param {object} [data] 要传输的数据
  */
     send: function(data) {
- /**
-  * 在发送数据前发送
-  * @name CC.Ajax#send
-  * @event {String} send
-  * @param {CC.Ajax} ajax
-  */
         this._fire('send', this);
         this._setHeaders();
         this.xmlReq.onreadystatechange = this._onReadyStateChange.bind(this);
@@ -3062,11 +3242,16 @@ Ajax.prototype =
     ,
     
     _fire : function(e){
+/**
+ * 在每个事件发送后,事件名称记录在该属性下.
+ * @property status
+ * @type String
+ */
     	this.status = e;
     	
     	if(this.statuschange)
     	   this.statuschange.call(this.caller||this, e, this);
-    	
+    	   
     	Ajax.fire('statuschange', e, this);
     	this.fire('statuschange', e, this);
     	
@@ -3082,12 +3267,6 @@ Ajax.prototype =
         var req = this.xmlReq;
         if (req.readyState === 4) {
         	if(!this.aborted){
-/**
- * 请求响应返回加载后发送(此时readyState = 4).
- * @name CC.Ajax#load
- * @event {String} load
- * @param {CC.Ajax} ajax
- */
             if(this._fire('load', this) === false)
               return;
             var success = this.success;
@@ -3095,12 +3274,6 @@ Ajax.prototype =
             // req.status 为 本地文件请求
             try{
                 if (req.status == 200) {
-/**
- * 数据成功返回加载后发送.
- * @name CC.Ajax#success
- * @event {String} success
- * @param {CC.Ajax} ajax
- */
                     if(this._fire('success', this) === false)
                       return false;
                     if(success)
@@ -3108,12 +3281,6 @@ Ajax.prototype =
                             success.call(this.caller, this);
                         else success.call(this,this);
                 } else {
-/**
- * 数据请求失败返回后发送.
- * @name CC.Ajax#failure
- * @event {String} failure
- * @param {CC.Ajax} ajax
- */
                     if(this._fire('failure', this) === false)
                       return false;
                     if(failure)
@@ -3141,17 +3308,11 @@ Ajax.prototype =
             return this.text;
 
         /**
-         * @name CC.Ajax#text
-         * @property {String} text 调用{@link # getText}方法后保存的text文本,在{@link #close}方法调用后销毁
+         * 调用{@link #getText}方法后保存的text文本,在{@link #close}方法调用后销毁, 可重设以后某些过滤处理.
+         * @property text
+         * @type String
          */
         var s = this.text = this.xmlReq.responseText;
-        /**
-         * 在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
-         * @name CC.Ajax#text
-         * @event {String} text
-         * @param {String} responseText
-         * @param {CC.Ajax} ajax
-         */
         this._fire('text',s,this);
         return this.text;
     },
@@ -3162,20 +3323,14 @@ Ajax.prototype =
    */
     getXmlDoc : function() {
         /**
-         * @name CC.Ajax#xmlDoc
-         * @property {XMLDocument} xmlDoc
          * 调用{@link #getXmlDoc}方法后保存的XMLDocument对象,在{@link #close}方法调用后销毁.
+         * @property xmlDoc
+         * @type XMLDocument
          */
         if(this.xmlDoc)
             return this.xmlDoc;
+
         var doc = this.xmlDoc = this.xmlReq.responseXML.documentElement;
-        /**
-         * 在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
-         * @name CC.Ajax#xmlDoc
-         * @event {String} xmlDoc
-         * @param {XMLDocument} doc
-         * @param {CC.Ajax} ajax
-         */
         this._fire('xmlDoc', doc, this);
         return this.xmlDoc;
     },
@@ -3191,31 +3346,22 @@ Ajax.prototype =
         var o;
         try {
             /**
-             * @name CC.Ajax#json
-             * @property {Object} json
              * 调用{@link #getJson}方法后保存的json对象,在{@link #close}方法调用后销毁.
+             * @property json
+             * @type Object
              */
             this.json = o = eval("("+this.getText()+");");
         }catch(e) {
             if(__debug) { console.log('Internal server error : a request responsed with wrong json format:\n'+e+"\n"+this.getText()); }
             throw e;
         }
-        /**
-         * 在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
-         * @name CC.Ajax#json
-         * @event {String} json
-         * @param {Object} o json对象
-         * @param {Ajax} ajax
-         */
         this._fire('json',o,this);
         return this.json;
     }
     ,
   /**
-   * 运行返回内容中的JS,方法返回已剔除JS后的内容.
-   *@return {string} 返回已剔除JS后的内容
-   *@example
-   *<pre>
+   * 运行返回内容中的JS,方法返回已剔除JS后的内容.<br>
+   *<pre><code>
     //服务器返回的文本数据为
     &lt;script&gt;
       alert('Hello world!');
@@ -3230,7 +3376,8 @@ Ajax.prototype =
         var ss = this.invokeScript();
       }
     });
-   *</pre>
+   *</code></pre>
+   *@return {string} 返回已剔除JS后的内容
    */
     invokeScript: function() {
         return eval(this.getText());
@@ -3274,14 +3421,15 @@ var CPC = {};
 var Cache = CC.Cache;
 var Event = CC.Event;
 /**
+ * @class CC.Base
+ * 为所有控件的基类,定义控件的基本属性与方法,管理控件的生命周期.<br>
  * 控件表现为属性+方法(行为)+视图(view),为了简单起见,在库控件的实现中控件属性和行为,可通过控件对象实例直接访问,而视图,即DOM部分可通过控件其中一个view属性访问.<br>
  * 一般来说,控件的私有属性和方法用下划线+名称表示.<br>
  * 控件的视图,即view,是表征控件外观,在页面中具体表现为html,从设计上来说,有两种方法可改变控件的视图,一是通过CSS控制控件的外观,二是改变控件视图的HTML.<br>
  * 第一种改变CSS有时达不到预期效果,它改变的仅仅是风格,如果两种都可运用则可使定义外观方式变得强大.<br>
  * 为了使得控件具体有多种外观而保持不变的行为,在库的控件实现中采用模板的方式定义控件的外观,在模板数据中可以定义控件具体的HTML,CSS,当改变控件的外观时,只需改变控件的模板,而必定义更多的代码.<br>
  * 例如将126风格的控件换成EXT风格控件,只需将它们的模板换成EXT相似的即可.
- * @name CC.Base
- * @class 为所有控件的基类,定义控件的基本属性与方法,管理控件的生命周期.
+ * @abstract
  * @author Rock
  */
 var Base = CC.Base = (function(dom){
@@ -3290,9 +3438,12 @@ var Base = CC.Base = (function(dom){
 });
 
 /**
- * @name CC.Base.find
  * 根据控件ID获得控件,该方法将遍历控件缓存,速度并不快
  * @param {String} componentId
+ * @static
+ * @return {CC.Base|null}
+ * @member CC.Base
+ * @method find
  */
 Base.find = function(id){
   for(var i in CPC){
@@ -3302,17 +3453,24 @@ Base.find = function(id){
   return null;
 };
 /**
- * @name CC.Base.byCid
- * 根据控件缓存ID(唯一)获得控件,该缓存id在控件初始化时设置,保存在 component.cacheId 和 component.view.cicyId中.
- * @param {String} componentId
+ * 根据控件缓存ID(cacheId, 唯一)获得控件,该缓存id在控件初始化时设置,保存在 component.cacheId 和 component.view.cicyId中.
+ * @param {String} componentCacheId
+ * @static
+ * @return {CC.Base|null}
+ * @member CC.Base
+ * @method byCid
  */
 Base.findByCid = Base.byCid = function(cid){
   return CPC[cid];
 };
+
 /**
  * 根据DOM元素返回一个控件, 如果已指定pCt,返回该容器子控件中的匹配控件
  * @param {HTMLElement} dom
  * @param {CC.ui.ContainerBase} pCt, 如果已指定,返回该容器子控件中的匹配控件
+ * @static
+ * @member CC.Base
+ * @method byDom
  */
 Base.byDom = function(dom, pCt){
       //find cicyId mark
@@ -3335,11 +3493,13 @@ Base.byDom = function(dom, pCt){
 };
 
 /**
- * 控件html模板定义类, 存放格式为 Tpl[component type] = strHtml.
- * @name CC.Tpl
- * @class 控件html模板定义类
- * @example
-   Tpl['MyComp'] = '&lt;div class=&quot;cus&quot;&gt;&lt;/div&gt;';
+ * @class CC.Tpl
+ * 控件html模板定义类, 通过{@link #def}方式存放.
+ * <pre><code>
+   CC.Tpl.def('MyComp') = '&lt;div class=&quot;cus&quot;&gt;&lt;/div&gt;';
+   </code></pre>
+ * <br>
+ * 不宜在注册CC.Cache缓存时调用模板方法{@link CC.Tpl.$}, {@link CC.Tpl.$$},{@link CC.Tpl.remove},这将引起循环的递归调用,因为模板生成的结点缓存在Cache里的.
  */
 var Tpl = CC.Tpl;
 
@@ -3347,34 +3507,33 @@ if(!Tpl){
   Tpl = CC.Tpl = {};
 }
 
-/**
- * 不宜在注册Cache缓存时调用模板方法Tpl.$, Tpl.$$,Tpl.remove,这将引起循环的递归调用,因为模板生成的结点缓存在Cache里的.
- */
+
 CC.extend(Tpl,
-    /**@lends CC.Tpl*/
-    {
+{
 /**
+ * @cfg {String} BLANK_IMG
  * 为什么要有空图片?
  * 用于填充img标签.为什么要用到img标签,用其它标签的background-url定位不行么?
- * img标签主要优点是可放大,缩小图片,目前兼容的css难做到这点
+ * img标签主要优点是可放大,缩小图片,目前兼容的css难做到这点.<br>
+ * 可以通过window.BLANK_IMG指定空图片.
  */
       BLANK_IMG : window.BLANK_IMG || 'http://www.bgscript.com/bgjs/default/s.gif',
 /**
- * 根据模板名称获得模板字符串对应的HTML结点集,该结点生成只有一次,第二次调用时将从缓存克隆结点数据.
- * @param {String} keyName 模板在Tpl中的键值,即属性名称
- * @param {String} compName
- * @param {Function} [prehandler] 模板字符串的预处理函数, 调用方式为 return function(strTemplate, objParam),返回处理后的html模板
- * @param {Object} [Object] prehandler 传递给prehandler的参数
- * @see #forNode
- * @method
- * @return {DOMElement} 模板字符串对应的HTML结点集
- * @example
-  Tpl['MyComp'] = &lt;div class=&quot;fd&quot;&gt;&lt;a href=&quot;javascript:void(0)&quot; id=&quot;_tle&quot;&gt;&thorn;&yen;&lt;/a&gt;&lt;/div&gt;
+ * 根据模板名称获得模板字符串对应的HTML结点集,该结点生成只有一次,第二次调用时将从缓存克隆结点数据.<br>
+ * <pre><code>
+  CC.Tpl.def('MyComp', '&lt;div class=&quot;fd&quot;&gt;&lt;a href=&quot;javascript:void(0)&quot; id=&quot;_tle&quot;&gt;&thorn;&yen;&lt;/a&gt;&lt;/div&gt');
 
   var  domNode = Tpl.$('MyComp');
 
   //显示 _tle
   alert(domNode.firstChild.id);
+  </code></pre>
+ * @param {String} keyName 模板在Tpl中的键值,即属性名称
+ * @param {String} compName
+ * @param {Function} [prehandler] 模板字符串的预处理函数, 调用方式为 return function(strTemplate, objParam),返回处理后的html模板
+ * @param {Object} [Object] prehandler 传递给prehandler的参数
+ * @method $
+ * @return {DOMElement} 模板字符串对应的HTML结点集
  */
     $ : (function(keyName,compName, prehandler, objParam){
         var node = Cache.get(keyName);
@@ -3398,6 +3557,7 @@ CC.extend(Tpl,
  * 获得模板DOM结点经Base封装后的对象
  * @param key 模板在Tpl中的键值,即属性名称
  * @return {CC.Base}
+ * @method $$
  */
     $$ : function(key) {
         return CC.$$(this.$(key));
@@ -3413,13 +3573,8 @@ CC.extend(Tpl,
 
 
 /**
- * 根据html字符串返回由该字符串生成的HTML结点集.
- * @param {String} strHtml
- * @param {Object} [dataObj]
- * @param {String} [st] 模板替换方式, 参见{@link CC.templ}
- * @see CC.templ
- * @example
-
+ * 根据html字符串返回由该字符串生成的HTML结点集.<br>
+<pre><code>
  var dataObj = {id:'Rock', age : 2};
  var strHtml = &lt;div class=&quot;fd&quot;&gt;&lt;a href=&quot;javascript:void(0)&quot; id=&quot;{title}&quot;&gt;年龄:{age}&lt;/a&gt;&lt;/div&gt;
 
@@ -3432,6 +3587,11 @@ CC.extend(Tpl,
 
  //显示 年龄:2
  alert(link.innerHTML);
+ </code></pre>
+ * @param {String} strHtml
+ * @param {Object} [dataObj]
+ * @param {String} [st] 模板替换方式, 参见{@link CC.templ}
+ * @see CC.templ
  */
     forNode : function(strHtml, dataObj, st) {
       if(dataObj)
@@ -3446,7 +3606,7 @@ CC.extend(Tpl,
  * 定义模板.
  * @param {String} key 模板在Tpl中的键值,即属性名称
  * @param {String} 模板字符串,可以多个参数,方便查看
- * @return this
+ * @return {Object} this
  */
     def : function(key, str) {
       if(arguments.length>=3){
@@ -3496,100 +3656,152 @@ var undefined;
 var Math = window.Math, parseInt = window.parseInt;
 
 var CPR = CC.util.CssParser.getParser();
-
+/**
+ * @class CC.Base
+ */
 CC.extend(Base.prototype,
-  /**@lends CC.Base.prototype*/
   {
-/**@property {String} type 控件类型标识符*/
+/*
+ * @cfg type
+ * 控件类型标识符,与类钱称相同,eg:CC.ui.Grid
+ * @type String
+ */
     type: 'CC.Base',
 /**
- * @property {DOMElement} view * 控件对应的DOM结点,即控件视图部份,如果未设置,默认创建一个DIV结点作为视图,初始化时可为DOM元素或页面元素中的ID值
+ * @cfg {DOMElement|String} view 
+ * 控件对应的DOM结点,即控件视图部份,如果未设置,默认创建一个DIV结点作为视图,初始化时可为DOM元素或页面元素中的ID字符串作为值.
  */
- view: null,
+ view: false,
+ 
 /**
- * @name CC.Base#clickCS
- * @property {String} clickCS 点击效果修饰样式
+ * @cfg {String} clickCS 点击效果修饰样式
  */
 
 /**
- * @name CC.Base#hoverCS
- * @property {String} hoverCS 鼠标悬浮样式
+ * @cfg {String} hoverCS 鼠标悬浮样式
  */
 /**
- * @name CC.Base#height
- * @property {Number} [height=false] 控件高度,为false时忽略
+ * @cfg {Number} height=false 控件高度,默认为fase,忽略设置
  */
     height:false,
+    
 /**
- * @property {Number} [width=false] 控件宽度,为false时忽略
+ * @cfg {Number} width=false 控件宽度,为false时忽略
  */
     width : false,
 /**
- * @property {Number} [left=false]  控件x值,为false时忽略
+ * @cfg {Number} left=false  控件x值,为false时忽略
  */
     left:false,
 
 /**
- * @property {Number} [top=false] 控件top值,为false时忽略
+ * @cfg {Number} top=false 控件top值,为false时忽略
  */
     top:false,
 /**
- * @property {Number} [minW=0] 控件最小宽度
+ * @cfg {Number} minW=0 控件最小宽度
  */
     minW:0,
 /**
- * @property {Number} [minH=0] 控件最小高度
+ * @cfg {Number} minH=0 控件最小高度
  */
     minH:0,
 /**
- * @property {Number} [maxH=Math.MAX] 控件最大高度
+ * @cfg {Number} maxH=Math.MAX 控件最大高度
  */
     maxH:Math.MAX,
 /**
- * @property {Number} [maxW=Math.MAX] 控件最大宽度
+ * @cfg {Number} maxW=Math.MAX 控件最大宽度
  */
     maxW:Math.MAX,
 
 /**
- * @name CC.Base#template
- * @property {String} template 设置控件视图view的HTML模板名称,利用这些模板创建DOM结点作为控件视图内容,该设置值不会被保留到控件属性中
+ * @cfg {String} template 
+ * 设置控件视图view的HTML模板名称,利用这些模板创建DOM结点作为控件视图内容,
+ * 该设置值不会被保留到控件属性中,应用模板获得view结点后属性被移除.<br>
+ * 可以传入一个模块索引名称,系统会利用这个名称获得对应的DOM结点作为view的值;
+ * 也可以传入一串html字符串,系统会生成这些html字符串对应的DOM结点作为view的值. <br>
+ * <pre><code>
+   // 定义模板
+   CC.Tpl.def('MyComponent', '<div><h1 id="_tle"></h1></div>');
+   // 创建控件
+   var myComponent = CC.Base.instance({
+     ctype:'base',
+     template:'myComponent'
+   });
+   myComponent.setTitle('Hello world!');
+   
+   // 也可直接利用一串html字符串作为模板生成view视图结点
+   var myComponent = CC.Base.instance({
+     ctype:'base',
+     template : '<div><h1 id="_tle"></h1></div>'
+   });
+   
+   第一种方式可充分利用缓存快速生成结点.
+   第二种可灵活生成不同结构的结点.
+ </code></pre>
+ */
+   clickDisabled : false,
+/**
+ * @cfg {Boolean} clickDisabled 存在clickEvent事件的控件时，如果 clickDisabled 为 false,则消取该事件的发送.
  */
 
 /**
- * @name CC.Base#clickDisabled
- * @property {Boolean} clickDisabled 存在clickEvent事件的控件时，如果 clickDisabled 为 false,则消取该事件的发送.
+ * @property pCt 
+ * 父容器.<br>
+ * 以下情形将使得当前控件获得一个指向父容器的引用.<div class="mdetail-params">
+ * <ul>
+ * <li>通过父容器或父容器的布局管理器{@link CC.ui.ContainerBase#add}方式添加的子控件</li>
+ * <li>通过{@link #follow}方式委托另一个控件("父"容器)管理自身控件周期的子控件</li>
+ * </ul></div>
+ * <pre><code>
+    // 通过父控件的follow方法
+    var ca = new CC.ui.Panel();
+    var cb = new CC.ui.Button();
+    ca.follow(cb);
+    
+    //显示true
+    alert(cb.pCt === ca);
+    
+    // 通过add
+    var ca = new CC.ui.Panel();
+    var cb = new CC.ui.Button();
+    ca.layout.add(cb);
+ * </code?</pre>
+ * @type {CC.Base}
  */
+    pCt : false,
 
 /**
- * @name CC.Base#pCt
- * @property {CC.Base} pCt 父容器
+ * @cfg {Boolean} eventable 是否实现事件模型,实现事件模型的控件具有发送,注册处理事件功能.
  */
+    eventable : false,
 
+        
 /**
- * @constructor
+ * @cfg {Boolean} autoRender 是否自动渲染,自动渲染时在控件初始化后就立即调用{@link #render}进行渲染.
+ */
+ 
+/**
  * @private
  */
     initialize: function(opts) {
         if (opts){
           CC.extend(this, opts);
         }
-        /**
-         * @name CC.Base#eventable
-         * @property {Boolean} eventable 是否实现事件模型,实现事件模型的控件具有发送,注册处理事件功能.
-         */
+
         if(this.eventable)
             Eventable.apply(this);
+
         this.initComponent();
-        /**
-         * @name CC.Base#autoRender
-         * @property {Boolean} [autoRender=false] 是否自动渲染,自动渲染时在控件初始化后就立即调用{@link # render}进行渲染.
-         */
+
         if(this.autoRender)
             this.render();
     },
+
 /**
- * 生成控件DOM结点(view)部分.
- * @prototected
+ * 生成控件DOM结点(view)部分,调用该方法后创建this.view结点.
+ * @private
  */
     createView : function(){
 
@@ -3618,7 +3830,6 @@ CC.extend(Base.prototype,
         this.view = CC.$C('DIV');
     },
 
-    //prototected
     createView0 : function(superclass){
       if(!superclass)
         return null;
@@ -3634,15 +3845,99 @@ CC.extend(Base.prototype,
         return v;
       return arguments.callee(superclass.superclass);
     },
+    
+    cacheId : undefined,
+/**
+* @property cacheId
+* 全局控件唯一id,也可用于判断对象是否是类的实例化对象,在控件初始化时分配.
+* @type String
+*/
+
+/**@private*/
+    __flied : undefined,
+    
+/**
+ * @cfg {String} strHtml 可以通过一段html文本来创建view内容,初始化时通过view.innerHTML方式加载到view结点中. 
+ */
+    strHtml : false,
 
 /**
+ * @cfg {String} innerCS 控件自身内在的css类设置,常用于控件的设计中,如果无继承控件创建新控件类,不必理会该属性.
+ * @private
+ */
+    innerCS : false,
+
+/**
+* @cfg {String} cs 控件css类,它将添加在{@link #innerCS}类后面,通过{@link #addClass},{@link #switchClass}方法.
+*/
+    cs : false,
+
+/**
+ * @cfg {String} id 控件id,如果无,系统会生成一个.
+ */
+    id : undefined,
+
+/**
+* @cfg {String} title 控件标题.<br>
+* 如果控件有标题的话,就必须定义一个标题结点存放标题,以便控件在初始化时能够找到该结点并应用title值到结点中.
+* 系统通过标题结点id寻找该结点,默认的标题结点id为'_tle',也可以指定{@link #titleNode}来定义新的ID值.<br>
+<pre><code>
+    //定义MyButton类的视图模板,该类是有标题的
+    CC.Tpl.def('MyButton') = '&lt;div class=&quot;button&quot;&gt;&lt;span id=&quot;_tle&quot;&gt;这里是标题&lt;/span&gt;&lt;/div&gt;';
+    //这样就可以设置控件标题了,标题将被添加到结点id为_tle的元素上.
+    myButton.setTitle('button title');
+</code></pre>
+*/
+    title : undefined,
+/**
+ * @cfg {String} titleNode 可以指定控件标题所在控件的id,该id在控件初始化创建view时唯一.
+ */  
+    titleNode : false,
+
+    hoverCS : false,
+    
+/**
+ * @cfg {String} icon 控件图标css类.
+ */
+    icon : false,
+
+/**
+ * @cfg {String} css 设置控件inline style规则字符串,
+ * 将调用{@link CC.util.CssParser}类进行解析,
+ * 并将inline style应用到控件的view结点中.<br>
+ * 具体可参见{@link CC.util.CssParser}类.
+ */
+    css : false,
+
+/**
+* @cfg {Boolean} unselectable 是否允许选择控件的文本区域.
+*/
+    unselectable : false,
+
+/**
+ * @cfg {Boolean} disabled 是否允许使用该控件.
+ */
+    disabled : false,
+/**
+ * @cfg {String} tip 设置提示
+ */
+    tip : false,
+    
+/**
+ * @cfg {String} qtip 设置控件库内置提示方式
+ */
+    qtip : false,
+
+/**
+ * @cfg {Boolean|Object|CC.ui.Shadow} shadow 控件是否具有阴影效果.
+ */
+    shadow : false,
+/**
  * 初始化控件.
+ * @private
  */
     initComponent : function() {
-/**
-* @property {String} cacheId 控件全局唯一id,用于缓存识别,也可用于对象是否是类的实例化对象.
-* @readonly
-*/      
+      
         // if not initializing from fly element
         if(this.__flied === undefined){
 	        var cid = this.cacheId = 'c' + CC.uniqueID();
@@ -3650,50 +3945,17 @@ CC.extend(Base.prototype,
 	        
 	        this.createView();
         }
-/**
-* @name CC.Base#strHtml
-* @property {String} [strHtml] 控件html内容,如果存在,在控件初始化时生成.
-*/
+
         if(this.strHtml){
             this.html(this.strHtml);
             delete this.strHtml;
         }
-/**
- *@name CC.Base#viewAttr
- * @property {Object} viewAttr 控件view属性配置,用于初始化视图view结点,在应用后被移除.
- @example
-  var comp = new Base({
-   viewAttr:{
-     className : 'vs',
-     innerHTML : '<b>text</b>'
-   }
-  });
 
-  //显示vs
-  alert(comp.view.className);
-*/
-        if (this.viewAttr) {
-            CC.extend(this.view, this.viewAttr);
-            delete this.viewAttr;
-        }
-/**
-* @name CC.Base#innerCS
-* @property {String} innerCS 控件自身内在的css类设置,常用于控件的设计中.
-*/
         if(this.innerCS)
           this.addClass(this.innerCS);
-/**
-* @name CC.Base#cs
-* @property {String} cs 控件css类,它将添加在{@link # innerCS}类后面.
-*/
+
         if(this.cs)
             this.addClass(this.cs);
-/**
-* @name CC.Base#id
-* @property {String} id 控件id,如果无,系统会生成一个.
-*/
-        //if(!this.id)
-        //    this.id = 'comp'+CC.uniqueID();
 
         if(this.id && !this.view.id)
             this.view.id=this.id;
@@ -3705,7 +3967,6 @@ CC.extend(Base.prototype,
         this.view.cicyId = cid;
 
         //cache the title node for latter rendering.
-
         if(this.title){
           if(!this.titleNode)
             this.titleNode = this.dom('_tle');
@@ -3713,10 +3974,6 @@ CC.extend(Base.prototype,
             this.titleNode = this.dom(this.titleNode);
         }
 
-/**
-* @name CC.Base#icon
-* @property {String} icon 控件图标css类.
-*/
         if(this.icon) {
             this.setIcon(this.icon);
         }
@@ -3729,32 +3986,12 @@ CC.extend(Base.prototype,
             this.bindHoverStyle(this.hoverCS);
         }
         
-/**
-* @name CC.Base#css
-* @property {String} css 设置控件inline style字符串
-*/
         if(this.css)
          this.cset(this.css);
-/**
-* @name CC.Base#unselectable
-* @property {Boolean} [unselectable=false] 是否允许选择控件的文本区域.
-*/
+         
         if(this.unselectable)
             this.noselect();
 
-/**
-* @name CC.Base#title
-* @property {String} title 控件标题.
-* 如果控件具有标题栏,将设置控件标题.基类是怎样知道一个控件具有标题的?这是个有趣的问题,它涉及到库中编写控件的一个小小的约定,
-*  如调用基类setTitle方法设置标题时,类方法会在控件视图view结点中寻找一个id为'_tle'的子结点,如果没找到就返回,如果找到就设置它的内容为标题,这个id为'_tle'就是一个约定,
-*  也就是说,控件如果有标题的话,就必须定义一个标题结点ID为'_tle'才能被找到,这个工作是轻松的,可以直接在视图view的模板里定义,例如<br>
-<pre>
-    //定义MyButton类的视图模板,该类是有标题的
-    Tpl['MyButton'] = '&lt;div class=&quot;button&quot;&gt;&lt;span id=&quot;_tle&quot;&gt;这里是标题&lt;/span&gt;&lt;/div&gt;';
-    //这样就可以设置控件标题了
-    myButton.setTitle('button title');
-</pre>
-*/
         if(this.title)
           this.setTitle(this.title);
 
@@ -3764,11 +4001,6 @@ CC.extend(Base.prototype,
         if(this.left !== false)
             this.setLeft(this.left);
 
-
-/**
-* @name CC.Base#disabled
-* @property {Boolean} disabled 是否允许使用该控件.
-*/
         if(this.disabled){
             this.disabled = 1;
             this.disable(true);
@@ -3778,27 +4010,33 @@ CC.extend(Base.prototype,
             //设置鼠标提示.
             this.setTip(this.tip===true?this.title:this.tip);
         }
-/**
-* @name CC.Base#qtip
-* @property {String} qtip 设置控件库内置提示方式
-*/
+        
         if(this.qtip && CC.Util.qtip)
             CC.Util.qtip(this);
-
-/**
-* @name CC.Base#shadow
-* @property {Boolean|Shadow} shadow 控件是否具有阴影效果.
-*/
+            
         if(this.shadow){
           this.shadow = CC.ui.instance(this.shadow===true?'shadow':this.shadow);
           this.follow(this.shadow);
         }
     },
+
+/**@private*/
+    __delegations : false,
+
+/**@private*/
+    delegated : false,
+
 /**
- * 将部件a纳入当前控件的管理范畴,纳入后部件a的渲染和销毁与控件一致.
- * 当某些部件不是以add方式加进容器控件的,就比如适合采用这方法将部件纳入管理范畴,使得它和宿主控件一起渲染和销毁.
- * @param {CC.Base} a 跟随控件的部件
- * @return this
+ * <p>
+ * 将部件a纳入当前控件的管理范畴,
+ * 纳入后部件a的渲染和销毁与控件一致.
+ * </p><p>
+ * 当某些部件不是以add方式加进容器控件的,
+ * 就比如适合采用这方法将部件纳入管理范畴,
+ * 使得它和宿主控件一起渲染和销毁.
+ * </p>
+ * @param {CC.Base} component 跟随控件的部件
+ * @return {Object} this
  */
     follow : function(a){
       var ls = this.__delegations;
@@ -3814,8 +4052,12 @@ CC.extend(Base.prototype,
         a.render();
       return this;
     },
+
+/**@private*/  
+    observes : false,
+    
 /**
- * 销毁控件,包括:移出DOM;移除控件注册的所有事件;销毁与控件关联的部件(参见{@link # follow}).
+ * 销毁控件,包括:移出DOM;移除控件注册的所有事件;销毁与控件关联的部件.
  */
     destory : function(){
       if(this.pCt && !this.delegated){
@@ -3860,23 +4102,36 @@ CC.extend(Base.prototype,
       delete this.view;
       delete this.cacheId;
     },
+    
+    
+/**
+ * @property hidden
+ * 当前控件是否可见
+ * @type Boolean
+ */   
+    hidden : undefined,
+
+/**
+ * @cfg {DOMElement|String} showTo 将控件渲染到该结点上,应用后showTo被移除.
+ */   
+    showTo : false,
+    
     /**
+     * <p>
      * 渲染方式的实现方法,子类要自定渲染时,重写该方法即可.
-     * <ul>主要步骤有:</ul>
+     * <div class="mdetail-params"><ul>主要步骤有:
        <li>应用控件的显示/隐藏属性</li>
        <li>将控件view添加到showTo属性中</li>
        <li>如果需要,设置鼠标提示</li>
        <li>如果存在阴影,将阴影附加到控件中</li>
        <li>渲染跟随部件(参见{@link # follow})</li>
+       </ul></div>
+       </p>
+     * @private
      */
     onRender : function(){
-
-/**
-* @name CC.Base#hidden
-* @property {String} hidden 当前控件是否可见
-* @readonly
-*/
         if(this.hidden){
+          // 防止display不起作用,重置
           this.hidden = undefined;
           this.display(false);
         }
@@ -3914,26 +4169,40 @@ CC.extend(Base.prototype,
         this.shadow.attach(this);
       }
     },
+
 /**
- * 渲染前发送.
- * @name CC.Base#render
- * @event {String} render
- */
-/**
- * 渲染后发送.
- * @name CC.Base#rendered
- * @event {String} rendered
+ * @event render
+ * 当控件具有{@link #eventable}后,渲染前发送该事件.
  */
 
 /**
- * 渲染方法,子类要定义渲染方式应该重写{@link # onRender}方法,
+ * @event rendered
+ * 当控件具有{@link #eventable}后,渲染后发送该事件.
+ */
+
+/**
+ * @property rendered
+ * 指示控件是否已渲染.
+ * @type Boolean
+ */
+    rendered : false,
+
+/**
+ * 渲染控件到DOM文档,子类要定义渲染方式应该重写{@link #onRender}方法.<br>
+       <div class="mdetail-params"><ul>主要步骤有:
+       <li>应用控件的显示/隐藏属性</li>
+       <li>将控件view添加到showTo属性中</li>
+       <li>如果需要,设置鼠标提示</li>
+       <li>如果存在阴影,将阴影附加到控件中</li>
+       <li>渲染跟随部件(参见{@link # follow})</li>
+       </ul></div>
  */
     render : function() {
         if(this.rendered || this.fireOnce('render')===false)
             return false;
         /**
          * @name CC.Base#rendered
-         * @property {Boolean} rendered  标记控件是否已渲染.
+         * @cfg {Boolean} rendered  标记控件是否已渲染.
          * @readonly
          */
         this.rendered = true;
@@ -3947,47 +4216,72 @@ CC.extend(Base.prototype,
           }).timeout(0);
         }
     },
+
 /**
- * Base类默认是没有事件处理模型的,预留fire为接口,方便一些方法如{@link # render}调用,当控件已实现事件处理模型时,即{@link # eventable}为true时,此时事件就变得可用.
+ * <p>
+ * Base类默认是没有事件处理模型的,
+ * 预留fire为接口,方便一些方法如{@link # render}调用,
+ * 当控件已实现事件处理模型时,即{@link # eventable}为true时,
+ * 此时事件就变得可用.
+ * </p>
+ * @method fire
  */
     fire : fGo,
-
+/**
+ * <p>
+ * Base类默认是没有事件处理模型的,
+ * 预留fire为接口,方便一些方法如{@link # render}调用,
+ * 当控件已实现事件处理模型时,即{@link # eventable}为true时,
+ * 此时事件就变得可用.
+ * </p>
+ * @method fire
+ */
     fireOnce : fGo,
 
-/**@method*/
+/**
+ * <p>
+ * Base类默认是没有事件处理模型的,
+ * 预留fire为接口,方便一些方法如{@link # render}调用,
+ * 当控件已实现事件处理模型时,即{@link # eventable}为true时,
+ * 此时事件就变得可用.
+ * </p>
+ * @method fire
+ */
     un : fGo,
 
 /**
  * 隐藏控件.
- * @return this
+ * @return {Object} this
  */
     hide : function(){
       return this.display(false);
     },
 /**
  * 显示控件.
- * @return this
+ * @return {Object} this
  */
     show : function(){
       return this.display(true);
     },
+
 /**
- * 取出视图view结点内的子元素,对其进行Base封装,以便利用,与{@link # unfly对应}.
- * @param {String|DOMElement} childId 子结点.
- * @see CC.Base#fly
- * @return {CC.Base} 封装后的对象,如果childId为空,返回null.
- @example
+ * 取出视图view结点内指定的子元素,对其进行CC.Base封装,以便利用,与{@link #unfly}对应.<br/>
+ * <code>
   &lt;div id=&quot;content&quot;&gt;
    Content Page
    &lt;span id=&quot;sub&quot;&gt;&lt;/span&gt;
   &lt;/div&gt;
   &lt;script&gt;
-    var c = new Base({view:'content', autoRender:true});
+    var c = new CC.Base({view:'content', autoRender:true});
     c.fly('sub')
      .setStyle('color','red')
      .html('this is anothor text!')
      .unfly();
   &lt;/script&gt;
+ * </code>
+ * @param {String|DOMElement} childId 子结点.
+ * @see CC.Base#fly
+ * @return {CC.Base} 封装后的对象,如果childId为空,返回null.
  */
     fly : function(childId){
       var el = this.dom(childId);
@@ -4001,19 +4295,20 @@ CC.extend(Base.prototype,
       return null;
     },
 /**
- * 解除结点的Base封装,与{@link # fly}成对使用.
- @example
+ * 解除结点的Base封装,与{@link # fly}成对使用.<br/>
+ <code>
   &lt;div id=&quot;content&quot;&gt;
    Content Page
    &lt;span id=&quot;sub&quot;&gt;&lt;/span&gt;
   &lt;/div&gt;
   &lt;script&gt;
-    var c = new Base({view:'content', autoRender:true});
+    var c = new CC.Base({view:'content', autoRender:true});
     c.fly('sub')
      .setStyle('color','red')
      .html('this is anothor text!')
      .unfly();
   &lt;/script&gt;
+  </code>
  */
     unfly : function(){
       if(this.__flied !== undefined){
@@ -4030,13 +4325,11 @@ CC.extend(Base.prototype,
     },
 
 /**
-* 添加控件view元素样式类.
-* @param {String} s css类名
-* @see #delClass
-* @see #addClassIf
-* @return this
-* @example
-  comp.addClass('cssName');
+* 添加控件view元素样式类.<br>
+* 参见{@link #delClass},{@link #addClassIf},{@link #checkClass},{@link #hasClass}<br>
+ * <pre><code>comp.addClass('cssName');</code></pre><br>
+* @param {String} css css类名
+* @return {Object} this
 */
     addClass: function(s) {
         var v = this.view;
@@ -4049,7 +4342,7 @@ CC.extend(Base.prototype,
 /**
  * 检查是否含有某个样式,如果有,添加或删除该样式.
  * @param {String} css
- * @param {Boolean} true -> add, or else remove
+ * @param {Boolean} addOrRemove true -> add, or else remove
  */
     checkClass : function(cs, b){
 			if(cs){
@@ -4063,12 +4356,10 @@ CC.extend(Base.prototype,
 		  }
     },
 /**
-* 如果控件view元素未存在该样式类,添加元素样式类,否则忽略.
-* @param {String} s css类名
-* @see #addClass
-* @return this
-* @example
-  comp.addClassIf('cssName');
+* 如果控件view元素未存在该样式类,添加元素样式类,否则忽略.<br>
+* 参见{@link #delClass},{@link #addClass},{@link #switchClass},{@link #checkClass},{@link #hasClass}
+* @param {String} css css类名
+* @return {Object} this
 */
     addClassIf: function(s) {
         if(this.hasClass(s))
@@ -4081,12 +4372,10 @@ CC.extend(Base.prototype,
     }
     ,
 /**
-* 删除view元素样式类.
-* @param {String} s css类名
-* @see #addClass
-* @return this
-* @example
-  comp.delClass('cssName');
+* 删除view元素样式类.<br>
+* 参见{@link #addClass},{@link #switchClass},{@link #addClassIf},{@link #checkClass},{@link #hasClass}
+* @param {String} css css类名
+* @return {Object} this
 */
     delClass: function(s) {
         var v = this.view;
@@ -4095,22 +4384,21 @@ CC.extend(Base.prototype,
     }
     ,
 /**
-* 测试view元素是否存在指定样式类.
-* @param {String} s css类名
+* 测试view元素是否存在指定样式类.<br/>
+* 参见{@link #delClass},{@link #addClassIf},{@link #checkClass},{@link #addClass},{@link #switchClass}
+* @param {String} css css类名
 * @return {Boolean}
-* @example
-  comp.hasClass('cssName');
 */
     hasClass : function(s) {
         return s && (' ' + this.view.className + ' ').indexOf(' ' + s + ' ') != -1;
     },
 /**
-* 替换view元素样式类.
+* 替换view元素样式类.<br/>
+* <code>comp.switchClass('mouseoverCss', 'mouseoutCss');</code><br/>
+* 参见{@link #delClass},{@link #addClassIf},{@link #checkClass},{@link #addClass},{@link #switchClass}
 * @param {String} oldSty 已存在的CSS类名
 * @param {String} newSty 新的CSS类名
-* @return this
-* @example
-  comp.switchClass('mouseoverCss', 'mouseoutCss');
+* @return {Object} this
 */
     switchClass: function(oldSty, newSty) {
         this.delClass(oldSty);
@@ -4120,21 +4408,20 @@ CC.extend(Base.prototype,
     ,
 /**
 * 重置元素样式类.
-* @param {String} s CSS类名
-* @return this
-* @example
-  comp.switchClass('mouseoverCss', 'mouseoutCss');
+* @param {String} css CSS类名
+* @return {Object} this
 */
     setClass: function(s) {
         this.view.className = s;
         return this;
     }
     ,
+
 /**
  * this.view.getElementsByTagName(tagName);
  * @param {String} tagName
- * @see CC.Base#$T
  * @return {DOMCollection} doms
+ * @method $T
  */
     $T: function(tagName) {
         return this.view.getElementsByTagName(tagName);
@@ -4143,8 +4430,6 @@ CC.extend(Base.prototype,
 /**
  * 获得控件视图下任一子结点.
  * @param {String|DOMElement} childId
- * @return CC.$(childId, this.view);
- * @see CC#$
  * @return {DOMElement} dom
  */
     dom : function(childId) {
@@ -4154,15 +4439,15 @@ CC.extend(Base.prototype,
      * 常用于取消DOM事件继续传送,内在调用了Event.stop(ev||window.event);
      * @param {String} eventName 事件名称
      * @param {String|DOMElement} 子结点
-     * @return this
+     * @return {Object} this
      */
     noUp : function(eventName, childId) {
         return this.domEvent(eventName || 'click', Event.noUp, true, null, childId);
     },
 /**
  * 清空view下所有子结点.
- * @return this
- * @type function
+ * @return {Object} this
+ * @method clear
  */
     clear: CC.ie ? function() {
         var dv = Cache.get('div');
@@ -4189,34 +4474,43 @@ CC.extend(Base.prototype,
     },
 
 /**
- * @property {String} [disabledCS='g-disabled'] 禁用时元素样式
+ * @cfg {String} disabledCS='g-disabled' 禁用时元素样式
  */
     disabledCS : 'g-disabled',
 
 /**
- * @property {Boolean} [displayMode=1] 显示模式0,1,可选有display=1,visibility=0
- * @see #setDisplayMode
+ * @cfg {Boolean} displayMode=1 显示模式0,1,可选有display=1,visibility=0<br>
+ * 另见{@link #setDisplayMode},{@link #setBlockMode}
  */
     displayMode : 1,
+
 /**
- * @property {Number} 可选的有block=1,inline=2和''=0
+ * @cfg {Number} blockMode=1, style.display值模式,可选的有block=1,inline=2和''=0
  * @see #setBlockMode
  */
     blockMode : 1,
 
 /**
- * 显示或隐藏或获得控件的显示属性.
- * @param {Boolean} [b] 设置是否可见
- * @return {this|Boolean}
- * @example
-   //测试元素是否可见
+ * 显示或隐藏或获得控件的显示属性.<br/>
+ * <pre><code>
+   // 测试元素是否可见
    alert(comp.display());
 
-   //设置元素可见,模式为block
+   // 设置元素可见,模式为block
    comp.display(true);
 
-   //设置元素可见,模式为inline
-   comp.setBlockMode('inline').display(true);
+   // 设置元素可见,模式为inline
+   comp.setBlockMode(2).display(true);
+   
+   // 设置元素可见模式为display=''
+   comp.setBlockMode(0).display(true);
+   
+   // 设置元素可见模式为visiblity=visible
+   comp.setDisplayMode(0).display(true);
+   
+ * </code></pre>
+ * @param {Boolean} [b] 设置是否可见
+ * @return {this|Boolean}
 */
    display: function(b) {
      if (b === undefined) {
@@ -4228,6 +4522,7 @@ CC.extend(Base.prototype,
      }
      return this;
    },
+
 /**
  * @private
  */
@@ -4263,8 +4558,8 @@ CC.extend(Base.prototype,
    },
 
 /**
- * @param {String} bl
- * @see #blockMode
+ * 参见{@link #blockMode}
+ * @param {String} blockMode
  * return this
  */
    setBlockMode : function(bl){
@@ -4272,8 +4567,8 @@ CC.extend(Base.prototype,
       return this;
    },
 /**
- * @param {String} dm
- * @see #displayMode
+ * 参见{@link #displayMode}
+ * @param {String} displayMode
  * return this
  */
    setDisplayMode : function(dm){
@@ -4319,19 +4614,21 @@ CC.extend(Base.prototype,
     },
 
      /**
-      * this.view.appendChild(oNode.view || oNode); * @param {DOMElement} oNode
-      * @return this;
+      * this.view.appendChild(oNode.view || oNode); 
+      * @param {DOMElement} oNode
+      * @return {Object} this;
       */
     append : function(oNode){
         this.view.appendChild(oNode.view || oNode);
         return this;
     },
 /**
- * (this.ct||this.view).innerHTML = ss;
+ * 应用一段html文本到视图view结点.<br/>
+ * 方式为(this.ct||this.view).innerHTML = ss;
  * @param {String} ss html内容
  * @param {Boolean} [invokeScript] 是否运行里面的脚本
  * @param {Function} [callback] 回调
- * @return this
+ * @return {Object} this
  */
     html : function(ss, invokeScript, callback) {
         if(invokeScript){
@@ -4362,10 +4659,11 @@ CC.extend(Base.prototype,
         (this.ct||this.view).innerHTML = ss;
         return this;
     },
+    
     /**
      * where.appendChild(this.view);
      * @param {DOMElement|CC.Base} where
-     * @return this
+     * @return {Object} this
      */
     appendTo : function(where) {
         where.type ? where.append(this.view) : CC.$(where).appendChild(this.view);
@@ -4374,7 +4672,7 @@ CC.extend(Base.prototype,
 /**
  * 在结点之后插入oNew
  * @param {DOMElement|CC.Base} oNew
- * @return this
+ * @return {Object} this
  */
     insertAfter: function(oNew) {
         var f = CC.fly(oNew);
@@ -4398,7 +4696,7 @@ CC.extend(Base.prototype,
  /**
   * 设置控件的zIndex值.
   * @param {Number} zIndex
-  * @return this
+  * @return {Object} this
   */
     setZ : function(zIndex) {
         this.fastStyleSet("zIndex", zIndex);
@@ -4414,15 +4712,16 @@ CC.extend(Base.prototype,
       return this.fastStyle('zIndex')|0;
     },
 /**
- * 设置或获得控件样式.
- * @return {Mixed}
- @example
+ * 设置或获得控件样式.<br>
+<pre><code>
   var div = CC.$('someid');
   var f = CC.fly(div);
   f.style('background-color','red');
   //显示red
   alert(f.style('background-color');
   f.unfly();
+</code></pre>
+ * @return {Mixed}
  */
     style : function(style,value) {
         //getter
@@ -4442,9 +4741,9 @@ CC.extend(Base.prototype,
         return this;
     },
 
-    /*设置view结点风格.
-     *@example
-      comp.setStyle('position','relative');
+    /*设置view结点风格.<br>
+     * comp.setStyle('position','relative');<br>
+     * 另见{@link #fastStyleSet},{@link #getStyle}
      */
     setStyle : function (key, value) {
         if (key === 'opacity') {
@@ -4459,7 +4758,10 @@ CC.extend(Base.prototype,
     },
 
 
-/***/
+    /*获得view结点风格.<br>
+     * comp.getStyle('position');<br>
+     * 另见{@link #fastStyle},{@link #setStyle}
+     */
     getStyle : function(){
         return view && view.getComputedStyle ?
             function(prop){
@@ -4507,20 +4809,22 @@ CC.extend(Base.prototype,
             };
     }(),
 /**
- * 快速获得元素样式,比setStyle更轻量级,但也有如下例外
+ * 快速获得元素样式,比setStyle更轻量级,但也有如下例外<br><div class="mdetail-params"><ul>
  * <li>不能设置float
  * <li>传入属性名必须为JS变量格式,如borderLeft,非border-width
  * <li>不能设置透明值
+ * </ul></div>
  */
     fastStyleSet : function(k, v){
       this.view.style[k] = v;
       return this;
     },
 /**
- * 快速获得元素样式,比getStyle更轻量级,但也有如下例外
+ * 快速获得元素样式,比getStyle更轻量级,但也有如下例外<br><div class="mdetail-params"><ul>
  * <li>不能获得float
  * <li>传入属性名必须为JS变量格式,如borderLeft,非border-width
  * <li>不能处理透明值
+ * </ul></div>
  */
     fastStyle : function(){
         return view && view.getComputedStyle ?
@@ -4549,12 +4853,12 @@ CC.extend(Base.prototype,
     /**
      * 先添加默认图标样式this.iconCS，再添加参数样式.
      * @param {String} cssIco
-     * @return this
+     * @return {Object} this
      */
     setIcon: function(cssIco) {
       /**
        * @name CC.Base#iconNode
-       * @property {DOMElement|String} iconNode 图标所在结点
+       * @cfg {DOMElement|String} iconNode 图标所在结点
        */
         var o = this.fly(this.iconNode || '_ico');
         if(this.iconCS)
@@ -4571,8 +4875,8 @@ CC.extend(Base.prototype,
     }
     ,
 /**
-* @param {String} ss
-* @return this
+* @param {String} tip
+* @return {Object} this
 */
     setTip:function(ss){
       if(this.view && !this.qtip){
@@ -4590,22 +4894,18 @@ CC.extend(Base.prototype,
     },
     
 /**
-* @param {String} ss
-* @return this
-*/
-    setTitle: function(ss) {
-/**
-* @name CC.Base#titleNode
-* @property {DOMElement|String} titleNode 标题所在结点
-*/
-
-/**
-* @name CC.Base#brush
-* @property {Function} brush 渲染标题的
-* @type Function
+* @cfg {Function} brush 渲染标题的函数<br>
+* 参见 {@link CC.util.BrushFactory}
 * @param {Object} v
 * @return {String} html string of title
 */
+    brush : false,
+    
+/**
+* @param {String} title
+* @return {Object} this
+*/
+    setTitle: function(ss) {
         this.title = ss;
         if(!this.titleNode)
           this.titleNode = this.dom('_tle');
@@ -4623,7 +4923,7 @@ CC.extend(Base.prototype,
     ,
 /**
  * @param {Number} width
- * @return this
+ * @return {Object} this
  */
     setWidth: function(width) {
         this.setSize(width, false);
@@ -4641,7 +4941,7 @@ CC.extend(Base.prototype,
     },
 /**
  * @param {Number} height
- * @return this
+ * @return {Object} this
  */
     setHeight: function(height) {
         this.setSize(false, height);
@@ -4659,16 +4959,19 @@ CC.extend(Base.prototype,
     },
 
 /**
+ * @property outerW
+ * <p>
  * border + padding 的宽度,除非确定当前
  * 值是最新的,否则请通过{@link #getOuterW}方法来获得该值.
  * 该值主要用于布局计算,当调用{@link #getOuterW}方法时缓存该值
- * @name CC.Base#outerW
- * @property {Number}  outerW
+ * </p>
  * @private
+ * @type Number
  */
 
 /**
- * 得到padding+border 所占宽度, 每调用一次,该函数将缓存值在outerW属性中
+ * 得到padding+border 所占宽度, 每调用一次,该函数将缓存值在outerW属性中.
+ * @return {Number}
  */
     getOuterW : function(cache){
       var ow = this.outerW;
@@ -4683,17 +4986,20 @@ CC.extend(Base.prototype,
     },
 
 /**
+ * @property outerH
+ * <p>
  * border + padding 的高度,除非确定当前
  * 值是最新的,否则请通过{@link #getOuterH}方法来获得该值.
  * 该值主要用于布局计算,当调用{@link #getOuterH}方法时缓存该值
- * @name CC.Base#outerH
- * @property {Number}  outerH
+ * </p>
  * @private
+ * @type Number
  */
 
 /**
  * 得到padding+border 所占高度, 每调用一次,该函数将缓存该值在outerH属性中
  * @param {Boolean} cache 是否使用缓存值
+ * @return {Number}
  */
     getOuterH : function(cache){
       var oh = this.outerH;
@@ -4718,12 +5024,13 @@ CC.extend(Base.prototype,
     },
 
 /**
- * @param {Number|Object|false} a number或{width:number,height:number},为false时不更新
- * @return this
- @example
+ *<pre><code>
   comp.setSize(50,100);
   comp.setSize(false,100);
   comp.setSize(50,false);
+ * </code></pre>
+ * @param {Number|Object|false} a number或{width:number,height:number},为false时不更新
+ * @return {Object} this
  */
     setSize : function(a, b) {
         if(a.width !== undefined){
@@ -4762,12 +5069,13 @@ CC.extend(Base.prototype,
         return this;
     },
 /**
- * @param {Number|Array|false} a number或[x,y],为false时不更新.
- * @return this
- @example
+<pre><code>
   comp.setXY(50,100);
   comp.setXY(false,100);
   comp.setXY(50,false);
+</code></pre>
+ * @param {Number|Array|false} a number或[x,y],为false时不更新.
+ * @return {Object} this
  */
     setXY : function(a, b){
         if(CC.isArray(a)){
@@ -4799,7 +5107,7 @@ CC.extend(Base.prototype,
     },
 /**
  * this.setXY(false, top);
- * @return this
+ * @return {Object} this
  */
     setTop: function(top) {
         this.setXY(false, top);
@@ -4818,7 +5126,7 @@ CC.extend(Base.prototype,
         return this.top;
     },
 /**
- * @return this
+ * @return {Object} this
  */
     setLeft: function(left) {
         this.setXY(left, false);
@@ -4839,6 +5147,7 @@ CC.extend(Base.prototype,
 /**
  * 得到style.left,style.top坐标.
  * @param {Boolean} usecache 是否使用缓存值
+ * @return {Array} [left, top]
  */
     xy : function(usecache) {
         return [this.getLeft(usecache), this.getTop(usecache)];
@@ -4846,7 +5155,7 @@ CC.extend(Base.prototype,
     ,
 /**
  * 得到相对页面x,y坐标值.
- * @return [x, y]
+ * @return {Array} [x, y]
  */
     absoluteXY: function() {
             var p, b, scroll, bd = (document.body || document.documentElement), el = this.view;
@@ -4913,12 +5222,14 @@ CC.extend(Base.prototype,
             return [x, y];
     }
     ,
-/** @return {Number}
+/** 
+ * @return {Number}
  */
     absoluteX : function(){
         return this.absoluteXY()[0];
     },
-/** * @return {Number}
+/**
+ * @return {Number}
  */
     absoluteY : function() {
         return this.absoluteXY()[1];
@@ -4958,7 +5269,7 @@ CC.extend(Base.prototype,
 
 /**
  * 连续应用 setXY, setSize方法
- * @return this
+ * @return {Object} this
  */
     setBounds : function(x,y,w,h) {
         this.setXY(x,y);
@@ -5028,7 +5339,8 @@ CC.extend(Base.prototype,
       return w;
   },
 /**
- *
+ * 利用{@link CC.util.CssParser}设置inline style
+ * @param {String} css 适用于{@link CC.util.CssParser}的规则字符串
  */
   cset : function(css){
     CPR.parse(this, css);
@@ -5058,7 +5370,7 @@ CC.extend(Base.prototype,
 /**
  * 设置left, top, width, height到目标元素中.
  * @param {CC.Base|DOMElement} des
- * @return this
+ * @return {Object} this
  */
     copyViewport : function(des){
         des = CC.$$(des);
@@ -5070,14 +5382,14 @@ CC.extend(Base.prototype,
 /**
  * 控件获得焦点.
  * @param {Number} [timeout] 设置聚焦超时
- * @return this
+ * @return {Object} this
  */
     focus : function(timeout){
             if(this.disabled)
               return this;
             /**
              * @name CC.Base#focusNode
-             * @property {DOMElement|String} focusNode 当控件调用{@link #focus}聚焦时,控件中实际触发聚焦的DOM元素.
+             * @cfg {DOMElement|String} focusNode 当控件调用{@link #focus}聚焦时,控件中实际触发聚焦的DOM元素.
              */
             var el = this.focusNode?this.dom(this.focusNode):this.view;
             if(timeout)
@@ -5088,7 +5400,7 @@ CC.extend(Base.prototype,
 /**
  * 应用CSS样式字符串到控件
  * @param {String|Object|Function} styles
- * @return this
+ * @return {Object} this
  */
     cssText : function(styles) {
         if(styles){
@@ -5110,7 +5422,7 @@ CC.extend(Base.prototype,
     },
 /**
  * 禁止可选择控件选择文本.
- * @return this
+ * @return {Object} this
  */
     noselect : function() {
         var v = this, t = typeof this.unselectable, mt = false;
@@ -5196,7 +5508,7 @@ CC.extend(Base.prototype,
  * @param {Boolean} cancel 是否取消事件冒泡和默认操作
  * @param {String|DOMElement} childId 事件所在的元素
  * @param {Function} handler 事件回调
- * @return this
+ * @return {Object} this
  */
     domEvent : function(evName, handler, cancel, caller, childId, useCapture) {
         if (evName == 'keypress' && (navigator.appVersion.match( / Konqueror | Safari | KHTML / )
@@ -5250,7 +5562,7 @@ CC.extend(Base.prototype,
  * @param {String} evName
  * @param {Function} handler 事件回调
  * @param {String|DOMElement} childId 事件所在的元素
- * @return this
+ * @return {Object} this
  * @see domEvent
  */
     unEvent : function(evName, handler, childId){
@@ -5277,7 +5589,11 @@ CC.extend(Base.prototype,
     },
 /**
  * 绑定回车事件处理
- * @return this
+ * @param {Function} callback
+ * @param {Boolean} cancelBubble
+ * @param {Object} caller
+ * @param {DOMElement|String} childId
+ * @return {Object} this
  */
     bindEnter : function(callback,cancel, caller, childId){
         return this.domEvent('keydown',(function(ev){
@@ -5289,16 +5605,21 @@ CC.extend(Base.prototype,
             }
         }),false, caller, childId);
     },
-    /**
-   * 为相对事件设置样式效果,如果控件disbled为true,效果被忽略.
+   /**
+   * 为相对事件设置样式效果,如果控件disbled为true,效果被忽略.<br>
    * 相对事件如onmouseup,onmousedown;onmouseout,onmouseover等等.
-   * 可选参数为
-   * cancel: 指示是否允许事件冒泡.
-   * onBack : over时回调.
-   * offBack: out时回调.
-   * 回调返回true时不改变样式.
-   * caller  : 用于调用回调函数的对象.
-   * @return this
+   <pre>
+   param {String} evtHover
+   param {String} evtOff
+   param {String} css
+   param {Boolean} cancelBubble
+   param {Function} onBack
+   param {Function} offBack
+   param {Object} caller
+   param {DOMElement|String} childId
+   param {DOMElement|String} targetId
+   <pre>
+   * @return {Object} this
    */
     bindAlternateStyle: function(evtHover, evtOff, css, cancel, onBack, offBack, caller, childId, targetId) {
         var a = evtHover+'Node',b=evtHover+'Target';
@@ -5337,23 +5658,50 @@ CC.extend(Base.prototype,
         }), cancel, caller, obj);
         return this;
     },
-    /**
+  /**
    * 设置鼠标划过时元素样式.
-   *@param onMouseHover
-   *@param onMouseOff
-   * @return this
+   <pre>
+   param {String} css
+   param {Boolean} cancelBubble
+   param {Function} onBack
+   param {Function} offBack
+   param {Object} caller
+   param {DOMElement|String} childId
+   param {DOMElement|String} targetId
+   <pre>
+   * @return {Object} this
    */
     bindHoverStyle: function( css, cancel, onBack, offBack, oThis, childId, targetId) {
         return this.bindAlternateStyle('mouseover', 'mouseout', css || this.hoverCS, cancel, onBack || this.onMouseHover, offBack || this.onMouseOff, oThis || this, childId, targetId);
     }
     ,
-/***/
+  /**
+   <pre>
+   param {String} css
+   param {Boolean} cancelBubble
+   param {Function} onBack
+   param {Function} offBack
+   param {Object} caller
+   param {DOMElement|String} childId
+   param {DOMElement|String} targetId
+   <pre>
+   * @return {Object} this
+   */
     bindFocusStyle : function( css, cancel, onBack, offBack, oThis, childId, targetId) {
         return this.bindAlternateStyle('focus', 'blur', css, cancel, onBack || this.onfocusHover, offBack || this.onfocusOff, oThis || this, childId, targetId);
     },
-    /**
+  /**
    * 设置鼠标按下/松开时元素样式.
-   * @return this
+   <pre>
+   param {String} css
+   param {Boolean} cancelBubble
+   param {Function} onBack
+   param {Function} offBack
+   param {Object} caller
+   param {DOMElement|String} childId
+   param {DOMElement|String} targetId
+   <pre>
+   * @return {Object} this
    */
     bindClickStyle: function(css, cancel, downBack, upBack, oThis, childId, targetId) {
         this.bindAlternateStyle('mousedown', 'mouseup', css, cancel, downBack, upBack, oThis, childId, targetId);
@@ -5366,15 +5714,23 @@ CC.extend(Base.prototype,
     }
     ,
 /**
- * @name CC.Base#contexted
- * @event
+ * @event contexted
+* 当控件具有{@link #eventable}后,切换上下文效果时发送该事件.
  * @param {Boolean} isContexted true|false
- * 当isContexted=true时,随后传递触发该事件的结点
- * 当isContexted=false时,随后传递触发释放事件的DOM事件,接着是DOM结点
+ * @param {DOMElement|DOMEvent} mixed fire('contexted', false, evt, tar),fire('contexted', true, tar), 其中tar为触发结点. 
  */
+ 
 /**
  * 添加上下文切换效果,当点击控件区域以外的地方时隐藏控件.
- * @return this
+ <pre>
+ * param {Function} callback
+ * param {Boolean}  cancelBubble
+ * param {Object}   caller
+ * param {DOMElement|String} childNode 触发结点
+ * param {DOMElement|String} cssTarget
+ * param {String} cssName
+ </pre>
+ * @return {Object} this
  */
     bindContext : function(callback,cancel, caller, childId, cssTarget, cssName) {
         if(this.contexted)
@@ -5423,8 +5779,10 @@ CC.extend(Base.prototype,
     },
 
 /**
- * Base包装控件内的子结点元素
+ * CC.Base包装控件内的子结点元素
+ * @param {String|DOMElement} node
  * @return {CC.Base}
+ * @method $$
  */
     $$ : function(id) {
         var c = CC.$$(id, this.view);
@@ -5433,19 +5791,17 @@ CC.extend(Base.prototype,
         }
         return c;
     },
- /**访问或设置view中任一子层id为childId的子结子的属性.
-  *属性也可以多层次.
-  *@param {element|string} childId 子结点ID或dom元素
-  *@param {string} childAttrList 属性列,可连续多个,如'style.display'
-  *@param [attrValue] 如果设置该置,则模式为设置,设置属性列值为该值,如果未设置,为访问模式,返回视图view给出的属性列值
-  *@return 如果为访问模式,即attrValue未设置,返回视图view给出的childAttrList属性列值
-  *@see CC#attr
-  *@example
-  *<pre>
+ /**
+  * 访问或设置view中任一子层id为childId的子结子的属性,属性也可以多层次.<br>
+  * <pre><code>
     //如存在一id为this.iconNode || '_ico'子结点,设置其display属性为
     comp.inspectAttr(this.iconNode || '_ico','style.display','block');
-  *</pre>
-   */
+  * </code></pre>
+  * @param {element|string} childId 子结点ID或dom元素
+  * @param {string} childAttrList 属性列,可连续多个,如'style.display'
+  * @param {Object} [attrValue] 如果设置该置,则模式为设置,设置属性列值为该值,如果未设置,为访问模式,返回视图view给出的属性列值
+  * @return {Object} value 如果为访问模式,即attrValue未设置,返回视图view给出的childAttrList属性列值
+  */
     attr: function(childId, childAttrList, attrValue) {
         var obj = this.dom(childId);
         //??Shoud do this??
@@ -5455,7 +5811,11 @@ CC.extend(Base.prototype,
         obj = CC.attr(obj, childAttrList, attrValue);
         return obj;
     },
-/***/
+/**
+ * @private
+ * @param {Boolean} closeable
+ * @return {Object} this
+ */
     setCloseable: function(b) {
         this.closeable = b;
         var obj = this.fly(this.closeNode || '_cls');
@@ -5463,7 +5823,12 @@ CC.extend(Base.prototype,
             obj.display(b).unfly();
         return this;
     },
-/**得到相对位移*/
+    
+/**
+ * 得到相对位移
+ * @param {DOMElement|CC.Base} offsetToTarget
+ * @return [offsetX, offsetY]
+ */
     offsetsTo : function(tar){
         var o = this.absoluteXY();
         tar = CC.fly(tar);
@@ -5475,6 +5840,7 @@ CC.extend(Base.prototype,
  * 滚动控件到指定视图
  * @param {DOMElement|CC.CBase} ct 指定滚动到视图的结点
  * @param {Boolean} hscroll 是否水平滚动,默认只垂直滚动
+ * @return {Object} this
  */
     scrollIntoView : function(ct, hscroll){
       var c = ct?ct.view||ct:CC.$body.view;
@@ -5495,6 +5861,7 @@ CC.extend(Base.prototype,
  * 滚动指定控件到当前视图
  * @param {DOMElement|CC.CBase} child 指定滚动到视图的结点
  * @param {Boolean} hscroll 是否水平滚动,默认只垂直滚动
+ * @return {Object} this
  */
     scrollChildIntoView : function(child, hscroll){
         this.fly(child).scrollIntoView(this.view, hscroll).unfly();
@@ -5502,8 +5869,11 @@ CC.extend(Base.prototype,
     },
 
   /**
-   * 检测元素是否在某个容器的可见区域内,如果在可见区域内，返回false,
+   * 检测元素是否在某个容器的可见区域内.
+   * <br>如果在可见区域内,返回false,
    * 否则返回元素偏离容器的scrollTop,利用该scrollTop可将容器可视范围滚动到元素处。
+   * @param {DOMElement|CC.Base} [container]
+   * @return {Boolean}
    */
   getHiddenAreaOffsetVeti : function(ct){
         var c = ct.view || ct;
@@ -5531,7 +5901,13 @@ CC.extend(Base.prototype,
 
     return false;
   },
-/***/
+  /**
+   * 检测元素是否在某个容器的可见区域内.
+   * <br>如果在可见区域内，返回false,
+   * 否则返回元素偏离容器的scrollLeft,利用该scrollLeft可将容器可视范围滚动到元素处。
+   * @param {DOMElement|CC.Base} [container]
+   * @return {Boolean}
+   */
   getHiddenAreaOffsetHori : function(ct){
     var c = ct.view || ct;
     var el = this.view;
@@ -5555,14 +5931,15 @@ CC.extend(Base.prototype,
 });
 
 /**
- * 创建一个具有完整生命周期的基本类实例,
- * 注意如果直接用new Base创建的类没控件初始化过程.
+ * 创建一个具有完整生命周期的基本类实例.<br>
+ * 注意如果直接用new CC.Base创建的类没控件初始化过程.
  * 该方法已被设为 protected, 不建议直接调用,要创建基类实例请调用
  * CC.ui.instance(option)方法.
  * @private
  * @param {Object} opt 类初始化信息
- * @name CC.Base.create
- * @method
+ * @method create
+ * @member CC.Base
+ * @static
  */
 Base.create = function(opt){
     var comp;
@@ -5575,8 +5952,12 @@ Base.create = function(opt){
     return comp;
 };
 /**
- * @parma {HTMLElement} element
+ * 用CC.Base初始化结点
+ * @param {HTMLElement} element
  * @param {Object} options
+ * @method applyOption
+ * @member CC.Base
+ * @static
  */
 Base.applyOption = function(el, opt){
   var f = CC.fly(el);
@@ -5587,8 +5968,10 @@ Base.applyOption = function(el, opt){
 
 /**
  * 根据DOM快速转化为控件对象方法，该方法将具有控件生命周期，但略去了初始化和渲染.
- * @method
- * @memberOf CC
+ * @param {DOMElement|String} dom
+ * @param {DOMElement} parentNode
+ * @method $$
+ * @member CC
  */
 CC.$$ = (function(dom, p) {
     if(!dom || dom.view)
@@ -5621,9 +6004,11 @@ Cache.register('flycomp', function(){
   c.__flied = 0;
   return c;
 });
+
 /**
- * @method
- * @memberOf CC
+ * 这是CC.Base类加上去的,参见{@link CC.Base#fly}
+ * @method fly
+ * @member CC
  */
 CC.fly = function(dom){
   if(dom){
@@ -5677,16 +6062,18 @@ if (CC.ie){
 }
 
 /**
- * @name CC.ui
- * @class 控件包
+ * @class CC.ui
+ * 控件包
  */
 
-CC.ui = /**@lends CC.ui*/{
+CC.ui = {
 /**@private*/
   ctypes : {},
 
 /**
  * 注册控件类标识,方便在未知具体类的情况下生成该类,也方便序列化生成类实例.
+ * @param {String} ctype 类标识
+ * @param {Function} 类
  */
   def : function(ctype, clazz){
     this.ctypes[ctype] = clazz;
@@ -5696,8 +6083,7 @@ CC.ui = /**@lends CC.ui*/{
  * 根据类初始化信息返回类实例,如果初始化信息未指定ctype,默认类为CC.Base,
  * 如果初始化信息中存在ctype属性,在实例化前将移除该属性.
  * 如果传入的参数已是某个类的实例,则忽略.
- @example
-  <pre>
+  <pre><code>
   通过该类创建类实例方式有几种
   1. var inst = CC.ui.instance('shadow');
     或
@@ -5707,7 +6093,8 @@ CC.ui = /**@lends CC.ui*/{
 
   //得到CC.ui.ContainerBase类实例,假定该类的ctype为ct
      var inst = CC.ui.instance({ ctype : 'ct', showTo : document.body });
-  </pre>
+  </code></pre>
+ * @param {Object} option
  */
   instance : function(opt){
     if(typeof opt === 'string')
@@ -5737,9 +6124,10 @@ CC.ui.def('base', function(opt){
 });
   
 /**
- * document.body的Base封装
+ * @property $body
+ * document.body的Base封装,在DOMReady后由CC.Base生成.
+ * @member CC
  * @type CC.Base
- * @name CC.$body
  */
 Event.defUIReady = function(){
   CC.$body = CC.$$(document.body);
@@ -5749,20 +6137,29 @@ Event.defUIReady = function(){
 
 })(CC);
 /**
- * 标题画笔工厂.
- * @name CC.util.BrushFactory
- * @namespace
+ * @class CC.util.BrushFactory
+ * 标题画笔工厂,用于根据类型值输出指定格式的字符串.
+ * <p>
+ * 自带的画笔有:
+ * <div class="mdetail-params"><ul>
+ * <li><b>.xx</b>: 保留两位小数的浮点预留画笔</li>
+ * <li><b>.xx%</b>: 保留两位小数的百分比预留画笔</li>
+ * </ul></div>
+ * </p>
+ * @singleton
  */
-CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
+CC.util.BrushFactory = {
   
 /**
- * 获得浮点数格式化表示值.
- * @param {Number} 保留位数
- * @return {Function}
-   @example
-   var brush = Base.brushFactory.floatBrush(2);
+ * 获得浮点数格式化表示值.<br>
+ * <pre><code>
+   var brush = CC.util.BrushFactory.floatBrush(2);
    alert(brush(1.2214));
    alert(brush(.3218));
+   </code></pre>
+ * @param {Number} digit 保留位数
+ * @param {String} [type] 可选的有 '%',
+ * @return {Function}
  */
   floatBrush : function(digit, type){
     var n = Math.pow(10, digit);
@@ -5781,8 +6178,9 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
     }
   },
 /**
+ * 获得输出指定日期格式的画笔.
  * @param {String} fmt mm/dd/yy或其它格式
- * @return {Function}
+ * @return {Function} brush
  */
   date : function(fmt){
     if(!fmt)
@@ -5793,7 +6191,9 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
     }
   },
 /**
- * 获得预存画笔
+ * 获得预存画笔.
+ * @param {String} type
+ * @return {Function} brush
  */
   get : function(type){
   	if(!this.cache)
@@ -5819,7 +6219,9 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
     return b;
   },
 /**
- * 注册画笔
+ * 注册画笔.
+ * @param {String} type
+ * @param {Function} brush
  */
   reg : function(type ,brush){
     if(!this.cache)
@@ -5827,28 +6229,35 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
     this.cache[type] = brush;
   }
 };
-﻿
-//~@base/d2d.js
-/**
+﻿/**
+ * @class CC.util.d2d
  * 平面2D相关类库
- * @name CC.util.d2d
  * @namespace
  */
  CC.util.d2d = {};
 /**
+ * @class CC.util.d2d.Point
  * 点类,描述平面空间上的一个点
- * @name CC.util.d2d.Point
- * @class
+ * @cfg {Number} x x坐标
+ * @cfg {Number} y y坐标
+ * @constructor
+ * @param {Number} x x坐标
+ * @param {Number} y y坐标
  */
   CC.util.d2d.Point = function(x, y){
     this.x = x || 0;
     this.y = y || 0;
   };
+
 /**
- * 矩形类,l,t,w,h
- * @name CC.util.d2d.Rect
+ * @class CC.util.d2d.Rect
+ * 矩形类,l,t,w,h<br>
+ * <pre><code>
+    var rect  = new CC.util.d2d.Rect(left, top, width, height);
+    var rect2 = new CC.util.d2d.Rect([left, top, width, height]);
+   </code></pre>
  * @param {Array|Number} data 传入一个数组或left, top, width, height
- * @class
+ * @constructor
  */
   CC.util.d2d.Rect = function(l, t, w, h){
     var len = arguments.length;
@@ -5865,26 +6274,27 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
     }
   };
 
-  CC.extend(CC.util.d2d.Rect.prototype, /**@lends CC.util.d2d.Rect.prototype*/{
+  CC.extend(CC.util.d2d.Rect.prototype, {
 /**
- * @type Number
+ * @cfg {Number} l left值
  */
     l : 0,
 /**
- * @type Number
+ * @cfg {Number} t top值
  */
     t : 0,
 /**
- * @type Number
+ * @cfg {Number} w width值
  */
     w: 0,
 /**
- * @type Number
+ * @cfg {Number} h height值
  */
     h : 0,
 /**
- * 点p是位于矩形内
+ * 判断点p是位于矩形内.
  * @param {CC.util.Point} 点
+ * @return {Boolean}
  */
     isEnter : function(p){
       var x = p.x, y = p.y;
@@ -5893,33 +6303,40 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
              y>=this.t && y<=this.t+this.h;
     },
 /**
- * 刷新矩形缓存数据,默认为空调用
+ * 接口,刷新矩形缓存数据,默认为空调用
+ * @method
  */
     update : fGo,
-
+/**
+ * @return  this.valueOf() + ''
+ */
     toString : function(){
       return this.valueOf() + '';
     },
-
+/**
+ * @return [this.l,this.t,this.w,this.h]
+ */
     valueOf : function(){
       return [this.l,this.t,this.w,this.h];
     }
   });
 
 /**
- * 矩域, 由多个矩形或矩域组成树型结构
+ * @class CC.util.d2d.RectZoom
+ * 矩域, 由多个矩形或矩域组成树型结构,
  * 矩域大小由矩形链内最小的left,top与最大的left+width,top+height决定
- * @name CC.util.d2d.RectZoom
- * @class
  * @extends CC.util.d2d.Rect
+ * @constructor
+ * @param {Array} rects 由矩形数组创建矩域
  */
   CC.create('CC.util.d2d.RectZoom', CC.util.d2d.Rect, function(father){
 
    var Math = window.Math, max = Math.max, min = Math.min;
 
-   return /**@lends CC.util.d2d.RectZoom#*/{
+   return {
 /**
  * 父层矩域
+ * @type {CC.util.d2d.RectZoom}
  */
      pZoom : null,
 /**
@@ -5937,8 +6354,9 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
       },
 
 /**
- * 返回域内所有矩形
- * @return {Array}
+ * 返回域内所有矩形, 返回的并不是矩形的复制,
+ * 而是实例内所有矩形的引用,所以对返回矩形数据的修改也就是对矩域内矩形数据的修改.
+ * @return {Array} rects
  */
       getRects : function(){
         return this.rects;
@@ -5947,7 +6365,7 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
 /**
  * 矩形加入矩域
  * @param {CC.util.d2d.Rect} rect
- * @param {Boolean} update 是否更新
+ * @param {Boolean} update 加入后是否重新计算域数据
  */
       add : function(r, update){
         if(r.pZoom)
@@ -5962,7 +6380,7 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
 /**
  * 矩形移出矩域
  * @param {CC.util.d2d.Rect} rect
- * @param {Boolean} update 是否更新
+ * @param {Boolean} update 移出后是否重新计算域数据
  */
       remove : function(r, update){
         delete r.pZoom;
@@ -5973,6 +6391,8 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
       },
 /**
  * 是否包含某矩形(域),深层检测
+ * @param {CC.util.d2d.Rect} rect
+ * @return {Boolean}
  */
       contains : function(r){
         var c = false, ch;
@@ -5993,6 +6413,7 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
 
   /**
    * 检测点是否位于当前矩形链中,如果点已进入范围,点所在的矩形
+   * @param {CC.util.d2d.Point} point
    * @return [Boolean|CC.util.d2d.Rect] false或矩形类
    */
       isEnter : function(p){
@@ -6032,7 +6453,10 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
         this.w = x2 - x1;
         this.h = t2 - t1;
      },
-
+/**
+ * 刷新计算域数据.
+ * @override
+ */
      update : function(){
       var i, rs = this.rects, len = rs.length;
       for(i=0;i<len;i++){
@@ -6045,21 +6469,25 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
   });
 
 /**
+ * @class CC.util.d2d.ComponentRect
  * 组件封装后的矩形
- * @name CC.util.d2d.ComponentRect
- * @class
  * @extends CC.util.d2d.Rect
+ * @constructor
+ * @param {CC.Base} component 与矩形关联的控件
  */
-  CC.create('CC.util.d2d.ComponentRect', CC.util.d2d.Rect,/**@lends CC.util.d2d.ComponentRect#*/ {
+  CC.create('CC.util.d2d.ComponentRect', CC.util.d2d.Rect, {
 /**
+ * @property z 
+ * zIndex值
  * @type Number
- * zIndex
  */
     z : -1,
 /**
- * 如果控件已注册拖放区域,引用指向封装该控件的矩形CC.util.d2d.ComponentRect
- * @name CC.Base#ownRect
+ * @property ownRect
+ * 如果控件已注册拖放区域,引用指向封装该控件的矩形CC.util.d2d.ComponentRect.<br>
+ * 该属性是由{@link CC.util.d2d.ComponentRect}类引入的.
  * @type {CC.util.d2d.ComponentRect}
+ * @member CC.Base
  */
     initialize : function(comp){
       this.comp = comp;
@@ -6068,7 +6496,8 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
     },
 
 /**
- * 刷新矩形缓存数据
+ * 刷新矩形缓存数据.
+ * @override
  */
     update : function(){
       if(this.hidden){
@@ -6094,15 +6523,16 @@ CC.util.BrushFactory = /**@lends CC.util.BrushFactory*/{
     }
   });
 ﻿/**
+ * @class CC.util.dd
  * 库drag & drop效果实现
- * drag & drop实现有两种方法,
- * <li>基于空间划分检测
- * <li>一种基于浏览器自身的mouse over + mouse out检测
- * 这里采用第一种
- * @class
- * @name CC.util.dd
+ * drag & drop实现有两种方法<ul>
+ * <li>基于空间划分检测</li>
+ * <li>一种基于浏览器自身的mouse over + mouse out检测</li></ul>
+ * 这里采用第一种.
+ * @namespace
  */
 (function(){
+
 var CC = window.CC;
 CC.util.dd = {};
 
@@ -6159,11 +6589,6 @@ var E = CC.Event,
       return false;
     }
 
-/**
- * @name CC.Base#draggable
- * @property {Boolean} draggable 是否允许拖动功能,该值只有在已安装拖动功能情况下才生效
- */
-
     function before(e){
       if(this.draggable){
         IXY = PXY = E.pageXY(e);
@@ -6208,7 +6633,7 @@ var E = CC.Event,
           }
     }
 
-/**@inner*/
+
     function drag(e){
       e = e || _w.E;
       PXY = E.pageXY(e);
@@ -6258,7 +6683,6 @@ var E = CC.Event,
       }
     }
 
-/**@inner*/
     function drop(e){
       if(dragEl){
         e = e || _w.E;
@@ -6301,11 +6725,10 @@ var E = CC.Event,
 
 
 /**
+ * @class CC.util.dd.Mgr
  * Drag & Drop 管理器
- * @name CC.util.dd.Mgr
- * @class
  */
-  var mgr = CC.util.dd.Mgr = /**@lends CC.util.dd.Mgr*/{
+  var mgr = CC.util.dd.Mgr = {
 /**
  * 矩域缓存
  * @private
@@ -6313,10 +6736,38 @@ var E = CC.Event,
         zmCache : {root:new CC.util.d2d.RectZoom()},
 
 /**
+ * 给控件安装可拖动功能,安装后控件component具有
+ * component.draggable = true;
+ * 如果并不想控件view结点触发拖动事件,可设置component.dragNode
+ * 指定触发结点.
+ * @param {CC.Base} component
+ * @param {Boolean} install 安装或取消安装
+ * @param {HTMLElement} 触发事件的结点,如无则采用c.dragNode
+ */
+        installDrag : function(c, b, dragNode){
+          if(b===undefined || b){
+            c.draggable = true;
+            c.domEvent('mousedown', before, false, null, dragNode||c.dragNode);
+          }else {
+            c.draggable = false;
+            c.unEvent('mousedown', before,dragNode||c.dragNode);
+          }
+        },
+
+/**
+ * 设置拖动中的控件, 在dragbefore时可以指定某个控件作为拖动源对象.
+ * @param {CC.Base} draggingComponent
+ */
+        setSource : function(comp){
+          dragEl = comp;
+        },
+
+/**
  * 返回矩域
  * @param {String} name 矩域名称
  * @param {String} parent 父层矩域,如果该参数为非空,并且name域未存在,则创建一个新域并返回该域
  * @return {CC.util.d2d.RectZoom}
+ * @method $
  */
         $ : function(k, p){
           var z = this.zmCache[k];
@@ -6343,7 +6794,8 @@ var E = CC.Event,
  * 设置拖动区域后,超出区域的行为将被忽略,也就是并不回调
  * component.drag方法,所以,在drag方法内的操作都是安全的.
  * 受限区域在拖放结束后清空.
- * @type Array
+ * @param {Array} constrainBounds
+ * @return this
  */
         setBounds : function(arr){
           bounds = arr;
@@ -6453,7 +6905,7 @@ var E = CC.Event,
         },
 
 /**
- * 更新当前拖动zoom
+ * 更新当前拖动的矩域数据.
  * @return this
  */
     update : function(){
@@ -6463,25 +6915,6 @@ var E = CC.Event,
     },
 
 /**
- * 给控件安装可拖动功能,安装后控件component具有
- * component.draggable = true;
- * 如果并不想控件view结点触发拖动事件,可设置component.dragNode
- * 指定触发结点.
- * @param {CC.Base} component
- * @param {Boolean} install 安装或取消安装
- * @param {HTMLElement} 触发事件的结点,如无则采用c.dragNode
- */
-        installDrag : function(c, b, dragNode){
-          if(b===undefined || b){
-            c.draggable = true;
-            c.domEvent('mousedown', before, false, null, dragNode||c.dragNode);
-          }else {
-            c.draggable = false;
-            c.unEvent('mousedown', before,dragNode||c.dragNode);
-          }
-        },
-
-/**
  * 是否拖放中
  * @return {Boolean}
  */
@@ -6489,35 +6922,42 @@ var E = CC.Event,
           return ing;
         },
 /**
+ * @class CC.util.dd.Mgr.resizeHelper
  * 当控件需要resize时调用,可以创建resize相关的掩层和映像,防止其它干扰resize的因素,如iframe
- * @name CC.util.dd.Mgr.resizeHelper
- * @class
+ * @singleton
  */
 
-        resizeHelper : /**@lends CC.util.dd.Mgr.resizeHelper*/{
+        resizeHelper : {
 
           resizeCS : 'g-resize-ghost',
 
           maskerCS : 'g-resize-mask',
 /**
- * @property {CC.Base} layer 映像层,只读,当调用applyLayer方法后可直接引用
+ * @property  layer
+ * 映像层,只读,当调用applyLayer方法后可直接引用
+ * @type CC.Base
  */
 
 /**
- * @property {CC.Base} masker 页面掩层,只读,当调用applyMasker方法后可直接引用
+ * @property masker
+ * 页面掩层,只读,当调用applyMasker方法后可直接引用
+ * @type CC.Base
  */
 
 /**
  * 在resize开始或结束时调用
- * @param {Boolean} apply
+ * @param {Boolean} applyOrNot
+ * @param {String}  [maskerCursor] 掩层的style.cursor值
  */
-          applyResize : function(b){
+          applyResize : function(b, cursor){
             this.resizing = b;
             this.applyLayer(b);
-            this.applyMasker(b);
+            this.applyMasker(b, cursor);
           },
 /**
  * 是否应用映像层
+ * @param {Boolean} apply
+ * @return this
  */
           applyLayer : function(b){
             var y = this.layer;
@@ -6532,13 +6972,16 @@ var E = CC.Event,
             }
             b ? y.appendTo(doc.body) : y.del();
             y.display(b);
+            return this;
           },
 /**
  * 创建或移除页面掩层,在resize拖动操作开始时,创建一个页面掩层,
  * 以防止受iframe或其它因素影响resize
  * @param {Boolean} cor 创建或移除页面掩层
+ * @param {String}  cursor 掩层style.cursor值
+ * @return this
  */
-          applyMasker : function(b){
+          applyMasker : function(b, cursor){
             var r = this.masker;
             if(!r)
               r = this.masker =
@@ -6554,34 +6997,42 @@ var E = CC.Event,
               r.setSize(CC.getViewport());
             b ? r.appendTo(doc.body) : r.del();
             r.display(b);
+            
+            if(cursor !== undefined)
+              r.fastStyleSet('cursor', cursor);
+            return this;
           }
         }
   };
-
-  CC.extendIf(CC.Base.prototype,/**@lends CC.Base.prototype*/ {
 /**
-* @name CC.Base#dragNode
-* @property {String|HTMLElement} dragNode 触发控件拖动开始的结点或结点ID
+ * @class CC.Base
+ */
+  CC.extendIf(CC.Base.prototype, {
+/**
+ * @cfg {String|HTMLElement} dragNode 触发控件拖动开始的结点或结点ID,属性由{@link CC.util.dd.Mgr}引入
+ */
+
+/**
+ * @cfg {Boolean} draggable 是否允许拖动功能,该值只有在已安装拖动功能情况下才生效.<br>
+ * 属性由{@link CC.util.dd.Mgr}类引入.
+ */
+ 
+/**
+* @cfg {String} dragZoom 设置或获取控件目标拖放区域名称(组),只有控件已安装拖动功能该设置才生效.<br>
+* 属性由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}
 */
 
 /**
-* @name CC.Base#dragZoom
-* @property {String} dragZoom 设置或获取控件目标拖放区域名称(组)
-* 只有控件已安装拖动功能该设置才生效
-* @see #installDrag
-*/
-
-/**
-* 是否安装结点拖放效果
-* @method
+* 是否安装结点拖放效果,方法由{@link CC.util.dd.Mgr}引入.
 * @param {Boolean} true | false
+* @return this
 */
     installDrag : function(b){
       mgr.installDrag(this, b);
       return this;
     },
 /**
-* 获得drag & drop 管理器
+* 获得drag & drop 管理器,由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
 * @return {CC.util.dd.Mgr}
 */
     getDDProvider : function(){
@@ -6590,64 +7041,83 @@ var E = CC.Event,
 
 /**
  * 如果已安装拖放,
- * 函数在鼠标按下时触发
- * @type function
+ * 函数在鼠标按下时触发,方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method beforedrag
  */
     beforedrag : fGo,
 /**
- * 如果已安装拖放
- * 拖动开始时触发
- * @type function
+ * 如果已安装拖放,拖动开始时触发.方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method dragstart
  */
     dragstart : fGo,
 /**
  * 如果已安装拖放,
- * 函数在鼠标松开时触发,拖动曾经发生过
- * @type function
+ * 函数在鼠标松开时触发,拖动曾经发生过.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method dragend
  */
     dragend : fGo,
 /**
  * 如果已安装拖放,
- * 函数在鼠标松开时触发,拖动不一定发生过
- * @type function
+ * 函数在鼠标松开时触发,拖动不一定发生过.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method afterdrag
  */
     afterdrag : fGo,
 /**
  * 如果已安装拖放,
- * 函数在鼠标拖动时触发
- * @type function
+ * 函数在鼠标拖动时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @param {CC.Base} overComponent 在下方的控件,无则为空
+ * @method drag
  */
     drag : fGo,
 
 /**
  * 如果已加入拖放组,
- * 函数在目标进入时触发
- * @type function
+ * 函数在目标进入时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {DOMEvent} event
+ * @method sbover
  */
     sbover : fGo,
 /**
  * 如果已加入拖放组,
- * 函数在目标离开时触发
- * @type function
+ * 函数在目标离开时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {DOMEvent} event
+ * @method sbout
  */
     sbout : fGo,
 /**
  * 如果已加入拖放组,
- * 函数在目标丢下时触发
- * @type function
+ * 函数在目标丢下时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {DOMEvent} event
+ * @method sbdrop
  */
     sbdrop : fGo,
 /**
  * 如果已加入拖放组,
- * 函数在目标移动时触发
- * @type function
+ * 函数在目标移动时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {DOMEvent} event
+ * @method sbmove
  */
     sbmove : fGo
   });
 })();
 ﻿/**
- * @name CC.util.AsynchronizeQueue
- * @class
+ * @class CC.util.AsynchronizeQueue
  */
 CC.create('CC.util.AsynchronizeQueue',null, {
   
@@ -6681,12 +7151,13 @@ CC.create('CC.util.AsynchronizeQueue',null, {
     }
   }
 });
-﻿//~@base/Tracker.js
-/**
- * 状态变更跟踪器
+﻿/**
+ * @class CC.util.Tracker
+ * 状态变更跟踪器.<br>
+ * 内部维护一个后进先出数据结构来记录数据,该类目前用于记录{@link CC.ui.Tab}类的TAB选项打开顺序.
  */
 CC.create('CC.util.Tracker', null, {
-  /**历史记录最大条数*/
+  /**@cfg {Number} max 历史记录最大条数*/
   max : 20,
 
   initialize : function(opt){
@@ -6695,7 +7166,10 @@ CC.create('CC.util.Tracker', null, {
       CC.extend(this, opt);
   },
 
-/**记录数据*/
+/**
+ * 记录数据
+ * @param {Object} data
+ */
   track : function(data){
     var a = this.area;
     if(a.indexOf(data) !== -1)
@@ -6709,19 +7183,19 @@ CC.create('CC.util.Tracker', null, {
   },
 
 /**
- * 测试当前记录数据是可用
- * @param data
- * @type function
+ * 接口,测试当前记录数据是可用
+ * @param {Object} data
+ * @method isValid
  */
   isValid : fGo,
 
 /**
- * isValid的this对象
+ * @cfg {Object} validCaller {@link #isValid}的this对象
  */
   validCaller : null,
 
 /**
- * 弹出最近记录的数据
+ * 弹出最近记录的数据.
  */
   pop : function(){
     var vc = this.validCaller || this, as = this.area, len = as.length, i = len - 1;
@@ -6734,13 +7208,17 @@ CC.create('CC.util.Tracker', null, {
   },
 
 /**
- * 移除指定记录数据
+ * 移除指定记录数据.
+ * @param {Object} data
  */
   remove : function(data){
     this.area.remove(data);
   },
 
-/**当前记录数据大小*/
+/**
+ * 当前记录数据大小
+ * @return {Number}
+ */
   size : function() {return this.area.length;}
 });
 ﻿(function () {
@@ -6750,15 +7228,20 @@ var Base = CC.Base;
 var cptx = Base.prototype;
 var UX = CC.ui;
 /**
- * @name CC.layout
- * @namespace 容器类布局管理器
+ * @class CC.layout
+ * 容器布局管理器类库
+ * @namespace
  */
 if(!CC.layout)
   CC.layout = {};
 
 /**
- * @name CC.layout.def
- * @method
+ * 以一个简称注册布局管理器, 方便根据简称实例化类.
+ * @param {String} type 简称
+ * @param {Function} class 布局管理器类
+ * @method def
+ * @member CC.layout
+ * @static
  */
 CC.layout.def = function(type, cls){
   this[type] = cls;
@@ -6766,41 +7249,41 @@ CC.layout.def = function(type, cls){
 };
 
  /**
- * @name CC.ui.Item
- * @class
+ * @class CC.ui.Item
  * @extends CC.Base
  */
  CC.create('CC.ui.Item', Base, {});
  CC.ui.def('item', CC.ui.Item);
 
 /**
- * @name CC.layout.Layout
- * @class 布局管理器基类
+ * @class CC.layout.Layout
+ * 布局管理器基类
  */
-CC.create('CC.layout.Layout', null,
-/**@lends CC.layout.Layout.prototype*/ {
+CC.create('CC.layout.Layout', null, {
         /**
+         * @cfg {CC.Base} ct
          * 布局管理器对应的容器类
-         * @property {CC.Base} ct
          */
-        ct: null,
+        ct: false,
+
 /**
- * 如果每次布局都涉及所有容器子项,则该值应设为true,以便于当容器子项变更(add, remove, display)时重新布局容器
+ * @cfg {Array} items 初始化时由管理器加入到容器的子项列表, 该属性等同于{@link CC.ui.ContainerBase#items}.
+ */
+        items : false,
+
+/**
+ * @cfg {Boolean} layoutOnChange 如果每次布局都涉及所有容器子项,则该值应设为true,以便于当容器子项变更(add, remove, display)时重新布局容器
  */
         layoutOnChange : false,
 
 /**
- * @property {Boolean} [deffer=false]
+ * @cfg {Boolean} [deffer=false]
  * 延迟多少毫秒后再布局,有利于提高用户体验,
  * 但注意访问同步,例如容器子项在布局时才渲染,
  * 如果deffer已置,则子项渲染将会在JavaScript下一周期调用.
  */
         deffer : false,
 
-        /**
-         * 初始化布局
-         * @param {Object} opt 布局配置信息
-         */
         initialize: function(opt){
             if (opt)
                 CC.extend(this, opt);
@@ -6813,20 +7296,21 @@ CC.create('CC.layout.Layout', null,
          * 容器在添加子项前被调用。
          * @param {CC.Base} comp 子项
          * @param {Object} cfg 子项用布局的配置信息
-         * @method
+         * @method beforeAdd
+         * @private
          */
         beforeAdd: fGo,
+
 /**
- * @name CC.Base#lyInf
- * @property {Object} lyInf 布局配置数据,
-    如果控件被布局管理器所管理,
-    其布局相关的配置信息将存放在component.lyInf,
-    要访问子项当前布局信息,可通过layout.cfgFrom(component)方法获得.
- * @private
- * @see #cfgFrom
- * @example
-   var ct = ct;
-   var borderLayoutInformation = item.lyInf;
+ * @cfg {String} itemCS 将子项被加进容器时添加到子项的CSS样式
+ */
+        itemCS : false,
+
+/**
+ * @cfg {Object} lyInf 布局配置数据,子项的父容器布局管理器根据该信息布局子项.<br>
+    如果控件被布局管理器所管理,其布局相关的配置信息将存放在component.lyInf,
+    要访问子项当前布局信息,可通过container.layout.cfgFrom(component)方法获得.
+ * @member CC.Base
  */
 
 /**
@@ -6851,10 +7335,7 @@ CC.create('CC.layout.Layout', null,
             CC.extend(cc, cfg);
          
           this.beforeAdd(comp, cc);
-/**
- * @name CC.layout.Layout#itemCS
- * @property {String} itemCS 将子项被加进容器时添加到子项的CSS样式
- */
+
           if(this.itemCS)
             comp.addClassIf(this.itemCS);
 
@@ -6880,7 +7361,9 @@ CC.create('CC.layout.Layout', null,
         },
 
 /**
- * 显示/隐藏子项,如果layoutOnChange为true则重新布局容器
+ * 显示/隐藏子项,如果layoutOnChange为true则重新布局容器.
+ * @param {CC.Base} component
+ * @param {Boolean} displayOrNot
  */
         display : function(c, b){
           c.display(b);
@@ -6889,13 +7372,15 @@ CC.create('CC.layout.Layout', null,
         },
 
 /**
- * @name CC.layout.Layout#invalidate
- * @property {Boolean} [invalidate=false] 指示当引发布局时是否执行布局,如大量引发重复布局的操作可先设置invalidate=true,执行完后再设置invalidate=false,再调用{@link #doLayout}布局.
- * 容器类不必直接设置该属性,可调用{@link CC.ui.ContainerBase#validate}和{@link CC.ui.ContainerBase#invalidate}方法设置.
+ * @cfg {Boolean} invalidate 指示当引发布局时是否执行布局,
+ * 如大量引发重复布局的操作可先设置invalidate=true,执行完后再设置invalidate=false,
+ * 再调用{@link #doLayout}布局.<br>
+ * 容器类不必直接设置该属性,
+ * 可调用{@link CC.ui.ContainerBase#validate}和{@link CC.ui.ContainerBase#invalidate}方法.
  */
 
 /**
- * 执行布局,要重写布局应重写onLayout方法.
+ * 布局容器,要重写布局应重写onLayout方法.
  */
         doLayout: function(){
           if(this.isUp()){
@@ -6903,10 +7388,8 @@ CC.create('CC.layout.Layout', null,
             //参见ct.display
             if(this.ct.hidden){
               if(__debug) console.log(this,'容器处于隐藏状态,未立即布局..');
-/**
- * @property {Array} defferArgs 延迟布局中寄存的布局方法参数
- * @private
- */
+              
+              // 延迟布局中寄存的布局方法参数
               this.defferArgs = arguments;
               return;
             }
@@ -6925,9 +7408,7 @@ CC.create('CC.layout.Layout', null,
 
 /**
  * 获得控件当前布局相关的属性配置信息, 该调用无论任何时候都会返回一个非null对象,即使相关配置不存在.
- * @param {CC.Base} item
- * @return {Object} 控件当前布局相关的属性配置信息
- * @example
+ * <pre><code>
    var item = ct.$(0);
    var layout = ct.layout;
    var cfg = layout.cfgFrom(item);
@@ -6935,11 +7416,16 @@ CC.create('CC.layout.Layout', null,
    if(cfg.collapsed) {
     //...
    }
+   </code></pre>
+ * @param {CC.Base} item
+ * @return {Object} 控件当前布局相关的属性配置信息
  */
         cfgFrom : function(item) {
           return item.lyInf || {};
         },
-
+/**
+ * @param {CC.Base} component
+ */
         insert : function(comp){
             if (this.layoutOnChange)
                  this.doLayout.bind(this).timeout(0);
@@ -6957,12 +7443,16 @@ CC.create('CC.layout.Layout', null,
          * 除移子项时调用并重新布局,
          * 注意:从布局管理器移除子控件并不从容器移除.
          * 如果layoutOnChange设置为false时不调用。
+         * @param {CC.Base} component
          */
         remove: function(comp){
             if (this.layoutOnChange)
                 this.doLayout.bind(this).timeout(0);
         },
-
+/**
+ * 批量添加子控件到容器.
+ * @param {CC.Base} items
+ */
         fromArray : function(its){
            var ct = this.ct,
                cls = ct.itemCls,
@@ -6992,24 +7482,28 @@ CC.create('CC.layout.Layout', null,
             }
         },
 
+/**
+ * @cfg {String} ctCS 初始化时添加到容器的样式
+ */
+        ctCS : false,
+/**
+ * @cfg {String} wrCS 初始化时添加到容器ct.wrapper的样式
+ */
+        wrCS : false,
+        
         /**
          * 将布局管理器应用到一个容器控件中。
-         * @param {Object} ct
+         * @param {Object} ct container component
+         * @return this
          */
         attach: function(ct){
             this.ct = ct;
             if(ct.deffer !== undefined)
               this.deffer = ct.deffer;
-/**
- * @name CC.layout.Layout#ctCS
- * @property {String} ctCS 初始化时添加到容器的样式
- */
+              
             if (this.ctCS)
                 ct.addClass(this.ctCS);
-/**
- * @name CC.layout.Layout#wrCS
- * @property {String} wrCS 初始化时添加到容器ct.wrapper的样式
- */
+
             if(this.wrCS)
               ct.wrapper.addClass(this.wrCS);
 
@@ -7018,7 +7512,12 @@ CC.create('CC.layout.Layout', null,
               this.fromArray(this.items);
               delete this.items;
             }
-
+            
+            if(ct.items){
+              this.fromArray(ct.items);
+              delete ct.items;              
+            }
+            
             return this;
         },
 
@@ -7036,6 +7535,7 @@ CC.create('CC.layout.Layout', null,
 
         /**
          * 子项被容器布局后再渲染.
+         * @private
          */
         onLayout: function(){
             var i = 0, ch, chs = this.ct.children, len = chs.length;
@@ -7050,10 +7550,6 @@ CC.create('CC.layout.Layout', null,
 
 var lyx = CC.layout.Layout;
 
-/**
- * @name CC.layout.default
- * @Layout
- */
 CC.layout.def('default', lyx);
 //
 // WrapPanel模板, 设置wrap结点的padding,border而不会影响到panel层的宽高的计算,
@@ -7063,28 +7559,27 @@ CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>')
       .def( 'CC.ui.WrapPanel', '<div class="g-panel"><div class="g-panel-wrap" id="_wrap"></div></div>');
 
 /**
+ * @class CC.ui.ContainerBase
  * 容器类控件,容器是基类的扩展,可包含多个子组件,
  * 子组件也可是一个容器,形成了组件树
- * @name CC.ui.ContainerBase
- * @class 容器基类
  * @extends CC.Base
  */
 CC.create('CC.ui.ContainerBase', Base,
-/**@lends CC.ui.ContainerBase.prototype*/
 {
 
   /**
- * @property {Array} children 容器子控件存放处
- * @readonly
- */
+   * @property children
+   * 容器子控件存放处
+   * @type Array
+   */
   children: null,
 /**
- * @property {Boolean} [eventable=true] 可处理事件,即可通过on方法监听容器事件
- * @readonly
- * @example
+ * @cfg {Boolean} eventable=true 可处理事件,即可通过on方法监听容器事件<br>
+ * <pre><code>
    ct.on('resized', function(){
      //...
    });
+   </code></pre>
  */
   eventable: true,
 
@@ -7102,57 +7597,79 @@ CC.create('CC.ui.ContainerBase', Base,
 
   maxW: 65535,
  /**
- * @property {Base} [itemCls=CC.ui.Item] 容器子控件类, fromArray方法根据该子项类实例化子项
+ * @cfg {Base} itemCls=CC.ui.Item 容器子控件类, fromArray方法根据该子项类实例化子项
  * @see #fromArray
  */
   itemCls: CC.ui.Item,
-  /**
- * @property {Boolean} [autoRender=false] 容器子控件类
- */
+
   autoRender: false,
 
-/**
- * @property {Boolean|CC.util.SelectionProvider} selectionProvider 是否对容器应用子项选择功能
- */
-  selectionProvider : false,
 
+/**
+ * @cfg {Array} items
+ * 预留给布局管理器初始化的子项,初始化后移除.
+ * items与array初始化的区别仅在于是否通过布局管理器加载,如果是items时,由container.layout.fromArray加载,
+ * 如果是array,直接由container.fromArray加载,忽略布管理器对子项进行布局.<br>
+ * 该属性与{@link CC.layout.Layout#items}属性意义相同.
+ */
+  items : false,
+/**
+ * @cfg {Array} array 子项数据初始化组数, 由{@link #fromArray}装载.
+ */
+  array:false,
+  
   initialize : function(){
     Base.prototype.initialize.apply(this, arguments);
     //pre load children
-/**
- * @name CC.ui.ContainerBase#array
- * @property {Array} array 子项数据初始化组数
- * @see #fromArray
- */
     if (this.array) {
       this.fromArray(this.array);
       delete this.array;
     }
   },
+  
+/**
+ * @cfg {Boolean} keyEvent 是否开启键盘监听事件.<br>
+ * 用于监听键盘按键的事件名称,如果该值在容器初始化时已设置,
+ * 可监听容器发出的keydown事件.
+ * <pre><code>
+   var ct = new CC.ui.ContainerBase({keyEvent:true});
+   ct.on('keydown', function(event){
+      this....
+   });
+   </code></pre>
+ */
+  keyEvent : undefined,
+  
+/**
+ * @cfg {Boolean} useContainerMonitor 是否在容器层上处理子项DOM事件
+ */  
+  useContainerMonitor : false,
 
+/**
+ * @cfg {Boolean|String} cancelClickBubble=false 是否停止容器clickEvent事件的DOM触发事件冒泡
+ */  
+  cancelClickBubble : false,
+
+/**
+ * @name CC.ui.ContainerBase#clickEvent
+ * @cfg {Boolean|String} clickEvent 设置子项单击事件,如果为true,默认事件为mousedown
+ */   
+  clickEvent : false,
+  
+/**
+ * @cfg {Boolean|CC.util.SelectionProvider} selectionProvider 属性由{@link CC.util.SelectionProvider}提供,指明是否开启容器选择子项的功能. 
+ */
+  selectionProvider : false,
+/**
+ * @cfg {Boolean|CC.util.ConnectionProvider} connectionProvider 属性由{@link CC.util.ConnectionProvider}提供,指明是否开启容器向服务器请求加载数据的功能. 
+ */
+  connectionProvider : false,
+  
   initComponent: function() {
     cptx.initComponent.call(this);
-
-    /**
- * @name CC.ui.ContainerBase#keyEvent
- * @property {Boolean} keyEvent 是否开启键盘监听事件
- */
     if (this.keyEvent)
       this.bindKeyInstaller();
 
-    /**
- * @name CC.ui.ContainerBase#useContainerMonitor
- * @property {Boolean} useContainerMonitor 是否在容器层上处理子项DOM事件
- */
-
-/**
- * @name CC.ui.ContainerBase#cancelClickBubble
- * @property {Boolean|String} [cancelClickBubble=false] 是否停止容器clickEvent事件的DOM触发事件冒泡
- */
-    /**
- * @name CC.ui.ContainerBase#clickEvent
- * @property {Boolean|String} clickEvent 设置子项单击事件,如果为true,默认事件为mousedown
- */
     if (this.useContainerMonitor && this.clickEvent) {
       this.bindClickInstaller();
     }
@@ -7168,18 +7685,19 @@ CC.create('CC.ui.ContainerBase', Base,
 
     this.createLayout();
   },
-
+  
+/**
+ * @cfg {Layout|String} layout='default' 容器布局管理器
+ */
+  layout : 'default',
+/**
+ * @cfg {Object} lyCfg 用于初始化布局管理器的数据
+ */
+  lyCfg : false,
+  
   createLayout : function(){
     if (this.layout) {
-      /**
- * @name CC.ui.ContainerBase#layout
- * @property {Layout|String} [layout='default'] 容器布局管理器
- */
       if (typeof this.layout === 'string') {
-/**
- * @name CC.ui.ContainerBase#lyCfg
- * @property {Object} lyCfg 布局管理器初始化配置
- */
         var cfg = this.lyCfg || {};
         cfg.ct = this;
         this.layout = new(CC.layout[this.layout])(cfg);
@@ -7190,14 +7708,20 @@ CC.create('CC.ui.ContainerBase', Base,
     else this.layout = new lyx({ ct: this });
 
   },
-
+  
 /**
- * 创建容器的DOM结点
+ * @cfg {String|DOMElement} 指定容器存放子项的dom结点.
  */
+  ct : false,
+
+ /**
+  * @property wrapper
+  * container.ct结点对应的Base对象,如果当前container.view === container.ct,则wrapper为容器自身.
+  * @type CC.Base
+  */
   createView: function() {
     cptx.createView.call(this);
     if (!this.ct) this.ct = this.view;
-
     //apply ct
     else if (typeof this.ct === 'string')
       this.ct = this.dom(this.ct);
@@ -7205,14 +7729,13 @@ CC.create('CC.ui.ContainerBase', Base,
     //再一次检测
     if (!this.ct)
       this.ct = this.view;
- /**
-  * container.ct结点对应的Base对象,如果当前container.view === container.ct,则wrapper为容器自身.
-  * @name CC.ui.ContainerBase#wrapper
-  * @type CC.Base
-  */
+      
     this.wrapper = this.ct == this.view ? this: this.$$(this.ct);
   },
-
+  
+/**@private*/
+  destoryed : false,
+  
   destory: function() {
     this.destoryed = true;
     this.destoryChildren();
@@ -7231,10 +7754,6 @@ CC.create('CC.ui.ContainerBase', Base,
     cptx.destory.call(this);
   },
 
-/**
- * 此时调用fromArray(array)加入子项,当onRender后布局容器.
- * @override
- */
   onRender: function() {
     cptx.onRender.call(this);
     // layout ct
@@ -7266,7 +7785,7 @@ CC.create('CC.ui.ContainerBase', Base,
  * 布局管理就这样做,向容器加入后并未渲染子项,等待子项布局好后再渲染.
  * 控件即是本包中已实现的控件,具有基本的view属性.
  * 如果要批量加入子项,请调用fromArray方法.
- * @param {Base} a 子项
+ * @param {Base} item 子项
  */
   add: function(a) {
 
@@ -7276,24 +7795,26 @@ CC.create('CC.ui.ContainerBase', Base,
     }
 
 /**
- * 添加前发送
- * @name CC.ui.ContainerBase#beforeadd
- * @event
+ * @event beforeadd
+ * 添加子项前发送
  * @param {CC.Base} component
  */
       if(this.fire('beforeadd', a) !== false && this.beforeAdd(a) !== false){
         this.onAdd(a);
         this.afterAdd(a);
 /**
- * 添加后发出
- * @name CC.ui.ContainerBase#add
- * @event
+ * @event add
+ * 添加子项后发送
  * @param {CC.Base} component
  */
         this.fire('add', a);
       }
     return this;
   },
+  
+  /**@private*/
+  __click : false,
+  
 /**
  * @private
  */
@@ -7321,15 +7842,20 @@ CC.create('CC.ui.ContainerBase', Base,
 /**
  * @private
  */
-  beforeAdd : function(){
-    
-  },
+  beforeAdd : fGo,
   
 /**
  * @private
  */
   afterAdd : fGo,
 
+/**
+ * @event itemclick
+ * 子项点击后发送.
+ * @param {CC.Base} item
+ * @param {DOMEvent} event
+ */
+ 
 /**
  * @private
  */
@@ -7348,16 +7874,14 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * 移除前发送
- * @name CC.ui.ContainerBase#beforeremove
- * @event
+ * @event beforeremove
+ * 子项移除前发送
  * @param {CC.Base} component
  */
 
 /**
- * 移除后发送
- * @name CC.ui.ContainerBase#remove
- * @event
+ * @event remove
+ * 子项移除后发送
  * @param {CC.Base} component
  */
 
@@ -7365,7 +7889,8 @@ CC.create('CC.ui.ContainerBase', Base,
  * 从容器移出但不销毁子项,移除的子项也包括托管的子控件.
  * 如果容器子项由布局管理器布局,在调用该方法后用
  * ct.doLayout重新布局, 或直接由ct.layout.remove(component)移除子项.
- * @param {String|CC.Base} 可为控件实例或控件ID
+ * @param {String|CC.Base} item 可为控件实例或控件ID
+ * @return this
  */
   remove: function(a){
     a = this.$(a);
@@ -7376,12 +7901,6 @@ CC.create('CC.ui.ContainerBase', Base,
     }
     else if(this.fire('beforeremove', a)!==false && this.beforeRemove(a) !== false){
       this.onRemove(a);
-  /**
-   * 移除子项后发出
-   * @name CC.ui.ContainerBase#removed
-   * @event
-   * @param {CC.Base} item
-   */
         this.fire('remove', a);
     }
     return this;
@@ -7395,7 +7914,7 @@ CC.create('CC.ui.ContainerBase', Base,
     this._removeNode(a.view);
   },
 
-  /**
+ /**
  * 移除所有子项.
  */
   removeAll: function() {
@@ -7424,11 +7943,12 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-     * 根据控件ID或控件自身或控件所在数组下标安全返回容器中该控件对象.
-     * <li>id为控件id,即字符串格式,返回id对应的子项,无则返回null
-     * <li>id为数字格式,返回数字下标对应子项,无则返回null
-     * <li>id为子项,直接返回该子项
+     * 根据控件ID或控件自身或控件所在数组下标安全返回容器中该控件对象<div class="mdetail-params"><ul>
+     * <li>id为控件id,即字符串格式,返回id对应的子项,无则返回null</li>
+     * <li>id为数字格式,返回数字下标对应子项,无则返回null</li>
+     * <li>id为子项,直接返回该子项</li></ul></div>
      * @param {CC.Base|String|Number} id 子控件
+     * @method $
      */
   $: function(id) {
     if (id === null || id === undefined || id === false) {
@@ -7477,24 +7997,25 @@ CC.create('CC.ui.ContainerBase', Base,
       }
   },
 
-  /**
+/**
  * 返回窗口中控件的索引.
  * @param {String|CC.Base} 参数a可为控件实例或控件ID
+ * @return {Number} index or -1, if not found.
  */
   indexOf: function(a) {
     a = this.$(a);
     return ! a ? -1 : this.children.indexOf(a);
   },
-  /**
+/**
  * 获得子项数量
- * @return {Number}
+ * @return {Number} size
  */
   size: function() {
     return this.children.length;
   },
   /**
  * 容器是否包含给出控件.
- * @param {String|CC.Base} 参数a可为控件实例或控件ID
+ * @param {String|CC.Base} component 可为控件实例或控件ID
  * @return {Boolean}
  */
   contains: function(a) {
@@ -7504,10 +8025,10 @@ CC.create('CC.ui.ContainerBase', Base,
     return a.pCt === this;
   },
 
-  /**
+/**
  * 子项b之前插入项a.
- * @param {CC.Base} a
- * @param {CC.Base} a
+ * @param {CC.Base} componentA
+ * @param {CC.Base} componentB
  */
   insertBefore: function(a, b) {
     var idx = this.indexOf(b);
@@ -7516,7 +8037,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
   /**
      * 方法与_addNode保持一致,定义DOM结点在容器结点中的位置.
-     * @param {DOMElement} n
+     * @param {DOMElement} new
      * @param {DOMElement} old
      */
   _insertBefore: function(n, old) {
@@ -7550,7 +8071,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
 
   /**
- * 同{@link #removeAll}
+ * 重写,同{@link #removeAll}
  * @override
  * @return this
  */
@@ -7563,6 +8084,8 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 /**
  * 交换两子项.
+ * @param {CC.Base} a1
+ * @param {CC.Base} a2
  * @return this
  */
   swap: function(a1, a2) {
@@ -7636,7 +8159,7 @@ CC.create('CC.ui.ContainerBase', Base,
 /**
  * 过滤方式隐藏子控件.
  * @param {Function} matcher
- * @param {Object} 调用matcher的this
+ * @param {Object} caller 调用matcher的this
  * @return this
  */
   filter: function(matcher, caller) {
@@ -7695,6 +8218,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
   /**
      * 是否为控件的父容器
+     * @param {CC.Base} child
      * @return {Boolean}
      */
   parentOf: function(child) {
@@ -7708,7 +8232,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 /**
  * 批量生成子项, 不能在初始化函数里调用fromArray,因为控件未初始化完成时不能加入子控件.
- * 子类寻找优先级为 :
+ * 子类寻找优先级为 :<br>
  * {item option}.ctype -> 参数itemclass -> 容器.itemCls,
  * 容器的itemCls可以为ctype字符串, 也可以为具体类
  * @param {Array} array 子项实始化配置
@@ -7722,8 +8246,7 @@ CC.create('CC.ui.ContainerBase', Base,
     }
 
 /**
- * @name CC.ui.ContainerBase#itemCfg
- * @property {Object} itemCfg 用于批量添加子项{@link #fromArray}时子项的配置
+ * @cfg {Object} itemCfg 用于批量添加子项{@link #fromArray}时子项的配置
  */
     var it, cfg = this.itemCfg || false;
 
@@ -7742,8 +8265,13 @@ CC.create('CC.ui.ContainerBase', Base,
     }
     return this;
   },
-
-  instanceItem : function(it, cls, /**@inner*/mixed){
+/**
+ * 实例化并返回容器子项,此时未添加子项.
+ * @param {Object} itemConfig
+ * @param {Function} [itemClass]
+ * @return {CC.Base} item
+ */
+  instanceItem : function(it, cls, mixed){
     
     if(!cls){
       cls = this.itemCls;
@@ -7773,41 +8301,59 @@ CC.create('CC.ui.ContainerBase', Base,
     return it;
   },
   
+  /**@private*/
+  bndActs : false,
 /**
- * @param {String} eventName
- * @param {Function} callback
- * @param {Boolean} cancelBubble
- * @param {Object} scope
- * @param {String|HTMLElement} childId
- * @param {String} srcName
+ * 在容器范围内为子项添加事件处理.<br>
+ <pre>
+ * param {String} evtName
+ * param {Function} callback
+ * param {Boolean} cancelBubble
+ * param {Object} scope
+ * param {String|HTMLElement} childId
+ * param {String} srcName
+ </pre><br>
+ callback 参数为
+ <pre>
+ * param {CC.ui.Base} childItem 子项
+ * param {DOMEvent} event dom 事件
+ </pre><br>
  * @return this
  */
   itemAction: function(eventName, callback, cancelBubble, caller, childId, srcName) {
+    caller = caller || this;
     var act = (function(e) {
       var el = e.target || e.srcElement;
 
       if((srcName === undefined || el.tagName === srcName) && el !== this.view){
           var item = this.$(el);
           if (item)
-            return item.disabled ? false : callback.call(this, item, e);
+            return item.disabled ? false : callback.call(caller, item, e);
       }
    });
+   
    if (!this.bndActs) {
       this.bndActs = [];
    }
-    this.bndActs.push([eventName, callback, act]);
-    this.domEvent(eventName, act, cancelBubble, caller, childId);
+    this.bndActs.push([eventName, callback, act, childId]);
+    this.domEvent(eventName, act, cancelBubble, null, childId);
+    act = null;
+    childId = null;
     return this;
   },
 /**
- *
+ * @param {String} evtName
+ * @param {Function} callback
+ * @param {String|HTMLElement} childId
+ * @return this
  */
   unItemAction: function(eventName, callback, childId) {
     var bnds = this.bndActs;
-    childId = childId !== undefined ? childId.tagName ? childId: this.dom(childId) : this.view;
+    
     for (var i = 0, len = bnds.length; i < len; i++) {
       var n = bnds[i];
-      if (n[0] == eventName && n[1] == callback(n[3] == childId || n[3] === undefined)) {
+      if (n[0] === eventName && n[1] === callback && n[3] === childId) {
+        childId = childId !== undefined ? childId.tagName ? childId: this.dom(childId) : this.view;
         this.unEvent(eventName, n[2], n[3]);
         bnds.remove(i);
         return this;
@@ -7816,22 +8362,13 @@ CC.create('CC.ui.ContainerBase', Base,
 
     return this;
   },
+
 /**
- * @property {Boolean|String} keyEvent
- * 用于监听键盘按键的事件名称,如果该值在容器初始化时已设置,
- * 可监听容器发出的keydown事件
- * @example
-   var ct = new CC.ui.ContainerBase({keyEvent:true});
-   ct.on('keydown', function(event){
-      this....
-   });
+ * @event keydown
+ * 如果已安装键盘监听器,键盘按键触发时发送该事件,参见{@link #bindKeyInstaller},{@link #keyEvent}.
+ * @param {DOMEvent} event
  */
-/**
- * @name CC.ui.ContainerBase#keydown
- * @event
- * 如果已安装键盘监听器,键盘按键触发时发送该事件
- * @param {DOMEvent} e
- */
+ 
 /**
  * 安装键盘事件监听器,用于发送容器的keydown事件,
  * 一些具有选择功能(CC.util.SelectionProvider)控件已默认开启了该功能.
@@ -7869,7 +8406,9 @@ CC.create('CC.ui.ContainerBase', Base,
 /**
  * 在处理完keydown事件后默认调用的回调函数,
  * 这是一个接口函数,默认为空函数,如果不想通过ct.on方式监听,
- * 可通过重写该方法快速处理按键事件
+ * 可通过重写该方法快速处理按键事件.
+ * @method onKeyPressing
+ * @param {DOMEvent} event
  */
   onKeyPressing: fGo,
 
@@ -7910,7 +8449,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
   /**
-   * 布局当前容器,如果当前容器正处于布局变更中,并不执行布局
+   * 布局当前容器,如果当前容器正处于布局变更中,并不执行布局.
    * @return this
    */
   doLayout: function() {
@@ -7930,7 +8469,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
     /**
      * 相对父层居中,这里的居中是相对视角居中.
-     * @method
+     * @param {DOMElement|CC.Base} 相对居中锚点
      * @return this
      */
     center : function(anchor){
@@ -7956,13 +8495,8 @@ CC.create('CC.ui.ContainerBase', Base,
       return this;
     },
 /**
- * 根据ID或指定属性深层遍历寻找子控件.
- * @param {String} childId ID值或指定属性的值
- * @param {String} attributeName 不一定是id值,可以指定搜索其它属性
- * @param {Boolean} [returnMore] 是否返回第一个或多个 
- * @return {CC.Base|null|Array} 如果 returnMore 未设置,返回第一个匹配或null,否则返回一个数组,包含所有的匹配.
- @example
- <pre>
+ * 根据ID或指定属性深层遍历寻找子控件.<br>
+ <pre><code>
    input1 = form.layout.add(new CC.ui.Text({id:'idInput',  name:'nameInput'}));
    input2 = form.layout.add(new CC.ui.Text({id:'id2Input', name:'nameInput'}));
    // input1
@@ -7973,7 +8507,11 @@ CC.create('CC.ui.ContainerBase', Base,
    var input1 = form.byId('nameInput', name);
    // [input1, input2]
    var inputs = form.byId('nameInput', name, true);
- </pre>
+ </code></pre>
+ * @param {String} childId ID值或指定属性的值
+ * @param {String} attributeName 不一定是id值,可以指定搜索其它属性
+ * @param {Boolean} [returnMore] 是否返回第一个或多个 
+ * @return {CC.Base|null|Array} 如果 returnMore 未设置,返回第一个匹配或null,否则返回一个数组,包含所有的匹配.
  */
     byId : function(cid, key, loop){
       var tmp = [], els = null, chs = this.children, child = this.children[0];
@@ -8004,7 +8542,7 @@ CC.create('CC.ui.ContainerBase', Base,
     
 /**
  * 以广度优先遍历控件树
- * @param {Function} cb callback,  参数为 callback(idxOfItemContainer, totalCounter), 返回false时终止遍历;
+ * @param {Function} callback 参数为 callback(idxOfItemContainer, totalCounter), 返回false时终止遍历;
  * @override
  */
   eachH : function(cb){
@@ -8042,6 +8580,7 @@ CC.create('CC.ui.ContainerBase', Base,
  * 获得容器的滚动条所在控件,如果控件宽高已设置或父容器不存在,返回控件wrapper,否则返回父容器wrapper,
  * 明确容器的scrollor有利于控制容器内容的滚动,
  * 在设计控件时可根据控件自身结构特点指定scrollor.
+ * @return {DOMElement|CC.Base}
  */
     getScrollor : function(){
       return this.scrollor || 
@@ -8053,26 +8592,23 @@ var ccx = CC.ui.ContainerBase;
 var ccxp = CC.ui.ContainerBase.prototype;
 UX.def('ct', ccx);
 /**
- * 面板与容器的主要区别是可发送resized, reposed事件,可定制wrapper位置
- * @name CC.ui.Panel
- * @class 面板
+ * @class CC.ui.Panel
+ * 面板与容器的主要区别是可发送resized, reposed事件,resize后可重新设定容器内容结点的宽高和位置.
  * @extends CC.ui.ContainerBase
  */
 CC.create('CC.ui.Panel', ccx, function(superclass){
- return /**@lends CC.ui.Panel#*/{
+ return {
 /**
- * 默认为ID为_wrap,如果不存在该结点,则指向当前面板的view结点
- * @type HTMLElement|String
+ * @cfg {String|HTMLElement} ct 默认为ID为_wrap,如果不存在该结点,则指向当前面板的view结点
  */
         ct: '_wrap',
 /**
- * 是否延迟布局,该值attach到布局管理器时将覆盖布局管理器原有deffer设置,默认不延迟.
+ * @cfg {Boolean} deffer 是否延迟布局,该值attach到布局管理器时将覆盖布局管理器原有deffer设置,默认不延迟.
  */
         deffer : false,
 
 /**
- * 当面板宽高改变时是否同步计算并更新容器内容组件宽高,默认为true
- * @type Boolean
+ * @cfg {Boolean} syncWrapper 当面板宽高改变时是否同步计算并更新容器内容组件宽高,默认为true.
  */
         syncWrapper : true,
 
@@ -8097,9 +8633,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
                 t = this.top;
                 this.top = false;
             }
-/**
- * @type Array
- */
+
             if(this.insets){
               var m = this.insets;
               m[4] = m[0]+m[2];
@@ -8123,6 +8657,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
  * 得到容器距离边框矩形宽高.
  * 该值应与控件CSS中设置保持一致,
  * 用于在控件setSize中计算客户区宽高,并不设置容器的坐标(Left, Top).
+ * @return {Array} insetArray
  */
         getWrapperInsets: function(){
             var ins = this.insets;
@@ -8141,8 +8676,8 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
         },
 
 /**
- * @name CC.ui.Panel#resized
- * @event
+ * @event resized
+ * {@link #setSize}设置后触发.
  * @param {Number} contentWidth 面板容器结点内容宽度
  * @param {Number} contentHeight 面板容器结点内容高度
  * @param {Number} width  面板宽度
@@ -8151,8 +8686,9 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
 
 /**
  * 在设置宽高后发送resized事件,并调用布局管理器布局(layout.doLayout()).
+ * @param {Number|false} width
+ * @param {Number|false} height
  * @param {Boolean} uncheck 性能优化项,是否比较宽高,如果宽高未变,则直接返回
- * @override 计算容器和Wrapper或内容合适的宽高
  */
         setSize: function(a, b, uncheck){
             var w = this.width, h = this.height;
@@ -8188,8 +8724,8 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
             return this;
         },
 /**
- * @name CC.ui.Panel#reposed
- * @event
+ * @event reposed
+ * {@link #setXY}设置后触发.
  * @param {Number} left 设置后面板x坐标
  * @param {Number} top  设置后面板y坐标
  * @param {Number} deltaX
@@ -8242,11 +8778,6 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
     wrCS :'g-borderpanel-wrap'
   };
 
-/**
- *
- * @name CC.ui.BorderPanel
- * @class
- */
   CC.ui.BorderPanel = function(opt, cls){
     if(!opt)
       opt = {};
@@ -8263,12 +8794,18 @@ UX.def('panel', CC.ui.Panel);
 ﻿(function(){
 var ccxp = CC.ui.ContainerBase.prototype;
 
-//~@base/providers.js
 /**
- * @name CC.util.ProviderBase
- * @class
+ * @class CC.util.ProviderBase
+ * 容器{@link CC.ui.ContainerBase}功能增强类的基类.
  */
-CC.create('CC.util.ProviderBase', null, /**@lends CC.util.ProviderBase#*/{
+ 
+/**
+ * @property t
+ * 已绑定的目标容器
+ * @type CC.ui.ContainerBase
+ */
+ 
+CC.create('CC.util.ProviderBase', null, {
 	
 	initialize : function(opt){
 /**
@@ -8279,22 +8816,28 @@ CC.create('CC.util.ProviderBase', null, /**@lends CC.util.ProviderBase#*/{
 		if(opt)
 			CC.extend(this, opt);
 	},
-
+/**
+ * 绑定容器.
+ * @param {CC.ui.ContainerBase} targetContainer
+ */
 	setTarget : function(container){
 		this.t = container;
 	},
-	
+
 	each : function(){
 	  this.t.each.apply(this.t, arguments);
 	}
 });
 
 /**
- * @name CC.util.ProviderFactory
- * @class
+ * @class CC.util.ProviderFactory
  */
 CC.util.ProviderFactory = {
-	
+/**
+ * @param {String} name Provider name
+ * @param {Function} baseClass base class
+ * @param {Object} attrset attribute set
+ */
 	create : function(name, base, attrs){
 		var full      = name + 'Provider', low = name.toLowerCase();
 		//lowProvider
@@ -8341,23 +8884,25 @@ CC.util.ProviderFactory = {
 	}
 };
 })();
-﻿//~@base/connectionprovider.js
-/**
+﻿/**
+ * @class CC.util.ConnectionProvider
  * 为控件提供数据加载功能
  * 这个类主要用于桥接CC.Ajax与CC.ui.ContainerBase.
- * @name CC.util.ConnectionProvider
- * @class
+ * @extends CC.util.ProviderBase
  */
 
-CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionProvider#*/{
+ 
+CC.util.ProviderFactory.create('Connection', null, {
 /**
- * 是否禁用指示器,默认false
+ * @cfg {Boolean} indicatorDisabled  是否禁用指示器,默认false
  */
   indicatorDisabled : false,
+
 /**
+ * @cfg {Object} ajaxCfg
  * 连接器设置,连接器保存当前默认的连接器connector配置信息,
  * 每次连接时都以该配置信息与新的配置结合发出连接.
- * @example
+ * <br><pre><code>
    var provider = new CC.util.ConnectionProvider(target, {
     indicatorDisabled : true,
     ajaxCfg : {
@@ -8374,36 +8919,35 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
       ...
     }
    );
+   </code></pre>
  */
-  ajaxCfg : null,
-
+  ajaxCfg : false,
 
   setTarget : function(){
   	CC.util.ProviderBase.prototype.setTarget.apply(this, arguments);
   	this.initConnection();
   },
-  
+
+ /**@private*/
   initConnection : function(){
     if(this.ajaxCfg && this.ajaxCfg.url)
       this.connect();
   },
 
 /**
- * @name CC.util.ConnectionProvider#loadType
- * @property {String} loadType
+ * @cfg {String} loadType
  * 指明返回数据的类型,成功加载数据后默认的处理函数将根据该类型执行
- * 相应的操作,被支持的类型有如下两种
- * <li>html,返回的HTML将被加载到target.wrapper中
- * <li>json,返回的数据转换成json,并通过target.fromArray加载子项
- * 如果未指定,按json类型处理
- * @see #defaultLoadSuccess
+ * 相应的操作,被支持的类型有如下两种<div class="mdetail-params"><ul>
+ * <li>html,返回的HTML将被加载到target.wrapper中</li>
+ * <li>json,返回的数据转换成json,并通过target.fromArray加载子项</li></ul></div>
+ * 如果未指定,按json类型处理.
+ * 默认处理函数:{@link #defaultLoadSuccess}
  */
-/**
- * 成功返回后执行,默认是根据返回数据类型(loadType)执行相应操作,
- * 如果要自定义处理返回的数据,可定义在连接时传递success方法或重写本方法
- * @param {CC.Ajax} j
- * @see #loadType
- * @example
+ 
+ /**
+  * 成功返回后执行,默认是根据返回数据类型(loadType)执行相应操作,
+  * 如果要自定义处理返回的数据,可定义在连接时传递success方法或重写本方法.<br>
+ <pre><code>
    var ct = new CC.ui.ContainerBase({
     connectionProvider : {loadType:'json'}
    });
@@ -8422,6 +8966,8 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
       alert(j.getText());
      }
    });
+ </code></pre>
+ * @param {CC.Ajax} ajax
  */
   defaultLoadSuccess : function(j){
     var t = this.loadType;
@@ -8429,8 +8975,9 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
       this.defaultDataProcessor(t, j.getText());
     else this.defaultDataProcessor(t, j.getJson());
   },
+  
 /**
- *
+ *  可重写本方法自定义数据类型加载
  */
   defaultDataProcessor : function(dataType, data){
     switch(dataType){
@@ -8444,8 +8991,10 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
   },
 
 /**
- * 获得连接指示器
+ * 获得连接指示器,
  * Loading类寻找路径 this.indicatorCls -> target ct.indicatorCls -> CC.ui.Loading
+ * @param {Object} indicatorConfig
+ * @return {CC.ui.Loading}
  */
   getIndicator : function(opt){
     if(this.indicator)
@@ -8458,6 +9007,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
       target: this.t,
       targetLoadCS: this.loadCS
     };
+    
     if (opt !== undefined)
       opt = CC.extend(cfg, opt);
 
@@ -8473,11 +9023,14 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
  * indicator cfg 配置信息从 this.indicatorCfg -> target ct.indicatorCfg获得
  * @param {String} url, 未指定时用this.url
  * @param {Object} cfg 配置Ajax类的配置信息, 参考信息:cfg.url = url, cfg.caller = this
+ * @return this
  */
   connect : function(url, cfg){
     var afg = this.ajaxCfg;
+    
     if(!afg)
       afg = {};
+      
     if(url)
       afg.url = url;
 
@@ -8493,8 +9046,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
     }
 
 /**
- * @name CC.util.ConnectionProvider#indicatorCfg
- * @property {Object} indicatorCfg
+ * @cfg {Object} indicatorCfg
  */
     if (!this.indicatorDisabled && !this.indicator)
       this.getIndicator(this.indicatorCfg || this.t.indicatorCfg);
@@ -8550,22 +9102,82 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 
 
 /**
- * @name CC.ui.ContainerBase#getConnectionProvider
  * 获得容器连接器.
  * 如果未指定容器的连接器,可通过传过参数cls指定连接器类,
  * 用于实例化的连接器类搜寻过程为 cls -> ct.connectionCls -> CC.util.ConnectionProvider;
  * 连接器配置信息可存放在ct.connectionProvider中, 连接器实例化后将移除该属性;
  * 生成连接器后可直接通过ct.connectionProvider访问连接器;
- * @param {CC.util.ConnectionProvider} [cls] 使用指定连接器类初始化
+ * @param {CC.util.ConnectionProvider} [config] 使用指定连接器类初始化
+ * @member CC.ui.ContainerBase
+ * @method getConnectionProvider
  */
-
-//~@base/selectionprovider.js
+ /**
+  * @class CC.ui.ContainerBase
+  */
+         /**
+         * @event final
+         * 事件由{@link CC.util.ConnectionProvider}提供,connectionProvider请求结束后调用,无论成功与否都会触发.
+         * @param {CC.Ajax} ajax
+         */
+        /**
+         * @event open
+         * 事件由{@link CC.util.ConnectionProvider}提供,在connectionProvider打开连接前发送
+         * @param {CC.Ajax} ajax
+         */
+ /**
+  * @event send
+  * 事件由{@link CC.util.ConnectionProvider}提供,在connectionProvider发送数据前发送
+  * @param {CC.Ajax} ajax
+  */
+  
+        /**
+         * @event json
+         * 事件由{@link CC.util.ConnectionProvider}提供,在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
+         * @param {Object} o json对象
+         * @param {Ajax} ajax
+         */
+        /**
+         * @event xmlDoc
+         * 事件由{@link CC.util.ConnectionProvider}提供,在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
+         * @param {XMLDocument} doc
+         * @param {CC.Ajax} ajax
+         */
+        /**
+         * @event text
+         * 事件由{@link CC.util.ConnectionProvider}提供,在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
+         * @param {String} responseText
+         * @param {CC.Ajax} ajax
+         */
 /**
- * 为容器提供子项选择功能,子项是否选择的检测是一个 -- 由子项样式状态作向导的实时检测.
- * @name CC.util.SelectionProvider
- * @class
+ * @event failure
+ * 事件由{@link CC.util.ConnectionProvider}提供,数据请求失败返回后发送.
+ * @param {CC.Ajax} ajax
  */
-﻿CC.util.ProviderFactory.create('Selection', null, function(father){
+ 
+/**
+ * @event success
+ * 事件由{@link CC.util.ConnectionProvider}提供,数据成功返回加载后发送.
+ * @param {CC.Ajax} ajax
+ */
+ 
+/**
+ * @event load
+ * 事件由{@link CC.util.ConnectionProvider}提供,请求响应返回加载后发送(此时readyState = 4).
+ * @param {CC.Ajax} ajax
+ */
+ 
+/**
+ * @event statuschange
+ * 由{@link CC.util.ConnectionProvider}提供,在每个Ajax fire事件发送前该事件都会发送
+ * @param {String} status
+ * @param {CC.Ajax} j
+ */
+﻿/**
+ * @class CC.util.SelectionProvider
+ * 为容器提供子项选择功能,子项是否选择的检测是一个 -- 由子项样式状态作向导的实时检测.
+ * @extends CC.util.ProviderBase
+ */
+CC.util.ProviderFactory.create('Selection', null, function(father){
 
   var Event = CC.Event;
 
@@ -8573,34 +9185,49 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
     return !item.hidden && !item.disabled;
   }};
 
-  return /**@lends CC.util.SelectionProvider#*/{
+  return {
 /**
- * 当前选择模式(单选,多选),默认单选
+ * @cfg {Number} mode 当前选择模式(1单选,0多选),默认单选
  */
   mode : 1,
-
+/**@cfg {Boolean} tracker 是否应用选择跟踪器*/
   tracker : false,
-
+  
+/**@cfg {Number} UP 定义"向上"的按键值*/
   UP : Event.UP,
-
+  
+/**@cfg {Number} DOWN 定义"向下"的按键值*/
   DOWN : Event.DOWN,
-
+  
+/**@cfg {Number} selectedIndex 当前选择项下标*/
   selectedIndex : -1,
 /**
- * 子项选择后是否滚动到容器可视范围内,默认为true
+ * @cfg {Boolean} autoscroll 子项选择后是否滚动到容器可视范围内,默认为true
  */
   autoscroll : true,
+  
 /**
- * 选择后是否聚焦,默认为true
+ * @cfg {Boolean} autoFocus 选择后是否聚焦,默认为true
  */
  autoFocus : true,
 /**
- * @property {String} selectedCS 子项选择时子项样式
+ * @cfg {String} selectedCS=selected 子项选择时子项样式
  */
   selectedCS: 'selected',
-
 /**
- * 允许选择
+ * @property selected
+ * 当前选择项,如果多选模式,最后一个被选中选项.
+ * @type {CC.Base}
+ */
+ 
+/**
+ * @property previous
+ * 上一选择项
+ * @type {CC.Base}
+ */
+ 
+/**
+ * @cfg {Boolean} unselectable 是否允许选择
  */
   unselectable : false,
 
@@ -8636,9 +9263,11 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
   }
  },
 /**
+ * @param {CC.Base} item
+ * @param {Boolean} selectOrNot
  * @param {Boolean} cancelscroll
  */
- setSelected : function(item, b, cancelscroll, /**@inner*/e){
+ setSelected : function(item, b, cancelscroll, e){
   if(b)
     this.select(item, cancelscroll, e);
   else this.unselect(item);
@@ -8675,6 +9304,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 
 /**
  * 重载该方法可以定义按键导航
+ * @private
  */
  navigateKey : function(e){
    var kc = e.keyCode;
@@ -8689,12 +9319,6 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 
 /**@private*/
  defKeyNav : fGo,
-
-/**
- * @name CC.util.SelectionProvider#t
- * @property {ContainerBase} t target目标容器
- * @private
- */
 
 /**
  * 获得容器当前选区, 该操作会重新检测当前选择项
@@ -8724,9 +9348,9 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 /**
  * 选择某子项
  * @param {CC.Base} item
- * @param {Boolean} b
+ * @param {Boolean} cancelscroll
  */
- select : function(item, cancelscroll, /**@inner*/e){
+ select : function(item, cancelscroll, e){
 
   if(this.unselectable || this.disabled)
     return this;
@@ -8750,27 +9374,24 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
     return this;
 
 /**
+ * @event select
  * 选择前发出,为空选时不发出
- * @name CC.ui.ContainerBase#select
- * @event
  * @param {CC.Base} item
  * @param {Boolean}  b
  */
 
 
 /**
+ * @event selected
  * 选择后发出,为空选时不发出
- * @name CC.ui.ContainerBase#selected
- * @event
  * @param {CC.Base} item
  * @param {CC.util.SelectionProvider} selectionProvider
- * @param {DomEvent} event 如果该选择事件由DOM事件触发,传递event
+ * @param {DOMEvent} event 如果该选择事件由DOM事件触发,传递event
  */
 
 /**
- * 选择后发出,为空选时不发出
- * @name CC.util.SelectionProvider#forceSelect
- * @property {Boolean} [forceSelect=false] 强制发送select事件,即使当前子项已被选中
+ * @cfg {Boolean} forceSelect 是否强制发送select事件,即使当前子项已被选中.<br>
+ * 默认是当某项选中后,再次选择并不触发selected事件,可强制设定即使已选时是否发送.
  */
   if((this.forceSelect || !this.isSelected(item))
       && this.t.fire('select', item, this, e) !== false){
@@ -8786,9 +9407,10 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
   this.onSelectChanged(item, false);
   return this;
  },
+ 
 /**
- * @name CC.ui.Item#onselect 子项被选择时调用
- * @property {Function} onselect
+ * @cfg {Function} onselect 该属性由{@link CC.util.SelectionProvider}类处理,当项选中时,调用本方法.
+ * @member CC.Base
  */
  onSelect : function(item, cancelscroll) {
   if(this.autoFocus)
@@ -8800,23 +9422,13 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
  },
 
 /**
- * @name CC.util.SelectionProvider#selected 当前被选择子项,如果多选模式,最后一个被选中选项
- * @property {CC.Base} selected
- */
-
-/**
- * @name CC.util.SelectionProvider#previous 前一个被选择子项
- * @property {CC.Base} previous
- */
-
-/**
- * 选择变更时发出,包括空选择
- * @name CC.ui.ContainerBase#selectchange
- * @event
+ * 选择变更时发出,包括空选择.
+ * @event selectchange
  * @param {CC.Base} item
- * @param {CC.Base}  pre
+ * @param {CC.Base}  previous
  * @param {CC.util.SelectionProvider} provider
  */
+ 
 /**@private*/
  onSelectChanged : function(item , b){
   if(!this.hasChanged(item, b))
@@ -8864,6 +9476,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 
 /**
  * 测试选择项状态是否改变
+ * @private
  */
  hasChanged : function(item, b){
   return !((item === this.selected) && b) || !(item && this.isSelected(item) === b);
@@ -8879,21 +9492,22 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
  },
 
 /**
- * 容器是否可选择
+ * 容器是否可选择.
  * @return {Boolean}
  */
  isSelectable : function(){
   return !this.unselectable;
  },
 /**
- * 容器是否可选择
+ * 设置容器是否可选择
  */
  setSelectable : function(b){
   this.unselectable = !b;
  },
 
 /**
- * 检测item是否能作为下一个选择项
+ * 检测item是否能作为下一个选择项.
+ * @param {CC.Base} item
  * @return {Boolean}
  */
  canNext : function(item){
@@ -8902,6 +9516,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 
 /**
  * 检测item是否能作为上一个选择项
+ * @param {CC.Base} item
  * @return {Boolean}
  */
  canPre : function(item){
@@ -8980,6 +9595,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 
 /**
  * 全选/全不选
+ * @param {Boolean}
  */
  selectAll : function(b){
   if(this.mode && !b){
@@ -8995,7 +9611,7 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
 /**
  * 反选
  */
- selectOpp : function(b) {
+ selectOpp : function() {
   var s = this;
   this.t.each(function(){
     s.setSelected(this, !s.isSelected(this), false);
@@ -9005,29 +9621,43 @@ CC.util.ProviderFactory.create('Connection', null, /**@lends CC.util.ConnectionP
  }
 });
 ﻿/**
- * @name CC.util.ValidationProvider
- * @class
+ * @class CC.util.ValidationProvider
+ * 为容器控件提供子项数据验证功能.
+ * @extends CC.util.ProviderBase
  */
 CC.util.ProviderFactory.create('Validation', null, {
   /**
-   * 验证失败时样式
-   * @private
+   * @cfg {String} errorCS 验证失败时添加到子项样式
    */
   errorCS : 'g-form-error',
-  
+/**
+ * @cfg {Boolean} focusOnError 验证失败时是否聚焦到子项,默认为true
+ */
   focusOnError : true,
   
 /**
- * @private
+ * 如果想定义子项数据出错时的修饰样式,可重写本方法.
+ * @param {Boolean} isValid 验证结果
+ * @param {CC.Base} item 容器子项
+ * @param {Array} collector 当前收集的错误信息
+ * @param {Object} type 验证类型,自行定义,除非要为容器定义多种验证类型,否则可忽略
  */
   decorateValidation : function(b, item, collector, type){
     if(item){
     	item.checkClass(item.errorCS || this.errorCS, !b);
     }
   },
-
+/**
+ * 接口,重写可实现自定义对子项的验证
+ * @param {CC.Base} item 容器子项
+ * @param {Array} collector 当前收集的错误信息
+ * @param {Object} type 验证类型,自行定义,除非要为容器定义多种验证类型,否则可忽略
+ */
   validator : fGo,
-  
+/**
+ * 验证容器所有子项.
+ * @param {Object} type 如果容器子项数据验证的类型有多种,传入type以自行识别,否则可忽略.
+ */
   validateAll : function(type){
     var self = this, coll = [], r;
     this.each(function(){
@@ -9046,23 +9676,29 @@ CC.util.ProviderFactory.create('Validation', null, {
   },
 
 /**
- * 事件返回false将中断往下验证
- * @name CC.ui.ContainerBase#validation:start
- * @event
- * @param {CC.ui.Item} item
- * @param {Array} collector
- * @param {String} [type]
+ * @event validation:start
+ * 事件由验证器{@link CC.util.ValidationProvider}提供,在验证容器某个子项数据开始时发送.事件返回false将中断往下验证.
+ * @param {CC.Base} item 容器子项
+ * @param {Array} collector 当前收集的错误信息
+ * @param {Object} type 验证类型,自行定义,除非要为容器定义多种验证类型,否则可忽略
+ * @member CC.ui.ContainerBase
  */
  
 /**
- * @name CC.ui.ContainerBase#validation:failed
- * @event
- * @param {CC.ui.Item} item
- * @param {Array} collector
- * @param {String} type
+ * @event validation:failed
+ * 事件由验证器{@link CC.util.ValidationProvider}提供,当容器某个子项数据验证失败时发送.
+ * @param {CC.Base} item 容器子项
+ * @param {Array} collector 当前收集的错误信息
+ * @param {Object} type 验证类型,自行定义,除非要为容器定义多种验证类型,否则可忽略
+ * @member CC.ui.ContainerBase
  */
+ 
 /**
- * 
+ * 单独验证指定子项数据. 
+ * @param {CC.Base} item 容器子项
+ * @param {Array} collector 当前收集的错误信息
+ * @param {Object} type 验证类型,自行定义,除非要为容器定义多种验证类型,否则可忽略.
+ * @return {Boolean} true or false
  */
   validate : function(item, collector, type){
 
@@ -9088,6 +9724,10 @@ CC.util.ProviderFactory.create('Validation', null, {
   
 /**
  * 通知Listener某个子项信息验证是否成功,可以手动验证后,调用该方法通知Listener验证结果.
+ * @param {Boolean} isValid
+ * @param {CC.Base} item 容器子项
+ * @param {Array} collector 当前收集的错误信息
+ * @param {Object} type 验证类型,自行定义,除非要为容器定义多种验证类型,否则可忽略
  * @return this
  */
   notifyValidation : function(isvalid, item, collector, type){
@@ -9103,7 +9743,9 @@ CC.util.ProviderFactory.create('Validation', null, {
   },
   
 /**
- * 验证是否<b>不</b>正确.
+ * 验证是否<b>不</b>正确,将调用{@link #validate}方法验证,并收集出错信息.
+ * @param {CC.Base} item 容器子项
+ * @param {Object} type 验证类型,自行定义,除非要为容器定义多种验证类型,否则可忽略
  * @return {Array|Boolean} 未通过验证返回消息数组,通过返回false
  */
   isInvalid :function(item, type){
@@ -9113,37 +9755,42 @@ CC.util.ProviderFactory.create('Validation', null, {
   }
 });
 ﻿/**
- * @name CC.util.StoreProvider
- * @class
+ * @class CC.util.StoreProvider
+ * 提供容器子项数据存储(添加,修改,删除)功能.
  */
 CC.util.ProviderFactory.create('Store', null, {
 /**
- * 
+ * @cfg {String} modifyUrl
  */
   modifyUrl : false,
 /**
- * 
+ * @cfg {String} addUrl
  */  
   addUrl  : false,
 /**
- * 
+ * @cfg {String} delUrl
  */  
   delUrl : false,
-  
-  updateIdOnAdd : true,
 /**
- * @type {Object}
- @example
+ * @cfg {Boolean} updateIdOnAdd
+ */  
+  updateIdOnAdd : true,
+  
+/**
+ * @cfg {Object} shareParams 每次更新都会提交的键值对数据.
+ <pre><code>
   shareParams : {appName:'cicy'}
+ </code></pre>
  */
   shareParams : false,
 /**
- * 
+ * @cfg {Boolean} setupUrlFromItem 每次提交前是否将子项数据影射到URL中,默认为true.
  */  
   setupUrlFromItem : true,
 
 /**
- * 
+ * @cfg {Function} isResponseOk 可以重写该函数,以定义返回的数据是否正常.
+ * @return {Boolean}
  */
   isResponseOk : function(ajax){
     return (CC.util.StoreProvider.isResponseOk && 
@@ -9159,18 +9806,14 @@ CC.util.ProviderFactory.create('Store', null, {
     if( this[name+'QueueCfg'] )
       delete this[name+'QueueCfg'];
   },
-/**
- * 
- */
+
   getDelQueue : function(){
     if(!this.delQueue){
       this.createAsycQueue('del');
     }
     return this.delQueue;
   },
-/**
- * 
- */  
+
   getSaveQueue : function(){
     if(!this.saveQueue){
       this.createAsycQueue('save');
@@ -9194,15 +9837,11 @@ CC.util.ProviderFactory.create('Store', null, {
     return url;
   },
   
-/**
- * http://www.example.com/del.jsp?itemId={id}
- */
+  //
   getDelUrl : function(item){
     return this.mappingUrl(this.delUrl, item);
   },
-/**
- * getpost data for item deleting
- */
+
   getDelQuery : function(item){
     var q = '';
     if(item){
@@ -9225,24 +9864,21 @@ CC.util.ProviderFactory.create('Store', null, {
     }
     return q;
   },
-/**
- * 
- */  
+ 
   getSaveUrl : function(item, isNew){
     return this.mappingUrl(isNew?this.addUrl:this.modifyUrl, item);
   },
 /**
- * 
- */  
+ * @cfg {Function} onSaveFail
+ */
   onSaveFail : fGo,
-/**
- * 
- */  
+
   beforeDel : function(item){
     return this.t.getValidationProvider().isInvalid(item, 'del')===false;
   },
 /**
- * 
+ * 删除某子项.
+ * @param {CC.Base} item
  */  
   del : function(item){
     if(item && this.isNew(item)){
@@ -9276,10 +9912,6 @@ CC.util.ProviderFactory.create('Store', null, {
     });
   },
 
-  
-/**
- * 
- */
   onDel : function(item){
     CC.Ajax.connect({
       url:this.getDelUrl(item),
@@ -9304,11 +9936,9 @@ CC.util.ProviderFactory.create('Store', null, {
     });
     this.getDelQueue().increase();
   },
-  
+/**@cfg {Function} onDelFail */
   onDelFail : fGo,
-/**
- * 
- */
+
   afterDel : function(item){
     if(item){
       item.pCt.remove(item);
@@ -9316,7 +9946,7 @@ CC.util.ProviderFactory.create('Store', null, {
     }
   },
 /**
- * 
+ * @param {CC.Base} item
  */
   save : function(item){
     var isNew = this.isNew(item),
@@ -9361,6 +9991,8 @@ CC.util.ProviderFactory.create('Store', null, {
     return this;
   },
 /**
+ * @param {Object} itemOption
+ * @param {Boolean} scrollIntoView
  * @return {CC.ui.Item}
  */
   createNew : function(itemOption, scrollIntoView){
@@ -9373,15 +10005,10 @@ CC.util.ProviderFactory.create('Store', null, {
     return item;
   },
   
-/**
- * @private
- */
   beforeSave : function(item, isNew){
     return this.t.getValidationProvider().isInvalid(item, 'save')===false;
   },
-/**
- * 
- */
+
   onSave : function(item, isNew){
       CC.Ajax.connect({
         url : this.getSaveUrl(item, isNew),
@@ -9413,31 +10040,25 @@ CC.util.ProviderFactory.create('Store', null, {
   },
   
 /**
- * @name CC.util.StoreProvider#updateIdOnAdd
- * @property {Boolean} [updateIdOnAdd=true]
+ * @cfg {Boolean} updateIdOnAdd 默认为true
  */
   afterSave  : function(item, isNew, ajax){
     if(isNew && this.updateIdOnAdd)
       item.id = this.getCreationId(ajax);
   },
 /**
- * 
+ * param {CC.Ajax} ajax
  */
   getCreationId : function(ajax){
     return (ajax.getText()||'').trim();
   },
   
-/**
- * @private
- */
   decorateNew : function(item, b){
     if(item)
       item.newed = b;
     return this;
   },
-/**
- * @private
- */
+
   decorateModified : function(item, b){
     if(item)
       item.modified = b;
@@ -9445,13 +10066,15 @@ CC.util.ProviderFactory.create('Store', null, {
   },
 
 /**
- * 
+ * @param {CC.Base} item
+ * @return {Boolean}
  */
   isModified : function(item){
     return item ? item.modified : false;
   },
 /**
  * 容器数据是否被修改过.
+ * @return {Boolean} 
  */
   isModifiedAll : function(){
   	var self = this, md = false;
@@ -9465,22 +10088,21 @@ CC.util.ProviderFactory.create('Store', null, {
   },
   
 /**
- * 
+ * @param {CC.Base} item
+ * @return {Boolean}  
  */
   isNew : function(item){
     return item ? item.newed : false;
   },
 
+  itemQueryTempl : false,
 /**
- * @name CC.util.StoreProvider#shareParams
- */ 
-
-/**
- * @name CC.util.StoreProvider#itemQueryTempl
+ * @cfg  {String} itemQueryTempl
  */ 
  
 /**
- * 
+ * @param {CC.Base} item
+ * @return String
  */
   queryString : function(item){
     var q = '';
@@ -9513,21 +10135,27 @@ CC.util.ProviderFactory.create('Store', null, {
   getItemQuery : fGo
 });
 ﻿/**
- * @class
+ * @class CC.util.Validators
  */
 CC.util.Validators = {
+/***/
   NoEmpty : function(v){
     if(!v || v.trim() == ''){
       return '该项不能为空'
     }
     return true;
   },
-  
+/***/
   Mail : function(v){
     return !CC.isMail(v)?'邮箱格式不正确':true;
   }
 };
-﻿(function(){
+﻿  /**
+   * @class CC.layout.BorderLayout
+   * 东南西北中布局, 与Java swing中的BorderLayout具有相同效果.
+   * @extends CC.layout.Layout
+   */
+(function(){
   var CC = window.CC,
       tpx = CC.Tpl,
       uix = CC.ui,
@@ -9540,10 +10168,6 @@ CC.util.Validators = {
   tpx.def('CC.ui.BorderLayoutSpliter' , '<div class="g-layout-split"></div>')
      .def('CCollapseBarH' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td><td class="cb-r"></td></tr></table>')
      .def('CCollapseBarV' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td></tr><tr><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td></tr><tr><td class="cb-r"></td></tr></table>');
-  /**
-   * @name CC.ui.BorderLayoutSpliter
-   * @class
-   */
   uix.BorderLayoutSpliter = CC.create(CC.Base, function(spr) {
 
     //ghost 初始坐标
@@ -9566,6 +10190,7 @@ CC.util.Validators = {
  * 计算拖动范围dx,dy
  * @private
  * @return {Array}
+ * @ignore
  */
       getRestrict: function() {
         var ly = this.layout,
@@ -9728,13 +10353,7 @@ CC.util.Validators = {
     };
   });
 
-  /**
-   * @name CC.ui.BorderLayoutCollapseBar
-   * @class
-   * @extends CC.ui.ContainerBase
-   */
   uix.BorderLayoutCollapseBar = CC.create(ccx,
-   /**@lends CC.ui.BorderLayoutCollapseBar.prototype*/
    {
 
     type : 'CC.ui.BorderLayoutCollapseBar',
@@ -9793,9 +10412,7 @@ CC.util.Validators = {
       this.pCt.layout.collapse(this, true);
     },
 
-    /**
-     * 收缩按钮点击
-     */
+    // 收缩按钮点击
     onNavBlockClick : function(){
       var c = this.comp;
       c.setXY(10000,10000);
@@ -9804,9 +10421,7 @@ CC.util.Validators = {
       this.itsLayout.collapse(c, false);
     },
 
-    /**
-     * 使得面板浮动
-     */
+    // 使得面板浮动
     makeFloat : function(){
       var c = this.comp;
       c.addClass(this.compContextedCS)
@@ -9854,9 +10469,7 @@ CC.util.Validators = {
       }
     },
 
-    /**
-     * 面板复原
-     */
+    // 面板复原
     unFloat : function(){
       var c = this.comp,
           cfg = c.lyInf;
@@ -9868,17 +10481,13 @@ CC.util.Validators = {
       this.getShadow().detach();
     },
 
-    /**
-     * 点击区域范围外时回调
-     */
+    // 点击区域范围外时回调
     onCompReleaseContext : function(){
       var cfg = this.pCt.layout.cfgFrom(this);
       cfg.cbar.unFloat();
     },
 
-    /**
-     * 侧边栏点击
-     */
+    // 侧边栏点击
     onBarClick : function(){
       var c = this.comp;
       if(c.contexted)
@@ -9890,9 +10499,7 @@ CC.util.Validators = {
       }
     },
 
-    /**
-     * 设置浮动面板浮动开始前位置与宽高
-     */
+    // 设置浮动面板浮动开始前位置与宽高
     setCompContextedBounds : function(){
       var c = this.comp, dir = this.dir;
       if(dir === 'west')
@@ -9922,32 +10529,22 @@ CC.util.Validators = {
     }
 
   });
-/**
- * 与Java swing中的BorderLayout具有相同效果.
- * 将容器内控件作为沿边框布局.
- *
- * @name CC.layout.BorderLayout
- * @class
- * @extends CC.layout.Layout
- */
+
 CC.create('CC.layout.BorderLayout', CC.layout.Layout,
-  /**@lends CC.layout.BorderLayout#*/
   {
     /**
-     * 水平方向分隔条高度,利用面板布置设置可覆盖该值.
+     * @cfg {Number} hgap 水平方向分隔条高度,利用面板布置设置可覆盖该值,默认5.
      */
     hgap: 5,
     /**
-     * 垂直方向分隔条高度,利用面板布置设置可覆盖该值.
+     * @cfg {Number} vgap  垂直方向分隔条高度,利用面板布置设置可覆盖该值,默认5.
      */
     vgap: 5,
     /**
-     * 侧边栏宽度.
+     * @cfg {Number} cgap 侧边栏宽度,默认32.
      */
     cgap : 32,
-    /**
-     *
-     */
+
     cpgap : 5,
 
     wrCS : 'g-borderlayout-ct',
@@ -9995,7 +10592,10 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
 
       return this;
     },
-/***/
+/**
+ * 获得收缩栏.
+ * @return {CC.Base}
+ */
     getCollapseBar : function(c){
       var cfg,
           cg,
@@ -10194,26 +10794,68 @@ var ly = CC.layout;
 var B =  ly.Layout;
 var superclass = B.prototype;
 var Math = window.Math;
+var Base = CC.Base;
 /**
- * CardLayout,容器内所有子项宽高与容器一致
- * @name CC.layout.CardLayout
+ * @class CC.layout.CardLayout
+ * CardLayout,容器内所有子项宽高与容器一致.<br>
+ <pre><code>
+   new CC.ui.Win({
+     // 使得子项iframepanel布满整个window客户区域.
+     layout:'card',
+     items : [
+       {ctype :'iframe', src:'http://www.g.cn' }
+     ]
+   });
+ </code></pre>
  * @extends CC.layout.Layout
- * @class
  */
 CC.create('CC.layout.CardLayout', B, {
   wrCS : 'g-card-ly-ct',
   layoutChild : function(item){
     var sz = this.ct.wrapper.getContentSize(true);
     if(!item.rendered)
-    	CC.Base.prototype.setSize.apply(item, sz);
+    	Base.prototype.setSize.apply(item, sz);
     else item.setSize(sz[0], sz[1]);
   }
 });
 
 ly.def('card', ly.CardLayout);
 /**
- * @name CC.layout.QQLayout
- * @class
+ * @class CC.layout.QQLayout
+ *  
+ <pre><code>
+ 			var win = new CC.ui.Win({
+				layout:'qq',
+				title:'QQ布局管理器',
+				width:190,
+				height:450,
+				itemCls:'titlepanel',
+				lyCfg : {
+					items : [
+					 {ctype:'titlepanel',title:'我的好友', array:[
+	  					{ctype:'folder',
+	  					 selectionProvider : {mode:0},
+	  					 array:[
+				  			{title:'disabled item',icon:'iconRef',disabled:true},
+								{title:'粉红色',icon:'iconUser'},
+								{title:'蓝色',icon:'iconEdit'},
+								{title:'清除记录',icon:'iconLeaf'},
+								{title:'粉红色',icon:'iconTabs'},
+								{title:'蓝色',icon:'iconUser'},
+								{title:'清除记录',icon:'iconEdit'}
+	  	         ]
+	  				 }
+	  			]},
+					 {title:'陌生人'},
+					 {title:'黑名单'}
+					]
+				},
+				showTo:document.body
+			});
+      win.render();
+      win.layout.collapse(win.$(0), false);
+		});
+ </code></pre>
  * @extends CC.layout.Layout
  */
 CC.create('CC.layout.QQLayout', B, {
@@ -10272,7 +10914,7 @@ CC.create('CC.layout.QQLayout', B, {
     },
 /**
  * @param {CC.Base} component
- * @param {Boolean}
+ * @param {Boolean} collapseOrNot
  */
     collapse : function(comp, b){
       var cfg = comp.lyInf,fr = this.frontOne;
@@ -10298,13 +10940,25 @@ CC.create('CC.layout.QQLayout', B, {
 ly.def('qq', ly.QQLayout);
 
 /**
+ * @class CC.layout.RowLayout
  * 行布局,该布局将对子控件宽度/高度进行布局,不干预控件坐标.
- * 控件配置方面:
+ * 控件配置方面:<div class="mdetail-params"><ul>
  * <li>auto : 自动宽高,不进行干预</li>
  * <li>具体宽/高 : 如50px</li>
- * <li>leading : 平分宽高</li>
- * @name CC.layout.RowLayout
- * @class
+ * <li>leading : 平分宽高</li></ul></div><br>
+  <pre><code>
+var win = new CC.ui.Win({
+  showTo:document.body,
+  layout:'row',
+  lyCfg:{
+    items:[
+    {ctype:'base', template:'<div />', cs:'fix', css:'h:50', strHtml:'fixed height'},
+    {ctype:'base', template:'<div />', cs:'lead',strHtml:'lead',lyInf:{h:'lead'}},
+    ]
+  }
+});
+win.render();
+  </code></pre>
  * @extends CC.layout.Layout
  */
 CC.create('CC.layout.RowLayout', B, {
@@ -10381,49 +11035,139 @@ ly.RowLayout.prototype.layoutChild = ly.RowLayout.prototype.onLayout;
 ly.def('row', ly.RowLayout);
 
 /**
- * @name CC.layout.TableLayout
- * @class
+ * @class CC.layout.TableLayout
+ * 用HTML TABLE元素布局控件,主要用于表单设计中,
+ * 布局信息用JSON表示,通过 lyCfg:{  items:  } 传入.
+ * items为一个数组,数组每个元素代表一行(tr).
+ * 每一行的数据格式可为一个数组或一个object
+ * 
+ *  行为数组时,数组中每个元素表示每个单元(td)<br>
+ *  行为object时,表示该行只有一个单元格,可以在object中定义td,tr的属性信息, object.td = {}, object.tr = {}<br>
+ * 当一个配置信息既无ctype属性,亦无td属性时被看作是该行tr的信息
+ * <br>
+ <pre><code>
+var win = new CC.ui.Win({
+  showTo:document.body,
+  layout:'table',
+  lyCfg:{
+    // 设置table结点的class样式
+    tblCs : 'form_tbl',
+    // 设置每个分组的信息
+  	group:{ 
+  		cols:2,
+  		// 第一个colgroup结点的信息
+  		0 : {css:'w:120', cs:'hgrp'} 
+  	},
+  	
+    items:[
+      //  row one
+      [ 
+        { 
+          // cell one
+          ctype:'label', 
+          title:'提交请求:', 
+          // td结点的信息
+          td:{css:'tr', cs:'cap'}
+        },
+         // cell two
+        {ctype:'text',  width:120, value:'提交请求:'}
+      ],
+      // row two
+      { 
+        ctype:'text', css:'w:100%', 
+        // td.colspan = 2
+        td:{cols:2}
+      },
+      
+      [
+        // 占位td
+        false, 
+        // tr信息
+        {cs:'tr-row'}, 
+        {td:{css:'h:33'}}
+      ],
+      // row with single cell 
+      {tr:{cs:'tr-end'}, td:{cols:2}}
+    ]
+  }
+});
+ </code></pre>
+ * @extends CC.layout.Layout
  */
 CC.create('CC.layout.TableLayout', B, {
 
 	attach : function(ct){
 		// cache the items
 	  this._items = ct.lyCfg && ct.lyCfg.items;
-	  ct._addNode = fGo;
+	  // 自由添加结点到容器
+	  ct._addNode = ct._removeNode = fGo;
 	  superclass.attach.apply(this, arguments);
 	},
 	
 	//override
   fromArray : function(items){
-    var len = items.length, i, j, as, news = [];
+    // 将items的json行列所有数据存到单一的数组中,由父类fromArray载入
+    // 未定义ctype的配置作为非实体控件配置处理
+    var len = items.length, i, j, as, news = [], tds = [];
     for(i=0;i<len;i++){
       as = items[i];
       if(CC.isArray(as)){
         for(j=0;j<as.length;j++){
-          if(as[j] && as[j].ctype)
+          if(as[j] && as[j].ctype){
             news.push(as[j]);
+            // 避免td污染
+//            tds.push(as[j].td);
+//            delete as[j].td;
+          }   
         }
       }else if(as && as.ctype){
         news.push(as);
+        // 避免td污染
+//        tds.push(as.td);
+//        delete as.td;
       }
     }
     superclass.fromArray.call(this, news);
+    
+    // 恢复td
+//    for(i=0,len=news.length;i<len;i++){
+//      if(news[i].td !== undefined){
+//        news[i].td = tds[i];
+//      }
+//    }
+//    tds = null;
     news = null;
   },
-  
-	//override
+/**
+ * @property tableEl
+ * @type HTMLElement
+ */
+/**
+ * @cfg {String} tblCs class name of main table node
+ */
+/**
+ * 一次性布局,生成table表
+ * @private
+ */
 	onLayout : function(){
 		if(!this.layouted){
 			superclass.onLayout.apply(this, arguments);
 			
 			this.layouted = true;
 			
-			var c = this.ct,
-			    tb = CC.$C('TABLE');
+			var tbl = this.tableEl;
+			var tb = this.tableEl = CC.$C('TABLE');
+			var c = this.ct;
+			
 			tb.className = 'g-ly-tbl';
-			if(this.tbl){
-			  CC.Base.applyOption(tb, this.tbl);
-			  delete this.tbl;
+			
+			if(this.tblCs){
+			  CC.fly(tb).addClass(this.tblCs).unfly();
+			  delete this.tblCs;
+			}
+			
+			if(tbl){
+			  Base.applyOption(tb, tbl);
 			}
 			
 			if(this.group){
@@ -10434,7 +11178,7 @@ CC.create('CC.layout.TableLayout', B, {
 				for(i=0;i<len;i++){
 				  col = CC.$C('COL');
 				  if(g[i]){
-				    CC.Base.applyOption(col, g[i]);
+				    Base.applyOption(col, g[i]);
 				  }
 				  gn.appendChild(col);
 				}
@@ -10444,46 +11188,70 @@ CC.create('CC.layout.TableLayout', B, {
 			
 			var tbody = CC.$C('TBODY'),
           its = this._items;
-
+          
 			if(its){
 			  var szits = its.length, chs = c.children, szchs = chs.length;
-			  var i,j,k,ch, szr, tr, td, cc;
+			  var i,j,k,ch, szr, tr, td, cc, inf, tp;
 			  for(i=0, k=0;i<szits;i++){
 			    r = its[i];
 			    tr = CC.$C('TR');
 			    
 			    if(CC.isArray(r)){
 				     for(j=0,szr=r.length;j<szr;j++){
-				       td = CC.$C('TD');
-				       td.className = 'tbl-td';
 				       cc = r[j];
 				       if(cc){
-						      if(cc.ctype){
+				          inf = cc.td, tp = cc.ctype;
+				          if(!inf && !tp){
+				            // tr config
+				            Base.applyOption(tr, cc);
+				            continue;
+				          }
+				          td = CC.$C('TD');
+				          td.className = 'tbl-td';
+				          // td class
+				          if(cc.tdcs)
+				            CC.fly(td).addClass(cc.tdcs).unfly();
+				          // apply td cfg
+							    if(inf){
+							       if(inf.cols){
+							         td.colSpan = inf.cols;
+							         delete inf.cols;
+							       }
+							       Base.applyOption(td, inf);
+							     }
+							    // add component to td
+                  if(tp){
 							       ch  = chs[k++];
 							       td.appendChild(ch.view);
 							    }
-							    if(cc.lyInf){
-							       var inf = cc.lyInf;
-							       if(inf.td)
-							         CC.Base.applyOption(td, inf.td);
-							       if(inf.cols)
-							         td.colSpan = inf.cols;
-							     }				       
+							    tr.appendChild(td);
+				       }else {
+				         // else single td, nothing
+				         td = CC.$C('TD');
+				         td.className = 'tbl-td';
+				         tr.appendChild(td);
 				       }
-				       tr.appendChild(td);
 				     }
 			    }else {
-				     ch  = chs[k++];
 				      // single td in row
 				     td = CC.$C('TD');
-				     if(ch.lyInf){
-				       var inf = ch.lyInf;
-				       if(inf.td)
-				         CC.Base.applyOption(td, inf.td);
-				       if(inf.cols)
+				     if(r.td){
+				       var inf = r.td;
+				       if(inf.cols){
 				         td.colSpan = inf.cols;
+				         delete td.cols;
+				       }
+				       Base.applyOption(td, inf);
 				     }
-				     td.appendChild(ch.view);
+				     if(r.tr){
+              // tr config
+              Base.applyOption(tr, r.tr);
+				     }
+				     if(r.ctype){
+				       ch  = chs[k++];
+				       td.appendChild(ch.view);
+				     }
+				     
 				     tr.appendChild(td);
 			    }
 			    tbody.appendChild(tr);
@@ -10499,7 +11267,13 @@ CC.create('CC.layout.TableLayout', B, {
 CC.layout.def('table', CC.layout.TableLayout);
 
 })();
-﻿CC.create('CC.layout.TablizeLayout', CC.layout.Layout, {
+﻿/**
+ * @class CC.layout.TablizeLayout
+ * 只有一行的table布局,主要用于toolbar的布局,使得任何类型的元素排列的都比较整齐.
+ * 也常用于form布局,当需要并排表单组件时,此布局就能派上用场了.
+ * @extends CC.layout.Layout
+ */
+CC.create('CC.layout.TablizeLayout', CC.layout.Layout, {
 
   attach : function(ct){
   	var self = this;
@@ -10530,7 +11304,9 @@ CC.layout.def('table', CC.layout.TableLayout);
 	    CC.layout.Layout.prototype.onLayout.apply(this, arguments);
     }
   },
-  
+/**
+ * 添加分隔条.
+ */
   addSeparator : function(){
   	var td = CC.$C({
   	  tagName:'TD',
@@ -10541,29 +11317,31 @@ CC.layout.def('table', CC.layout.TableLayout);
   }
 });
 CC.layout.def('tablize', CC.layout.TablizeLayout);
+/**
+ * @class CC.ui.TabItemLayout
+ * 用于布局{@link CC.ui.Tab}容器里的{@link CC.ui.TabItem},使得子项超出可视时出视导航条.
+ * @extends CC.layout.Layout
+ */
 CC.Tpl.def('CC.ui.TabItemLayout', '<div class="g-panel"><div class="auto-margin" id="_margin"><a href="javascript:fGo()" id="_rigmov" class="auto-rigmov" style="right:0px;"></a><a href="javascript:fGo()" style="left:0px;" id="_lefmov" class="auto-lefmov"></a><div class="auto-scrollor" id="_scrollor" tabindex="1" hidefocus="on"><div class="auto-offset" id="_wrap"></div></div></div></div>');
 CC.create('CC.ui.tab.TabItemLayout', CC.layout.Layout, function(father){
-return /**@lends CC.ui.tab.TabItemLayout#*/{
+return {
 
   layoutOnChange : true,
   /**
    * 该值须与 CSS 中的.auto-margin值保持同步,因为这里margin并不是由JS控制.
    * 出于性能考虑,现在把它固定下来
-   * @property horizonMargin {Number} 水平方向空位
    * @private
    */
   horizonMargin: 5,
 
   /**
    * 该值须与左边导航按钮宽度一致,出于性能考虑,现在把它固定下来
-   * @property {Number} navLeftWidth
    * @private
    */
   navLeftWidth: 24,
 
   /**
    * 该值须与右边导航按钮宽度一致,出于性能考虑,现在把它固定下来
-   * @property {Number} navLeftWidth
    * @private
    */
   navRightWidth: 24,
@@ -10594,7 +11372,6 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
     return [this.marginLeft||this.horizonMargin, this.marginRight||this.horizonMargin];
   },
 
-/**@override*/
   attach: function(ct){
     father.attach.call(this, ct);
 
@@ -10644,9 +11421,9 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
 
 /**
  * 滚动至首个隐藏按钮,使得按钮处于可见状态
- * @param {String} l 或 r
+ * @param {String} dir l 或 r
  */
-  scrollToNext : function(dir, /**@inner*/norepeat){
+  scrollToNext : function(dir, norepeat){
     var nxt = this.getNextHiddenItem(dir);
     if(nxt){
       this.scrollItemIntoView(nxt);
@@ -10696,7 +11473,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
     this.scrollToNext(this.getDirFromEvent(e), true);
   },
 
-/**@override*/
+
   add: function(comp){
     //override & replace
     comp.scrollIntoView = this.scrollItemIntoView.bind(this);
@@ -10822,7 +11599,6 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
     this.scrollor.setWidth(w);
   },
 /**
- * @override
  * @private
  */
   onLayout : function(w){
@@ -10867,7 +11643,8 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
 
 
 /**
- * 检查导航按钮状态，是否应显示或禁用。
+ * 检查导航按钮状态，是否应显示或禁用.
+ * @private
  */
   checkStatus : function(){
     var ct = this.ct,
@@ -10882,11 +11659,7 @@ return /**@lends CC.ui.tab.TabItemLayout#*/{
   }
 };
 });
-/**
- * 注册的CC.ui.tab.TabItemLayout布局
- * @name CC.layout#tabitem
- * @field
- */
+
 CC.layout.def('tabitem', CC.ui.tab.TabItemLayout);
 ﻿(function(){
 
@@ -10894,65 +11667,54 @@ var CC = window.CC;
 var PR = CC.Base.prototype;
 
 /**
- * 阴影类
- * 阴影类须在文档创建后(DOM Ready)生成.
- * @name CC.ui.Shadow
- * @class 阴影类
+ * @class CC.ui.Shadow
+ * 阴影类, 阴影类须在文档创建后(DOM Ready)生成.
  * @extends CC.Base
  */
 CC.Tpl.def('CC.ui.Shadow' , CC.ie6 ? '<div class="g-dxshadow"></div>' : '<div class="g-shadow" style="display:none;"><div class="g-shadow-t" id="_t"></div><div class="g-shadow-lt" id="_lt"></div><div class="g-shadow-rt" id="_rt"></div><div class="g-shadow-l" id="_l"></div><div class="g-shadow-lb" id="_lb"></div><div class="g-shadow-r" id="_r"></div><div class="g-shadow-rb" id="_rb"></div><div class="g-shadow-b" id="_b"></div></div>');
-
 CC.create('CC.ui.Shadow', CC.Base,
-/**@lends CC.ui.Shadow.prototype*/
 {
 /**
- * @property {Number} [inpactW=8] 阴影宽度相关参数
+ * @cfg {Number} [inpactW=8] 阴影宽度相关参数
  */
   inpactW : 8,
 /**
- * @property {Number} [inpactH=0] 阴影高度相关参数
+ * @cfg {Number} [inpactH=0] 阴影高度相关参数
  */
   inpactH : 0,
 /**
- * @property {Number} [inpactX=-4] 阴影x方向位移相关参数
+ * @cfg {Number} [inpactX=-4] 阴影x方向位移相关参数
  */
   inpactX : -4,
 /**
- * @property {Number} [inpactY=8] 阴影y方向位移相关参数
+ * @cfg {Number} [inpactY=8] 阴影y方向位移相关参数
  */
   inpactY : 4,
 /**
- * @property {Number} [shadowWidth=8] 阴影边沿宽度,该值只对IE有效
+ * @cfg {Number} [shadowWidth=8] 阴影边沿宽度,该值只对IE有效
  */
   shadowWidth : 6,
 
   /**
-   * 变换引起的偏移量, 专为IE6采用的滤镜设置,非IE6时忽略该值,默认为4, 参见CSS滤镜中Blur(pixelradius).
-   * @property {Number}
+   * @cfg {Number} offset 变换引起的偏移量, 专为IE6采用的滤镜设置,非IE6时忽略该值,默认为4, 参见CSS滤镜中Blur(pixelradius).
    * @private
    */
   offset : 4,
-/**
- * @property {Boolean} [hidden=true] 默认隐藏
- */
+
   hidden : true,
 
-
-  initComponent : function(){
 /**
- * @name CC.ui.Shadow#showTo
- * @property {DOMElement} [showTo=document.body] 默认显示在document.body中
+ * @cfg {CC.Base} target 阴影附加的目标控件
  */
+  target : false,
+  
+  initComponent : function(){
 
     PR.initComponent.call(this);
-/**
- * @name CC.ui.Shadow#target
- * @property {CC.Base} [target] 阴影附加的目标控件
- */
+
     if(this.target)
         this.attach(this.target);
     if(CC.ie && !CC.ie6){
-      //@private
       this.shadowR = this.dom('_r');
       this.shadowB = this.dom('_b');
       this.shadowL = this.dom('_l');
@@ -11063,10 +11825,7 @@ CC.create('CC.ui.Shadow', CC.Base,
     return this;
   },
 
-  /**
-   * 只有target显示时才显示阴影,否则忽略.
-   * @override
-   */
+  // 只有target显示时才显示阴影,否则忽略.
   display : function(b){
     if(b===undefined)
       return PR.display.call(this);
@@ -11089,19 +11848,16 @@ CC.ui.def('shadow', CC.ui.Shadow);
 var CC = window.CC;
 var PR = CC.Base.prototype;
 /**
- * 加载提示类
- * @name CC.ui.Loading
- * @class 加载提示类
+ * @class CC.ui.Loading
+ * 加载提示类,参见{@link CC.util.ConnectionProvider}
  * @extends CC.Base
  */
 CC.Tpl.def( 'CC.ui.Loading' , '<div class="g-loading"><div class="g-loading-indicator"><span id="_tle">加载中,请稍候...</span></div></div>');
 
 CC.create('CC.ui.Loading', CC.Base,
- /**@lends CC.ui.Loading.prototype*/
  {
 /**
- * @field
- * 掩层CSS类名
+ * @cfg {String} loadMaskCS 掩层CSS类名
  */
   loadMaskCS:'g-loading-mask',
 
@@ -11112,13 +11868,16 @@ CC.create('CC.ui.Loading', CC.Base,
   },
 
 /**
+ * @property target
+ * 目标容器
+ * @type CC.ui.ContainerBase
+ */
+ 
+/**
  * 装饰容器,当容器加载数据时出现提示.
+ * @param {CC.ui.ContainerBase} targetContainer
  */
   attach : function(target){
-/**
- * @name CC.ui.Loading#target
- * @property {Base} [target] 目标控件
- */
     this.target = target;
     this.target.
       on('open',this.whenOpen,this).
@@ -11146,23 +11905,31 @@ CC.create('CC.ui.Loading', CC.Base,
     }
   },
 /**
- * 开始加载提示
+ * @cfg {String} targetLoadCS 加载时添加到目标的样式
+ */
+   targetLoadCS : false,
+   
+/**
+ * @cfg {Boolean} maskDisabled 是否禁用掩层
+ */
+   maskDisabled : false,
+   
+/**
+ * @cfg {Boolean} loadMsgDisabled 是否禁用消息提示
+ */
+   loadMsgDisabled : false,
+   
+/**
+ * 开始加载提示.
  */
   markIndicator : function(){
     if(this.disabled)
       return;
-/**
- * @name CC.ui.Loading#targetLoadCS
- * @property {String} [targetLoadCS] 加载时添加到目标的样式
- */
+      
     if(this.targetLoadCS)
       CC.fly(this.target).addClass(this.targetLoadCS).unfly();
 
     //应用掩层
-/**
- * @name CC.ui.Loading#maskDisabled
- * @property {Boolean} [maskDisabled=false] 是否禁用掩层
- */
     if((!this.mask || !this.mask.tagName) && !this.maskDisabled){
       this.mask = CC.$C({tagName:'DIV', className:this.loadMaskCS});
     }
@@ -11171,15 +11938,11 @@ CC.create('CC.ui.Loading', CC.Base,
       this.target.wrapper.append(this.mask).unfly();
     }
 
-/**
- * @name CC.ui.Loading#loadMsgDisabled
- * @property {Boolean} [loadMsgDisabled=false] 是否禁用消息提示
- */
     if(!this.loadMsgDisabled)
       this.target.wrapper.append(this);
   },
 /**
- * 停止加载提示
+ * 停止加载提示.
  */
   stopIndicator : function(){
     if(this.targetLoadCS)
@@ -11200,13 +11963,16 @@ CC.create('CC.ui.Loading', CC.Base,
     }
   },
 /**
- * 目标是否正在加载中
+ * 目标是否正在加载中.
+ * @return {Boolean}
  */
   isBusy : function(){
     return this.target.busy;
   },
+  
 /**
- * 目标是否已成功加载
+ * 目标是否已成功加载.
+ * @return {Boolean}
  */
   isLoaded : function(){
     return this.target.loaded;
@@ -11216,24 +11982,24 @@ CC.create('CC.ui.Loading', CC.Base,
 CC.ui.def('loading', CC.ui.Loading);
 })();
 ﻿/**
- * @name CC.ui.Mask
- * @class 容器控件遮掩层
+ * @class CC.ui.Mask 容器控件遮掩层
  * @extends CC.Base
  */
-CC.create('CC.ui.Mask', CC.Base, /**@lends CC.ui.Mask#*/{
+CC.create('CC.ui.Mask', CC.Base, {
 
   innerCS: 'g-modal-mask',
 
   template : 'div',
 
 /**
- * 点击层时响应回调
- * @type function
+ * @cfg {Function} onactive 点击层时响应回调
  */
-  onActive : null,
+  onactive : null,
 
 /**
- * @property {CC.Base} target 目标容器
+ * @property target
+ * 目标容器
+ * @type CC.ui.ContainerBase
  */
 
   initComponent : function(){
@@ -11248,12 +12014,13 @@ CC.create('CC.ui.Mask', CC.Base, /**@lends CC.ui.Mask#*/{
   /**@private*/
   onMaskResponsed : function(){
      this.fire('active', this);
-     if(this.onActive)
-      this.onActive();
+     if(this.onactive)
+      this.onactive();
   },
 
 /**
  * 绑定目标容器
+ * @param {CC.ui.ContainerBase} target
  */
   attach : function(target){
 
@@ -11317,16 +12084,17 @@ CC.create('CC.ui.Mask', CC.Base, /**@lends CC.ui.Mask#*/{
   }
 });
 ﻿/**
+ * @class CC.ui.Viewport
  * 时刻布满整个浏览器客户区的面板
- * @class
- * @name CC.ui.Viewport
+ * @extends CC.ui.Panel
  */
-CC.create('CC.ui.Viewport', CC.ui.Panel, /**@lends CC.ui.Viewport#*/{
+CC.create('CC.ui.Viewport', CC.ui.Panel, {
 
   bodyCS : 'g-viewport-body',
 
   cs : 'g-viewport',
   
+/**@cfg {Array} mg margins*/
   mg : [0,0,0,0],
   
   initComponent : function(){
@@ -11374,8 +12142,7 @@ CC.ui.def('viewport', CC.ui.Viewport);
 ﻿CC.Tpl.def('CC.ui.FolderItem', '<li class="g-unsel"><b id="_ico" class="icos"></b><a id="_tle" class="g-tle"></a></li>')
       .def('CC.ui.Folder', '<div class="g-folder g-grp-bdy"><div class="g-grp-bdy" id="_scrollor"><ul id="_bdy" tabindex="1" hidefocus="on"></ul></div></div>');
 /**
- * @name CC.ui.Folder
- * @class
+ * @class CC.ui.Folder
  * @extends CC.ui.ContainerBase
  */
 CC.create('CC.ui.Folder', CC.ui.ContainerBase, /**@lends CC.ui.Folder#*/{
@@ -11391,12 +12158,11 @@ CC.create('CC.ui.Folder', CC.ui.ContainerBase, /**@lends CC.ui.Folder#*/{
 CC.ui.def('folder', CC.ui.Folder);
 ﻿CC.Tpl.def('CC.ui.Button', '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="g-btn-l"><i>&nbsp;</i></td><td class="g-btn-c"><em unselectable="on"><button type="button" class="g-btn-text" id="_tle"></button></em></td><td class="g-btn-r"><i>&nbsp;</i></td></tr></tbody></table>');
 /**
- * @name CC.ui.Button
- * @class
+ * @class CC.ui.Button
  * @extends CC.Base
  */
 CC.create('CC.ui.Button', CC.Base, function(superclass){
-    return /**@lends CC.ui.Button#*/{
+    return {
         iconNode: '_tle',
         focusNode: '_tle',
         hoverCS: 'g-btn-over',
@@ -11454,7 +12220,9 @@ CC.create('CC.ui.Button', CC.Base, function(superclass){
         }
     };
 });
-
+/**
+ * @class CC.ui.DropButton
+ */
 CC.create('CC.ui.DropButton', CC.ui.Button, {
 
   downCS : 'g-btn-dwn',
@@ -11464,7 +12232,11 @@ CC.create('CC.ui.DropButton', CC.ui.Button, {
   _onclick : function(e){
     if(this.array)
       this.createMenu();
-
+/**
+ * @property menu
+   下拉菜单
+ * @type CC.ui.Menu
+ */
     if(this.menu){
       CC.Event.stop(e);
       this.showMenu(!!this.menu.hidden);
@@ -11472,7 +12244,7 @@ CC.create('CC.ui.DropButton', CC.ui.Button, {
 
     CC.ui.DropButton.superclass._onclick.apply(this, arguments);
   },
-
+/***/
   showMenu : function(b){
     if(b){
       this.menu.at(this, true);
@@ -11481,7 +12253,7 @@ CC.create('CC.ui.DropButton', CC.ui.Button, {
       this.menu.hide();
     }
   },
-
+/***/
   decorateDown : function(b){
     this.checkClass(this.downCS, b);
   },
@@ -11522,12 +12294,11 @@ CC.Tpl['CC.ui.Toolbar'] = '<div class="g-tbar"><div class="g-tbar-wr" id="_wrap"
 
 
 /**
- * 工具栏,32*32图标大小
  * @class CC.ui.Bigbar
  * @extends CC.ui.Panel
  */
 
-CC.create('CC.ui.Bigbar', CC.ui.Panel,  /**@lends CC.ui.Bigbar#*/{
+CC.create('CC.ui.Bigbar', CC.ui.Panel, {
 
    keyEvent:false,
 
@@ -11583,9 +12354,8 @@ CC.create('CC.ui.BigbarDropButton', CC.ui.DropButton, {
 
 CC.ui.def('bigbardropbtn', CC.ui.BigbarDropButton);
 /**
+ * @class CC.ui.Smallbar
  * 小型工具栏,16*16图标大小
- * @name CC.ui.Smallbar
- * @class
  * @extends CC.ui.Panel
  */
 CC.create('CC.ui.Smallbar', CC.ui.Panel, /**@lends CC.ui.Smallbar#*/{
@@ -11648,15 +12418,15 @@ CC.ui.def('smallbardropbtn', CC.ui.SmallbarDropButton);
 CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"><tbody><tr id="_ctx"><td class="tLe" id="_tLe"></td><td class="bdy"><nobr id="_tle" class="g-tle">选卡1</nobr></td><td class="btn" id="_btnC"><a href="javascript:fGo()" title="关闭" id="_trigger" class="g-ti-btn"></a></td><td class="tRi" id="_tRi"></td></tr></tbody></table>');
 
 /**
- * @name CC.ui.TabItem
- * @class
+ * @class CC.ui.TabItem
  * @extends CC.ui.ContainerBase
  */
   CC.create('CC.ui.TabItem', CC.ui.ContainerBase, {
 
     hoverCS: false,
 /**
- * @type Boolean
+ * 是否可关闭.
+ * @cfg {Boolean} closeable
  */
     closeable: true,
 
@@ -11665,9 +12435,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     ct: '_ctx',
 
     blockMode: 2,
-/**
- * 加载时样式
- */
+
     loadCS: 'g-tabitem-loading',
 
     initComponent: function() {
@@ -11684,8 +12452,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 
 /**
- * 增加按钮
- * @param {Object} config
+ * 增加按钮,如关闭按钮,还可以增加其它类似的按钮.
+ * @param {Object} config button config
  */
     addButton: function(cfg) {
       var td = this.cacheBtnNode.cloneNode(true);
@@ -11697,13 +12465,19 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       this.add(td);
       return td;
     },
+    
+		/**
+		 * @cfg {Boolean} syncPanelDestory tab item 销毁时是否连同对应的Panel一起销毁, 当tabitem.panel被自动加入tab.contentPanel面板时,如果该值未设置,则置为true.
+		 */
+	  syncPanelDestory : undefined,
+		
 /**
  * 获得tabItem对应的内容面板
  * @param {Boolean} autoCreate 如果没有,是否自动创建
  * @return {CC.ui.ContainerBase}
  */
     getContentPanel: function(autoCreate) {
-      var p = this.panel, ct, tct;
+      var p = this.panel, tct;
       if (!p && autoCreate) {
         //iframe
         p  = this.src ? new CC.ui.IFramePanel() : new CC.ui.Panel();
@@ -11715,16 +12489,13 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
         if((ct = this.pCt) && (tct = ct.getContentPanel())){
         	tct.layout.add(p);
         }
-			/**
-			 * tab item 销毁时是否连同对应的Panel一起销毁, 当tabitem.panel被自动加入tab.contentPanel面板时,如果该值未设置,则置为true.
-			 * @type Boolean
-			 */
         if(this.syncPanelDestory === undefined)
           this.syncPanelDestory = true;
       }
       
       return p;
     },
+    
 /**
  * 设置TabItem对应的内容面板,设置后,panel有一个bindingTabItem属性指向该TabItem
  * @param {CC.ContainerBase} contentPanel 内容面板,可以是CC.ui.IFramePanel或其它容器
@@ -11772,7 +12543,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 /**
  * 设置是否可关闭
- * @param {Boolean}
+ * @param {Boolean} closeable
  */
     setCloseable: function(b) {
       if (this.cacheBtnNode) {
@@ -11783,13 +12554,14 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 
       return this;
     },
+ 
 /**
+ * @cfg {String} loadType
  * 如果允许自动创建内容面板,loadType设置创建的内容面板加载的内容,默认为html
  * 这个loadType将设置面板的connectionProvider.loadType.
- * @name CC.ui.TabItem#loadType
- * @property {String} loadType
  */
-
+   loadType : 'html',
+   
 /**
  * 加载项面板内容
  * @return this
@@ -11817,6 +12589,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 
     /**
      * TabItem内容面板加载时样式设置,这里主要在TabItem上显示一个loading图标.
+     * @private
      */
     onIndicatorStart: function() {
       var item = this.target.bindingTabItem;
@@ -11845,8 +12618,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 
   CC.ui.def('tabitem', CC.ui.TabItem);
 /**
- * @name CC.ui.Tab
- * @class
+ * @class CC.ui.Tab
  * @extends CC.ui.Panel
  */
   CC.create('CC.ui.Tab', CC.ui.Panel, {
@@ -11874,34 +12646,24 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     itemCls: CC.ui.TabItem,
 
 /**
- * 子项选择时是否自动加载子项内容, 默认为true
+ * @cfg {Boolean} autoLoad 子项选择时是否自动加载子项内容, 默认为true
  */
     autoLoad: true,
 /**
- * 当关闭子项时是否销毁子项,默认为false, 子项也可以设置tabItem.destoryOnClose覆盖设置.
- * @type Boolean
+ * @cfg {Boolean} destoryItemOnclose 当关闭子项时是否销毁子项,默认为false, 子项也可以设置tabItem.destoryOnClose覆盖设置.
  */
-    destoryItemOnclose: false,
+    destoryItemOnclose : false,
 
-    /**
-     * 主要用于TabItemLayout布局
-     */
     lyCfg: {
 
       navPanelCS: 'g-mov-tab',
 
       horizonMargin: 5,
 
-      /**
-         * 该值须与左边导航按钮宽度一致,出于性能考虑,现在把它固定下来。
-         * @property {Number} navLeftWidth
-         */
+      // 该值须与左边导航按钮宽度一致,出于性能考虑,现在把它固定下来
       navLeftWidth: 24,
 
-      /**
-         * 该值须与右边导航按钮宽度一致,出于性能考虑,现在把它固定下来。
-         * @property {Number} navLeftWidth
-         */
+      // 该值须与右边导航按钮宽度一致,出于性能考虑,现在把它固定下来
       navRightWidth: 24
     },
 
@@ -11934,6 +12696,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 
     /**
      * 关闭指定TabItem,当只有一个TabItem时忽略.
+     * @param {CC.ui.TabItem} tabItem
      */
     close: function(item) {
       item = this.$(item);
@@ -11949,7 +12712,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
 
 /**
- * 获得内容面板
+ * 获得内容面板.
+ * @return {CC.ui.ContainerBase}
  */
     getContentPanel : function(){
       var cp = this.contentPanel;
@@ -11960,16 +12724,12 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       return cp;
     },
 
-    //@override
-    beforeAdd: function(it) {
-      if(SP.beforeAdd.call(this, it) !== false){
-        if (it.getContentPanel())
-          it.panel.display(false);
-      }
-    },
-
-    //是否显示指定的TabItem,
-    //参数a可为TabItem实例也可为TabItem的id,b为true或false.
+/**
+ * 是否显示指定的TabItem,
+ * 参数a可为TabItem实例也可为TabItem的id,b为true或false.
+ * @param {CC.ui.TabItem|String} tabItem
+ * @param {Boolean} displayOrNot
+ */
     displayItem: function(a, b) {
       a = this.$(a);
       //Cann't change this attribute.
@@ -12015,7 +12775,10 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       }
     },
 
-    //返回显示的TabItem个数.
+/**
+ * 返回显示的TabItem个数.
+ * @return {Number}
+ */
     getDisc: function() {
       var cnt = 0;
       var chs = this.children;
@@ -12035,9 +12798,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
 else
   CC.Tpl.def('CC.ui.FloatTip', '<table class="g-float-tip g-clear"><tr><td><table class="tipbdy"><tr><td id="_tle" class="important_txt"></td></tr><tr><td id="_msg" class="important_subtxt"></td></tr></table></td></tr><tr><td class="btm_cap" id="_cap"></td></tr></table>');
 /**
+ * @class CC.ui.FloatTip
  * 浮动提示框,可用于一般的对话提示或鼠标悬浮提示
- * @name CC.ui.FloatTip
- * @class
  * @extends CC.ui.Panel
  */
 CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
@@ -12059,29 +12821,33 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     globalPos = Event.pageXY(event || window.event);
   }
   /**
-   * @method
+   * 显示消息提示.<br>
+   * 方法来自{@link CC.ui.FloatTip}<br>
+   <pre><code>CC.Util.ftip('密码不能为空.', '提示', 'input_el', true, 3000);</code></pre>
    * @param {String} msg 提示消息
    * @param {String} [title] 消息提示标题
    * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
    * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
    * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
-   * @example
-     CC.Util.ftip('密码不能为空.', '提示', 'input_el', true, 3000);
+   * @method ftip
+   * @member CC.Util
    */
   CC.Util.ftip = function(msg, title, proxy, getFocus, timeout){
     if(!instance)
-      instance = new CC.ui.FloatTip({showTo:document.body, autoRender:true});
+      instance = CC.ui.instance({ctype:'tip', showTo:document.body, autoRender:true});
     CC.fly(instance.tail).show().unfly();
     instance.show(msg, title, proxy, getFocus, timeout);
 
     return instance;
   };
   /**
-   * 给目标对象绑定悬浮消息
+   * 给目标对象绑定悬浮消息.<br>
+   * 方法来自{@link CC.ui.FloatTip}<br>
+     <pre><code>CC.Util.qtip(input, '在这里输入您的大名');</code></pre>
    * @param {CC.ui.Base} target
    * @param {String} msg
-   @example
-     CC.Util.qtip(input, '在这里输入您的大名');
+   * @method qtip
+   * @member CC.Util
    */
   CC.Util.qtip = function(proxy, msg){
     if(!instance)
@@ -12089,40 +12855,37 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     instance.tipFor(proxy, msg);
   };
 
-  return /**@lends CC.ui.FloatTip#*/{
+  return {
     /**
-     * @property {Number} timeout = 2500 设置消失超时ms, 如果为0 或 false 不自动关闭.
+     * @cfg {Number} timeout=2500 设置消失超时ms, 如果为0 或 false 不自动关闭.
      */
     timeout: 2500,
   /**
-   * 显示提示消息的延迟,消息将鼠标位于目标延迟daly毫秒后出现
-   * @type Number
+   * @cfg {Number} delay 显示提示消息的延迟,消息将鼠标位于目标延迟daly毫秒后出现
    */
     delay : 500,
 
     /**
-     * @property {Boolean} [reuseable = true] 消息提示是否可复用,如果否,在消息隐藏后自动销毁
+     * @cfg {Boolean} [reuseable = true] 消息提示是否可复用,如果否,在消息隐藏后自动销毁
      */
     reuseable : true,
 
     shadow:true,
 
   /**
-   * 指定是哪种显示风格,一种为mouseover式提示,另一种为弹出提示
+   * @cfg {Boolean} qmode 指定是哪种显示风格,一种为mouseover式提示,另一种为弹出提示
    */
     qmode : false,
 
     zIndex : 10002,
+    
   /**
    * @private
    * mouseover式提示时样式
    */
     hoverTipCS : 'g-small-tip',
 
-    /**
-     * @private
-     * @override
-     */
+
     initComponent: function() {
       superclass.initComponent.call(this);
       if(this.msg)
@@ -12217,6 +12980,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     },
 
   /**
+   * 显示提示.
    * @param {String} msg 提示消息
    * @param {String} [title] 消息提示标题
    * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
@@ -12263,11 +13027,10 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
       }
     },
   /**
-   * 给目标对象绑定悬浮消息
+   * 给目标对象绑定悬浮消息.<br>
+   * <code>CC.Util.qtip(input, '在这里输入您的大名');</code>
    * @param {CC.ui.Base} target
    * @param {String} msg, 消息
-   @example
-     CC.Util.qtip(input, '在这里输入您的大名');
    */
     tipFor : function(proxy, msg, title){
       CC.fly(proxy)
@@ -12311,24 +13074,20 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
         docEvtBinded = false;
       }
       this.killPretimer();
-    },
-  /**
-   * 获得全局tip对象
-   */
-    getInstance : function(){
-      return instance;
     }
   };
 });
+CC.ui.def('tip', CC.ui.FloatTip);
+
 ﻿/**
- * @class
- * @name CC.ui.TitlePanel
+ * 具有标题栏的面板容器.
+ * @class CC.ui.TitlePanel
  * @extends CC.ui.Panel
  */
 CC.Tpl.def('CC.ui.TitlePanel', '<div class="g-panel g-titlepanel"><h3 class="g-titlepanel-hd" id="_tleBar"><a id="_btnFN" class="g-icoFld" href="javascript:fGo()"></a><a id="_tle" class="g-tle" href="javascript:fGo()"></a></h3><div id="_scrollor" class="g-panel-wrap g-titlepanel-wrap"></div></div>');
 
 CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
-    return /**@lends CC.ui.TitlePanel#*/{
+    return {
 
         unselectable : '_tleBar',
 
@@ -12336,10 +13095,8 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
 
         minH : 29,
 
-/**foldNode展开时样式*/
         openCS : 'g-icoOpn',
 
-/**foldNode折叠时样式*/
         clsCS  : 'g-icoFld',
 
         foldNode : '_btnFN',
@@ -12361,13 +13118,13 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
           return [29 , 0, 0, 0, 29, 0];
         },
 
-/**点击收缩图标时触发,可重写自定*/
+/**@cfg {Function} onTriggerClick 点击收缩图标时触发,可重写自定*/
         onTriggerClick: function() {
             var v = !this.wrapper.hidden;
             this.collapse(v, true);
         },
 /**
- * 标题点击时触发,默认执行缩放面板
+ * @cfg {Function} onTitleClick 标题点击时触发,默认执行缩放面板
  */
         onTitleClick : function(){
           this.onTriggerClick();
@@ -12396,20 +13153,18 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
 CC.ui.def('titlepanel', CC.ui.TitlePanel);
 ﻿CC.Tpl.def('CC.ui.Foldable', '<div class="g-foldable"><div class="g-foldablewrap"><b title="隐藏" id="_trigger" class="icos icoCls"></b><div id="_tle"></div></div></div>');
 /**
- * @name CC.ui.Foldable
- * @class
+ * @class CC.ui.Foldable
  * @extends CC.Base
  */
 
-CC.create('CC.ui.Foldable', CC.Base, /**@lends CC.ui.Foldable#*/{
+CC.create('CC.ui.Foldable', CC.Base, {
 
     clsGroupCS: 'g-gridview-clsview',
 
     unselectable: true,
-  /**
-   * @property nodeBlockMode 指定收缩结点的displayMode:''或block
-   */
-  //nodeBlockMode:1,
+   
+   //指定收缩结点的displayMode:''或block
+   //nodeBlockMode:1,
     initComponent: function(){
         this.createView();
         CC.Base.prototype.initComponent.call(this);
@@ -12420,6 +13175,7 @@ CC.create('CC.ui.Foldable', CC.Base, /**@lends CC.ui.Foldable#*/{
         }
     },
 /**
+ * 收缩内容区域.
  * @param {Boolean} foldOrNot
  */
     foldView: function(b){
@@ -12454,30 +13210,26 @@ CC.create('CC.ui.Foldable', CC.Base, /**@lends CC.ui.Foldable#*/{
 });
 CC.ui.def('foldable', CC.ui.Folderable);
 ﻿/**
- * @name CC.util.IFrameConnectionProvider
- * @class
+ * @class CC.util.IFrameConnectionProvider
+ * 封装IFramePanel容器的连接处理.
  * @extends CC.util.ConnectionProvider
  */
-CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@lends CC.util.IFrameConnectionProvider#*/{
+CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
 
 /**
- * 是否监听IFRAME加载事件,默认为true
- * @type Boolean
+ * @cfg {Boolean} traceLoad 是否监听IFRAME加载事件,默认为true
  */
   traceLoad : true,
 
-/**indicatorDisabled:true*/
   indicatorDisabled : true,
 
-/**
- * 默认不处理
- */
+  // 默认不处理,重写
   defaultLoadSuccess : fGo,
   
   setTarget : function(t){
   	CC.util.ConnectionProvider.prototype.setTarget.apply(this, arguments);
   	if(t.src || t.url)
-  	  this.connect();
+  	  this.connect(t.src || t.url);
   },
   
   initConnection : function(){
@@ -12518,7 +13270,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
         break;
     }
   },
-/***/
+/**中止当前连接.*/
   abort : function(){
     this.t.getFrameEl().src = CC.ie?'about:blank':'';
     this.onFinal();
@@ -12543,7 +13295,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
   },
 
 /**@private*/
-  connectInner : function(cfg){
+  connectInner : function(){
     this.t.fire('open', this);
     (function(){
       try{
@@ -12557,21 +13309,19 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, /**@le
 
 CC.Tpl.def('CC.ui.IFramePanel', '<iframe class="g-framepanel" frameBorder="no" scrolling="auto" hideFocus=""></iframe>');
 /**
- * IFRAME面板封装
- * @name CC.ui.IFramePanel
- * @class
+ * @class CC.ui.IFramePanel
+ * 面板主要维护一个iframe结点.
  * @extends  CC.ui.Panel
  */
-CC.create('CC.ui.IFramePanel', CC.ui.Panel, /**@lends CC.ui.IFramePanel#*/{
+CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
 /**
- * 是否跟踪IFramePanel父容器宽高改变以便调整自身宽高,默认值为false,
+ * @cfg {Boolean} traceResize 是否跟踪IFramePanel父容器宽高改变以便调整自身宽高,默认值为false,
  * 通常并不需要该项,IFramePanel往往是通过父容器的布局管理器来调整它的大小.
- * @type Boolean
  */
   traceResize : false,
 
   connectionProvider : CC.util.IFrameConnectionProvider,
-
+  // 取消父层默认的_ctx
   ct : undefined,
 
   onRender : function(){
@@ -12585,7 +13335,8 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, /**@lends CC.ui.IFramePanel#*/{
     }
   },
 /**
- * 获得iframe html结点
+ * 获得iframe html结点.
+ * @return {HTMLElement} iframe
  */
   getFrameEl : function(){
     return this.view;
@@ -12601,8 +13352,8 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, /**@lends CC.ui.IFramePanel#*/{
   /**
    * 根据结点id返回IFrame页面内元素dom结点.
    * 注:必须在IFrame加载完成后才可正常访问.
-   * @method
    * @return {DOMElement}
+   * @method $
    */
   $ : function(id){
     return CC.frameDoc(this.view).getElementById(id);
@@ -12614,27 +13365,24 @@ CC.ui.def('iframe', CC.ui.IFramePanel);
 ﻿CC.Tpl.def('CC.ui.Resizer', '<div class="g-panel g-resizer"><div class="g-win-e" id="_xe"></div><div class="g-win-s" id="_xs"></div><div class="g-win-w" id="_xw"></div><div class="g-win-n" id="_xn"></div><div class="g-win-sw" id="_xsw"></div><div class="g-win-es" id="_xes"></div><div class="g-win-wn" id="_xwn"></div><div class="g-win-ne" id="_xne"></div><div class="g-panel-wrap g-resizer-wrap" id="_wrap"></div></div>');
 
 /**
- * 边框缩放控件
- * @name CC.ui.Resizer
- * @class
+ * @class CC.ui.Resizer
+ * 八个方向都可以缩放的面板.
  * @extends CC.ui.Panel
  */
 CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
   var CC = window.CC, G = CC.util.dd.Mgr, H = G.resizeHelper, E = CC.Event;
-    return /**@lends CC.ui.Resizer#*/{
+    return {
+
 /**
- * 是否允许缩放
- * @type Boolean
+ * @cfg {Boolean} resizeable 是否允许缩放.
  */
         resizeable : true,
 /**
- * 是否允许纵向缩放
- * @type Boolean
+ * @cfg {Boolean} enableH 是否允许纵向缩放
  */
         enableH:true,
 /**
- * 是否允许横向缩放
- * @type Boolean
+ * @cfg {Boolean} enableW 是否允许横向缩放
  */
         enableW:true,
 
@@ -12649,10 +13397,10 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
         minH:6,
 
 /**
- * @name CC.ui.Resizer#resizestart
- * @event
- * 缩放触发时发送
+ * @event resizestart
+ * 缩放开始时发送.
  */
+ 
 /**
  * @private
  */
@@ -12666,22 +13414,25 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
             }
             //记录初始数据,坐标,宽高
             this.initPS = {pos:a,size:b};
-            H.applyResize(true);
+            H.applyResize(true, nd.fastStyle('cursor'));
             H.layer.setXY(a)
                    .setSize(b);
-            H.masker.fastStyleSet('cursor', nd.fastStyle('cursor'));
             this.fire('resizestart');
           }
         },
 
 /**
- * @name CC.ui.Resizer#resizeend
- * @event
+ * @event resizeend
  * @param {Array} xy [current_x, current_y]
  * @param {Array} dxy [delta_x, delta_y]
- * 缩放触发时发送
+ * 缩放结束后发送.
  */
-
+/**
+ * @property initPS
+ * 记录缩放开始时控件位置,长度等相关信息.
+ * 结构为 {pos:[x,y],size:{width:w, height:h}}
+ * @type Object
+ */
 /**
  * @private
  */
@@ -12704,7 +13455,7 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
                 isz = this.initPS.size,
                 dxy = [sz.width - isz.width, sz.height - isz.height],
                 sd  = this.shadow,
-                sds = !sd.hidden;
+                sds = sd && !sd.hidden;
 
             dlt[0] -= ips[0];
             dlt[1] -= ips[1];
@@ -12722,22 +13473,14 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
 
             this.fire('resizeend', dlt, dxy);
 
-            H.applyResize(false);
-            H.masker.fastStyleSet('cursor', '');
+            H.applyResize(false, '');
             delete this.initPS;
           }
         },
 
-/**
- * @name CC.ui.Resizer#initPS
- * @property {Object} initPS 保存缩放开始时的数据,结构为{pos:[x, y], size:{width, height}}
- */
-
         initComponent : function() {
           superclass.initComponent.call(this);
-/**
- * @name CC.ui.Resizer#cornerSprites
- */
+          
           this.cornerSprites = [];
           this.resizeable ? this.bindRezBehavior() : this.setResizable(false);
         },
@@ -12840,12 +13583,7 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
             }
         },
 /**
- * @name CC.ui.Resizer#resizeable
- * @property {Boolean} resizeable 获得控件是否可缩放,只读,设置时可调用setResizeable方法
- */
-
-/**
- * 设置是否可以缩放
+ * 设置是否可缩放.
  * @param {Boolean} resizeable
  */
         setResizable : function(resizeable) {
@@ -12859,9 +13597,8 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
     };
 }));
 ﻿/**
+ * @class CC.ui.Win
  * window控件
- * @name CC.ui.Win
- * @class
  * @extends CC.ui.Resizer
  */
 CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
@@ -12876,35 +13613,38 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         Base = CC.Base,
         SX = Base.prototype.setXY,
         IPXY;
-/**
- * @name CC.ui.Win#unmoveable
- * @property {Boolean} unmoveable 设置该值操纵当前窗口是否允许移动
- */
-/**
- * @namespace
- * @name CC.ui.win
- */
-/**
- * @name CC.ui.win.Titlebar
- * @class
- * @extends CC.ui.ContainerBase
- */
-    CC.create('CC.ui.win.Titlebar', CC.ui.ContainerBase, {
-        autoRender: true,
-        clickEvent : true,
-        unselectable:true,
-        cancelClickBubble : true,
-        itemCfg: { template: 'CC.ui.win.TitlebarButton' },
-        ct: '_ctx',
-        selectionProvider : {forceSelect: true, selectedCS : false}
-    });
 
+    var wtbDef = {
+      ctype:'ct',
+      autoRender: true,
+      clickEvent : true,
+      unselectable:true,
+      cancelClickBubble : true,
+      itemCfg: { template: 'CC.ui.win.TitlebarButton' },
+      ct: '_ctx',
+      template:'CC.ui.win.Titlebar',
+      selectionProvider : {forceSelect: true, selectedCS : false}
+    };
 
-    return /**@lends CC.ui.Win#*/{
-
+    var wtbClsBtn = {
+      ctype:'item',
+      cs:'g-win-clsbtn',
+      template:'CC.ui.win.TitlebarButton',
+      tip:'关闭',
+      id:'_cls'
+    };
+    
+    return {
+/**
+ * @cfg {Boolean} unmoveable 设置该值操纵当前窗口是否允许移动.
+ */
+        unmoveable : false,
+/**
+ * @cfg {Boolean} closeable 是否可关闭.
+ */
         closeable : true,
 
-        shadow : true,
+        shadow : {ctype:'shadow', inpactY:-1,inpactH:5},
 
         innerCS : 'g-win g-tbar-win',
 /**
@@ -12921,7 +13661,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
 
         minH:30,
 /**
- * 指定内容溢出时是否显示滚动条(overflow:hidden|auto),默认为显示
+ * @cfg {String} overflow 指定内容溢出时是否显示滚动条(overflow:hidden|auto),默认为显示
  */
         overflow:false,
 
@@ -12933,29 +13673,50 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         dragOpacity : 0.6,
 
         initComponent: function() {
-          var tb = this.titlebar = new CC.ui.win.Titlebar({title:this.title});
+          var tle = CC.delAttr(this, 'title');
+          father.initComponent.call(this);
+          
+          //create titlebar
+          var tb = this.titlebar;
+          if(tb)
+            CC.extendIf(tb,wtbDef);
+          else tb = wtbDef;
+          tb.title = tle;
+          
+          var tboutter = true, v=tb.view;
+          // toolbar view 结点位于window 模板内
+          if(v && typeof v === 'string'){
+             tb.view = this.dom(v);
+             tboutter = false;
+          }
+          this.titlebar = CC.ui.instance(tb.ctype, tb);
+          //recovery
+          tb.view = v;
+          tb = this.titlebar;
+          
+          if(tboutter)
+            this.addTitlebarNode(tb);
+          
           this.follow(tb);
           delete this.title;
-
-          if(this.shadow === true)
-            this.shadow = new CC.ui.Shadow({inpactY:-1,inpactH:5});
-
-          father.initComponent.call(this);
 
           if(this.overflow)
             this.wrapper.fastStyleSet('overflow', this.overflow);
 
-          this.wrapper.insertBefore(tb);
-
           if(this.closeable === true){
-            this.clsBtn = new CC.ui.Item({
-              cs:'g-win-clsbtn',
-              template:'CC.ui.win.TitlebarButton',
-              onselect:this.onClsBtnClick,
-              tip:'关闭',
-              id:'_cls'
-            });
-            tb.add(this.clsBtn);
+            var cls = tb.clsBtn;
+            if(cls)
+              CC.extendIf(cls,wtbClsBtn);
+            else cls = wtbClsBtn;
+            cls.onselect = this.onClsBtnClick;
+            v = cls.view;
+            if(v && typeof v === 'string'){
+               cls.view = this.dom(v);
+            }
+            this.clsBtn = CC.ui.instance(cls);
+            // recovery
+            cls.view = v;
+            tb.layout.add(this.clsBtn);
           }
 
           if(this.destoryOnClose)
@@ -12971,6 +13732,16 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
 
           this.trackZIndex();
         },
+        
+/**
+ * @private
+ * 重写该接口实现自定义标题栏位置
+ * @param {CC.ui.ContainerBase} titlebar
+ */
+   addTitlebarNode : function(tb){
+     this.wrapper.insertBefore(tb);
+   },
+   
 /**
  * 实现窗口的拖放
  * @private
@@ -13033,10 +13804,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         onClsBtnClick : function(){
           this.pCt.pCt.close();
         },
-/**
- * 设置标题,实际上调用了titlebar设置标题
- * @override
- */
+
         setTitle : function(tle) {
           this.titlebar.setTitle(tle);
           return this;
@@ -13071,13 +13839,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
 
             return this;
         },
-/**
- * 改变窗口状态
- * 可选状态有<br>
- * <li>max
- * <li>min
- * <li>normal
- */
+
         switchState : function(){
           if(this.win_s != 'max')
             this.max();
@@ -13095,9 +13857,17 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
             }
             return this;
         },
-
+/**
+ * @event close
+ * 关闭前发送,返回false取消关闭当前窗口.
+ */
+ 
+/**
+ * @event closed
+ * 关闭后发送.
+ */
         /**
-         * 关闭当前窗口,发送close, closed事件.
+         * 关闭当前窗口.
          * @return this;
          */
         close : function(){
@@ -13159,10 +13929,26 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         max : function(){
           return this.setState('max');
         },
-        /**
-         * 切换窗口状态
-         * @param {String} st 状态选项, 值为max,min或空,为空时正常状态.
-         */
+/**
+ * @event statechange
+ * 窗口状态改变时前发送.
+ * @param {String} status
+ * @param {String} previousStatus
+ */
+/**
+ * @event statechanged
+ * 窗口状态改变时后发送.
+ * @param {String} status
+ * @param {String} previousStatus
+ */
+/**
+ * 改变窗口状态
+ * 可选状态有<br><div class="mdetail-params"><ul>
+ * <li>max</li>
+ * <li>min</li>
+ * <li>normal</li></ul></div>
+ * @param {String} status
+ */
         setState : function(st) {
           var ws = this.win_s;
 
@@ -13221,29 +14007,27 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
 CC.ui.def('win', CC.ui.Win);
 ﻿CC.Tpl.def('CC.ui.Dialog.Bottom', '<div class="g-win-bottom"><div class="bottom-wrap"></div></div>');
 /**
+ * @class CC.ui.Dialog
  * 对话框是一个特殊的窗体，底部具有按钮栏，并且可指定是否模式，即是否有掩层。
  * @extends CC.ui.Win
- * @class
- * @name CC.ui.Dialog
- * @param {Object} superclass
  */
 CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
   var CC = window.CC;
   var Event = CC.Event;
-  return /**@lends CC.ui.Dialog#*/{
+  return {
     /**
      * 内部高度，与CSS一致
      * @private
      */
     bottomHeight: 51,
     /**
-     * 返回状态值, 可自定,如ok,cancel...,当对话框某个按钮点击并可返回时,返回值为该按钮ID
+     * 返回状态值, 可自定,如ok,cancel...,当对话框某个按钮点击并可返回时,返回值为该按钮ID.
+     * @type String|Boolean
      */
     returnCode : false,
 
     /**
-     * 设置默认按钮,该按钮必须在当前按钮列表中
-     * @type {String}
+     * @cfg {String} defaultButton 设置默认按钮,该按钮必须在当前按钮列表中
      */
     defaultButton : false,
 
@@ -13309,6 +14093,7 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
     },
 
     /**
+     * @private
      * @override
      */
     onClsBtnClick : function(){
@@ -13324,7 +14109,10 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
       this.close();
     },
 /**
- *
+ * 显示对话框.
+ * @param {CC.Base} parent 应用模式掩层的控件,为空时应用到document.body中.
+ * @param {Boolean} modal 是否为模态显示.
+ * @param {Function} callback 关闭前回调.
  */
     show: function(parent, modal, callback){
       this.modal = modal;
@@ -13383,23 +14171,31 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
      * @private
      */
     createBottom: function(){
-      var b = this.bottomer = new CC.ui.ContainerBase({
+      var b = this.bottomer = CC.ui.instance(
+       CC.extendIf(this.bottomer, {
+        ctype:'ct',
+        pCt:this,
         itemCls: CC.ui.Button,
         template:'CC.ui.Dialog.Bottom',
         ct : '_wrap',
-        showTo:this.view,
         clickEvent : 'click',
         keyEvent : true,
         selectionProvider:{forceSelect:true}
-      });
+       }
+      ));
 
       this.follow(b);
       //监听按钮点击
       b.on('selected', this.onBottomItemSelected);
+      this.addBottomNode(b);
     },
-
+    
+    addBottomNode : function(bottom){
+      this.view.appendChild(bottom.view);
+    },
+    
     getWrapperInsets: function(){
-      var s = CC.ui.Win.prototype.getWrapperInsets.call(this),
+      var s = this.superclass.getWrapperInsets.call(this),
           h = this.bottomHeight - 1;
       s[2] += h;
       s[4] += h;
@@ -13413,24 +14209,24 @@ CC.extendIf(CC.Util, (function(){
   /**
    * 根据对话框类型过滤按钮
    * 当前this为过滤字符串
-   * @method
    * @private
    * @see CC.ui.ContainerBase#filter
    */
   function buttonMatcher(item){
     return this.indexOf(item.id)>=0;
   }
-
-return /**@lends CC.Util*/{
+/**
+ * @class CC.Util
+ */
+return {
   /**
    * 系统对话框引用,如果要获得系统对话框,请用Util.getSystemWin方法.
-   * @see CC.Util#getSystemWin
+   * @private
    */
   _sysWin : null,
   /**
    * 返回系统全局唯一对话框.
    * 该对话框为系统消息窗口.
-   * @method
    * @return {Dialog} 系统对话框
    */
   getSystemWin: function() {
@@ -13460,9 +14256,8 @@ return /**@lends CC.Util*/{
       });
 
       /**
-       * 得到inputBox中input元素
-       * @memberOf CC.Util._sysWin
-       * @method
+       * 得到inputBox中input元素, getSystemWin().getInputEl()
+       * @private
        * @return {Element} inputBox中input元素
        */
       w.getInputEl  = (function(){
@@ -13474,13 +14269,12 @@ return /**@lends CC.Util*/{
 
   /**
    * 弹出对话框.
-   * @method
    * @param {String} msg 消息
-   * @param {String} 标题
-   * @param {String} 显示按钮ID,用|号分隔,如ok|cancel|yes|no
+   * @param {String} title 标题
    * @param {Function} callback 当对话框返回时回调
+   * @param {String} buttons 显示按钮ID,用|号分隔,如ok|cancel|yes|no
    * @param {Win} modalParent 父窗口,默认为document.body层
-   * @defButton {String} 聚焦按钮ID,默认为 'ok'
+   * @param {String} defButton 聚焦按钮ID,默认为 'ok'
    */
   alert: function(msg, title, callback, buttons, modalParent, defButton) {
     title = title || '提示';
@@ -13508,13 +14302,13 @@ return /**@lends CC.Util*/{
 
   /**
    * 弹出输入对话框.
-   * @method
+   * 可通过{@link #getSystemWin}().getInputEl()获得输入的input元素.
    * @param {String} msg 消息
-   * @param {String} 标题
-   * @param {String} 显示按钮ID,用|号分隔,如ok|cancel|yes|no,默认为ok|cancel
+   * @param {String} title 标题
    * @param {Function} callback 当对话框返回时回调
+   * @param {String} buttons 显示按钮ID,用|号分隔,如ok|cancel|yes|no,默认为ok|cancel
    * @param {Win} modalParent 父窗口,默认为document.body层
-   * @defButton {String} 聚焦按钮ID,默认为 'ok'
+   * @param {String} defButton 聚焦按钮ID,默认为 'ok'
    */
   inputBox: function(msg, title, callback, buttons, modalParent, defButton) {
     title = title || '提示';
@@ -13549,18 +14343,12 @@ var CC = window.CC;
 var Event = CC.Event;
 var SPP = CC.util.SelectionProvider.prototype;
 /**
- * @name CC.ui.menu
- * @namespace
+ * @class CC.ui.menu
  */
 CC.Tpl.def('CC.ui.Menu', '<div class="g-panel g-menu"><div id="_wrap" class="g-panel-wrap"><ul class="g-menu-opt" id="_bdy"  tabindex="1" hidefocus="on"></ul></div></div>')
       .def('CC.ui.MenuItem', '<li class="g-menu-item"><span id="_tle" class="item-title"></span></li>');
-/**
- * @class
- * @name CC.ui.menu.MenuSelectionProvider
- * @extends CC.util.SelectionProvider
- */
-CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
-/**@lends CC.ui.menu.MenuSelectionProvider#*/{
+
+CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider, {
 /**
  * 无论选中与否都强迫选择
  */
@@ -13611,10 +14399,7 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
    }
  },
 
-/**
- * 展开菜单当前项或激活第一个能激活的菜单项
- * @private
- */
+  // 展开菜单当前项或激活第一个能激活的菜单项
   tryActive : function(menu, exp){
     var o = menu.onItem;
     if(o && o.subMenu){
@@ -13627,29 +14412,24 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
     }
   },
 
-/**
- * @override
- */
+  // @override
   getStartIndex : function(){
     var m = this.t, o = m.onItem;
     return o?m.indexOf(o) : -1;
   },
 
-/**@private*/
   next : function(){
     var t = this.t, it = this.getNext();
     if(!it) it = t.$(0);
     if(it) it.active(t.menubar);
   },
 
-/**@private*/
   pre : function(){
     var t = this.t, it = this.getPre();
     if(!it) it = t.$(t.size() - 1);
     if(it)  it.active(t.menubar);
   },
 
-/**@private*/
   left : function(){
     var m = this.t;
     if(m.menubar)
@@ -13665,7 +14445,6 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
     }
   },
 
-/**@private*/
   right : function(){
     var m = this.t;
     if(m.menubar)
@@ -13680,7 +14459,6 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
     }
   },
 
-/**@private*/
   esc : function(){
     var m = this.t, o = m.onItem;
     if(m.menubar){
@@ -13699,24 +14477,23 @@ CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider,
     }
   },
 
-/**@private*/
   enter : function(){
     var t = this.t, o = t.onItem;
     if(o) this.select(o);
   }
 });
+
 /**
+ * @class CC.ui.MenuItem
  * 菜单项被添加到菜单中,它可以被激活,激活后的菜单可方便键盘导航,
- * 菜单项可附有子菜单,菜单项有多种状态,每种状态可有不同的CSS样式:
- * <li>normal(deactive) -- 常态
- * <li>active  -- 激活
- * <li>sub menu expanded -- 子项展开
- * @name CC.ui.MenuItem
- * @class 菜单项
+ * 菜单项可附有子菜单,菜单项有多种状态,每种状态可有不同的CSS样式:<div class="mdetail-params"><ul>
+ * <li>normal(deactive) -- 常态</li>
+ * <li>active  -- 激活</li>
+ * <li>sub menu expanded -- 子项展开</li></ul>
  * @extends CC.Base
  */
 CC.create('CC.ui.MenuItem', CC.Base, function(superclass){
-return {/**@lends CC.ui.MenuItem# */
+return {
 
 /**
  * 子菜单
@@ -13727,13 +14504,12 @@ return {/**@lends CC.ui.MenuItem# */
 /**
  * 如果菜单项存在子菜单,附加到菜单项上的样式
  * @type String
+ * @private
  */
   subCS : 'sub-x',
 
 /**
- * @private
- * 激活菜单项
- * 要设置激活菜单项样式,可设置父层菜单的activeCS属性
+ * 激活菜单项,要设置激活菜单项样式.
  * @param {Boolean} expand 激活时是否展开子菜单
  */
   active : function(expand){
@@ -13906,18 +14682,15 @@ return {/**@lends CC.ui.MenuItem# */
 });
 
 /**
- * 默认添加在document.body中,菜单按键导航功能由CC.ui.menu.MenuSelectionProvider提供.
- * @name CC.ui.Menu
- * @class 菜单
+ * @class CC.ui.Menu 
+ * 菜单控件,默认添加在document.body中.
  * @extends CC.ui.Panel
  */
 CC.create('CC.ui.Menu', CC.ui.Panel, function(superclass) {
 return /**@lends CC.ui.Menu#*/{
 
   hidden : true,
-/**
- * 默认宽度设为115px
- */
+
   width : 115,
 /**
  * 父菜单项,如果存在
@@ -13925,15 +14698,10 @@ return /**@lends CC.ui.Menu#*/{
  */
   pItem: null,
 
-/**
- * 菜单项激活时CSS样式
- */
+  // 菜单项激活时CSS样式
   activeCS :  'itemOn',
 
-/**
- * 当子菜单显示时,附加到菜单项上的样式
- * @type String
- */
+  // 当子菜单显示时,附加到菜单项上的样式
   expandCS : 'subHover',
 
   clickEvent : 'mousedown',
@@ -13954,10 +14722,7 @@ return /**@lends CC.ui.Menu#*/{
 
   menubarCS : 'g-menu-bar',
 
-/**
- * 分隔条结点样式
- * @type String
- */
+  // 分隔条结点样式
   separatorCS : 'g-menu-separator',
 
   initComponent: function() {
@@ -14015,8 +14780,9 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * 把子菜单menu添加到tar项上,tar可为一个index,或一个MenuItem对象,还可为MenuItem的id
- * 附加子菜单时要按从最先至最后附加,这样事件才会被父菜单接收
+ * 把子菜单menu添加到tar项上, 附加子菜单时要按从最先至最后附加,这样事件才会被父菜单接收.
+ * @param {CC.ui.Menu} menu
+ * @param {CC.ui.MenuItem|Number|String} targetItem 可为一个index,或一个MenuItem对象,还可为MenuItem的id
  */
   attach: function(menu, tar) {
     tar = this.$(tar);
@@ -14053,7 +14819,7 @@ return /**@lends CC.ui.Menu#*/{
   ,
 
 /**
- * 获得最顶层菜单
+ * 获得最顶层菜单.
  * @return {CC.ui.Menu}
  */
   getRoot : function(){
@@ -14064,7 +14830,7 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * 隐藏所有关联菜单
+ * 隐藏所有关联菜单.
  */
   hideAll : function(){
     var r = this.getRoot();
@@ -14089,37 +14855,39 @@ return /**@lends CC.ui.Menu#*/{
   },
 
 /**
- * 可重写该方法添加其它控件的一些样式
+ * @cfg {Function} onDisplay 可重写该方法添加其它控件的一些样式.
  */
   onDisplay : fGo,
 
 /**
- * 是否自动展开子菜单
- * @private
+ * 是否自动展开子菜单.
+ * @param {Boolean} autoExpand
  */
   setAutoExpand : function(b){
     this.autoExpand = b;
   },
 
 /**
- * 添加分隔条
+ * 添加分隔条.
  */
   addSeparator : function(){
     this._addNode(CC.ui.Menu.Separator.view.cloneNode(true));
   },
 
 /**
- * 在指定坐标或控件下显示菜单
- * @param {CC.Base|Number} x
- * @param {Number|Boolean} y
- * @param {Boolean} contexted
- * @example
+ * 在指定坐标或控件下显示菜单.
+ <pre><code>
    //在指定坐标显示菜单
    menu.at(110, 120);
    //在指定控件下显示菜单
    menu.at(text);
    //在指定坐标显示菜单,并且点击菜单外部时取消隐藏
    menu.at(110,120,false);
+ </code></pre>
+ * @param {CC.Base|Number} x
+ * @param {Number|Boolean} y
+ * @param {Boolean} contexted
+
  */
   at : function(a,b){
     this.display(true);
@@ -14149,8 +14917,8 @@ return /**@lends CC.ui.Menu#*/{
 
 CC.ui.Menu.Separator = CC.$$(CC.$C({tagName:'LI', className:CC.ui.Menu.prototype.separatorCS}));
 /**
- * @name CC.ui.Menubar
- * @class
+ * 菜单条
+ * @class CC.ui.Menubar
  * @extends CC.ui.Menu
  */
 CC.create('CC.ui.Menubar', CC.ui.Menu, {
@@ -14168,6 +14936,7 @@ CC.create('CC.ui.Menubar', CC.ui.Menu, {
   },
 
 /**
+ * @private
  * @override
  */
   bindContext : function(){
@@ -14180,9 +14949,7 @@ CC.ui.def('menuitem', CC.ui.MenuItem);
 CC.ui.def('menubar', CC.ui.Menubar);
 
 })();
-﻿/**
- * 树型控件实现
- */
+﻿
 (function(){
 
 var CC = window.CC;
@@ -14195,13 +14962,14 @@ var cbx = CC.ui.ContainerBase;
 var spr = cbx.prototype;
 
 /**
- * @name CC.ui.TreeItem
- * @class
+ * 树项.
+ * @class CC.ui.TreeItem
  * @extends CC.ui.ContainerBase
  */
-CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
+CC.create('CC.ui.TreeItem', cbx, {
   /**
-   * 每个TreeItem都有一个指向根结点的指针以方便访问根结点
+   * 每个TreeItem都有一个指向根结点的指针以方便访问根结点.
+   * @type CC.ui.TreeItem
    */
   root : null,
 
@@ -14229,7 +14997,7 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
   /**
    * 鼠标掠过时添加样式的触发结点id
    * @private
-   *@see Base#bindAlternateStyle
+   * @see CC.Base#bindAlternateStyle
    */
   mouseoverNode : '_head',
 
@@ -14239,7 +15007,7 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
    */
   mouseoverTarget : '_head',
 
-  /**树结点是否为目录,默认false.*/
+  /**@cfg {Boolean} nodes 树结点是否为目录,默认false.*/
   nodes : false,
 
   clickEvent : 'mousedown',
@@ -14269,8 +15037,9 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     this._decElbowSt(false);
   },
 /**
- * @param {String} cssIcon
- * @param {Object} config
+ * 添加小图标.
+ * @param {String} cssIcon 图标样式.
+ * @param {Object} config  额外信息.
  */
   addIcon : function(icon, cfg){
     var cn = CC.Tpl.$('CC.ui.TreeItemSpacer');
@@ -14287,8 +15056,10 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     this.fly(this.titleNode).insertBefore(spring).unfly();
     CC.fly(spring).addClass(this.springCS).unfly();
   },
+  
 /**
- * @param {Boolean}
+ * 展开/收缩子项.
+ * @param {Boolean} expand
  */
   expand : function(b) {
     if(b !== true && b !== false)
@@ -14423,8 +15194,8 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
    },
 
 /**
- * 以深度优先遍历树目录
- * @param {Function} cb callback, this为treeItem, 参数为 callback(treeItem, counter), 返回false时终止遍历;
+ * 以深度优先遍历所有子项.
+ * @param {Function} callback this为treeItem, 参数为 callback(treeItem, counter), 返回false时终止遍历.
  * @override
  */
   eachH : function(cb, acc){
@@ -14484,9 +15255,9 @@ CC.create('CC.ui.TreeItem', cbx, /**@lends CC.ui.TreeItem#*/{
     return this;
   },
 /**
- * @name CC.ui.TreeItem#expanded
- * @property {Boolean} expanded 结点是否已展开
+ * @cfg {Boolean} expanded 是否展开结点.
  */
+ 
   /**
    * 只有在渲染时才能确定根结点
    * @private
@@ -14545,15 +15316,7 @@ CC.ui.def('treeitem', CC.ui.TreeItem);
 var sprs = CC.ui.ContainerBase.prototype;
 
 var undefined = window.undefined;
-/**
- * @name CC.ui.tree
- * @namespace
- */
-/**
- * @class
- * @name CC.ui.tree.TreeSelectionProvider
- * @extends CC.util.SelectionProvider
- */
+
 CC.create('CC.ui.tree.TreeSelectionProvider', CC.util.SelectionProvider, {
 
   selectedCS : 'g-tree-selected',
@@ -14626,11 +15389,7 @@ CC.create('CC.ui.tree.TreeSelectionProvider', CC.util.SelectionProvider, {
   }
 });
 
-/**
- * @name CC.ui.tree.TreeItemLoadingIndicator
- * @class
- * @extends CC.ui.Loading
- */
+
 CC.create('CC.ui.tree.TreeItemLoadingIndicator', CC.ui.Loading, {
 
   markIndicator : function(){
@@ -14650,21 +15409,40 @@ CC.create('CC.ui.tree.TreeItemLoadingIndicator', CC.ui.Loading, {
 CC.ui.TreeItem.prototype.indicatorCls = CC.ui.tree.TreeItemLoadingIndicator;
 
 /**
- * 树形控件, 可以指定一个根结点root,或者由树自己生成.
- * 当自己生成根结点时,它默认是CC.ui.TreeItem类,此时可以在树初始化时传入array生成根的子结点.
- * @name CC.ui.Tree
- * @class
- * @extends CC.ui.ContainerBase
- @example
+ * @class CC.ui.Tree
+ * 树形控件, 可以指定一个根结点root,或者由树自己生成.<br>
+ * <pre><code>
   var tree = new CC.ui.Tree({
-    title:'a tree',
-    array:[
-      {title:'leaf'},
-      {title:'nodes'}
-    ]
+    root:{
+      title:'title of tree'
+      // 子项数据
+      array:[
+        {title:'leaf'},
+        {title:'nodes', nodes:true}
+      ]
+    },
+    
+    // 展开自动ajax加载
+    autoLoad : true,
+    parentParamName : 'pnodeid',
+    url : 'http://www.example.com/tree'
   });
+   </code></pre>
+ * @extends CC.ui.ContainerBase
  */
 
+/**
+ * @event expand
+ * 展开/收缩前发送,可返回false取消操作.
+ * @param {CC.ui.TreeItem} treeItem 当前操作的树项.
+ * @param {Boolean} expand 指示当前操作是展开或收缩. 
+ */
+/**
+ * @event expanded
+ * 展开/收缩后发送
+ * @param {CC.ui.TreeItem} treeItem 当前操作的树项.
+ * @param {Boolean} expand 指示当前操作是展开或收缩. 
+ */
 var rootCfg = {
   nodes : true,
   draggable : false,
@@ -14672,14 +15450,24 @@ var rootCfg = {
   ctype:'treeitem'
 };
 
-CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
+CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
 
   ct : '_ctx',
-
+/**
+ * @cfg {String} url 设置自动加载子项数据时请求的url.参见{@link #autoLoad}, {@link #parentParamName}.
+ */
+  url : false,
+/**
+ * @cfg {Boolean} autoLoad 展开时是否自动加载子项数据,参见{@link #parentParamName}, {@link #url}.
+ */
+  autoLoad : false,
+/**
+ * @cfg {String} parentParamName 设置自动加载子项时父结点id提交参数的名称,默认为pid=pCt.id.
+ */
   parentParamName : 'pid',
 
   keyEvent : true,
-
+  
   clickEventTrigger : CC.ui.TreeItem.prototype.clickEventTrigger,
 
   /**
@@ -14702,7 +15490,12 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
         delete this.rootCfg;
       this.root = this.instanceItem(CC.extendIf(cfg, rootCfg));
     }
-
+    
+    if(this.hideRoot){
+      this.root._head.hide();
+      delete this.hideRoot;
+    }
+    
     this.root.tree = this;
 
     var self = this;
@@ -14731,6 +15524,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
 /**
  * 当autoLoad为true时,结点展开即时加载,也可以调用该方法手动加载子结点
  * 加载子项, 该方法通过子项的connectionProvider来实现载入数据功能.
+ * @param {CC.ui.TreeItem} treeItem
  */
   loadItem : function(item){
       var url = this.getItemUrl(item);
@@ -14742,10 +15536,10 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
   },
 
 /**
- * 获得子项用于请求数据的url
+ * 获得子项用于请求数据的url,可重写该方法,自定义请定的URL.
  */
   getItemUrl : function(item){
-    var url = this.url;
+    var url = CC.templ(this, this.url);
     if(url){
       //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
       //contains '?' already ??
@@ -14765,6 +15559,13 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, /**@lends CC.ui.Tree#*/{
     var r = this.root;
     if(cb.call(r, r, 0) !== false)
       return r.eachH(cb, 1);
+  },
+  // @override fix ie no horizon scrollbar
+  setSize : function(w, h){
+    sprs.setSize.apply(this, arguments);
+    if(w !== false && CC.ie){
+      this.getScrollor().setWidth(this.width);
+    }
   }
 });
 
@@ -14795,11 +15596,10 @@ CC.ui.def('tree', CC.ui.Tree);
 
   CC.Tpl.def('CC.ui.Datepicker', '<div class="g-datepicker" ><div style="position: relative;"><table cellspacing="0" cellpadding="0" class="entbox"><tbody><tr><td class="headline"><table width="100%" cellspacing="0" cellpadding="1" align="center" class="dxcalmonth"><tbody><tr><td align="left" class="month_btn_left"><span></span></td><td align="center"><table cellspacing="0" cellpadding="0" align="center"><tbody><tr><td><div id="_seltor" class="g-datepicker-selecor" style="display:none;"></div><div id="_planeY" class="planeYear" style="cursor: pointer;">1955</div></td><td class="comma">,</td><td><div id="_planeM" class="planeMonth" title="点击选择或直接输入年份值"></div></td></tr></tbody></table></td><td align="right" class="month_btn_right"><span></span></td></tr></tbody></table></td></tr><tr><td><table width="100%" cellspacing="0" cellpadding="0" class="g-datepicker-body"><tbody><tr><th class="month_spr"><span>月</span></th><th><span>日</span></th><th><span>一</span></th><th><span>二</span></th><th><span>三</span></th><th><span>四</span></th><th><span>五</span></th><th><span>六</span></th><th class="month_spr"><span>月</span></th></tr></tbody></table></td></tr><tr><td id="_monthWrap"></td></tr><tr><td style="text-align:center;padding-bottom:5px;" id="_tdytd"></td></tr></tbody></table><div class="leftsplit" id="_preBar" onmouseover="CC.addClass(this, \'leftsplitOn\')" onmouseout="CC.delClass(this, \'leftsplitOn\')" ></div><div class="rightsplit" onmouseover="CC.addClass(this, \'rightsplitOn\')" onmouseout="CC.delClass(this, \'rightsplitOn\')" id="_nxtBar"></div></div></div>');
 /**
- * @class
- * @name CC.ui.Datepicker
+ * @class CC.ui.Datepicker
  * @extends CC.ui.Panel
  */
-  CC.create('CC.ui.Datepicker', CC.ui.Panel, /**@lends CC.ui.Datepicker#*/{
+  CC.create('CC.ui.Datepicker', CC.ui.Panel, {
 
     shadow: true,
 
@@ -14855,6 +15655,7 @@ CC.ui.def('tree', CC.ui.Tree);
       : this.selectYear(this.yy - 1);
     },
 /**
+ * 选择年
  * @param {Number}
  */
     selectYear: function(yy) {
@@ -14936,6 +15737,7 @@ CC.ui.def('tree', CC.ui.Tree);
       else this.setValue(new Date(this.yy, parseInt(id), 1), true);
     },
 /**
+ * 设置日期.
  * @param {String|Date}
  */
     setValue: function(v, cancelEvent) {
@@ -15105,9 +15907,10 @@ CC.ui.def('tree', CC.ui.Tree);
 
   /**
  * 全局实例
- * 用法 <input type="text" onclick="Datepicker.show(this)" />
- * @name CC.ui.Datepicker.show
- * @method
+ * 用法 <pre><input type="text" onclick="Datepicker.show(this)" /></pre>
+ * @member CC.ui.Datepicker
+ * @method show
+ * @static
  */
   DP.show = function(input) {
     DP.getInstance();
@@ -15116,27 +15919,33 @@ CC.ui.def('tree', CC.ui.Tree);
     showDatepicker(true);
   };
 })();
-﻿
-
-//~@ui/grid.js
-(function(){
+﻿(function(){
 
 var CC = window.CC,
     Math = window.Math,
     undefined,
     B = CC.Base,
     C = CC.Cache;
+/**
+ * @class CC.ui.grid
+ * @namespace
+ */
 
 /**
- * 表格中的列,包含在表头中,表格中所有对列的设宽操作都通过
- * {@link setWidth}方法实现
- * @name CC.ui.grid.Column
- * @class
+ * @class CC.ui.grid.plugin
+ * @namespace
+ */
+ 
+/**
+ * @class CC.ui.grid.Column
+ * 表格中的列,包含在表头中.
  */
 CC.create('CC.ui.grid.Column', B, function(father){
 
     return {
         // bdEl,
+/**@cfg {Boolean} resizeDisabled 是否禁止改变列宽*/
+        resizeDisabled : false,
         
         createView : function(){
           this.view = CC.$C({
@@ -15170,33 +15979,49 @@ CC.create('CC.ui.grid.Column', B, function(father){
         },
 
 /**
- * 可以统一设置该列数据的显示数据的具体内容, 返回字符串以innerHTML形式加进表单元格的内容元素中.
- * @field
- * @scope cell
- * @type Function
+ * @cfg {Function} cellBrush 可以统一设置该列数据的显示数据的具体内容, 返回字符串以innerHTML形式加进表单元格的内容元素中.
+ <pre><code>
+   header : {array:[ {title:'第一列' , cellBrush : function( v ){ return '<b>'+v+'</b>' } } ]}
+ </code></pre>
  * @param {Object} cellValue
  * @return {String}
- * @example
- <pre>
-   header : {array:[ {title:'第一列' , cellBrush : function( v ){ return '<b>'+v+'</b>' } } ]}
- </pre>
  */
         cellBrush : function(v){
           return v;
         },
+/**
+ * @event colwidthchange
+ * 列宽改变前发送.
+ * @param {Number} columnIndex
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} width
+ * @param {Number} dx 前后改变宽差
+ * @member CC.ui.Grid
+ */
 
+/**
+ * @event aftercolwidthchange
+ * 列宽改变后发送.
+ * @param {Number} columnIndex
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} width
+ * @param {Number} dx 前后改变宽差
+ * @member CC.ui.Grid
+ */
+ 
 /**
  * 此时Column的setWidth不再执行具体的设宽操作,
  * 而是向grid发送一个事件,让其它处理列宽的插件(通常是表头)来执行实际的设宽操作,
  * 这也是有理由的,因为单单一个Column它并不知道全局是如何安排列宽的.
  * 尽管这样,setWidth对话外部来说,还是可以正常调用,它并不影响方法来本的意义,只是
  * 具体操作托管了.
+ * @param {Number} width
+ * @private
  */
-        setWidth : function(w){
+        setWidth : function(w, autoLock){
           var p = this.pCt;
 
-          if(this.resizeDisabled ||
-             (p && p.fireUp('befcolwidthchange', p.indexOf(this), this, w) === false))
+          if(this.resizeDisabled)
             return this;
 
           var pr = this.preWidth, dx;
@@ -15204,13 +16029,19 @@ CC.create('CC.ui.grid.Column', B, function(father){
           dx = !pr ? false : w - pr;
 
           if(p){
+            
+            // 锁定列宽,使得列宽改变能正确完成.
+            if(autoLock) this.lock(true);
             p.fireUp('colwidthchange', this.pCt.indexOf(this), this, w, dx);
+            
             if(w !== this.width){
               w  = this.width;
               if(dx !== false)
                 dx = w - pr;
             }
             p.fireUp('aftercolwidthchange', this.pCt.indexOf(this), this, w, dx);
+            
+            if(autoLock) this.lock(false);
           }
           // cached the width for init.
           else this.width = w;
@@ -15218,6 +16049,22 @@ CC.create('CC.ui.grid.Column', B, function(father){
           this.preWidth = w;
           
           return this;
+       },
+/**
+ * @property locked
+ * 列是否已锁定,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link lock}.
+ * @type Boolean
+ */
+       locked : 0,
+ /**
+  * 锁定/解锁列宽,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link locked}.
+  */
+        lock : function(locked){
+          locked ? this.locked ++ : this.locked --;
+          if(this.locked<0){
+            if(__debug) throw 'lock operation failed: locked < 0';
+            this.locked = 0;
+          }
         }
     };
 });
@@ -15225,16 +16072,33 @@ CC.create('CC.ui.grid.Column', B, function(father){
 CC.Tpl.def('CC.ui.Grid', '<div class="g-grid"></div>');
 
 /**
- * 表,实体主要由 表头(Header) + 内容(Content) + 插件(plugins) 组成
+ * @class CC.ui.Grid
+ * 表,实体主要由 表头(Header) + 内容(Content) + 插件(plugins) 组成.
+ * @extends CC.ui.Panel
  */
 CC.create('CC.ui.Grid', CC.ui.Panel, function(father){
 
 return {
+  
   layout:'row',
 /**
- * 存放表内容的插件,
- * 通过 CC.ui.Grid.prototype.plugins.push(pluginDefinitions) 可以向全局表组件添加一个插件;
- * @type Array
+ * @cfg {Array} plugins 存放表内容的插件,
+ * 通过 CC.ui.Grid.prototype.plugins.push(pluginDefinitions) 可以向全局表组件添加一个插件.<br>
+ * 插件格式为:
+ <pre><code>
+  plugins : [
+    {
+      // name ,名称,以后可通过grid[name]访问插件
+      name:'header', 
+      // 权重,影响插件初始化顺序
+      weight:-100, 
+      // 插件类
+      ctype:'gridhd'
+    },
+    
+    {name:'content',weight:-80,  ctype:'gridcontent'}
+  ]
+ </code></pre>
  */
   plugins : [
     {name:'header', weight:-100, ctype:'gridhd'},
@@ -15276,6 +16140,7 @@ return {
 /**
  * 从对象实例到对象原型链接枚举事件处理函数,并注册到表格中.
  * @param {CC.Base} component
+ * @private
  */
   extraRegisterEventMaps : function(comp){
     var maps = CC.getObjectLinkedValues(comp, 'gridEventHandlers', true);
@@ -15291,11 +16156,11 @@ return {
  * @private
  */
   attachPluginEventHandlers : function(comp, map){
-  	if(typeof map === 'function')
-  	   map = map(comp);
-  	 
+    if(typeof map === 'function')
+       map = map(comp);
+     
     for(var k in map)
-    	this.on(k, map[k], comp);
+      this.on(k, map[k], comp);
   },
 
 /**
@@ -15319,26 +16184,39 @@ return {
     if(arrs.length === 1){
       pls = arrs[0];
     }else if(arrs.length === 0){
-    	return arrs;
+      return arrs;
     }else {
-    	pls = [];
+      pls = [];
       for(var i=0,len=arrs.length;i<len;i++){
-      	pls = pls.concat(arrs[i]);
+        pls = pls.concat(arrs[i]);
       }
     }
     return pls;
   },
 /**
- * @name CC.ui.Grid#beforeaddplugin
- * @event
- * @param {CC.Base} pluginUI 添加到表格的控件,该控件由initPlugin返回
- * @param {Object} plugin
+ * @event beforeaddPLUGINNAME
+ * 在附有UI的插件当UI添加到表格前该事件都会发送,如添加了一个工具条插件,名称为tb,就会发送beforeaddtb.
+ * @param {CC.Base} pluginUI 添加到表格的控件,该控件由{@link #initPlugin}返回
+ * @param {Object} plugin 当前插件实例
  */
 /**
- * @name CC.ui.Grid#afteraddplugin
- * @event
- * @param {CC.Base} pluginUI 添加到表格的控件,该控件由initPlugin返回
- * @param {Object} plugin
+ * @event afteraddPLUGINNAME
+ * 在附有UI的插件当UI添加到表格后该事件都会发送,如添加了一个工具条插件,名称为tb,就会发送afteraddtb.
+ * @param {CC.Base} pluginUI 添加到表格的控件,该控件由{@link #initPlugin}返回
+ * @param {Object} plugin 当前插件实例
+ */
+/**
+ * @event beforeinitPLUGINNAME
+ * 在初始化插件前,发送该事件.如一个工具条插件,名称为tb,初始化前就会发送beforeinittb.
+ * @param {Object} plugin 当前插件实例
+ * @param {CC.ui.Grid} grid
+ */
+ 
+/**
+ * @event afterinitPLUGINNAME
+ * 在初始化插件后,发送该事件.如一个工具条插件,名称为tb,初始化后就会发送afterinittb.
+ * @param {Object} plugin 当前插件实例
+ * @param {CC.ui.Grid} grid
  */
 /**
  * 批量添加插件
@@ -15391,14 +16269,14 @@ return {
       name = pl.name;
       this.fireOnce('beforeinit'+name, pl, this);
       if(pl.initPlugin){
-      	ui = pl.initPlugin(this);
-      	if(ui){
-      		rt.push(name);
+        ui = pl.initPlugin(this);
+        if(ui){
+          rt.push(name);
           // 插件本身
-	        if(ui === true)
-	          ui = pl;
-	        rt.push(ui);
-	        rt.push(pl);
+          if(ui === true)
+            ui = pl;
+          rt.push(ui);
+          rt.push(pl);
         }
       }
       this.fireOnce('afterinit'+name, pl, this);
@@ -15421,13 +16299,10 @@ return {
  * @param {Object} plugin
  */
   addPlugin : function(pl){
-  	pl = this.addPluginsInner([pl]);
+    pl = this.addPluginsInner([pl]);
     this.plugins.push(pl[0]);
   },
-  
-/**
- * @private
- */
+
   destoryPlugins : function(){
     var g = this;
     CC.each(this.plugins, function(){
@@ -15448,9 +16323,9 @@ CC.ui.Grid.SCROLLBAR_WIDTH = 17;
 
 CC.ui.def('grid', CC.ui.Grid);
 /**
+ * @class CC.ui.grid.Cell
  * 单元格
- * @name CC.ui.grid.Cell
- * @class
+ * @extends CC.Base
  */
 C.register('CC.ui.grid.Cell', function(){
   var td = CC.$C({
@@ -15468,43 +16343,26 @@ C.register('CC.ui.grid.Cell', function(){
 
 CC.create('CC.ui.grid.Cell', CC.Base, function(father){
 return {
-
-/**
- * 设为空,内容交给CC.grid.Column填充,也可以非空自定义填充方式
- */
+  
+  // 设为空,内容交给CC.grid.Column填充,也可以非空自定义填充方式
   brush : false,
 
   getTitleNode : function(){
     return this.view.firstChild;
   },
 
-/**
- * 忽略自身设置标题方式
- * @override
- */
-  setTitle : function(t){
+  // 忽略自身设置标题方式
+  setTitle : function(){
     //ignore
     return this;
-  },
-
-/**
- * @private
- */
-  findBrush : function(){
-    if(this.brush)
-      return this.brush;
-    var b;
-    try {
-      b = this.pCt.pCt.pCt.header.$(this.pCt.indexOf(this)).cellBrush;
-    }catch(e){}
-    return b;
   }
 };
 });
 
 /**
- * @name CC.ui.grid.Row
- * @class
+ * 表格行
+ * @class CC.ui.grid.Row
+ * @extends CC.ui.ContainerBase
  */
 C.register('CC.ui.grid.Row', function(){
   return CC.$C({
@@ -15525,10 +16383,17 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
   
   //display:'' 
   blockMode  : 0,
+  
   displayMode:3,
+  
   createView : function(){
-    this.view = C.get('CC.ui.grid.Row');
-    CC.ui.ContainerBase.prototype.createView.call(this);
+    // deletage to parent container to create row view
+    if(this.pCt){
+      this.pCt.createRowView(this);
+    }else {
+      this.view = C.get('CC.ui.grid.Row');
+      CC.ui.ContainerBase.prototype.createView.call(this);
+    }
   },
 
   mouseoverCallback: function(e){
@@ -15539,7 +16404,9 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
     this.pCt.onRowOut(this, e);
   },
 /**
- *
+ * 根据列id获得单元格.
+ * @param {String} columnId 列ID
+ * @return {CC.ui.grid.Cell}
  */
   getCell : function(colId){
     var hd = this.pCt.pCt.header;
@@ -15554,9 +16421,9 @@ CC.ui.def('gridrow', CC.ui.grid.Row);
 ﻿CC.Tpl.def('CC.ui.grid.Header', '<div class="g-grid-hd"><div class="hd-inner" id="_hd_inner"><table class="hd-tbl" id="_hd_tbl" cellspacing="0" cellpadding="0" border="0"><tbody><tr id="_ctx"></tr></tbody></table></div><div class="g-clear"></div></div>');
 
 /**
+ * @class CC.ui.grid.Header
  * 表头
- * @name CC.ui.grid.Header
- * @class
+ * @extends CC.ui.ContainerBase
  */
 CC.create('CC.ui.grid.Header', CC.ui.ContainerBase, function(father){
 	
@@ -15573,10 +16440,6 @@ return {
     this.hdTbl = this.$$('_hd_tbl');
   },
 
-/**
- * @name CC.ui.Grid#header
- * @property {CC.ui.grid.Header} header
- */
   initPlugin : function(grid){
     // add to grid container
     return true;
@@ -15614,9 +16477,7 @@ return {
     }
   },
 
-/**
- * 发送父层表格事件,如果此时存在父组件,调用父组件的fire发送事件
- */
+  // 发送父层表格事件,如果此时存在父组件,调用父组件的fire发送事件
   fireUp : function(){
     var p = this.pCt;
     if(p){
@@ -15624,29 +16485,22 @@ return {
     }
   },
 
-/**
- * 获得列数
- * @param {Number}
- */
   getColumnCount : function(){
     return this.children.length;
   }
 };
 });
 
-/**
- * @name CC.ui.gridhd
- * @field
- */
 CC.ui.def('gridhd', CC.ui.grid.Header);
 ﻿/**
- * @name CC.ui.grid.Content
- * @class
+ * @class CC.ui.grid.Content
+ * 表格数据视图控件.
+ * @extends CC.ui.ContainerBase
  */
 CC.Tpl.def('CC.ui.grid.Content', '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup><tbody id="_ctx"></tbody></table></div>');
 CC.create('CC.ui.grid.Content', CC.ui.Panel, function(father){
-	var undefined;
-return /**@lends CC.ui.grid.Content#*/{
+	var undefined, C = CC.Cache, CX = CC.ui.ContainerBase.prototype;
+return {
 
  itemCls : CC.ui.grid.Row,
 
@@ -15709,8 +16563,9 @@ return /**@lends CC.ui.grid.Content#*/{
    this.setup();
    father.onRender.call(this);
 /**
+ * @property batchUpdating
  * 是否正在批量更新中
- * @name CC.ui.grid.Content#batchUpdating
+ * @type {Boolean}
  * @private
  */
    this.batchUpdating = true;
@@ -15771,9 +16626,8 @@ return /**@lends CC.ui.grid.Content#*/{
       cws[idx] = width;
     }
   },
-/**
- * @override
- */
+  
+  // @override
   getScrollor : function(){
     return this;
   },
@@ -15787,6 +16641,15 @@ return /**@lends CC.ui.grid.Content#*/{
       this.updateRow(c);
     }
   },
+  
+/**
+ * @event contentscroll
+ * 数据视图grid.content滚动条滚动时发送.
+ * @param {DOMEvent} event
+ * @param {Number} scrollLeft
+ * @param {CC.ui.grid.plugin.Content} content
+ * @member CC.ui.Grid
+ */
 /**
  * @private
  */
@@ -15795,17 +16658,30 @@ return /**@lends CC.ui.grid.Content#*/{
   },
 
 /**
- * 是否禁止本单元的cellclick事件的发送,如果为true,当点击该单元时Grid并不发送cellclick事件,默认未置值
- * @name CC.ui.grid.Cell#ignoreClick
- * @property {Boolean} ignoreClick
+ * @cfg {Boolean} ignoreClick 是否禁止本单元的cellclick事件的发送,如果为true,当点击该单元时Grid并不发送cellclick事件,默认未置值
+ * @member CC.ui.grid.Cell
  */
 
 /**
- * 是否禁止本行的itemclick事件的发送,如果为true,当点击该行时Grid并不发送itemclick事件,默认未置值
- * @name CC.ui.grid.Row#ignoreClick
- * @property {Boolean} ignoreClick
+ * @cfg {Boolean} ignoreClick 是否禁止本行的itemclick事件的发送,如果为true,当点击该行时Grid并不发送itemclick事件,默认未置值
+ * @member CC.ui.grid.Row
  */
 
+/**
+ * @event cellclick
+ * 单元格点击事件
+ * @param {CC.ui.grid.Cell} cell
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowclick
+ * 行点击事件
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
  /**
   * 发送表格cellclick, itemclick事件
   * @private
@@ -15822,13 +16698,35 @@ return /**@lends CC.ui.grid.Content#*/{
       }
     }
   },
+  
+  hoverEvent : false,
 
+/**@cfg {Boolean} hoverEvent 是否允许发送rowover,rowout事件.*/
+
+/**
+ * @event rowover
+ * 允许content.hoverEvent后,鼠标mouseover时发送.
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowout
+ * 允许content.hoverEvent后,鼠标mouseout时发送.
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+ 
+  // @interface
   onRowOver : function(r, e){
     if(this.hoverEvent === true){
       this.grid.fire('rowover', r, e);
     }
   },
-
+  
+  // @interface
   onRowOut : function(r, e){
     if(this.hoverEvent === true){
       this.grid.fire('rowout', r, e);
@@ -15871,7 +16769,14 @@ return /**@lends CC.ui.grid.Content#*/{
       }
     }
   },
-
+/**
+ * 当行初始化时,委托父类生成view结点,当通过fromArray方式载行数据时才生效.
+ */
+  createRowView : function(row){
+    row.view = C.get('CC.ui.grid.Row');
+    CX.createView.call(row);
+  },
+  
 /**
  * 当一行数据添加到表格时,调用该方法更新行数据.
  */
@@ -15886,10 +16791,11 @@ return /**@lends CC.ui.grid.Content#*/{
   },
 
 /**
- * 定义更新单元格html方式
- * @param
+ * 更新单元格html
+ * @param {CC.ui.grid.Cell} cell
+ * @param {String} title
  */
-  updateCell : function(cell, title, /**@inner*/brush){
+  updateCell : function(cell, title, brush){
     if(!brush)
     	brush = cell.brush || this.grid.header.$(cell.pCt.indexOf(cell)).cellBrush;
     if(title === undefined){
@@ -15897,52 +16803,53 @@ return /**@lends CC.ui.grid.Content#*/{
     }
     cell.getTitleNode().innerHTML = brush.call(cell, title);
   },
+
 /**
- *
+ * 获得位置i行,j列上的单元格.
+ * @param {Number} rowIndex
+ * @param {Number} cellIndex
+ * @return {CC.ui.grid.Cell} cell
  */
-  insertAt : function(afIdx, bfIdx){
-
-  },
-/**
- * 该方法由外部调用,隐藏数据表列
- */
-  hideCol : function(idx, b){
-
-  },
-
-  getCell : function(i, j){
+  cellAt : function(i, j){
     return this.children[i].children[j];
   },
 
-  getRow : function(i){
-    return this.children[i];
-  },
-
+/**
+ * 获得第i行j列的数据.
+ * @param {Number} rowIndex
+ * @param {Number} cellIndex
+ * @return {Object}
+ */
   dataAt : function(i, j){
-    var c = this.getCell();
-    return c.getValue();
+    return this.$(i).$(j).getValue();
   },
-
+/**
+ * 获得第i行j列的标题.
+ * @param {Number} rowIndex
+ * @param {Number} cellIndex
+ * @return {String}
+ */
   textAt : function(i, j){
-    return this.getCell().title;
+    return this.$(i).$(j).getTitle();
   }
 };
 });
 
 CC.ui.def('gridcontent', CC.ui.grid.Content);
 ﻿/**
- * @name CC.ui.grid.StoreProvider
- * @class
+ * @class CC.ui.grid.ContentStoreProvider
+ * 提供表格数据视图的数据存储功能.
+ * @extends CC.util.StoreProvider
  */
-CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, /**@lends CC.ui.grid.ContentStoreProvider#*/{
+CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, {
 	
 	modifyCS : 'g-form-mdy',
 /**
- * 是否只提交已更改的行记录,默认为true, false时提交所有行记录.
+ * @cfg {Boolean} filterChanged 是否只提交已更改的行记录,默认为true, false时提交所有行记录.
  */
 	filterChanged : true,
 
-/**@override*/
+  // @override
 	isModified : function(row){
 		var md = false;
 		row.each(function(){
@@ -15954,7 +16861,7 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, /**@lends CC
 		return md;
 	},
 	
-/**@override*/
+  // @override
 	decorateModified : function(row, b){
 		var self = this;
 		row.each(function(){
@@ -15980,7 +16887,7 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, /**@lends CC
 		CC.util.StoreProvider.prototype.createNew.call(this, opt, scroll);
 	},
 
-/**@override*/
+  // @override
 	getItemQuery : function(item, qs){
 		var s = [], q, idx=0, chs = item.children;
 		this.t.pCt.header.each(function(a, cnt){
@@ -15999,9 +16906,14 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, /**@lends CC
 	}
 });
 CC.ui.grid.Content.prototype.storeProvider = CC.ui.grid.ContentStoreProvider;
-﻿CC.create('CC.ui.grid.ContentValidation', CC.util.ValidationProvider, {
+﻿/**
+ * @class CC.ui.grid.ContentValidation
+ * 提供表格数据视图的数据验证功能.
+ * @extends CC.util.ValidationProvider
+ */
+CC.create('CC.ui.grid.ContentValidation', CC.util.ValidationProvider, {
 	
-/**@override */
+  // @override
   decorateValidation : fGo,
   
   decorateCellValidation : function(cell, b, msg){
@@ -16011,7 +16923,7 @@ CC.ui.grid.Content.prototype.storeProvider = CC.ui.grid.ContentStoreProvider;
     else cell.setTip('');
   },
   
-/**@override */
+  // @override
   validator : function(row, collector){
   	var idx=0, 
   	    cols = this.t.pCt.header.children, 
@@ -16035,9 +16947,11 @@ CC.ui.grid.Content.prototype.storeProvider = CC.ui.grid.ContentStoreProvider;
   },
   
 /**
+ * 验证单元格数据.
+ * @param {CC.ui.grid.Cell} cell
  * @return {Boolean} true | false
  */
-  validateCell : function(cell, /**@inner*/ vd){
+  validateCell : function(cell, vd){
   	var r = true;
   	if(!vd){
   		vd = this.t.pCt.header.$(cell.pCt.indexOf(cell)).validator;
@@ -16059,12 +16973,23 @@ CC.ui.grid.Content.prototype.storeProvider = CC.ui.grid.ContentStoreProvider;
 });
 CC.ui.grid.Content.prototype.validationProvider = CC.ui.grid.ContentValidation;
 ﻿/**
- * 一个列宽调整的插件
+ * @cfg {Boolean} autoFit 是否自动调整列宽以适应表格宽度,该属性来自{@link CC.ui.grid.ColumnWidthControler}.
+ * @member CC.ui.Grid
  */
-CC.create('CC.ui.grid.plugins.ColumnWidthControler', null, {
+CC.ui.Grid.prototype.autoFit = false;
+
+/**
+ * @class CC.ui.grid.plugins.ColumnWidthControler
+ * 该插件负任调整表头列宽,表头列自适应表宽度等.
+ */
+CC.create('CC.ui.grid.plugins.ColumnWidthControler', null, function(){
+  Math = window.Math;
+return {
 
   autoFitCS : 'g-grid-fit',
-
+/**
+ * @cfg {Number} minColWidth 每列缩放的最小宽度,默认为10
+ */
   minColWidth : 10,
 
   initialize : function(opt){
@@ -16089,12 +17014,16 @@ CC.create('CC.ui.grid.plugins.ColumnWidthControler', null, {
          this.autoColWidths(w); 
        }
       }
+    },
+    
+    colwidthchange : function(idx, col){
+        if(!col._widthcontrolset) this.autoColWidths();
     }
   },
-
+  // 第一次初始化
   initColWidths : function(w){
      var lf = w, hd = this.grid.header, len = hd.getColumnCount();
-     var cw, min = this.minColWidth;
+     var cw, min = this.minColWidth, self = this;
      hd.each(function(){
        cw = this.width;
        if(cw !== false){
@@ -16103,7 +17032,7 @@ CC.create('CC.ui.grid.plugins.ColumnWidthControler', null, {
            cw = Math.floor(w * cw);
          }
          len --;
-         this.setWidth(Math.max(cw, min));
+         self.setColWidth0(this, Math.max(cw, min));
          lf -= this.width;
        }
      });
@@ -16112,48 +17041,129 @@ CC.create('CC.ui.grid.plugins.ColumnWidthControler', null, {
 
      hd.each(function(){
       if(this.width === false){
-        this.setWidth(cw);
+        self.setColWidth0(this, cw);
       }
      });
   },
-
+  
+  // private
+  getAutoWidthLen : function(w){
+    return Math.max(0, (w||this.grid.width)- CC.ui.Grid.SCROLLBAR_WIDTH);
+  },
+  
+  // private
+  setColWidth0 : function(col, w){
+    col._widthcontrolset = true;
+    col.setWidth(w, true);
+    delete col._widthcontrolset;
+  },
+  
+  // 瓜分多出的宽度到列
+  deliverDelta : function(dw){
+    var chs = this.grid.header.children,
+        len = chs.length,
+        // 每列瓜分均值
+        avw , 
+        // 应重设列宽值
+        nw, 
+        // 重设前宽值
+        prew,
+        
+        min = this.minColWidth,
+        i,col,
+        
+        // 仍处理的列 
+        queue = [], 
+        
+        // 已剔除的列
+        delqueue = [];
+        
+    // clone array
+    for(i=0;i<len;i++){
+      if(!chs[i].locked)
+        queue[queue.length] = chs[i];
+    }
+    
+    while(dw !== 0 && queue.length){
+      avw = Math.floor(dw / queue.length);
+      for(i=0,len=queue.length;i<len;i++){
+        col = queue[i];
+        prew = col.width;
+        nw = Math.max(col.width + avw, min);
+        if(nw !== prew){
+          this.setColWidth0(col, nw);
+          if(col.width !== prew){
+            dw -= (col.width - prew);
+          }else {delqueue.push(col);}
+        }else {delqueue.push(col);}
+      }
+      
+      for(i=0;i<delqueue.length;i++){
+        queue.remove(delqueue[i]);
+      }
+      delqueue = [];
+    }
+    
+    // ('remain dw:',dw);
+  },
+  
   autoColWidths : function(w){
     if(this.grid.autoFit){
-      var hd  = this.grid.header,
-          len = hd.getColumnCount(),
-          min = this.minColWidth;
-
-      var ws = 0;
+      
+      if( !w )
+        w = this.getAutoWidthLen();
+      
+      var hd  = this.grid.header, ws = 0;
       
       hd.each(function(){
-        ws += this.width;
+          ws += this.width;
       });
       
-      var dw  = w - ws,
-          avw = Math.floor(dw/len),
-          nw, cnt = len, prew;
-      hd.each(function(){
-        prew = this.width;
-        nw = cnt === 1? prew + dw : Math.max(this.width + avw, min);
-        this.setWidth(nw);
-        dw -= (this.width - prew);
-        cnt --;
-        if(nw !== this.width){
-          //normalize
-          avw = Math.floor(dw / cnt); 
-        }
-      });
+      var dw  = w - ws; // 每列扩展的宽度值delta width
+      var self = this;
+      if(dw != 0){
+         this.deliverDelta(dw);
+      }
     }
+  },
+
+/**
+ * 获得在插件列宽调整规则内指定列可调整的最大与最小<strong>可缩放宽度</strong>.
+ * @return {Array} maxminwidth [minWidth, maxWidth]
+ * @public
+ */
+  getConstrain : function(col){
+    
+    if(col.resizeDisabled)
+      return [col.width, col.width];
+    
+    var min = col.width - Math.max(this.minColWidth, col.minW, 0);
+    
+    if(this.grid.autoFit){
+      var hd  = this.grid.header, 
+          idx = hd.indexOf(col),
+          chs = hd.children;
+          maxW = 0, minW = 0;
+      for(var i=idx+1,len=chs.length;i<len;i++){
+        maxW += chs[i].width;
+        minW =  Math.max(this.minColWidth, chs[i].minW, 0);
+      }
+      
+      return [min, maxW - minW];
+    }
+    
+    return [min, Math.MAX_VALUE];
   }
+};
+}
+);
 
-});
+CC.ui.def('colwidthctrl', CC.ui.grid.plugins.ColumnWidthControler);
 
-CC.ui.def('gridwidthcontrolor', CC.ui.grid.plugins.ColumnWidthControler);
-
-CC.ui.Grid.prototype.plugins.push({name:'widthcontrolor', ctype:'gridwidthcontrolor'});
+CC.ui.Grid.prototype.plugins.push({name:'colwidthctrl', ctype:'colwidthctrl'});
 ﻿/**
- * @name CC.ui.grid.plugins.Editation
- * @class 支持表格编辑插件
+ * @class CC.ui.grid.plugins.Editation
+ * 支持表格编辑的插件
  */
 CC.create('CC.ui.grid.plugins.Editation', null, function(){
   var E = CC.Event, Math = window.Math;
@@ -16166,27 +17176,30 @@ CC.create('CC.ui.grid.plugins.Editation', null, function(){
  * 获得该单元格值, 如果cell.value已定义,返回cell.value,否则返回cell.title
  * @param {CC.ui.grid.Cell} cell
  * @return {Object} value
+ * @method getValue
+ * @member CC.ui.grid.Cell
  */
   CC.ui.grid.Cell.prototype.getValue = function(cell){
      return this.value === undefined ? this.title : this.value;
   };
-
 /**
- * @param {CC.ui.grid.Cell} cell
- * @return this
- */    
+ * @param {Object} cellValue
+ * @method setValue
+ * @member CC.ui.grid.Cell
+ */ 
   CC.ui.grid.Cell.prototype.setValue = function(v){
       this.value = v;
       return this;
   };
   
-/**
- *
- */
+
 return {
-  
+/**
+ * @cfg {Boolean} editable 是否允许或禁止编辑当前表格
+ */
   editable : true,
   
+/**@private*/
   editorCS : 'g-flot-editor',
   
   initialize : function(opt){
@@ -16195,14 +17208,17 @@ return {
   },
 
 /**
+ * 当前单元格是否允许编辑
  * this.editable && !cell.disabled &&  col.editor && col.editable && cell.pCt.editable && cell.editable
+ * @param {CC.ui.grid.Cell} cell
+ * @return {Boolean}
  */
-  isCellEditable : function(cell, /**@inner*/col){
-  	if(!col)
+  isCellEditable : function(cell, col){
+    if(!col)
       col = this.grid.header.$(cell.pCt.indexOf(cell));
 
-  	return this.editable      &&
-  	       col.editor         && 
+    return this.editable      &&
+           col.editor         && 
            col.editable       && 
            cell.pCt.editable  && 
            !cell.disabled     &&
@@ -16211,8 +17227,8 @@ return {
   
   gridEventHandlers : {
     cellclick : function(cell){
-      	var idx = cell.pCt.indexOf(cell),
-      	    col = this.grid.header.$(idx);
+        var idx = cell.pCt.indexOf(cell),
+            col = this.grid.header.$(idx);
         if(this.isCellEditable(cell, col)){
           this.startEdit(cell, idx, col);
         }
@@ -16220,19 +17236,20 @@ return {
   },
 
 /**
- * @param {CC.ui.grid.Column}
- * @return {CC.Base}
- */     
+ * 获得单元格编辑器.
+ * @param {CC.ui.grid.Column} column
+ * @return {CC.ui.form.FormElement}
+ */
   getEditor : function(col){
     var ed = col.editor;
-    if(!ed.cacheId || typeof ed === 'string'){
-    	if(typeof ed === 'string')
-    	  ed = {ctype:ed};
+    if(ed && (!ed.cacheId || typeof ed === 'string')){
+      if(typeof ed === 'string')
+        ed = {ctype:ed};
 
       CC.extendIf(ed, {
-      	showTo:document.body, 
-      	autoRender:true, 
-      	shadow:true
+        showTo:document.body, 
+        autoRender:true, 
+        shadow:true
       });
       
       if(ed.shadow === true)
@@ -16250,54 +17267,64 @@ return {
     var self = this;
     
     inst.on('blur', function(){
-      	if(this.bindingCell){
-      		self.endEdit(this.bindingCell);
-      	}
+        if(this.bindingCell){
+          self.endEdit(this.bindingCell);
+        }
       });
       
     inst.on('keydown', function(e){
-	    if( this.bindingCell){
-	    	var cell = this.bindingCell;
-	    	if(E.TAB === e.keyCode){
-			  	self.endEdit(cell);
-			  	var nxt = self.getNextEditableBlock(cell.pCt, cell.pCt.indexOf(cell));
-			  	
-			  	if(nxt){
-			  		self.startEdit(nxt);
-		    		E.stop(e);
-		    		return false;
-	    	  }
-	    	}
-	    	else if(E.ESC === e.keyCode){
-	    		self.endEdit(cell);
-	    		E.stop(e);
-		    	return false;
-	    	}
-	    }
+      if( this.bindingCell){
+        var cell = this.bindingCell;
+        if(E.TAB === e.keyCode){
+          self.endEdit(cell);
+          var nxt = self.getNextEditableBlock(cell.pCt, cell.pCt.indexOf(cell));
+          
+          if(nxt){
+            self.startEdit(nxt);
+            E.stop(e);
+            return false;
+          }
+        }
+        else if(E.ESC === e.keyCode){
+          self.endEdit(cell);
+          E.stop(e);
+          return false;
+        }
+      }
     });
     
     return inst;
   },
   
   getNextEditableBlock : function(row, cellIdx){
-  	var c = row.children[cellIdx + 1];
-  	if(!c){
-  		row = row.pCt.children[row.pCt.indexOf(row) + 1];
-  		if(row){
-  			c = this.getNextEditableBlock(row, -1);
-  		}
-  	}else if(!this.isCellEditable(c)){
-  		 c = this.getNextEditableBlock(row, cellIdx + 1);
-  	}
-  	return c;
+    var c = row.children[cellIdx + 1];
+    if(!c){
+      row = row.pCt.children[row.pCt.indexOf(row) + 1];
+      if(row){
+        c = this.getNextEditableBlock(row, -1);
+      }
+    }else if(!this.isCellEditable(c)){
+       c = this.getNextEditableBlock(row, cellIdx + 1);
+    }
+    return c;
   },
   
-  startEdit : function(cell,  /**@inner*/idx, /**@inner*/col){
-  	// make a timeout to avoid effection from self dom event
-  	this.startEdit0.bind(this, cell, idx, col).timeout(0);
+    /**
+     * @property editingCell 
+     * 当前正在编辑的单元格
+     * @type CC.ui.GridCell
+     */
+     
+/**
+ * 开始编辑指定格元格.
+ * @param {CC.ui.grid.Cell} gridcell
+ */
+  startEdit : function(cell,  idx, col){
+    // make a timeout to avoid effection from self dom event
+    this.startEdit0.bind(this, cell, idx, col).timeout(0);
   },
   
-  startEdit0 : function(cell, /**@inner*/idx, /**@inner*/col){
+  startEdit0 : function(cell, idx, col){
     
     cell.scrollIntoView(this.grid.content.getScrollor(), true);
     
@@ -16305,47 +17332,49 @@ return {
       idx = cell.pCt.indexOf(cell);
 
     if(!col)
-    	col = this.grid.header.$(idx);
+      col = this.grid.header.$(idx);
     
-    /**
-    * @name CC.ui.Grid#editingCell
-    * @property {CC.ui.GridCell} editingCell 当前正在编辑的单元格
-    */
     var et = this.getEditor(col);
-    
-    et.bindingCell = cell;
-    cell.bindingEditor = et;
-    
-    this.setBoundsForEditor(cell, et);
-    
-    et.setValue(cell.getValue())
-      .setTitle(cell.getValue())
-      .show().focus();
-    this.grid.fire('editstart', cell, et, col, idx, this);
+    if(et){
+      et.bindingCell = cell;
+      cell.bindingEditor = et;
+      
+      this.setBoundsForEditor(cell, et);
+      
+      et.setValue(cell.getValue())
+        .setTitle(cell.getTitle())
+        .show().focus();
+      this.grid.fire('editstart', cell, et, col, idx, this);
+    }
   },
-  
+/**
+ * 结束编辑指定单元格.
+ * @param {CC.ui.grid.Cell} cell
+ */
   endEdit : function(cell){
-		var g = this.grid;
-		var idx = cell.pCt.indexOf(cell),
-		et =  cell.bindingEditor,
-		v, prev;
-		
-		if(g.fire('edit', cell, et, idx, this) !== false){
-			et.hide();
-			v = et.getValue(), prev = cell.getValue();
-			if(v != prev){
-				g.content.updateCell(cell, v);
-				cell.setValue(v);
-				this.grid.content.getValidationProvider().validateCell(cell);
-				if(!cell.modified)
-					g.content.getStoreProvider().decorateCellModified(cell, true);
-			}
-			g.fire('editend', cell, et, idx, this);
-			et.bindingCell = null;
-			delete cell.bindingEditor;
-		}
-  },
+    var g = this.grid;
+    var idx = cell.pCt.indexOf(cell),
+    et =  cell.bindingEditor,
+    v, prev;
     
+    if(g.fire('edit', cell, et, idx, this) !== false){
+      et.hide();
+      v = et.getValue(), prev = cell.getValue();
+      if(v != prev){
+        var txt = et.getText();
+        g.content.updateCell(cell, txt);
+        cell.setValue(v);
+        cell.title = txt;
+        this.grid.content.getValidationProvider().validateCell(cell);
+        if(!cell.modified)
+          g.content.getStoreProvider().decorateCellModified(cell, true);
+      }
+      g.fire('editend', cell, et, idx, this);
+      et.bindingCell = null;
+      delete cell.bindingEditor;
+    }
+  },
+
   setBoundsForEditor : function(cell, ed){
     var cz = cell.getSize(),
         xy = cell.absoluteXY();
@@ -16362,21 +17391,24 @@ return {
 
 CC.ui.def('grideditor', CC.ui.grid.plugins.Editation);
 ﻿/**
- * @name CC.ui.grid.plugins.Toolbar
+ * @class CC.ui.grid.plugins.Toolbar
+ * 表格工具条插件
  */
-CC.create('CC.ui.grid.plugins.Toolbar', null, /**@lends CC.ui.grid.plugins.Toolbar#*/{
+CC.create('CC.ui.grid.plugins.Toolbar', null, {
 /**
- * 当表格指定事件发生后安装工具栏到表格中
- * @type String
- * @default afteraddcontent
+ * @cfg {String} installWhen 当表格指定事件发生后安装工具栏到表格中,默认值为afteraddcontent
  */
   installWhen : 'afteraddcontent',
 /**
- * 指定要创建工具栏的ctype类型
- * @type String
- * @default smallbar
+ * @cfg {String} defCType 指定要创建工具栏的ctype类型,默认值为smallbar
  */
   defCType : 'smallbar',
+/**
+ * @property tb
+ * 工具条UI控件.
+ * @type {CC.Base}
+ */
+  tb : false,
   
   initialize : function(opt){
     CC.extend(this, opt);
@@ -16404,38 +17436,56 @@ CC.create('CC.ui.grid.plugins.Toolbar', null, /**@lends CC.ui.grid.plugins.Toolb
 
 CC.ui.def('gridtb', CC.ui.grid.plugins.Toolbar);
 ﻿/**
- * @name CC.ui.grid.plugins.Pagenation
- * @class 表格分页插件
+ * @class CC.ui.grid.plugins.Pagenation
+ * 表格分页插件
  */
-CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pagenation#*/{
+CC.create('CC.ui.grid.plugins.Pagenation', null, {
 /**
- * 当前页
- * @type Number
+ * @cfg {Number} current 当前页
  */
-	current : 1,
+	current : false,
+	
 /**
+ * @property count
  * 总页数
  * @type Number
  */
 	count : 0,
 /**
- * 每页记录数
- * @type Number
+ * @cfg {Number} size 每页记录数
  */
 	size : 10,
+/**
+ * @cfg {Boolean} autoLoad 表格后渲染后是否立即连接请求分页数据,默认为true.
+ */
+  autoLoad : true,
 
 /**
- * 分页提交参数
- * @type Object
+ * @cfg {Object} params 在每次发起请求时共享的提交参数对象键值对
  */
- params : null,
- 
+  params : false,
+
+/**
+ * 可重写该方法创建并返回自定义的查询字符串
+ * @param {Object} queryObject key:value的提交键值对,可在里面定义提交的数据
+ * @return {String}
+ * @method customQuery
+ */
+  customQuery : false,
+
+/**
+ * @cfg {Boolean} disabled 是否允许响应分页
+ */
+  disabled : false,
+  
   initialize : function(opt){
     CC.extend(this, opt);
   },
   
   initPlugin : function(g){
     g.content.on('statuschange', this._onConnectorStatusChange, this);
+    if(this.autoLoad)
+      g.on('rendered', this.go, this);
   },
   
   gridEventHandlers : {
@@ -16448,17 +17498,17 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   installUI : function(tb){
   	var self = this;
     tb.layout.fromArray([
-      {id:'first', qtip:'第一页', icon:'g-icon-navfirst', onclick : self.go.bind(self, 1)},
+      {id:'first', tip:'第一页', icon:'g-icon-navfirst', onclick : self.go.bind(self, 1)},
       
-      {id:'pre', lyInf:{separator:true}, qtip:'上一页', icon:'g-icon-navpre', onclick : self.pre.bind(self)},
+      {id:'pre', lyInf:{separator:true}, tip:'上一页', icon:'g-icon-navpre', onclick : self.pre.bind(self)},
       {lyInf:{separator:true}, id:'current', template:'<span class="lbl">第 <span><input class="g-ipt-text g-corner" style="text-align:center;" id="_i" size="3"/></span> 页</span>',ctype:'base',clickDisabled:true},
-      {id:'next', qtip:'下一页', icon:'g-icon-navnxt', onclick : self.next.bind(self)},
+      {id:'next', tip:'下一页', icon:'g-icon-navnxt', onclick : self.next.bind(self)},
       
-      {lyInf:{separator:true}, id:'last', qtip:'最后一页', icon:'g-icon-navlast',onclick : function(){
+      {lyInf:{separator:true}, id:'last', tip:'最后一页', icon:'g-icon-navlast',onclick : function(){
         self.go(self.count);
       }},
       {lyInf:{separator:true}, id:'total', template:'<span class="lbl">共<span id="_t">0</span>页</span>', ctype:'base', clickDisabled:true},
-      {id:'refresh',qtip:'刷新当前页', icon:'g-icon-ref', onclick:function(){
+      {id:'refresh',tip:'刷新当前页', icon:'g-icon-ref', onclick:function(){
         self.go(self.current, true);
       }}
     ]);
@@ -16473,6 +17523,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   },
 /**
  * 设置每页记录条数
+ * @param {Number} size
  * @return this
  */
   setSize : function(sz){
@@ -16481,31 +17532,41 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   },
 
 /**
- * @return this
- */  
-  setCount : function(cnt){
-    this.count = cnt;
+ * @return this;
+ */
+  disable : function(b){
+    this.disabled = b;
+    this.updateUIStatus();
     return this;
   },
 /**
- * @name CC.ui.grid#page:beforechange
+ * @event page:beforechange
+ * 事件由{@link CC.ui.grid.plugins.Pagenation}提供,分页改变前发送.
  * @param {Object} pageInformation
  * @param {Object} pagenationPlugin
- * @event
+ * @member CC.ui.Grid
  */
+
 /**
- * @param {Object | Number} pageInfo
- * @param {Boolean} fource fourceToLoad
- * @return this
+ * @event page:afterchange
+ * 事件由{@link CC.ui.grid.plugins.Pagenation}提供,分页改变,数据加载完成后发送.<br/>
+ * @param {Object} pageInformation
+ * @param {Object} returnedJsonObject
+ * @param {CC.Ajax} ajax
+ * @member CC.ui.Grid
  */
+
+ 
   go : function(inf, fource){
-  	if(typeof inf === 'number')
-  	  inf = {current:inf};
-  	
-  	var pre = this.current, cr = inf.current;
-  	
-    if( (pre !== cr || fource) && cr>0){
-      this.grid.fire('page:beforechange', inf, this) !== false && this.onPageChange(inf) !== false;
+    if(!this.disabled){
+    	if(!inf || typeof inf === 'number')
+    	  inf = {current:inf||1};
+    	
+    	var pre = this.current, cr = inf.current;
+    	
+      if( (pre !== cr || fource) && cr>0){
+        this.grid.fire('page:beforechange', inf, this) !== false && this.onPageChange(inf) !== false;
+      }
     }
     return this;
   },
@@ -16515,26 +17576,20 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   },
   
   onPageChange : function(pageInf){
-    if(!pageInf)
-       pageInf = {};
-    
-    // 收集提交的分页信息
-    // copy page info to temp object
-    CC.extendIf(pageInf, {
-      size:this.size,
-      count:this.count,
-      current:this.current
-    });
-    
-    // update param data to temp object
-    if(this.params)
-      CC.extend(pageInf, params);
-
-    this.grid.content.getConnectionProvider()
-        .connect(this.url, {
-           success : this._onSuccess,
-           params  : pageInf
-    });
+    if(this.url){
+      if(!pageInf)
+         pageInf = {};
+      
+      // 收集提交的分页信息
+      // copy page info to temp object
+      pageInf = this.createQuery(pageInf);
+  
+      this.grid.content.getConnectionProvider()
+          .connect(
+             CC.templ(this, this.url), 
+             { success : this._onSuccess, params  : pageInf}
+          );
+    }
   },
   
   _onConnectorStatusChange : function(s){
@@ -16543,16 +17598,26 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
      else if(s === 'final')
      	 this.tb.$('refresh').disable(false);
   },
+  
 /**
- * @name CC.ui.grid#page:afterchange
- * @event
- * @param {CC.ui.grid.plugin.Pagenation} 分页插件实例
- * @param {CC.Ajax} j
+ * 要完全自定义提交的参数,可重写该方法,要定义局部的提交参数,可重写customQuery方法
+ * 应用参数的顺序为 default page info -> this.params -> this.customQuery
  */
- 
- /**
-  * 
-  */
+  createQuery : function(pageInf){
+    CC.extendIf(pageInf, {
+          size:this.size,
+          count:this.count,
+          current:this.current
+    });
+    // update param data to temp object
+    if(this.params)
+      CC.extend(pageInf, params);
+      
+    if(this.customQuery)
+      this.customQuery(pageInf);
+    return pageInf;
+  },
+  
   _onSuccess : function(j){
   	// 注意当前的this是content.getConnectionProvider()
     var page = this.t.pCt.pagenation;
@@ -16562,6 +17627,9 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
 	     page.size    = json.size;
 	     page.count   = json.count;
 	     page.current = json.current || j.params.current;
+	     
+	     if(page.current > page.count)
+	       page.current = page.count;
 	     
     	 //clear content rows
     	 this.t.destoryChildren();
@@ -16573,19 +17641,23 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
     }
   },
   
+/**
+ * 更新UI状态.
+ */
   updateUIStatus : function(){
   	var tb = this.tb, cur = this.current, cnt = this.count;
   	//has pre
-  	var test = cnt === 1 || cur <= 1;
+  	var test = this.disabled || cnt === 1 || cur <= 1;
   	tb.$('first').disable(test);
     tb.$('pre').disable(test);
     //has last
-    test = cur === cnt || cnt === 1;
+    test = this.disabled || cur === cnt || cnt === 1;
   	tb.$('next').disable(test);
     tb.$('last').disable(test); 
-    this.currentEl.value = cur;
+    this.currentEl.value = cur||'';
     this.totalEl.innerHTML = cnt;
     
+    tb.$('refresh').disable(this.disabled);
   },
   
   next : function(){
@@ -16599,33 +17671,259 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, /**@lends CC.ui.grid.plugins.Pa
   }
 });
 CC.ui.def('gridpage', CC.ui.grid.plugins.Pagenation);
+﻿/**
+ * @class CC.ui.grid.plugins.ColumnResizer
+ * 一个列宽调整的插件
+ */
+CC.create('CC.ui.grid.plugins.ColumnResizer', null, function(){
+  
+  var G = CC.util.dd.Mgr, 
+      Rz = G.resizeHelper, 
+      E = CC.Event,
+      Math = window.Math,
+      
+      // 当前resize列
+      currentCol,
+      
+      // 列resize时宽度最小,最大长度限制
+      constrains = [0, 0],
+      
+      // resize前鼠标x
+      IX, 
+      
+      // 移动中的x偏移
+      CX, 
+      
+      // indicator 初始 xy
+      IDX = 0;
+
+/**
+ * @cfg {Boolean} disabledResize 是否允许列缩放.<br>
+ * 该属性来自{@link CC.ui.grid.plugins.ColumnResizer},一个列宽调整的插件.
+ * @member CC.ui.grid.Column
+ */
+  CC.ui.grid.Column.prototype.disabledResize = false;
+
+return {
+  
+/**@cfg {Boolean} resizeDisabled 是否禁用列缩放*/
+  resizeDisabled : false,
+  
+/**@cfg {Number} monitorW*/
+  monitorLen : 10,
+
+/**
+ * @property resizing
+ * 是否拖放中
+ * @type Boolean
+ */
+  resizing : false,
+ 
+  initialize : function(opt){
+    CC.extend(this, opt);
+  },
+  
+  initPlugin : function(g) {
+    this.grid = g;
+  },
+  
+  install : function(hd){    
+    hd.itemAction('mousemove', this.onColMouseMove, false, this)
+      .itemAction('mousedown', this.onColMouseDown, false, this);
+  },
+
+  onColMouseMove : function(col, e){
+     var st = col.view.style;
+     if (this.resizeDisabled || this.resizing || G.isDragging()) {
+          if (st.cursor != '') 
+             st.cursor = "";
+          return;
+     }
+     
+     // td
+     var el = col.view, 
+         px = el.offsetWidth - E.pageX(e) + col.absoluteXY()[0];
+     if (px < this.monitorLen) {
+       st.cursor = "col-resize";
+     } else if (st.cursor != ''){
+       st.cursor = "";
+     }
+  },
+
+  onColMouseDown: function(col, e){
+     var el = col.view;
+     if (el.style.cursor === 'col-resize' && !col.disabledResize){
+        // preparing for resizing
+        // 记录当前列
+        currentCol = col;
+        // 绑定body范围事件
+        CC.$body.domEvent('mouseup', this.onDocMouseUp, true, this)
+                .domEvent('mousemove', this.onDocMouseMove, true, this);
+        IX = E.pageX(e);
+        this.calColWidthConstrain(col);
+        Rz.applyMasker(true, 'col-resize');
+        E.preventDefault(e);
+     }
+  },
+  
+  onColResizeStart : function(e){
+     this.grid.fire('colresizestart', currentCol, currentCol.pCt.indexOf(currentCol));
+     // indicator定位到初始位置
+     var rdc = this.getIndicator(), 
+         ldc = this.leftIndicator, 
+         cxy = currentCol.absoluteXY(), 
+         y;
+         
+     IDX     = cxy[0] + currentCol.view.offsetWidth - Math.floor(rdc.getWidth(true)/2);
+     y       = cxy[1] + currentCol.view.offsetHeight;
+     
+     rdc.setXY(IDX, y).appendTo(document.body);
+     ldc.setXY(cxy[0] - Math.floor(rdc.getWidth(true)/2), y).appendTo(document.body);
+  },
+  
+  onColResizeEnd : function(e){
+     currentCol.setWidth(currentCol.getWidth(true) + CX, true);
+     this.leftIndicator.del();
+     this.rightIndicator.del();
+     this.grid.fire('colresizeend', this, currentCol.pCt.indexOf(currentCol));
+  },
+
+  onDocMouseUp : function(e){
+     CC.$body.unEvent('mouseup',   this.onDocMouseUp)
+             .unEvent('mousemove', this.onDocMouseMove);
+     if(this.resizing){
+       this.resizing = false;
+       this.onColResizeEnd(e);
+     }
+     
+     currentCol = null;
+     Rz.applyMasker(false, '');
+  },
+  
+  onDocMouseMove : function(e){
+    if(!this.resizing){
+      this.resizing = true;
+      this.onColResizeStart(e);
+    }
+    CX = E.pageX(e);
+    var dx = CX - IX;
+    if(dx < 0){
+      if(dx < constrains[0])
+         dx = constrains[0];
+    }else if(dx > 0){
+      if(dx > constrains[1])
+        dx = constrains[1];
+    }
+    CX = dx;
+    this.rightIndicator.view.style.left = (IDX + dx) + 'px';
+  },
+  
+  calColWidthConstrain : function(col){
+     if(this.grid.colwidthctrl){
+       constrains = this.grid.colwidthctrl.getConstrain(col);
+       constrains[0] = -1*constrains[0];
+     }else {
+       constrains[0] = Math.max(col.minW, 0);
+       constrains[1] = Math.MAX_VALUE;
+     }
+  },
+  
+  gridEventHandlers : {
+  	afteraddheader : function(hd){
+  	  this.install(hd);
+  	}
+  },
+  
+  indicatorCS : 'g-grid-cwidctor',
+  
+  getIndicator : function(){
+    var rdc = this.rightIndicator;
+    if(!rdc){
+      var cfg = {
+        view:'div',
+        ctype:'base',
+        cs: this.indicatorCS
+      };
+      rdc = this.rightIndicator = CC.ui.instance(cfg);
+      this.leftIndicator        = CC.ui.instance(cfg);
+      this.grid.header.follow(rdc)
+                      .follow(this.leftIndicator);
+    }
+    return rdc;
+  }
+};
+
+});
+
+CC.ui.def('colresizer', CC.ui.grid.plugins.ColumnResizer);
+
+CC.ui.Grid.prototype.plugins.push({name:'colresizer', ctype:'colresizer'});
+
+
+/**
+ * @event colresizestart
+ * 当开始调整列宽时发送.<br>
+ * 该属性来自{@link CC.ui.grid.plugins.ColumnResizer},一个列宽调整的插件.
+ * @param {CC.ui.grid.Column} column
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+ 
+ /**
+ * @event colresizeend
+ * 当列宽调整结束后发送.<br>
+ * 该属性来自{@link CC.ui.grid.plugins.ColumnResizer},一个列宽调整的插件.
+ * @param {CC.ui.grid.Column} column
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
 ﻿(function(){
 var spr;
 var CC = window.CC;
 var Bx = CC.Base;
 var Tpl = CC.Tpl;
 /**
- * @name CC.ui.form
+ * @class CC.ui.form
  * @namespace
  */
+
 /**
+ * @class CC.ui.form.FormElement
  * 表单元素基类
- * @name CC.ui.form.FormElement
- * @class
  * @extends CC.Base
  */
-CC.create('CC.ui.form.FormElement', Bx,
-/**@lends CC.ui.form.FormElement#*/{
+ 
+/**
+ * @event focus
+ */
+/**
+ * @event blur
+ */
+CC.create('CC.ui.form.FormElement', Bx, {
 
-    elementNode: '_el',
-
-    eventable : true,
-
-    /**
-     * 验证状态,默认为true,只读
-     */
-    isValid : true,
+/**@cfg {String} name 指定提交字段的名称*/
+    name : false,
     
+    value : undefined,
+/**
+ * @property element
+ * 提交数据放在这个html form element里.
+ * @type {HTMLElement}
+ */
+    element : false,
+    
+    elementNode: '_el',
+    
+/**@cfg {Boolean} eventable=true*/
+    eventable : true,
+/**
+ * @cfg {Function} validator 数据验证函数.
+ */
+    validator : false,
+/**
+ * @cfg {Boolean} validateOnblur 失去焦点时是否验证.
+ */
     validateOnblur : true,
     
     elementCS: 'g-form-el',
@@ -16639,8 +17937,14 @@ CC.create('CC.ui.form.FormElement', Bx,
       }
       var el = this.element;
 
-      if (!el) el = this.element = this.dom(this.elementNode);
-
+      if (!el) {
+        el = this.dom(this.elementNode);
+        if(!el)
+          el = this.view;
+          
+        this.element = el;
+      }
+      
       el.id = this.id || 'comp' + CC.uniqueID();
       this.focusNode = el.id;
 
@@ -16733,7 +18037,7 @@ CC.create('CC.ui.form.FormElement', Bx,
     },
 
 /**
- * 重写该方法可自定义修饰"错误提示"的方法
+ * 验证失败后修饰控件的"错误"状态.重写该方法可自定义修饰"错误提示"的方法
  * @param {Boolean} isValid
  */
     decorateValid : function(b){
@@ -16743,7 +18047,8 @@ CC.create('CC.ui.form.FormElement', Bx,
     },
 /**
  * 置值
- * @return this;
+ * @param {Object} value
+ * @return this
  */
     setValue: function(v) {
       this.element.value = v;
@@ -16752,18 +18057,22 @@ CC.create('CC.ui.form.FormElement', Bx,
     },
 
 /**
- * 获得html form element元素值
+ * 获得html form element元素值.
+ * @return {Object}
  */
     getValue : function(){
       return this.element.value;
     },
 
-/**获得控件文本显示值,返回this.title || this.element.value*/
+/**获得控件文本显示值
+ * @return {Object}
+ */
     getText : function(){
-      return this.title || this.element.value;
+      return this.getValue();
     },
 /**
- * 设置提交字段名称
+ * 设置提交字段名称.
+ * @param {String} name
  * @return this
  */
     setName: function(n) {
@@ -16776,7 +18085,7 @@ CC.create('CC.ui.form.FormElement', Bx,
     
     deactive : fGo,
     
-/**@private*/
+    // @override
     mouseupCallback: function(evt) {
       if (this.onclick) this.onclick(evt, this.element);
     }
@@ -16790,10 +18099,10 @@ var fr = CC.ui.form;
 
 Tpl.def('Text', '<input type="text" id="_el" class="g-ipt-text g-corner" />')
    .def('Textarea', '<textarea id="_el" class="g-textarea g-corner" />')
-   .def('Checkbox', '<span tabindex="0" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>');
+   .def('Checkbox', '<span tabindex="0" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>')
+   .def('Select', '<select class="g-corner"/>');
 /**
- * @class
- * @name CC.ui.form.Text
+ * @class CC.ui.form.Text
  * @extends CC.ui.form.FormElement
  */
 CC.create('CC.ui.form.Text', cf, {
@@ -16808,6 +18117,7 @@ CC.create('CC.ui.form.Text', cf, {
     maxH : 20,
 
     focusCS: 'g-ipt-text-hover',
+    
     focusCallback: function(evt) {
       spr.focusCallback.call(this, evt);
       //fix chrome browser.
@@ -16822,8 +18132,7 @@ CC.create('CC.ui.form.Text', cf, {
 
 CC.ui.def('text', fr.Text);
 /**
- * @class
- * @name CC.ui.form.Textarea
+ * @class CC.ui.form.Textarea
  * @extends CC.ui.form.FormElement
  */
 CC.create('CC.ui.form.Textarea', cf, fr.Text.constructors, {
@@ -16834,11 +18143,13 @@ CC.create('CC.ui.form.Textarea', cf, fr.Text.constructors, {
 
 CC.ui.def('textarea', fr.Textarea);
 /**
- * @class
- * @name CC.ui.form.Checkbox
+ * @class CC.ui.form.Checkbox
  * @extends CC.ui.form.FormElement
  */
-CC.create('CC.ui.form.Checkbox', cf, /**@lends CC.ui.form.Checkbox*/{
+CC.create('CC.ui.form.Checkbox', cf, {
+/**
+ * @cfg {Boolean} checked 是否选中状态,参见{@link #setChecked}
+ */
     template : 'Checkbox',
     hoverCS: 'g-check-over',
     clickCS: 'g-check-click',
@@ -16855,7 +18166,9 @@ CC.create('CC.ui.form.Checkbox', cf, /**@lends CC.ui.form.Checkbox*/{
       this.setChecked(!this.checked);
       spr.mouseupCallback.call(this, evt);
     },
-/***/
+/**
+ * @param {Boolean} checked
+ */
     setChecked: function(b) {
       this.checked = b;
       this.element.checked = b;
@@ -16866,11 +18179,17 @@ CC.create('CC.ui.form.Checkbox', cf, /**@lends CC.ui.form.Checkbox*/{
 
 CC.ui.def('checkbox', fr.Checkbox);
 /**
- * @class
- * @name CC.ui.form.Radio
+ * @class CC.ui.form.Radio
  * @extends CC.ui.form.FormElement
  */
+/**
+ * @param {Boolean} checked
+ * @method setChecked
+ */
 CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
+/**
+ * @cfg {Boolean} checked 是否选中状态,参见{@link #setChecked}
+ */
   innerCS: 'g-radio',
   template: 'Checkbox',
   hoverCS: 'g-radio-over',
@@ -16878,6 +18197,57 @@ CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
   checkedCS: 'g-radio-checked'
 });
 CC.ui.def('radio', fr.Radio);
+
+
+/**
+ * @class CC.ui.form.Select
+ * 对html select元素的轻量封装
+ * @extends CC.ui.form.FormElement
+ * @cfg {Array} array options
+ */
+CC.create('CC.ui.form.Select', cf, {
+    template:'Select',
+    initComponent: function() {
+      spr.initComponent.call(this);
+      this.domEvent('focus', this.onFocusTrigger)
+          .domEvent('blur', this.onBlurTrigger)
+          .domEvent('keydown', this.onKeydownTrigger)
+          .domEvent('change', this.onChangeTrigger);
+          
+      if(this.array){
+        for(var i=0,as = this.array,len=as.length;i<len;i++){
+          this.add(as[i]);
+        }
+        delete this.array;
+      }
+      
+      if(this.selectedIndex){
+        this.element.selectedIndex = this.selectedIndex;
+        delete this.selectedIndex;
+      }
+    },
+    
+    onChangeTrigger : function(){
+      if(this.onchange)
+         this.onchange();
+    },
+    
+    getText : function(){
+      var sel = this.element.options[this.element.selectedIndex];
+      return sel?sel.text : '';
+    },
+/**
+ * 添加一个option元素
+ * @param {Object} option {text:'option text', value:'option value'}
+ */
+    add : function(option){
+      var op = document.createElement("OPTION");
+      this.element.appendChild(op);
+      CC.extend(op, option);
+    }
+});
+
+CC.ui.def('select', fr.Select);
 })();
 ﻿/**
  *
@@ -17000,8 +18370,7 @@ CC.ui.def('fieldset',CC.ui.form.Fieldset);
 ﻿CC.Tpl.def('CC.ui.form.Combox', '<div class="g-panel g-combo" tabindex="1" hidefocus="on"><div class="g-panel-wrap g-combo-wrap" id="_wrap"><input type="hidden" id="_el" /><div class="unedit-txt" id="_uetxt"></div><span class="downIco" id="_trigger"></span></div></div>');
 
 /**
- * @name CC.ui.form.Combox
- * @class
+ * @class CC.ui.form.Combox
  * @extends CC.ui.form.FormElement
  */
 CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
@@ -17024,9 +18393,13 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
     maxH: 21,
 /**
- * 
+ * @cfg {Boolean} filterContent 输入时是否过滤子项,默认为true
  */
     filterContent : true,
+/**
+ * @cfg {CC.Base} selector 下拉面板控件.
+ */
+    selector : false,
     
     initComponent: function() {
 
@@ -17140,11 +18513,18 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       superclass.disable.call(this, b);
       this.editor.disable(b);
     },
-/***/
+/**
+ * 设置下拉面板滚动高度,主要是为了出现滚动条.
+ * @private
+ */
     setScrollorHeight: function(h) {
       this.selector.fly('_scrollor').setHeight(h).unfly();
     },
-/***/
+    
+/**
+ * 是否可编辑.
+ * @param {Boolean} editable
+ */
     setEditable: function(b) {
       if (this.uneditable !== undefined && this.uneditable == b) return this;
 
@@ -17193,9 +18573,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     leaveFocusOn: function() {
       if (this._leaveFocus !== true) this._leaveFocus = true;
     },
-/**
- * @param {CC.ui.ContainerBase}
- */
+
     attach: function(selector, selectioner) {
       this.selector = selector;
       this.selectioner = selectioner;
@@ -17347,9 +18725,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       s.anchorPos(this, 'lb', 'hr', null, true, true);
     },
 
-    /**
+  /**
    * 返回最佳宽度,重写该函数自定下拉选择容器的宽度
-   * 默认返回combox的宽度
+   * 默认返回combox的宽度.
+   * @private
    */
     preferWidth: function() {
       return this.getWidth();
@@ -17363,22 +18742,20 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     onSelected: function(item) {
       this.setValueFromItem(item, true);
       if (!this.uneditable && this.focused) this.editor.focus(true);
-      else this.uneditNode.innerHTML = item.title;
     },
     
     getItemValue : function(item){
-      return (item.getValue && item.getValue()) || (item.value !== undefined && item.value) || item.title;
+      if(item.getValue)
+        return item.getValue();
+      if(item.value !== undefined)
+        return item.value;
+      return item.getTitle();
     },
     
     getItemTitle : function(item){
       return item.title!==undefined?item.title : item.value;
     },
-    /**
-     * @param v 值
-     * @param title 标题
-     * @param innerUsed 内部使用
-     * @override
-     */
+
     setValue : function(v, inner){
       superclass.setValue.call(this, v);
       if (this.selector && !inner) {
@@ -17386,21 +18763,23 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       }
       return this;
     },
-    
-/**
- * @return {String}
- */
-    getTitle : function(){
-      return (this.title !== undefined && this.title) || this.editor.getValue();
+
+    getText : function(){
+      if(this.uneditable)
+        return this.title||'';
+      return this.editor.getValue();
     },
     
     setTitle : function(t){
-      this.editor.setValue(t);
-      return superclass.setTitle.call(this, t);
+      if(this.uneditable)
+        this.uneditNode.innerHTML = t;
+      else this.editor.setValue(t);
+      this.title = t;
+      return this;
     },
+    
     /**
-     * @param innerUsed 内部使用
-     * @override
+     * @private
      */
     setValueFromItem: function(item, inner) {
       var v = this.getItemValue(item), 
@@ -17410,20 +18789,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       return this;
     },
 
-    /**
-     * 当前没选择,返回空或编辑框中的值.
-     * @override
-     */
     getValue: function() {
-      if (!this.selectioner.selectionProvider.selected) {
-        superclass.setValue.call(this, this.uneditable ? '': this.editor.getValue());
-      }
       return superclass.getValue.call(this);
     },
 
-  /**
-   * 自定过滤重写该函数即可.
-   */
+    // 自定过滤重写该函数即可.
     matcher: function(item) {
       var tle = this.getItemTitle(item);
       var v = this.editor.element.value;
@@ -17440,7 +18810,9 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       item.setTitle(tle);
       return false;
     },
-/***/
+/**
+ * 选择下拉项.
+ */
     select: function(id) {
       this.selectioner.selectionProvider.select(id);
     }
@@ -17449,15 +18821,15 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 CC.ui.def('combo', CC.ui.form.Combox);
 ﻿CC.Tpl.def('CC.ui.form.Progressbar' , '<table class="g-progressbar" cellspacing="0" cellpadding="0" border="0"><tr><td class="g-progress-l"><i>&nbsp;</i><input type="hidden" id="_el" /></td><td class="g-progress-c"><img id="_img" src="http://www.bgscript.com/s.gif" alt=""/></td><td class="g-progress-r"><i>&nbsp;</i></td></tr></table>');
 /**
- * @name CC.ui.form.Progressbar
+ * @class CC.ui.form.Progressbar
  * @extends CC.ui.form.FormElement
  */
 CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
   if(!CC.ui.form.Progressbar.img)
     CC.ui.form.Progressbar.img = 'http://www.bgscript.com/images/progressbar.gif';
 
-  return /**@lends CC.ui.form.Progressbar*/{
-    /**@type {Number}*/
+  return {
+    /**@cfg {Number} range 范围,默认100*/
     range : 100,
 
     value : 0,
@@ -17475,7 +18847,7 @@ CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
     setValue : function(v){
       if(v>=100){
         CC.fly(this.img).fastStyleSet('width','100%').unfly();
-        this.onStop();
+        this.onstop();
         this.fire('progressstop', this);
         return father.setValue.call(this, 100);
       }
@@ -17483,8 +18855,8 @@ CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
       CC.fly(this.img).fastStyleSet('width',v+'%').unfly();
       return father.setValue.call(this, v);
     },
-/**callback*/
-    onStop : fGo
+/**@cfg {Function} onstop*/
+    onstop : fGo
   };
 });
 
@@ -17492,13 +18864,10 @@ CC.ui.def('progressbar', CC.ui.form.Progressbar);
 (function(){
 var FP = CC.ui.form.FormElement.prototype;
 var E = CC.Event;
-/**
-* Datepicker field element
-*/
+
 CC.Tpl.def('CC.ui.form.DatepickerField', '<div class="g-datepicker-field"><div class="field-wrap"><input type="text" class="g-corner" id="_el" /><a title="点击选择日期" tabindex="-1" class="trigger" id="_trigger" href="javascript:fGo();"></a></div></div>');
 /**
-* @name CC.ui.form.DatepickerField
-* @class
+* @class CC.ui.form.DatepickerField
 * @extends CC.ui.form.FormElement
 */
 CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
@@ -17550,9 +18919,7 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 		this.onBlurTrigger();
 	},
 
-	/**
-	* mousedown -> blur -> timeout
-	*/
+	// mousedown -> blur -> timeout
 	onFocusTriggerDelay: function() {
 		var self = this;
 		(function() {
@@ -17655,6 +19022,10 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 			f.unfly();
 		}
 		return this;
+	},
+	
+	getText : function(){
+	  return this.getValue();
 	}
 
 });
@@ -17663,9 +19034,7 @@ CC.ui.def('datepicker', CC.ui.form.DatepickerField);
 })();
 ﻿CC.create('CC.ui.form.ValidationProvider', CC.util.ValidationProvider, function(father){
 return {
-/**
- * @implementation
- */
+  // @implementation
   validator : function(item, collector){
     var ret = item.validator ? 
       // cbase item
@@ -17682,9 +19051,8 @@ return {
   htmlValidator : function(item){
     return true;
   },
-/**
- * @override
- */
+  
+  // @override
   each : function(callback){
     this.t.eachH(function(){
       // filter form element
@@ -17701,14 +19069,14 @@ return {
 CC.ui.def('formvalidation', CC.ui.form.ValidationProvider);
 CC.ui.form.FormLayer.prototype.validationProvider = CC.ui.form.ValidationProvider;
 ﻿/**
- * @name CC.ui.form.StoreProvider
- * @class
- * @super CC.util.StoreProvider
+ * @class CC.ui.form.StoreProvider
+ * @extends CC.util.StoreProvider
  */
 CC.create('CC.ui.form.StoreProvider', CC.util.StoreProvider, function(father){
-return /**@lends CC.ui.form.StoreProvider#*/{
+return {
 /**
  * 调用CC.formQuery 获得提交数据
+ * @return {String}
  * @override
  */
   queryString : function(){
@@ -17718,7 +19086,6 @@ return /**@lends CC.ui.form.StoreProvider#*/{
 
 /**
  * 保存时提交整个表单数据
- * @override
  */
   save : function(){
     if(this.beforeSave()!== false && 
@@ -17726,10 +19093,7 @@ return /**@lends CC.ui.form.StoreProvider#*/{
          this.onSave();
     }
   },
-/**
- * 忽略addUrl与modifyUrl,统一利用saveUrl提交
- * @override
- */
+  // 忽略addUrl与modifyUrl,统一利用saveUrl提交
   getSaveUrl : function(){
     return this.mappingUrl(this.saveUrl);
   },
