@@ -153,10 +153,11 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
    
 /**
  * 加载项面板内容
+ * @param {String} url
  * @return this
  */
 
-    loadContent : function(reload){
+    loadContent : function(url){
       var p = this.getContentPanel(true);
       // 设置默认返回应用html内容
       p.getConnectionProvider().loadType = this.loadType||'html';
@@ -170,8 +171,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
           });
       }
 
-      if (reload || (!ind.isLoaded() && !ind.isBusy())){
-        cp.connect(this.src || this.url);
+      if (url || (!ind.isLoaded() && !ind.isBusy())){
+        cp.connect(url || this.src || this.url);
       }
       return this;
     },
