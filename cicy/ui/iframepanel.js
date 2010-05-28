@@ -131,6 +131,14 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
     return this.view;
   },
 
+/**
+ * 获得iframe中的widnow对象.
+ * @return {Window} window
+ */
+  getWin : function(){
+    return CC.frameWin(this.getFrameEl());
+  },
+  
   //
   // 实例化时可重写该方法,以自定义IFRAME宽高.
   //
