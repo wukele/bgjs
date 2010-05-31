@@ -49,50 +49,86 @@ var E = CC.Event,
 
     //寄存ComponentRect
     R,
-
+    
+    // drag monitor
+    AM,
+    
+    // drog monitor
+    OM = false,
     //拖放事件是否已绑定,避免重复绑定
     binded = false,
 
-    //拖放控件是否位于当前域中
+    //drag source控件所在的域
     ownZoom = false,
 
     //[MAX_DX,MIN_DX,MAX_DY,MIN_DY]
-    bounds = false;
+    bounds = false,
+    
+    // temp DOMEvent on move
+    V;
 
     function noSelect(e){
       e = e || window.E;
       E.stop(e);
       return false;
     }
-
+    
+    function checkZoom(){
+      // check zoom, if not set zoom in beforedrag
+      if(!zoom)
+        zoom = mgr.$(dragEl.dragZoom);
+      
+      if(zoom) {
+        if(dragEl.ownRect){
+          ownZoom = zoom.contains(dragEl.ownRect);
+          if(ownZoom){
+            ownZoom.remove(dragEl.ownRect);
+          }
+        }
+        zoom.update();
+      }
+    }
+    
     function before(e){
-      if(this.draggable){
         IXY = PXY = E.pageXY(e);
         IEXY = this.absoluteXY();
         dragEl = this;
         if(__debug) console.group("拖放"+this);
         if(__debug) console.log('beforedrag');
-        if(this.beforedrag(e)!==false && this.fire('beforedrag', e) !== false){
-          //doc.ondragstart = E.noUp;
+        if((!this.beforedrag || this.beforedrag(e)!==false) && this.fire('beforedrag', e) !== false){
+          
           if(!binded){
-            binded = true;
-            E.on(doc, "mouseup", drop);
-            E.on(doc, "mousemove", drag);
-            E.on(doc, "selectstart", noSelect);
-            zoom = mgr.$(this.dragZoom);
-            if(zoom){
-              if(this.ownRect){
-                ownZoom = zoom.contains(this.ownRect);
-                if(ownZoom){
-                  ownZoom.remove(this.ownRect);
-                }
-              }
-              zoom.update();
+            // check drag monitor, this instead of null
+            if(!AM)
+               AM = this;
+            
+            if(AM !== this && AM.beforedrag){
+              if(AM.beforedrag(e) === false)
+                return;
             }
+            
+            // chec drop monitor
+            if(!OM)
+              OM = this;
+            
+            if(!OM.movesb)
+              OM.movesb = false;
+
+            // 加速处理
+            if(!AM.drag)
+              AM.drag = false;
+            
+            // bind dom events
+            binded = true;
+            E.on(doc, "mouseup", drop)
+             .on(doc, "mousemove", drag)
+             .on(doc, "selectstart", noSelect);
+            
+            checkZoom();
+            
             if(__debug && zoom) console.log('当前zoom:',this.dragZoom||zoom);
           }
         }
-      }
     }
 
     function GDXY(){
@@ -108,10 +144,43 @@ var E = CC.Event,
              else if(d[1]>b[2]) d[1]=b[2];
           }
     }
-
-
+    // 检测是否进入范围
+    function _(){
+        //区域检测
+        R = zoom.isEnter(P);
+R = zoom.isEnter(P);
+        if(R && R.comp !== dragEl) {
+          if(onEl !== R.comp){
+            //首次进入,检测之前
+            if(onEl !== null){
+                if(__debug) console.log('离开:',onEl.title||onEl);
+                OM.sbout && OM.sbout(onEl, dragEl, V);
+            }
+            //
+            onEl = R.comp;
+            if(!onEl.disabled){
+              if(__debug) console.log('进入:',onEl.title||onEl);
+              OM.sbover && OM.sbover(onEl, dragEl, V);
+              // 可能已重新检测onEl
+            }else {
+              onEl = null;
+            }
+          }
+          //源内移动
+          if(onEl){
+            if(OM.sbmove) OM.sbmove(onEl, V);
+          }
+        }else{
+          if(onEl!== null){
+            if(__debug) console.log('离开:',onEl.title||onEl);
+            OM.sbout && OM.sbout(onEl, dragEl, V);
+            onEl = null;
+          }
+        }
+    }
+    
     function drag(e){
-      e = e || _w.E;
+      V = e || _w.E;
       PXY = E.pageXY(e);
 
 
@@ -122,41 +191,13 @@ var E = CC.Event,
 
       if(!ing){
         if(__debug) console.log('dragstart       mouse x,y is ', PXY,'dxy:',DXY);
-        if(dragEl.dragstart(e) !== false && dragEl.fire('dragstart', e) !== false){
+        if(!AM.dragstart || AM.dragstart(e, dragEl) !== false){
           ing = true;
         }
       }
-
-      if(dragEl.drag(e, onEl) !== false && zoom){
-        //区域检测
-        R = zoom.isEnter(P);
-
-        if(R && R.comp !== dragEl) {
-          if(onEl !== R.comp){
-            //首次进入,检测之前
-            if(onEl !== null){
-              onEl.sbout(dragEl, e);
-              if(__debug) console.log('离开目标:',onEl);
-            }
-            onEl = R.comp;
-            if(!onEl.disabled){
-              onEl.sbover(dragEl, e);
-              if(__debug) console.log('进入目标:',onEl);
-            }else {
-              onEl = null;
-            }
-          }
-          //目标内移动
-          if(onEl)
-            onEl.sbmove(dragEl, e);
-        }else{
-          if(onEl!== null){
-            onEl.sbout(dragEl, e);
-            if(__debug) console.log('离开目标:',onEl);
-            onEl = null;
-          }
-        }
-      }
+      
+      if((AM.drag === false || AM.drag(e) !== false) && zoom)
+        _();
     }
 
     function drop(e){
@@ -165,36 +206,38 @@ var E = CC.Event,
         if(binded){
           //doc.ondragstart = null;
           //清空全局监听器
-          E.un(doc, "mouseup", arguments.callee);
-          E.un(doc, "mousemove", drag);
-          E.un(doc, "selectstart", noSelect);
+          E.un(doc, "mouseup", arguments.callee)
+           .un(doc, "mousemove", drag)
+           .un(doc, "selectstart", noSelect);
+          
           if(ing){
             //如果在拖动过程中松开鼠标
             if(onEl !== null){
-              onEl.sbdrop(dragEl, e);
-              if(__debug) console.log(dragEl.toString(), '丢在', onEl.toString(),'上面');
+              OM.sbdrop && OM.sbdrop(onEl, dragEl, e);
+              if(__debug) console.log(dragEl.toString(), '丢在', onEl.title||onEl,'上面');
             }
-            dragEl.dragend(e);
+
+            AM.dragend && AM.dragend(e, dragEl);
             ing = false;
             if(__debug) console.log('dragend         mouse delta x,y is ',DXY, ',mouse event:',e);
           }
           binded = false;
           onEl = null;
           if(zoom){
-            //重新将自己放入域
-            if(ownZoom){
-              ownZoom.add(dragEl.ownRect);
-              ownZoom = false;
-            }
+            zoom.clear();
+            //不再将自己放入域
+            ownZoom = false;
             zoom = null;
           }
           R = null;
         }
         if(__debug) console.log('afterdrag');
-        dragEl.afterdrag(e);
+        AM.afterdrag && AM.afterdrag(e);
         dragEl.fire('afterdrag', e);
         dragEl = null;
         bounds = false;
+        OM = AM = false;
+        V = null;
         if(__debug) console.groupEnd();
       }
     }
@@ -211,6 +254,96 @@ var E = CC.Event,
  */
         zmCache : {root:new CC.util.d2d.RectZoom()},
 
+/**
+ * 给控件安装可拖动功能,安装后控件component具有
+ * component.draggable = true;
+ * 如果并不想控件view结点触发拖动事件,可设置component.dragNode
+ * 指定触发结点.
+ * @param {CC.Base} component
+ * @param {Boolean} install 安装或取消安装
+ * @param {HTMLElement} dragNode 触发事件的结点,如无则采用c.dragNode
+ */
+        installDrag : function(c, b, dragNode, monitor){
+          if(b===undefined || b){
+            c.draggable = true;
+            c.domEvent('mousedown', before, false, null, dragNode||c.dragNode);
+          }else {
+            c.draggable = false;
+            c.unEvent('mousedown', before,dragNode||c.dragNode);
+          }
+          
+          if(monitor){
+            c.beforedrag = function(){
+              AM = OM = monitor;
+            };
+          }
+        },
+/**
+ * 手动触发拖放处理.
+ * @param {CC.Base} dragSource
+ * @param {DOMEvent} event 传入初始化事件.
+ */
+        startDrag : function(source, e){
+          before.call(source, e);
+        },
+
+/**
+ * 设置拖动中的控件, 在dragbefore时可以指定某个控件作为拖动源对象.
+ * @param {CC.Base} draggingComponent
+ * @return this
+ */
+        setSource : function(comp){
+          dragEl = comp;
+          return this;
+        },
+/**
+ * 设置拖动监听器, 在dragbefore时可以指定某个对象作为拖动监听器,如果未设置,drag source控件将作为监听器.<br>
+ * monitor具有以下接口
+   beforedrag<br>
+   dragstart <br>
+   drag      <br>
+   dragend   <br>
+ * @param {Object} dragMonitor
+ * @return this
+ */
+        setDragMonitor : function(monitor){
+          DN = monitor;
+          return this;
+        },
+/**
+ * 设置drop监听器, 在dragbefore时可以指定某个对象作为监听器,如果未设置,drag source控件将作为监听器.<br>
+ * monitor具有以下接口
+   sbover    <br>
+   sbout     <br>
+   sbmove    <br>
+   sbdrop    <br>
+ * @param {Object} dropgMonitor
+ * @return this
+ */        
+        setDropMonitor : function(monitor){
+          AM = monitor;
+          return this;
+        },
+/**
+ * 集中一个监听器.
+ * @param {Object} monitor
+ * @return this
+ */
+        setMonitor : function(monitor){
+          DN = AM = monitor;
+          return this;
+        },
+/**
+ * 可在dragbefore重定义当前拖放区域.
+ * @param {CC.util.d2d.RectZoom} rectzoom
+ * @param {Boolean} update
+ * @return this
+ */
+        setZoom : function(z, update){
+          zoom = z;
+          if(z && update) zoom.update();
+          return this;
+        },
 /**
  * 返回矩域
  * @param {String} name 矩域名称
@@ -310,7 +443,7 @@ var E = CC.Event,
         },
 
 /**
- * 获得对象拖动开始时鼠标坐标
+ * 拖动开始时鼠标位置
  * @return {Array} [x, y]
  */
         getIMXY : function(){
@@ -358,29 +491,12 @@ var E = CC.Event,
  * @return this
  */
     update : function(){
-      if(zoom)
+      if(zoom){
         zoom.update();
+        // recheck again
+      }
       return this;
     },
-
-/**
- * 给控件安装可拖动功能,安装后控件component具有
- * component.draggable = true;
- * 如果并不想控件view结点触发拖动事件,可设置component.dragNode
- * 指定触发结点.
- * @param {CC.Base} component
- * @param {Boolean} install 安装或取消安装
- * @param {HTMLElement} 触发事件的结点,如无则采用c.dragNode
- */
-        installDrag : function(c, b, dragNode){
-          if(b===undefined || b){
-            c.draggable = true;
-            c.domEvent('mousedown', before, false, null, dragNode||c.dragNode);
-          }else {
-            c.draggable = false;
-            c.unEvent('mousedown', before,dragNode||c.dragNode);
-          }
-        },
 
 /**
  * 是否拖放中
@@ -486,7 +602,7 @@ var E = CC.Event,
  */
  
 /**
-* @cfg {String} dragZoom 设置或获取控件目标拖放区域名称(组),只有控件已安装拖动功能该设置才生效.<br>
+* @cfg {String} dragZoom 设置或获取控件源拖放区域名称(组),只有控件已安装拖动功能该设置才生效.<br>
 * 属性由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}
 */
 
@@ -513,21 +629,23 @@ var E = CC.Event,
  * @param {DOMEvent} event
  * @method beforedrag
  */
-    beforedrag : fGo,
+    beforedrag : false,
 /**
  * 如果已安装拖放,拖动开始时触发.方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
  * @param {DOMEvent} event
+ * @param {CC.Base}  source
  * @method dragstart
  */
-    dragstart : fGo,
+    dragstart : false,
 /**
  * 如果已安装拖放,
  * 函数在鼠标松开时触发,拖动曾经发生过.
  * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
  * @param {DOMEvent} event
+ * @param {CC.Base}  source
  * @method dragend
  */
-    dragend : fGo,
+    dragend : false,
 /**
  * 如果已安装拖放,
  * 函数在鼠标松开时触发,拖动不一定发生过.
@@ -535,7 +653,7 @@ var E = CC.Event,
  * @param {DOMEvent} event
  * @method afterdrag
  */
-    afterdrag : fGo,
+    afterdrag : false,
 /**
  * 如果已安装拖放,
  * 函数在鼠标拖动时触发.
@@ -544,43 +662,79 @@ var E = CC.Event,
  * @param {CC.Base} overComponent 在下方的控件,无则为空
  * @method drag
  */
-    drag : fGo,
+    drag : false,
 
 /**
  * 如果已加入拖放组,
- * 函数在目标进入时触发.
+ * 函数在源进入时触发.
  * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {CC.Base} dragTarget 下方控件
+ * @param {CC.Base} dragSource 上方控件
  * @param {DOMEvent} event
  * @method sbover
  */
-    sbover : fGo,
+    sbover : false,
 /**
  * 如果已加入拖放组,
- * 函数在目标离开时触发.
+ * 函数在源离开时触发.
  * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {CC.Base} dragTarget 下方控件
+ * @param {CC.Base} dragSource 上方控件
  * @param {DOMEvent} event
  * @method sbout
  */
-    sbout : fGo,
+    sbout : false,
 /**
  * 如果已加入拖放组,
- * 函数在目标丢下时触发.
+ * 函数在源丢下时触发.
  * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {CC.Base} dragTarget 下方控件
+ * @param {CC.Base} dragSource 上方控件
  * @param {DOMEvent} event
  * @method sbdrop
  */
-    sbdrop : fGo,
+    sbdrop : false,
 /**
  * 如果已加入拖放组,
- * 函数在目标移动时触发.
+ * 函数在源移动时触发.
  * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {CC.Base} dragingComponent 正在拖动的控件
+ * @param {CC.Base} dragTarget 下方组件
  * @param {DOMEvent} event
  * @method sbmove
  */
-    sbmove : fGo
+    sbmove : false
   });
+  
+/**@class**/
+  CC.create('CC.util.d2d.ContainerDragZoom', CC.util.d2d.RectZoom, {
+    prepare : function(){
+      var sv = this.ct.getScrollor().view, 
+          ch = sv.clientHeight,
+          st = sv.scrollTop,
+          source = mgr.getSource();
+      if( __debug ) console.group('zoom rects');
+      var zoom = this;
+      this.ct.each(function(){
+        if(this !== source){
+          var v = this.view, ot = v.offsetTop, oh = v.offsetHeight;
+          // 是否可见范围
+          if(ot + oh - st > 0){
+            if(ot - st - ch < 0){
+              zoom.add( new CC.util.d2d.ComponentRect(this) );
+              if(__debug) console.log('item index:', arguments[1]);
+            }else {
+              return false;
+            }
+          }
+        }
+      });
+      if( __debug ) console.groupEnd();
+    },
+    
+    clear   : function(){
+      this.rects.clear();
+    }
+  });
+  
+  CC.ui.def('ctzoom', CC.util.d2d.ContainerDragZoom);
 })();

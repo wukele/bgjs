@@ -22,6 +22,7 @@ var CC = window.CC,
 CC.create('CC.ui.grid.Column', B, function(father){
 
     return {
+        
         // bdEl,
 /**@cfg {Boolean} resizeDisabled 是否禁止改变列宽*/
         resizeDisabled : false,
@@ -99,10 +100,6 @@ CC.create('CC.ui.grid.Column', B, function(father){
  */
         setWidth : function(w, autoLock){
           var p = this.pCt;
-
-          if(this.resizeDisabled)
-            return this;
-
           var pr = this.preWidth, dx;
 
           dx = !pr ? false : w - pr;
@@ -111,8 +108,10 @@ CC.create('CC.ui.grid.Column', B, function(father){
             
             // 锁定列宽,使得列宽改变能正确完成.
             if(autoLock) this.lock(true);
+            // 留给事件处理器来设置列宽
+            // 并更新this.width
             p.fireUp('colwidthchange', this.pCt.indexOf(this), this, w, dx);
-            
+            //
             if(w !== this.width){
               w  = this.width;
               if(dx !== false)
@@ -180,8 +179,8 @@ return {
  </code></pre>
  */
   plugins : [
-    {name:'header', weight:-100, ctype:'gridhd'},
-    {name:'content',weight:-80,  ctype:'gridcontent'}
+    {name:'header', ctype:'gridhd'},
+    {name:'content',ctype:'gridcontent'}
   ],
 
   initComponent : function(){
@@ -453,7 +452,6 @@ C.register('CC.ui.grid.Row', function(){
 CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
 
   eventable: false,
-
   brush : false,
 
   itemCls: CC.ui.grid.Cell,

@@ -30,7 +30,7 @@ return {
   initPlugin : function(){
     return true;
   },
-
+  
 /**
  * 创建列宽控制器,这里采用 &lt;colgroup&gt;&lt;col /&gt;&lt;/colgroup&gt;控制方式
  * @private
@@ -238,7 +238,24 @@ return {
       this.grid.fire('rowout', r, e);
     }
   },
-
+  
+  // @interface
+  instanceItem : function(item){
+    if(!item.cacheId){
+      // 检查是否有非数据列
+      var hds = this.grid.header.children;
+      if(item.array.length !== hds.length){
+        var arr = item.array;
+        for(var i=0,len=hds.length;i<len;i++){
+          if(!hds[i].dataCol){
+            arr.insert({}, i);
+          }
+        }
+      }
+    }
+    return father.instanceItem.apply(this, arguments);
+  },
+  
   onResized : function(w){
     if(w !== false){
       //fix ie no scroll event bug
@@ -341,4 +358,13 @@ return {
 };
 });
 
+/**
+ * 指明该列是否为数据项,如果为非数据项,则表格数据视图在添加行时自动插入数据到该列.
+ */
+CC.ui.grid.Column.prototype.dataCol = true;
+/**
+ * 权重
+ * @static
+ */
+CC.ui.grid.Content.WEIGHT = CC.ui.grid.Content.prototype.weight = -80;
 CC.ui.def('gridcontent', CC.ui.grid.Content);

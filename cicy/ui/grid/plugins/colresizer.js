@@ -12,24 +12,18 @@ CC.create('CC.ui.grid.plugins.ColumnResizer', null, function(){
       // 当前resize列
       currentCol,
       
-      // 列resize时宽度最小,最大长度限制
-      constrains = [0, 0],
-      
-      // resize前鼠标x
-      IX, 
-      
-      // 移动中的x偏移
-      CX, 
+      // 列resize时宽度最大,最小长度限制
+      bounds = [0, 0, 0, 0],
       
       // indicator 初始 xy
       IDX = 0;
 
 /**
- * @cfg {Boolean} disabledResize 是否允许列缩放.<br>
+ * @cfg {Boolean} resizeDisabled 是否允许列缩放.<br>
  * 该属性来自{@link CC.ui.grid.plugins.ColumnResizer},一个列宽调整的插件.
  * @member CC.ui.grid.Column
  */
-  CC.ui.grid.Column.prototype.disabledResize = false;
+  CC.ui.grid.Column.prototype.resizeDisabled = false;
 
 return {
   
@@ -38,30 +32,51 @@ return {
   
 /**@cfg {Number} monitorW*/
   monitorLen : 10,
-
-/**
- * @property resizing
- * 是否拖放中
- * @type Boolean
- */
-  resizing : false,
  
   initialize : function(opt){
     CC.extend(this, opt);
-  },
-  
-  initPlugin : function(g) {
-    this.grid = g;
   },
   
   install : function(hd){    
     hd.itemAction('mousemove', this.onColMouseMove, false, this)
       .itemAction('mousedown', this.onColMouseDown, false, this);
   },
-
+  
+  // 拖动开始时
+  dragstart : function(){
+     this.grid.fire('colresizestart', currentCol, currentCol.pCt.indexOf(currentCol));
+     // indicator定位到初始位置
+     var rdc = this.getIndicator(), 
+         ldc = this.leftIndicator, 
+         cxy = currentCol.absoluteXY(), 
+         y;
+         
+     IDX     = cxy[0] + currentCol.view.offsetWidth - Math.floor(rdc.getWidth(true)/2);
+     y       = cxy[1] + currentCol.view.offsetHeight;
+     
+     rdc.setXY(IDX, y).appendTo(document.body);
+     ldc.setXY(cxy[0] - Math.floor(rdc.getWidth(true)/2), y).appendTo(document.body);
+  },
+  
+  drag : function(){
+    this.rightIndicator.view.style.left = (IDX + G.getDXY()[0]) + 'px';
+  },
+  
+  dragend : function(){
+     currentCol.setWidth(currentCol.getWidth(true) + G.getDXY()[0], true);
+     this.leftIndicator.del();
+     this.rightIndicator.del();
+     this.grid.fire('colresizeend', this, currentCol.pCt.indexOf(currentCol));
+  },
+  
+  afterdrag : function(){
+     currentCol = null;
+     Rz.applyMasker(false, '');
+  },
+  
   onColMouseMove : function(col, e){
      var st = col.view.style;
-     if (this.resizeDisabled || this.resizing || G.isDragging()) {
+     if (col.resizeDisabled || G.isDragging()) {
           if (st.cursor != '') 
              st.cursor = "";
           return;
@@ -79,80 +94,29 @@ return {
 
   onColMouseDown: function(col, e){
      var el = col.view;
-     if (el.style.cursor === 'col-resize' && !col.disabledResize){
+     if (el.style.cursor === 'col-resize' && !col.resizeDisabled){
         // preparing for resizing
         // 记录当前列
         currentCol = col;
-        // 绑定body范围事件
-        CC.$body.domEvent('mouseup', this.onDocMouseUp, true, this)
-                .domEvent('mousemove', this.onDocMouseMove, true, this);
-        IX = E.pageX(e);
-        this.calColWidthConstrain(col);
+        
         Rz.applyMasker(true, 'col-resize');
+        G.setMonitor(this)
+         .setBounds(this.calColWidthConstrain(col))
+         .startDrag(col, e);
         E.preventDefault(e);
      }
   },
   
-  onColResizeStart : function(e){
-     this.grid.fire('colresizestart', currentCol, currentCol.pCt.indexOf(currentCol));
-     // indicator定位到初始位置
-     var rdc = this.getIndicator(), 
-         ldc = this.leftIndicator, 
-         cxy = currentCol.absoluteXY(), 
-         y;
-         
-     IDX     = cxy[0] + currentCol.view.offsetWidth - Math.floor(rdc.getWidth(true)/2);
-     y       = cxy[1] + currentCol.view.offsetHeight;
-     
-     rdc.setXY(IDX, y).appendTo(document.body);
-     ldc.setXY(cxy[0] - Math.floor(rdc.getWidth(true)/2), y).appendTo(document.body);
-  },
-  
-  onColResizeEnd : function(e){
-     currentCol.setWidth(currentCol.getWidth(true) + CX, true);
-     this.leftIndicator.del();
-     this.rightIndicator.del();
-     this.grid.fire('colresizeend', this, currentCol.pCt.indexOf(currentCol));
-  },
-
-  onDocMouseUp : function(e){
-     CC.$body.unEvent('mouseup',   this.onDocMouseUp)
-             .unEvent('mousemove', this.onDocMouseMove);
-     if(this.resizing){
-       this.resizing = false;
-       this.onColResizeEnd(e);
-     }
-     
-     currentCol = null;
-     Rz.applyMasker(false, '');
-  },
-  
-  onDocMouseMove : function(e){
-    if(!this.resizing){
-      this.resizing = true;
-      this.onColResizeStart(e);
-    }
-    CX = E.pageX(e);
-    var dx = CX - IX;
-    if(dx < 0){
-      if(dx < constrains[0])
-         dx = constrains[0];
-    }else if(dx > 0){
-      if(dx > constrains[1])
-        dx = constrains[1];
-    }
-    CX = dx;
-    this.rightIndicator.view.style.left = (IDX + dx) + 'px';
-  },
-  
   calColWidthConstrain : function(col){
      if(this.grid.colwidthctrl){
-       constrains = this.grid.colwidthctrl.getConstrain(col);
-       constrains[0] = -1*constrains[0];
+       dx = this.grid.colwidthctrl.getConstrain(col);
+       bounds[1] = -1*dx[0];
+       bounds[0] = dx[1];
      }else {
-       constrains[0] = Math.max(col.minW, 0);
-       constrains[1] = Math.MAX_VALUE;
+       bounds[1] = Math.max(col.minW, 0);
+       bounds[0] = Math.MAX_VALUE;
      }
+     return bounds;
   },
   
   gridEventHandlers : {

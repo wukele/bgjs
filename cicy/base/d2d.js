@@ -68,8 +68,9 @@
     isEnter : function(p){
       var x = p.x, y = p.y;
 
-      return x>=this.l && x<=this.l+this.w &&
+      x =    x>=this.l && x<=this.l+this.w &&
              y>=this.t && y<=this.t+this.h;
+      return x ? this : false;
     },
 /**
  * 接口,刷新矩形缓存数据,默认为空调用
@@ -93,7 +94,7 @@
 /**
  * @class CC.util.d2d.RectZoom
  * 矩域, 由多个矩形或矩域组成树型结构,
- * 矩域大小由矩形链内最小的left,top与最大的left+width,top+height决定
+ * 矩域大小由矩形链内最小的left,top与最大的left+width,top+height决定.
  * @extends CC.util.d2d.Rect
  * @constructor
  * @param {Array} rects 由矩形数组创建矩域
@@ -112,16 +113,24 @@
  * @private
  * @param {Array} rects 包含CC.util.Rect实例的数组
  */
-     initialize : function(rects){
-        this.rects = [];
-        if(rects){
+     initialize : function(opt){
+      
+       if(opt) CC.extend(this, opt);
+       var rects = CC.delAttr(this, 'rects');
+       this.rects = [];
+       if(rects){
          for(var i=0,len=rects.length;i<len;i++){
-          this.add(rects[i]);
+            this.add(rects[i]);
          }
-         this.update();
-        }
+       }
+        // 跳过prototype
+        //this.isEnter = this.isEnter;
       },
 
+
+/**@interface*/
+      prepare : fGo,
+      
 /**
  * 返回域内所有矩形, 返回的并不是矩形的复制,
  * 而是实例内所有矩形的引用,所以对返回矩形数据的修改也就是对矩域内矩形数据的修改.
@@ -188,10 +197,11 @@
       isEnter : function(p){
         //先大范围检测
         if(father.isEnter.call(this, p)){
-          var i, rs = this.rects, len = rs.length;
+          var i, rs = this.rects, len = rs.length, rt;
           for(i=0;i<len;i++){
-            if(rs[i].isEnter(p)){
-              return rs[i];
+            rt = rs[i].isEnter(p);
+            if(rt){
+              return rt;
             }
           }
         }
@@ -227,16 +237,22 @@
  * @override
  */
      update : function(){
+      this.clear();
+      this.prepare();
       var i, rs = this.rects, len = rs.length;
       for(i=0;i<len;i++){
         rs[i].update();
       }
       this.union();
-     }
+     },
+/**
+ * @interface
+ */
+     clear : fGo
    };
 
   });
-
+  
 /**
  * @class CC.util.d2d.ComponentRect
  * 组件封装后的矩形
@@ -257,11 +273,14 @@
  * 该属性是由{@link CC.util.d2d.ComponentRect}类引入的.
  * @type {CC.util.d2d.ComponentRect}
  * @member CC.Base
+ * @constructor
+ * @param {CC.Base} component binding component
+ * @param {Boolean} autoUpdate 是否立即更新矩形数据,默认false.
  */
-    initialize : function(comp){
+    initialize : function(comp, autoUpdate){
       this.comp = comp;
       comp.ownRect = this;
-      this.update();
+      if(autoUpdate) this.update();
     },
 
 /**
