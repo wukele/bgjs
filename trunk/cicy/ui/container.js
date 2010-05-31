@@ -4,6 +4,7 @@ var CC = window.CC;
 var Base = CC.Base;
 var cptx = Base.prototype;
 var UX = CC.ui;
+
 /**
  * @class CC.layout
  * 容器布局管理器类库
@@ -32,10 +33,17 @@ CC.layout.def = function(type, cls){
  CC.create('CC.ui.Item', Base, {});
  CC.ui.def('item', CC.ui.Item);
 
+
 /**
  * @class CC.layout.Layout
- * 布局管理器基类
+ * 布局管理器基类.<br>
+布局管理,布局管理可理解为一个容器怎么去摆放它的子项,因为CSS本身可以布局,所以,大多数时候并不必手动,即用脚本去布局子项,但当一些复杂灵活的布局CSS无能为力的时候,就需要脚本实现了,脚本实现的类可称为布局管理器.
+<br>lyCfg就是一个容器布局管理器的配置(属性)信息,用于初始化容器自身的布局管理器,具体配置因不同布局管理器而不同.
+<br>lyCfg.items 表明所有容器子项由布局管理器加入容器,而不是直接添加到容器,直接调用容器的add方法是不经过布局管理器的,这时如果需要布局的话,就不能对加入的子项进行布局了.
+<br>container.array 配置也是所有将要加入到窗口子项组成数组,lyCfg.item不同的是,它们不经过布局管理器,直接调用容器add方法加到容器,当一些用CSS就能布局的容器通过以这种方式加载子项.
+<br>container.items 意义与 container.layCfg.items一样,只是为了方便书写初始化.
  */
+
 CC.create('CC.layout.Layout', null, {
         /**
          * @cfg {CC.Base} ct
@@ -325,16 +333,16 @@ CC.create('CC.layout.Layout', null, {
         }
 });
 
-var lyx = CC.layout.Layout;
+var Lt = CC.layout.Layout.prototype;
+var Adapert = CC.create(CC.layout.Layout, {
+  doLayout : function(){
+    Lt.doLayout.call(this);
+    this.doLayout = fGo;
+  }
+});
+CC.layout.def('default', Adapert);
 
-CC.layout.def('default', lyx);
-//
-// WrapPanel模板, 设置wrap结点的padding,border而不会影响到panel层的宽高的计算,
-// 可绕过浏览器对BoxModel解析的不同
-//
-CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>')
-      .def( 'CC.ui.WrapPanel', '<div class="g-panel"><div class="g-panel-wrap" id="_wrap"></div></div>');
-
+CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>');
 /**
  * @class CC.ui.ContainerBase
  * 容器类控件,容器是基类的扩展,可包含多个子组件,
@@ -473,7 +481,6 @@ CC.create('CC.ui.ContainerBase', Base,
   lyCfg : false,
   
   createLayout : function(){
-    if (this.layout) {
       if (typeof this.layout === 'string') {
         var cfg = this.lyCfg || {};
         cfg.ct = this;
@@ -481,9 +488,6 @@ CC.create('CC.ui.ContainerBase', Base,
         if (this.lyCfg) delete this.lyCfg;
       }
       else this.layout.attach(this);
-    }
-    else this.layout = new lyx({ ct: this });
-
   },
   
 /**
@@ -834,7 +838,12 @@ CC.create('CC.ui.ContainerBase', Base,
       idx --;
 
     if(this.fire('beforeadd', item) !== false && this.beforeAdd(item) !== false){
-      item.pCt = this;
+      
+      if (item.pCt){
+          item.pCt.remove(item);
+          item.pCt = this;
+      }
+
       this.children.insert(idx, item);
       var nxt = this.children[idx+1];
       if (nxt)

@@ -1,0 +1,68 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <script type="text/javascript" src="../../more/grid/rowmover/rowmover.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function(){
+//__debug=true;
+var shareZoom = new CC.util.d2d.RectZoom();
+
+var win = new CC.ui.Win({
+  layout:'card',
+  showTo:document.body,
+  items:[
+     {
+      ctype:'grid',
+      autoFit:true,
+      header :{
+        array:[
+          {title:'第一列'},{title:'第二列'},{title:'第三列'},{title:'第四列'}
+        ]
+      },
+      content:{ array : createCellData(4, 20) },
+      plugins:[{name:'rowmover', ctype:'rowmover', pZoom:shareZoom}]
+   }]
+});
+  
+win.render();
+win.center();
+
+win = new CC.ui.Win({
+  layout:'card',
+  showTo:document.body,
+  items:[
+     {
+      ctype:'grid',
+      autoFit:true,
+      header :{
+        array:[
+          {title:'第一列'},{title:'第二列'},{title:'第三列'},{title:'第四列'}
+        ]
+      },
+      content:{ array : createCellData(4, 20) },
+      plugins:[{name:'rowmover', ctype:'rowmover', pZoom:shareZoom}]
+   }]
+});
+  
+win.render();
+
+function createCellData(cols, rows){
+  var rs = [];
+  for(var i=0;i<rows;i++){
+    var cs = {array:[]};
+    for(var j=0;j<cols;j++){
+      cs.array.push({title:i+','+j});
+    }
+    rs.push(cs);
+  }
+  return rs;
+}
+});
+</script>

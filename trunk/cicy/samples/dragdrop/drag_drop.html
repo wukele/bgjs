@@ -16,7 +16,7 @@
 </html>
 <script>
 CC.ready(function(){
-	 
+	 __debug = true;
 	 new CC.ui.Button({title:'水平移动', onclick:setDirection, dir:'h', showTo:document.body, autoRender:true});
 	 new CC.ui.Button({title:'垂直移动', onclick:setDirection, dir:'v', showTo:document.body, autoRender:true});
 	 new CC.ui.Button({title:'自由移动', onclick:setDirection, dir:false, showTo:document.body, autoRender:true});
@@ -58,20 +58,21 @@ CC.ready(function(){
 	 	drag :  function(){
 	 		var dxy = G.getDXY(), 
 	 		    ixy = this.tmpIXY;
-	 		this.setXY(ixy[0]+dxy[0], ixy[1]+dxy[1]);
+	 		this.view.style.left = (ixy[0]+dxy[0]) + 'px';
+	 		this.view.style.top  = (ixy[1]+dxy[1]) + 'px';
 	 	},
 	 	
 	 	//目标进入
-	 	sbover: function(c){
+	 	sbover: function(onEl){
 	 		var g = this.pCt.byId('ghost');
-	 		g.setSize(this.getSize());
-	 		this.pCt.swap(this, g);
+	 		g.setSize(onEl.getSize());
+	 		onEl.pCt.swap(onEl, g);
 	 		//交换后更新位置缓存
 	 		G.update();
 	 	},
 	 	
 	 	//目标离开
-	 	sbout : function(c){
+	 	sbout : function(){
 	 		this.setOpacity(1);
 	 	},
 	 	

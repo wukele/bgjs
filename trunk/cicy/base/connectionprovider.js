@@ -99,7 +99,7 @@ CC.util.ProviderFactory.create('Connection', null, {
         this.t.wrapper.html(data, true);
         break;
       default :
-        this.t.layout.fromArray(data);
+        (this.t.layout||this.t).fromArray(data);
         break;
     }
   },

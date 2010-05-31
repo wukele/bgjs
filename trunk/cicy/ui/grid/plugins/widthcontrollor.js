@@ -106,7 +106,7 @@ return {
         
     // clone array
     for(i=0;i<len;i++){
-      if(!chs[i].locked)
+      if(!chs[i].locked && !chs[i].resizeDisabled)
         queue[queue.length] = chs[i];
     }
     

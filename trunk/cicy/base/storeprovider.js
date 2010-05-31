@@ -242,7 +242,7 @@ CC.util.ProviderFactory.create('Store', null, {
   createNew : function(itemOption, scrollIntoView){
     var item = this.t.instanceItem(itemOption);
     this.decorateNew(item, true);
-    this.t.layout.add(item);
+    (this.t.layout||this.t).add(item);
     if(scrollIntoView) {
       item.scrollIntoView( this.t.getScrollor() );
     }

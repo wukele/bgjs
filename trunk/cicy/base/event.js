@@ -288,6 +288,7 @@ CC.extend(Event,
  * @param {String} name 事件名称,无on开头
  * @param {Function} observer 事件处理函数
  * @param {Boolean} [useCapture]
+ * @return this
  */
     on: function(element, name, observer, useCapture) {
         useCapture = useCapture || false;
@@ -297,6 +298,7 @@ CC.extend(Event,
             name = 'keydown';
         }
         this._observeAndCache(element, name, observer, useCapture);
+        return this;
     }
     ,
 /**
@@ -305,6 +307,7 @@ CC.extend(Event,
  * @param {String} name 事件名称,无on开头
  * @param {Function} observer 事件处理函数
  * @param {Boolean} [useCapture]
+ * @return this
  */
     un: function(element, name, observer, useCapture) {
         var element = CC.$(element); useCapture = useCapture || false;
@@ -319,6 +322,7 @@ CC.extend(Event,
         } else if (element.detachEvent) {
             element.detachEvent('on' + name, observer);
         }
+        return this;
     },
 /**
  * 提供元素拖动行为,在RIA中不建议用该方式实现元素拖放,而应实例化一个Base对象,使之具有一个完整的控件生命周期.<br>

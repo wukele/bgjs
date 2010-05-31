@@ -1,4 +1,4 @@
-.g-f1, .g-nav-block-l,.g-nav-block-r,.g-nav-block-u,.g-nav-block-d,.g-layout-cbar .cb-l,.g-layout-cbar .cb-r,.g-bigbar .auto-lefmov, .g-bigbar .auto-rigmov,.g-tab .auto-lefmov, .g-tab .auto-rigmov,.g-smallbar .auto-lefmov, .g-smallbar .auto-rigmov,.g-tabMoveSp, a.srhBtn, .g-datepicker-field .trigger, .g-datepicker .leftsplit, .g-datepicker .rightsplit, .g-smallbar-item-dwn .g-btn-l,.g-smallbar-item-dwn .g-btn-r, .g-smallbar-item-over .g-btn-l,.g-smallbar-item-over .g-btn-r, .g-smallbar-item-click .g-btn-l,.g-smallbar-item-click .g-btn-r, .g-combo .downIco, a.AdsrhBtn,a.g-win-clsbtn,a.g-win-clsbtn2, .g-icoFld,.g-baritem-click .g-btn-l,.g-baritem-dwn .g-btn-l,.g-baritem-click .g-btn-r,.g-baritem-dwn .g-btn-r,.g-baritem-over .g-btn-l,.g-baritem-over .g-btn-r,.g-btn .g-btn-l,.g-btn .g-btn-r, .g-progress-l,.g-progress-r,.g-icoOpn, a.addFd, a.addFd2, .g-tab-item td.tLe, .g-tab-item td.tRi, .g-ti-clsbtn, .btnDrop, a.addfile, a.addfile0, .g-win .g-win-hd .fLe, .g-win .g-win-hd .fRi, .g-win .icoSw, .g-menu-opt .opt1, .g-win-e,.g-win-w,.g-win-sw,.g-win-es,.g-win-wn,.g-win-ne
+.g-f1, .g-nav-block-l,.g-nav-block-r,.g-nav-block-u,.g-nav-block-d,.g-layout-cbar .cb-l,.g-layout-cbar .cb-r,.g-bigbar .auto-lefmov, .g-bigbar .auto-rigmov,.g-tab .auto-lefmov, .g-tab .auto-rigmov,.g-smallbar .auto-lefmov, .g-smallbar .auto-rigmov,.g-tabMoveSp, a.srhBtn, .g-datepicker-field .trigger, .g-datepicker .leftsplit, .g-datepicker .rightsplit, .g-smallbar-item-dwn .g-btn-l,.g-smallbar-item-dwn .g-btn-r, .g-smallbar-item-over .g-btn-l,.g-smallbar-item-over .g-btn-r, .g-smallbar-item-click .g-btn-l,.g-smallbar-item-click .g-btn-r, .g-combo .downIco, a.AdsrhBtn,a.g-win-clsbtn,a.g-win-clsbtn2, .g-icoFld,.g-baritem-click .g-btn-l,.g-baritem-dwn .g-btn-l,.g-baritem-click .g-btn-r,.g-baritem-dwn .g-btn-r,.g-baritem-over .g-btn-l,.g-baritem-over .g-btn-r,.g-btn .g-btn-l,.g-btn .g-btn-r, .g-progress-l,.g-progress-r,.g-icoOpn, a.addFd, a.addFd2, .g-tab-item td.tLe, .g-tab-item td.tRi, .g-ti-clsbtn, .btnDrop, a.addfile, a.addfile0, .g-win .g-win-hd .fLe, .g-win .g-win-hd .fRi, .g-win .icoSw, .g-menu-opt .opt1, .g-win-e,.g-win-w,.g-win-sw,.g-win-es,.g-win-wn,.g-win-ne,.g-grid-cwidctor,.g-vrt-ins
 {background-image:url(ru/fregment1.gif);background-repeat:no-repeat;}
 
 .g-f1-ex, .g-layout-cbar-v .cb-c{background-image:url(ru/fregment1.gif) !important;background-repeat:repeat-y !important;}
@@ -33,7 +33,8 @@ a.gfName{color:#4D784D;}
 	background-image:url(ru/loading.gif);
 	color:#444444;
 }
-.g-grid-cwidctor{background-image:url(ru/fregment1.gif);}
+.g-grid-cwidctor{background-image:url(ru/fregment1.gif);background-repeat:no-repeat;}
+.g-vrt-ins {background-image:url(ru/fregment1.gif);background-repeat:no-repeat;}
 .g-form-error{background-image:url(ru/form-error.gif) !important;}
 .g-form-mdy{background-image:url(ru/modified.gif);}
 
