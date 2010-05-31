@@ -13,14 +13,13 @@
 CC.ready(function(){
 //__debug=true;
 var shareZoom = new CC.util.d2d.RectZoom();
-
 var win = new CC.ui.Win({
-  layout:'card',
+  layout:'border',
+  width:505,
   showTo:document.body,
   items:[
-     {
-      ctype:'grid',
-      autoFit:true,
+    {ctype:'grid',autoFit:true, width:250, lyInf:{dir:'west',split:true},
+      css : 'lnr',
       header :{
         array:[
           {title:'第一列'},{title:'第二列'},{title:'第三列'},{title:'第四列'}
@@ -28,30 +27,23 @@ var win = new CC.ui.Win({
       },
       content:{ array : createCellData(4, 20) },
       plugins:[{name:'rowmover', ctype:'rowmover', pZoom:shareZoom}]
-   }]
+    },
+    
+    {ctype:'grid',autoFit:true, lyInf:{dir:'center'},
+      css : 'lnl',
+      header :{
+        array:[
+          {title:'第一列'},{title:'第二列'},{title:'第三列'},{title:'第四列'}
+        ]
+      },
+      content:{ array : createCellData(4, 20) },
+      plugins:[{name:'rowmover', ctype:'rowmover', pZoom:shareZoom}]
+    }
+  ]
 });
   
 win.render();
 win.center();
-
-win = new CC.ui.Win({
-  layout:'card',
-  showTo:document.body,
-  items:[
-     {
-      ctype:'grid',
-      autoFit:true,
-      header :{
-        array:[
-          {title:'第一列'},{title:'第二列'},{title:'第三列'},{title:'第四列'}
-        ]
-      },
-      content:{ array : createCellData(4, 20) },
-      plugins:[{name:'rowmover', ctype:'rowmover', pZoom:shareZoom}]
-   }]
-});
-  
-win.render();
 
 function createCellData(cols, rows){
   var rs = [];
