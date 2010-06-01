@@ -2662,7 +2662,14 @@ CC.ui = {
   def : function(ctype, clazz){
     this.ctypes[ctype] = clazz;
   },
-
+/**
+ * 根据ctype获得类.
+ * @param {String} ctype
+ * @return {Function} class
+ */
+  getCls : function(ct){
+    return this.ctypes[ct];
+  },
 /**
  * 根据类初始化信息返回类实例,如果初始化信息未指定ctype,默认类为CC.Base,
  * 如果初始化信息中存在ctype属性,在实例化前将移除该属性.

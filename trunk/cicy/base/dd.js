@@ -90,44 +90,48 @@ var E = CC.Event,
     }
     
     function before(e){
-        IXY = PXY = E.pageXY(e);
-        IEXY = this.absoluteXY();
         dragEl = this;
         if(__debug) console.group("拖放"+this);
         if(__debug) console.log('beforedrag');
         if((!this.beforedrag || this.beforedrag(e)!==false) && this.fire('beforedrag', e) !== false){
-          
-          if(!binded){
-            // check drag monitor, this instead of null
-            if(!AM)
-               AM = this;
-            
-            if(AM !== this && AM.beforedrag){
-              if(AM.beforedrag(e) === false)
-                return;
+          // check drag monitor, this instead of null
+          if(!AM)
+            AM = this;
+      
+          if(AM !== this && AM.beforedrag){
+            if(AM.beforedrag(e) === false){
+              dragEl = false;
+              AM = false;
+              return;
             }
-            
+          }
+          
+          IEXY = dragEl.absoluteXY();
+          IXY = PXY = E.pageXY(e);
+          if(!binded){
+            // bind dom events
+            binded = true;
             // chec drop monitor
             if(!OM)
-              OM = this;
-            
+            OM = this;
+        
             if(!OM.movesb)
-              OM.movesb = false;
-
+            OM.movesb = false;
+        
             // 加速处理
             if(!AM.drag)
               AM.drag = false;
-            
-            // bind dom events
-            binded = true;
+        
             E.on(doc, "mouseup", drop)
              .on(doc, "mousemove", drag)
              .on(doc, "selectstart", noSelect);
-            
-            checkZoom();
-            
-            if(__debug && zoom) console.log('当前zoom:',this.dragZoom||zoom);
           }
+          
+          checkZoom();
+      
+          if(__debug && zoom) console.log('当前zoom:',this.dragZoom||zoom);
+        }else {
+          dragEl = false;
         }
     }
 
@@ -148,7 +152,6 @@ var E = CC.Event,
     function _(){
         //区域检测
         R = zoom.isEnter(P);
-R = zoom.isEnter(P);
         if(R && R.comp !== dragEl) {
           if(onEl !== R.comp){
             //首次进入,检测之前
@@ -201,6 +204,7 @@ R = zoom.isEnter(P);
     }
 
     function drop(e){
+      // drag has started
       if(dragEl){
         e = e || _w.E;
         if(binded){
@@ -209,7 +213,6 @@ R = zoom.isEnter(P);
           E.un(doc, "mouseup", arguments.callee)
            .un(doc, "mousemove", drag)
            .un(doc, "selectstart", noSelect);
-          
           if(ing){
             //如果在拖动过程中松开鼠标
             if(onEl !== null){
@@ -221,7 +224,7 @@ R = zoom.isEnter(P);
             ing = false;
             if(__debug) console.log('dragend         mouse delta x,y is ',DXY, ',mouse event:',e);
           }
-          binded = false;
+          
           onEl = null;
           if(zoom){
             zoom.clear();
@@ -230,7 +233,9 @@ R = zoom.isEnter(P);
             zoom = null;
           }
           R = null;
+          binded = false;
         }
+        
         if(__debug) console.log('afterdrag');
         AM.afterdrag && AM.afterdrag(e);
         dragEl.fire('afterdrag', e);
@@ -261,21 +266,33 @@ R = zoom.isEnter(P);
  * 指定触发结点.
  * @param {CC.Base} component
  * @param {Boolean} install 安装或取消安装
- * @param {HTMLElement} dragNode 触发事件的结点,如无则采用c.dragNode
+ * @param {HTMLElement|String} dragNode 触发事件的结点,如无则采用c.dragNode
  */
-        installDrag : function(c, b, dragNode, monitor){
-          if(b===undefined || b){
-            c.draggable = true;
-            c.domEvent('mousedown', before, false, null, dragNode||c.dragNode);
-          }else {
+        installDrag : function(c, b, dragNode, monitor, dragtrigger){
+          if(!b){
             c.draggable = false;
             c.unEvent('mousedown', before,dragNode||c.dragNode);
-          }
-          
-          if(monitor){
-            c.beforedrag = function(){
-              AM = OM = monitor;
-            };
+          }else {
+            c.draggable = true;
+            if(dragtrigger){
+              dragtrigger = c.dom(dragtrigger) || dragtrigger;
+              if(dragtrigger){
+                c.domEvent('mousedown',  function(e){
+                   var el = E.element(e);
+                   if(el === dragtrigger || el.id === dragtrigger){
+                     mgr.startDrag(this, e);
+                   }
+                }, false, null, dragNode);
+              }
+            }else {
+              c.domEvent('mousedown', before, false, null, dragNode);
+            }
+            
+            if(monitor){
+              c.beforedrag = function(){
+                AM = OM = monitor;
+              };
+            }
           }
         },
 /**

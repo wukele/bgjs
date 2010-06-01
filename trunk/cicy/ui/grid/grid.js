@@ -246,9 +246,11 @@ return {
  * @private
  */
   pluginComparator : function(p1, p2){
-    if(p1.weight === p2.weight)
+    var w1 = p1.weight === undefined? p1.ctype? CC.ui.getCls(p1.ctype).prototype.weight:0 : p1.weight;
+    var w2 = p2.weight === undefined? p2.ctype? CC.ui.getCls(p2.ctype).prototype.weight:0 : p2.weight;
+    if(w1 === w2)
       return 0;
-    return (p1.weight||0) < (p2.weight||0) ? -1 : 1;
+    return w1 < w2 ? -1 : 1;
   },
   
 /**
