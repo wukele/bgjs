@@ -86,6 +86,7 @@ return {
   
   // 瓜分多出的宽度到列
   deliverDelta : function(dw){
+    if(__debug) console.log('auto dw:',dw);
     var chs = this.grid.header.children,
         len = chs.length,
         // 每列瓜分均值
@@ -130,7 +131,7 @@ return {
       delqueue = [];
     }
     
-    // ('remain dw:',dw);
+    if(__debug)  console.log('remain dw:',dw);
   },
   
   autoColWidths : function(w){

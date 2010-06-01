@@ -592,7 +592,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
     if(url){
       //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
       //contains '?' already ??
-      url+= url.indexOf('?') > 0 ?'&':'?' +encodeURIComponent(this.parentParamName)+'='+encodeURIComponent(item.id);
+      url+= (url.indexOf('?') > 0 ?'&':'?') + encodeURIComponent(this.parentParamName)+'='+encodeURIComponent(item.id);
     }
     return url;
   },

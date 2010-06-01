@@ -52,7 +52,7 @@ return {
   
   gridEventHandlers : {
     afteraddcontent : function(content){
-      CC.util.dd.Mgr.installDrag(content, true, null, this);
+      CC.util.dd.Mgr.installDrag(content, true, false, this, '_dragger');
       this.ct = content;
       // bind the container
       this.zoom.ct = content;

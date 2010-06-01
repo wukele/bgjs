@@ -94,7 +94,7 @@ return {
 
   onColMouseDown: function(col, e){
      var el = col.view;
-     if (el.style.cursor === 'col-resize' && !col.resizeDisabled){
+     if (el.style.cursor === 'col-resize' && !col.resizeDisabled && !G.isDragging()){
         // preparing for resizing
         // 记录当前列
         currentCol = col;
