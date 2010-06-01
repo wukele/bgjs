@@ -42,7 +42,7 @@ return {
       }
     },
     
-    colwidthchange : function(idx, col){
+    aftercolwidthchange : function(idx, col){
         if(!col._widthcontrolset) this.autoColWidths();
     }
   },
@@ -147,6 +147,8 @@ return {
       });
       
       var dw  = w - ws; // 每列扩展的宽度值delta width
+      
+      if(__debug) console.log('grid width:',w,',current width:',ws,',dw:',dw);
       var self = this;
       if(dw != 0){
          this.deliverDelta(dw);
