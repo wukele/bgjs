@@ -63,7 +63,8 @@ return {
   },
   
   dragend : function(){
-     currentCol.setWidth(currentCol.getWidth(true) + G.getDXY()[0], true);
+     var dx = G.getDXY()[0];
+     if(dx) currentCol.setWidth(currentCol.getWidth(true) + dx, true);
      this.leftIndicator.del();
      this.rightIndicator.del();
      this.grid.fire('colresizeend', this, currentCol.pCt.indexOf(currentCol));

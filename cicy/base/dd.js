@@ -214,6 +214,7 @@ var E = CC.Event,
            .un(doc, "mousemove", drag)
            .un(doc, "selectstart", noSelect);
           if(ing){
+             if(__debug) console.log('dragend         mouse delta x,y is ',DXY, ',mouse event:',e);
             //如果在拖动过程中松开鼠标
             if(onEl !== null){
               OM.sbdrop && OM.sbdrop(onEl, dragEl, e);
@@ -222,7 +223,6 @@ var E = CC.Event,
 
             AM.dragend && AM.dragend(e, dragEl);
             ing = false;
-            if(__debug) console.log('dragend         mouse delta x,y is ',DXY, ',mouse event:',e);
           }
           
           onEl = null;
