@@ -143,9 +143,9 @@ CC.util.ProviderFactory.create('Connection', null, {
     var afg = this.ajaxCfg;
     
     if(!afg)
-      afg = {};
+      afg = {url:url||this.url};
       
-    if(url)
+    else if(url)
       afg.url = url;
 
     afg.caller = this;
