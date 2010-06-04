@@ -326,24 +326,24 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       var sn = this.selectioner,
           p  = sn.getSelectionProvider();
 
-      var v = this.editor.element.value;
+      var v = this.getValue();
 
-      if (!v && p.selected) {
+      if (v === '' && p.selected) {
         p.select(null);
         return;
       }
 
-      if (p.selected && p.selected.title == v) return;
+      if (p.selected && this.getItemValue(p.selected) == v) return;
 
       p.select(null);
-
+      
+      var self = this;
       sn.each(function(it) {
-        if (!it.hidden && !it.disabled && it.title == this) {
+        if (!it.hidden && !it.disabled && self.getItemValue(it) === v) {
           p.select(it);
           return false;
         }
-      },
-      v);
+      });
     },
 
    /**
