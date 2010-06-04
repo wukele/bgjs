@@ -248,7 +248,7 @@ return {
         var arr = item.array;
         for(var i=0,len=hds.length;i<len;i++){
           if(!hds[i].dataCol){
-            arr.insert({}, i);
+            arr.insert(i, {});
           }
         }
       }

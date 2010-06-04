@@ -572,7 +572,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
     // 由JSON格式创建
     if(!a.cacheId){
-      a = UX.instance(a);
+      a = this.instanceItem(a);
     }
 
 /**

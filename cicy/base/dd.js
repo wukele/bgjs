@@ -750,6 +750,17 @@ var E = CC.Event,
     
     clear   : function(){
       this.rects.clear();
+    },
+/**
+ * @param {CC.Base} component
+ */
+    addComp : function(comp){
+      if(CC.isArray(comp)){
+        for(var i=0,len=comp.length;i<len;i++){
+          this.addComp(comp[i]);
+        }
+      }
+      else this.add( new CC.util.d2d.ComponentRect(comp) );
     }
   });
   
