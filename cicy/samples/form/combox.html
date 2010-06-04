@@ -20,9 +20,9 @@
 			// 默认下拉
 			//
 			var cb = new CC.ui.form.Combox({showTo:document.body,css:'p l:100 t:50', autoRender:true,width:300,array:[
-				{title:'粉绿色',icon:'iconUser', value:1},
-				{title:'粉红色',icon:'iconEdit',value:2},
-				{title:'蓝色',icon:'iconRef',value:3},
+				{title:'粉绿色',icon:'iconUser', value:"1"},
+				{title:'粉红色',icon:'iconEdit',value:"2"},
+				{title:'蓝色',icon:'iconRef',value:"3"},
 				{title:'清除记录',icon:'iconFolder' ,disabled:true},
 				{title:'粉红色',icon:'iconLeaf'},
 				{title:'蓝色',icon:'iconTabs'},
@@ -33,7 +33,8 @@
 				{title:'粉红色',icon:'iconLeaf'},
 				{title:'蓝色',icon:'iconTabs'}
 			]});
-			cb.select(2);
+			//cb.select(2);
+			cb.setValue("2");
 			cb.setScrollorHeight(150);
 			cb.selectioner.on('selected', function(item){
 			  CC.Util.ftip('选择项值:'+cb.getValue(), '', item);
