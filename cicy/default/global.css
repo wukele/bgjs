@@ -15,6 +15,8 @@ html,body, h1,h2,h3,h4,td, th, dl, dt, form, ul{
 .dbl {display:block !important;}
 .dbi {display:inline !important;}
 .vvi {visibility:visible !important;}
+.g-ofh {overflow:hidden !important;}
+.g-ofa {overflow:auto !important;}
 
 img, table {border:0 none;border-collapse:collapse;}
 .bIco { display:block; float:left; font-size:0; height:24px; margin:6px 4px 0 0px; width:18px;}
@@ -48,7 +50,7 @@ a.g-win-clsbtn:hover { background-position:-129px -49px;}
 .g-card-ly-ct {overflow:hidden !important;}
 /** border layout*/
 .g-borderlayout-ct {overflow:hidden !important;}
-.g-borderlayout-item {position:absolute;overflow:hidden !important;}
+.g-borderlayout-item {position:absolute;overflow:hidden;}
 .g-borderlayout-item .g-layout-sliper {width:20px;top:3px;height:15px;position:absolute;cursor:pointer;z-index:2;display:block;}
 .g-borderlayout-item-west .g-layout-sliper{right:3px;background-position:-62px -1px;}
 .g-borderlayout-item-west .g-layout-sliper:hover {background-position:-86px -7px;}

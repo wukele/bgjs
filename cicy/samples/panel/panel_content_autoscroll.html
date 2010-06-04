@@ -1,0 +1,49 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+	body {overflow:hidden;}
+</style>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+/**
+ * Javascript Utility for web development.
+ * R&D : www.bgscript.com/forum
+ * @author javeejy@126.com
+ * www.bgscript.com © 2009 - 构建自由的WEB应用 
+ */
+ 
+/**
+ * 应用一些布局使得容器当内容超出可视范围时默认是没有出现滚动条的,常见的有BorderLayout, RowLayout布局.
+ * 出现滚动条的方法主要是设置容器的css.
+ * 方式有很多种.
+ * 1) 可以为容器设置一个css类,指定overflow:auto.
+ * 2) 可以通过css属性以inline style方式设置overflow:auto; 具体为 css:'oa'
+ * 2) 也可以利用global.css里的g-ofa类,具体为 cs:'g-ofa'
+ * 3) 套多一个默认滚动的容器
+ */
+		CC.ready(function(){
+	   var win = new CC.ui.Win(
+	  	{
+	  		title:'窗口中的CC.ui.TitlePanel', 
+	  		destoryOnlose:true, 
+	  		showTo:document.body, 
+	  		layout:'border',
+	  		lyCfg:{
+	  			items : [
+	  				{ctype:'iframe', cs:'g-ofa', lyInf:{dir:'center'}, src:'http://www.g.cn'}
+	  			]
+	  		}
+	    });
+	   win.render();
+	   win.center();
+		});
+</script>
