@@ -60,6 +60,7 @@ var C = {
   'l' :function(c, v){c.view.style.left = v;},
   'r' :function(c, v){c.view.style.right = v;},
   't' :function(c, v){c.view.style.top = v;},
+  'of':function(c, v){c.view.style.overflow = v;},
   'oh':['overflow','hidden'],
   'oa':['overflow','auto']
 };
@@ -147,6 +148,7 @@ var S = /\s+/, B  = CC.borderBox, inst;
   'l' :function(c, v){c.view.style.left = v;},
   'r' :function(c, v){c.view.style.right = v;},
   't' :function(c, v){c.view.style.top = v;},
+  'of':function(c, v){c.view.style.overflow = v;},
   'oh':['overflow','hidden'],
   'oa':['overflow','auto']
 }

@@ -1,0 +1,97 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <style>
+   .g-openhand{cursor:url("../../default/openhand.cur"), default !important;}
+  </style>
+</head>
+<body>
+</body>
+</html>
+<script>
+  
+CC.ready(function(){
+//__debug=true;
+var shareZoom = new CC.util.d2d.RectZoom();
+
+var win = new CC.ui.Win({
+  layout:'border',
+  showTo:document.body,
+  items:[
+      {ctype:'tree',id:'typetree',  cs:'scrolltree', css:'lnr',
+       getScrollor : function(){ return this; },
+       clickEvent:'click',
+       root:{expanded:true,title:'根目录',array:[
+         
+       ]},
+       width:190,lyInf:{dir:'west'}
+      },
+      {ctype:'grid', id:'attrgrid', lyInf:{dir:'center'},autoFit:true,css:'lnl',
+       header : {array:[
+         {title:'名 称'},
+         {title:'值'}
+       ]},
+       
+       content:{array:[{  array:[{title:'码 数'}, {title:'20'}] }] }
+      }
+  ]
+});
+win.render();
+win.center();
+
+var attrgrid = win.byId('attrgrid');
+var typetree    = win.byId('typetree');
+// 拖放管理器
+var G = CC.util.dd.Mgr;
+
+// 拖放域
+var ctzoom = new CC.util.d2d.RectZoom({rects:[
+  new CC.util.d2d.ComponentRect(attrgrid),
+  new CC.util.d2d.ComponentRect(typetree)
+]});
+
+// 拖放处理对象
+var handler = {
+  beforedrag : function(){
+    G.setZoom(ctzoom);
+  },
+  dragstart : function(evt, source){
+    G.getIndicator().prepare();
+    G.getIndicator().setMsg("容器间的拖放!", "源:"+source.id);
+  },
+  
+  drag : function(){
+    G.getIndicator().reanchor();
+  },
+  sbover : function(target){
+    G.getIndicator().setMsg('进入了<font color="red">'+target.id+'</font>');
+  },
+  sbout : function(){
+    G.getIndicator().setMsg("容器间的拖放!");
+  },
+  sbdrop : function(target, source){
+   
+  },
+  
+  dragend : function(){
+    G.getIndicator().end();
+  }
+};
+
+/**
+ * 给控件安装可拖动功能,安装后控件component具有
+ * 如果并不想控件view结点触发拖动事件,可设置component.dragNode
+ * 指定触发结点.
+ * @param {CC.Base} component
+ * @param {Boolean} install 安装或取消安装
+ * @param {HTMLElement|String} dragNode 触发事件的结点,如无则采用c.dragNode
+ * @param {Object} handler
+ */
+G.installDrag(typetree, true, null, handler);
+
+G.installDrag(attrgrid, true, null, handler);
+});
+</script>

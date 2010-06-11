@@ -64,6 +64,8 @@ var E = CC.Event,
     //[MAX_DX,MIN_DX,MAX_DY,MIN_DY]
     bounds = false,
     
+    tmpValid = undefined,
+    
     // temp DOMEvent on move
     V;
 
@@ -80,9 +82,9 @@ var E = CC.Event,
       
       if(zoom) {
         if(dragEl.ownRect){
-          ownZoom = zoom.contains(dragEl.ownRect);
-          if(ownZoom){
-            ownZoom.remove(dragEl.ownRect);
+          if(zoom.contains(dragEl.ownRect)){
+            tmpValid = dragEl.ownRect.valid;
+            dragEl.ownRect.valid = false;
           }
         }
         zoom.update();
@@ -108,6 +110,9 @@ var E = CC.Event,
           
           IEXY = dragEl.absoluteXY();
           IXY = PXY = E.pageXY(e);
+          
+          E.stop(e);
+          
           if(!binded){
             // bind dom events
             binded = true;
@@ -201,6 +206,8 @@ var E = CC.Event,
       
       if((AM.drag === false || AM.drag(e) !== false) && zoom)
         _();
+        
+      E.stop(e);
     }
 
     function drop(e){
@@ -239,6 +246,13 @@ var E = CC.Event,
         if(__debug) console.log('afterdrag');
         AM.afterdrag && AM.afterdrag(e);
         dragEl.fire('afterdrag', e);
+        
+        // 恢复
+        if(tmpValid !== undefined){
+           dragEl.ownRect.valid = tmpValid;
+           tmpValid = undefined;
+        }
+        
         dragEl = null;
         bounds = false;
         OM = AM = false;
@@ -765,4 +779,80 @@ var E = CC.Event,
   });
   
   CC.ui.def('ctzoom', CC.util.d2d.ContainerDragZoom);
+  
+  CC.create('CC.util.dd.Indicator', CC.ui.ContainerBase, {
+      
+      hidden : true,
+      
+      template : CC.ie ? 
+           '<table class="g-float-tip g-clear g-openhand"><tr><td><table class="tipbdy"><tr><td id="_tle" class="important_txt"></td></tr><tr><td id="_msg" class="important_subtxt"></td></tr></table></td></tr></table>' :
+           '<div class="g-float-tip g-clear g-openhand"><div class="tipbdy"><div id="_tle" class="important_txt"></div><div id="_msg" class="important_subtxt"></div></div></div>',
+      
+      shadow : {ctype:'shadow', inpactY:-1,inpactH:5},
+      
+      setMsg : function(text, title){
+        if(text !== false) {
+          if(!this.msgNode)
+            this.msgNode = this.dom('_msg');
+          this.msgNode.innerHTML = text;
+        }
+        if(title !== undefined){
+          if(!this.titleNode)
+            this.titleNode = this.dom('_tle');
+          this.titleNode.innerHTML = title;
+        }
+        
+        if(this.shadow)
+          this.shadow.resize();
+      },
+      
+      prepare : function(x, y){
+        if(x === undefined)
+          x = 15;
+          
+        if(y === undefined)
+          y = -10;
+
+        if(!this.rendered) {
+          this.render();
+        }
+        var ixy = mgr.getIMXY();
+        x += ixy[0]; 
+        y += ixy[1];
+        this.initX = x;
+        this.initY = y;
+        this.setXY(x, y);
+        this.show();
+        mgr.resizeHelper.applyMasker(true);
+        mgr.resizeHelper.masker.addClass('g-openhand');
+        this.appendTo(document.body);
+      },
+      
+      setXY : function(){
+        this.superclass.setXY.apply(this, arguments);
+        if(this.shadow)
+          this.shadow.repos();
+        return this;
+      },
+      
+      reanchor : function(){
+        this.setXY(this.initX + DXY[0], this.initY + DXY[1]);
+      },
+      
+      end : function(){
+        mgr.resizeHelper.applyMasker(false);
+        mgr.resizeHelper.masker.delClass('g-openhand');
+        this.hide().del();
+      }
+  });
+  
+  CC.ui.def('ddindicator', CC.util.dd.Indicator);
+  
+  mgr.getIndicator = function(cfg){
+    var idc = this.indicator;
+    if(!idc){
+      idc = this.indicator = CC.ui.instance(CC.extend({ctype:'ddindicator'}, cfg));
+    }
+    return idc;
+  };
 })();

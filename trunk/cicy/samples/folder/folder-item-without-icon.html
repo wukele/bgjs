@@ -1,0 +1,45 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+/**写多个无图标的类*/
+.noIconGrp .g-grp-bdy li .icos{display:none !important;}
+.noIconGrp .g-grp-bdy li .g-tle {left:20px;}
+</style>
+</head>
+<body></body>
+</html>
+<script>
+		CC.ready(function(){
+     var win = new CC.ui.Win(
+      {
+        title:'CC.ui.Folder控件',
+        closeable:false,
+        showTo:document.body,
+        array:[
+         {ctype:'combo',
+          selector : {
+               ctype:'folder',
+               showTo:document.body,
+               cs:'noIconGrp',
+               array:[
+                  {title:'disabled item',disabled:true},
+                  {title:'粉红色'},
+                  {title:'蓝色'},
+                  {title:'清除记录'},
+                  {title:'粉红色'},
+                  {title:'蓝色'},
+                  {title:'清除记录'}
+               ]
+         }
+        }
+        ]
+      });
+      win.render();
+      win.center();
+		});
+</script>
