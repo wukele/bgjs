@@ -4,6 +4,7 @@ var Eventable = CC.Eventable;
 var CPC = {};
 var Cache = CC.Cache;
 var Event = CC.Event;
+
 /**
  * @class CC.Base
  * 为所有控件的基类,定义控件的基本属性与方法,管理控件的生命周期.<br>

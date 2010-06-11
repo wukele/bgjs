@@ -41,9 +41,15 @@
       this.w = l[2];
       this.h = l[3];
     }
+    
+    this.valid = true;
   };
 
   CC.extend(CC.util.d2d.Rect.prototype, {
+    valid : true,
+/**
+ * @cfg {Boolean} valid 指示矩形数据是否有效，无效的数据将忽略对矩形的各种检测.
+ */
 /**
  * @cfg {Number} l left值
  */
@@ -66,11 +72,14 @@
  * @return {Boolean}
  */
     isEnter : function(p){
-      var x = p.x, y = p.y;
-
-      x =    x>=this.l && x<=this.l+this.w &&
-             y>=this.t && y<=this.t+this.h;
-      return x ? this : false;
+      if(this.valid){
+        var x = p.x, y = p.y;
+  
+        x =    x>=this.l && x<=this.l+this.w &&
+               y>=this.t && y<=this.t+this.h;
+        return x ? this : false;
+      }
+      return false
     },
 /**
  * 接口,刷新矩形缓存数据,默认为空调用
@@ -114,7 +123,7 @@
  * @param {Array} rects 包含CC.util.Rect实例的数组
  */
      initialize : function(opt){
-      
+       this.valid = true;
        if(opt) CC.extend(this, opt);
        var rects = CC.delAttr(this, 'rects');
        this.rects = [];
@@ -196,7 +205,7 @@
    */
       isEnter : function(p){
         //先大范围检测
-        if(father.isEnter.call(this, p)){
+        if(this.valid && father.isEnter.call(this, p)){
           var i, rs = this.rects, len = rs.length, rt;
           for(i=0;i<len;i++){
             rt = rs[i].isEnter(p);
@@ -204,8 +213,8 @@
               return rt;
             }
           }
-        }
-        return false;
+       }
+       return false;
       },
 
   /**@private*/
@@ -279,6 +288,7 @@
  */
     initialize : function(comp, autoUpdate){
       this.comp = comp;
+      this.valid = true;
       comp.ownRect = this;
       if(autoUpdate) this.update();
     },

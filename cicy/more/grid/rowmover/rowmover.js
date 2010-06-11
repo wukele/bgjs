@@ -65,11 +65,9 @@ return {
       G.update();
     }
 
-    if(onEl){
-      var idt = this.getIndicator(), xy  = onEl.absoluteXY();
-      idt.setXY(xy[0] - Math.floor(parseInt(idt.fastStyle('width'),10)/2), xy[1] - Math.floor(parseInt(idt.fastStyle('height'),10)/2))
+    var idt = this.getIndicator(), xy  = onEl.absoluteXY();
+        idt.setXY(xy[0] - Math.floor(parseInt(idt.fastStyle('width'),10)/2), xy[1] - Math.floor(parseInt(idt.fastStyle('height'),10)/2))
          .show();
-    }
   },
   
   sbout : function(){

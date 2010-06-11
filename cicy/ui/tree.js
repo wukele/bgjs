@@ -59,7 +59,7 @@ CC.create('CC.ui.TreeItem', cbx, {
   /**@cfg {Boolean} nodes 树结点是否为目录,默认false.*/
   nodes : false,
 
-  clickEvent : 'mousedown',
+  clickEvent : 'click',
 
   clickEventNode : '_head',
 
@@ -613,7 +613,8 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
   setSize : function(w, h){
     sprs.setSize.apply(this, arguments);
     if(w !== false && CC.ie){
-      this.getScrollor().setWidth(this.width);
+      var sc = this.getScrollor();
+      if(sc !== this) sc.setWidth(this.width);
     }
   }
 });

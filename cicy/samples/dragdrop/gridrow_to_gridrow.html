@@ -1,0 +1,93 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <script type="text/javascript" src="../../more/grid/rowmover/rowmover.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <style>
+   .g-openhand{cursor:url("../../default/openhand.cur"), default !important;}
+  </style>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function(){
+//__debug=true;
+var shareZoom = new CC.util.d2d.RectZoom();
+var G  = CC.util.dd.Mgr;
+var superclass = CC.ui.getCls('rowmover').prototype;
+
+var pluginDef = {
+  name:'rowmover',
+  ctype:'rowmover',
+  pZoom:shareZoom,
+  
+  dragstart : function(e, source){
+    superclass.dragstart.apply(this, arguments);
+    if(this.mgrIndicator) {
+      G.getIndicator().setMsg('Dragging..', 'Source:'+source.$(1).title);
+    }
+  },
+  
+  sbover : function(target, source){
+    superclass.sbover.apply(this, arguments);
+    if(this.mgrIndicator) {
+      G.getIndicator().setMsg('Target:<font color="red">' + target.$(1).title + '</font>');
+    }
+  },
+  
+  sbout : function(target, source){
+    superclass.sbout.apply(this, arguments);
+    if(this.mgrIndicator) {
+      G.getIndicator().setMsg('Dragging..');
+    }
+  }
+};
+
+var win = new CC.ui.Win({
+  layout:'border',
+  width:505,
+  showTo:document.body,
+  items:[
+    {ctype:'grid',autoFit:true, width:250, lyInf:{dir:'west',split:true},
+      css : 'lnr',
+      header :{
+        array:[
+          {title:'第一列'},{title:'第二列'},{title:'第三列'},{title:'第四列'}
+        ]
+      },
+      content:{ array : createCellData(4, 20) },
+      plugins:[pluginDef]
+    },
+    
+    {ctype:'grid',autoFit:true, lyInf:{dir:'center'},
+      css : 'lnl',
+      header :{
+        array:[
+          {title:'第一列'},{title:'第二列'},{title:'第三列'},{title:'第四列'}
+        ]
+      },
+      content:{ array : createCellData(4, 20) },
+      plugins:[pluginDef]
+    }
+  ]
+});
+  
+win.render();
+win.center();
+
+function createCellData(cols, rows){
+  var rs = [];
+  for(var i=0;i<rows;i++){
+    var cs = {array:[]};
+    for(var j=0;j<cols;j++){
+      cs.array.push({title:i+','+j});
+    }
+    rs.push(cs);
+  }
+  return rs;
+}
+});
+</script>

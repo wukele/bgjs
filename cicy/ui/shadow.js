@@ -148,15 +148,26 @@ CC.create('CC.ui.Shadow', CC.Base,
       this.setXY(pos[0]+this.inpactX, pos[1]+this.inpactY - 1);
     },
 /**
+ * 假如目标只是宽高改变，可调用本方法重新调整阴影。
+ */
+  resize : function(){
+    var d = this.target.getSize(true);
+    this.setRightSize(d.width, d.height);
+  },
+/**
+ * 假如目标只是x,y改变，可调用本方法重新调整阴影。
+ */
+  repos : function(){
+    this.setRightPos(this.target.absoluteXY());
+  },
+/**
  * 更新至当前状态,当阴影大小或位置与目标不一致时调用.
  * @return this
  */
   reanchor : function(){
-    var pos, t = !this.hidden;
-    d = this.target.getSize(true);
-    this.setRightSize(d.width, d.height);
-    pos = this.target.absoluteXY();
-    this.setRightPos(pos);
+    var t = !this.hidden;
+    this.resize();
+    this.repos();
     if(t)
       PR.display.call(this, true);
     return this;

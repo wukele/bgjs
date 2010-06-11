@@ -60,7 +60,7 @@ CC.extend(Event,
      * @private
      */
     noUp : function(ev) {
-        Event.stop(ev||window.event);
+        Event.stopPropagation(ev||window.event);
         return false;
     },
 /**

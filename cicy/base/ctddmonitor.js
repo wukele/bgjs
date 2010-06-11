@@ -29,18 +29,15 @@ CC.create('CC.util.dd.AbstractCtMonitor', null, {
  * @cfg {String} trigger 触发drag DOM元素ID,默认为'_dragger'
  */
   trigger : '_dragger',
-/**
- * @cfg {Boolean} masker 拖放时是否应掩层,默认为true
- */
-  masker  : true,
 
-  maskerCursor : '',
 /**
  * @cfg {String} dragCS 拖动中源控件样式
  */
   dragCS : false,
-  
+/***/
   indicator : false,
+/***/
+  mgrIndicator : true,
   
 /**
  * trigger按下时,寻找trigger所在的子项作为拖放源.
@@ -66,12 +63,13 @@ CC.create('CC.util.dd.AbstractCtMonitor', null, {
     //  组建当前的dragzoom为表可见列
     //
     G.setZoom(this.pZoom||this.zoom, true);
-    
-    if(this.masker) 
-      G.resizeHelper.applyMasker(true, this.maskerCursor);
 
     if(this.dragCS)
       source.addClass(this.dragCS);
+      
+    if(this.mgrIndicator) {
+      G.getIndicator().prepare();
+    }
   },
 /**
  * 如果未设置showTo,showTo到document.body
@@ -91,16 +89,25 @@ CC.create('CC.util.dd.AbstractCtMonitor', null, {
     return idt;
   },
   
+  drag : function(){
+    if(this.mgrIndicator)
+      G.getIndicator().reanchor();
+  },
+  
   dragend : function(e, source){
-    
-    if(this.masker)
-       G.resizeHelper.applyMasker(false);
 
     if(this.indicator) 
       this.getIndicator().hide();
       
     if(this.dragCS)
       source.delClass(this.dragCS);
-  }
+      
+    if(this.mgrIndicator)
+      G.getIndicator().end();
+  },
+  sbover:fGo,
+  sbout:fGo,
+  sbdrop:fGo,
+  afterdrag:fGo
 });
 })();
