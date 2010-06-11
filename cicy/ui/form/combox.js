@@ -435,7 +435,8 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
       if (tle.indexOf(v) >= 0) {
         //item.addClass('g-match');
-        item.dom('_tle').innerHTML = tle.replace(v, '<span class="g-match">' + v + '</span>');
+        var nd = item.titleNode || item.dom('_tle');
+        if(nd) nd.innerHTML = tle.replace(v, '<span class="g-match">' + v + '</span>');
         return true;
       }
       item.setTitle(tle);

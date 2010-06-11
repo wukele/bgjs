@@ -1,0 +1,76 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Cicy自定义Combox</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+.skindef .imgview { background-position:0 0; }
+.skin1 .imgview { background-position:0 -128px; }
+.skin2 .imgview { background-position:-128px -128px; }
+.skin3 .imgview { background-position:-256px -128px; }
+.skin4 .imgview { background-position:-384px -128px; }
+.skin_item { 
+  border:1px solid #FFFFFF;  cursor:pointer !important;  float:left;  
+  height:140px;  margin:3px 16px 16px;  
+  position:relative;  text-align:center;  width:140px;
+ }
+.skin_item .imgview {  background-image:url("images/skin_view.jpg");  height:100px;  margin:10px 10px 0;  width:120px;}
+.skin_item_on,.skin_item_selected{border:1px solid #E7B50D;background:none repeat scroll 0 0 #FFFDD7;}
+.skin_item_selected .txt {  font-weight:bold;}
+.skin_item .txt {  margin:0 10px;  padding-top:4px;}
+.skinbox{border:1px solid #CCC;}
+
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function() {
+/**
+ * Javascript Utility for web development.
+ * R&D : www.bgscript.com/forum
+ * @author javeejy@126.com
+ * www.bgscript.com © 2009 - 构建自由的WEB应用 
+ */
+//指定selector
+var cb = new CC.ui.form.Combox({
+  showTo:document.body,
+  autoRender:true,
+  filterContent:false,
+  selector: {
+    showTo:document.body,
+    minW:!CC.ie6?352:380,
+    maxW:!CC.ie6?352:380,
+    ctype:'ct',
+    clickEvent:true,
+    shadow:true,
+    template:'<div class="skinbox gOpt_SK_wp"></div>',
+    itemCfg:{
+      ctype:'base',
+      hoverCS:'skin_item_on',
+      template:[
+        '<div class="skin_item skindef"><div class="inner">',
+          '<div class="imgview"></div>',
+          '<div class="txt">{title}</div>',
+        '</div></div>'
+      ].join('')
+    },
+    selectionProvider:{selectedCS:'skin_item_selected'},
+    array:[
+      {cs:'skin1', title:'苹果绿'},{cs:'skin2', title:'天际蓝'}, 
+      {cs:'skin3', title:'翡翠绿'},{cs:'skin4', title:'淡雅紫'},
+      {cs:'skin5', title:'玫瑰红'},{cs:'skin1', title:'苹果绿'}
+    ]
+  },
+  css:'pa l:100 t:100',
+  width:250
+});
+
+});
+
+
+</script>
