@@ -53,7 +53,7 @@ var cb = new CC.ui.form.Combox({
       ctype:'base',
       hoverCS:'skin_item_on',
       template:[
-        '<div class="skin_item skindef"><div class="inner">',
+        '<div class="skin_item"><div class="inner">',
           '<div class="imgview"></div>',
           '<div class="txt">{title}</div>',
         '</div></div>'
@@ -61,9 +61,9 @@ var cb = new CC.ui.form.Combox({
     },
     selectionProvider:{selectedCS:'skin_item_selected'},
     array:[
-      {cs:'skin1', title:'苹果绿'},{cs:'skin2', title:'天际蓝'}, 
+      {cs:'skindef', title:'苹果绿'},{cs:'skin2', title:'天际蓝'}, 
       {cs:'skin3', title:'翡翠绿'},{cs:'skin4', title:'淡雅紫'},
-      {cs:'skin5', title:'玫瑰红'},{cs:'skin1', title:'苹果绿'}
+      {cs:'skin5', title:'玫瑰红'},{cs:'skindef', title:'苹果绿'}
     ]
   },
   css:'pa l:100 t:100',
