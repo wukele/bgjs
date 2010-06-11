@@ -396,7 +396,7 @@ CC.extend(Base.prototype,
            this.constructor.prototype.hasOwnProperty('template') ||
            (this.superclass && this.superclass.hasOwnProperty('template'))){
           // come from a html string or cache
-          this.view = this.template.charAt(0) === '<' ? Tpl.forNode(this.template) : Tpl.$(this.template);
+          this.view = this.template.charAt(0) === '<' ? Tpl.forNode(this.template, this) : Tpl.$(this.template);
           
           delete this.template;
 
