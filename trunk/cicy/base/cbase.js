@@ -1909,10 +1909,10 @@ CC.extend(Base.prototype,
         if(nx + w > vw)
           nx = by+bh>ny && by<ny+h ? bx - w : vw - w;
 
-        if(ny < 0)
+        if(ny < 0 && by+bh + h <= vh)
           ny = bx+bw>nx && bx<nx+w ? by+bh : 0;
 
-        if(ny + h > vh)
+        if( ny + h > vh && by - h >= 0 )
           ny = bx+bw>nx && bx<nx+w ? by - h : vh - h;
       }
 
