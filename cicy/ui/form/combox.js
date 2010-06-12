@@ -288,26 +288,29 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
     showBox: function(b) {
       var st = this.selector, ds = !st.hidden;
-      if (b.type) b = !ds;
-      if (!b) {
-        st.display(false);
-        if (!this._leaveFocus) {
-          if (!this.uneditable) this.editor.focus(true);
-          else this.focus(true);
+      if(ds != b){
+        if (!b) {
+          st.display(false);
+          if (!this._leaveFocus) {
+            if (!this.uneditable) this.editor.focus(true);
+            else this.focus(true);
+          }
+          this.delClass(this.downCS);
+          return;
+        }else {
+          st.display(true);
         }
-        this.delClass(this.downCS);
-        return;
+  
+        this.preferPosition();
+        if (st.shadow) st.shadow.reanchor();
+        if (!this.uneditable) this.editor.focus(true);
+        else this.focus(true);
+  
+        if (ds) return;
+        this.checkSelected();
+        this.addClass(this.downCS);
+        st.bindContext(this.onBoxContexted, false, this).display(true);
       }
-
-      this.preferPosition();
-      if (st.shadow) st.shadow.reanchor();
-      if (!this.uneditable) this.editor.focus(true);
-      else this.focus(true);
-
-      if (ds) return;
-      this.checkSelected();
-      this.addClass(this.downCS);
-      st.bindContext(this.onBoxContexted, false, this).display(true);
     },
 
     active : function(){
