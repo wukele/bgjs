@@ -67,9 +67,6 @@ CC.create('CC.ui.form.FormElement', Bx, {
       
       this.focusNode = el;
       
-      if(this.id)
-        v.id = this.id;
-
       this.addClass(this.elementCS);
 
       Bx.prototype.initComponent.call(this);
