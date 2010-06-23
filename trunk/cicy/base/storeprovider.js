@@ -258,7 +258,7 @@ CC.util.ProviderFactory.create('Store', null, {
         url : this.getSaveUrl(item, isNew),
         method : 'POST',
         caller : this,
-        data : this.queryString(item),
+        data : this.queryString(item, this.shareParams),
         success:function(j){
           if(this.isResponseOk(j)) {
             this.decorateModified(item, false);
@@ -348,13 +348,13 @@ CC.util.ProviderFactory.create('Store', null, {
  * @param {CC.Base} item
  * @return String
  */
-  queryString : function(item){
+  queryString : function(item, params){
     var q = '';
     if(item){
     	q = this.itemQueryTempl || '';
       //query data from share object
-      if(this.shareParams)
-        q = CC.templ(this.shareParams, q, 2, true);
+      if(params)
+        q = CC.templ(params, q, 2, true);
       
       // query data from item
       if(q)
@@ -362,11 +362,12 @@ CC.util.ProviderFactory.create('Store', null, {
        
       q = this.getItemQuery(item, q);
     }
-    if(this.shareParams)
-     if(q){
-       q += '&';
-     }
-     q += CC.queryString(this.shareParams);
+    if(params){
+       if(q)
+         q += '&';
+         
+       q += CC.queryString(params);
+    }
     return q;
   },
   

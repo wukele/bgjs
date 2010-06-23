@@ -7,7 +7,7 @@
 var Event = CC.Event = {};
 var document = window.document;
 var opera = CC.opera, chrome = CC.chrome, ie = CC.ie;
-
+var DocMouseDownEventable = new CC.Eventable();
 CC.extend(Event,
   {
     /**@property
