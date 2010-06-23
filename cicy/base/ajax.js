@@ -318,9 +318,9 @@ Ajax.prototype =
             var isQ = theUrl.indexOf('?') > 0;
             if(ch){
                 if (isQ)
-                    theUrl = theUrl + '&__uid=' + CC.uniqueID();
+                    theUrl = theUrl + '&__uid=' + new Date();
                 else
-                    theUrl = theUrl + '?__uid=' + CC.uniqueID();
+                    theUrl = theUrl + '?__uid=' + new Date();
             }
 
             if(ps){
