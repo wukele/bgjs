@@ -51,12 +51,13 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, {
 
   // @override
 	getItemQuery : function(item, qs){
-		var s = [], q, idx=0, chs = item.children;
+		var s = [], q, idx=0, chs = item.children, v;
 		this.t.pCt.header.each(function(a, cnt){
 			q = this.qid || this.id;
+			v = chs[cnt].getValue();
 			//query id string
-			if(q)
-				s[s.length] = q + '=' + encodeURIComponent(chs[cnt].getValue());
+			if(q && v!== undefined)
+				s[s.length] = q + '=' + encodeURIComponent(v);
 		});
 		q = s.length?s.join('&') : '';
 		if(q){

@@ -491,7 +491,32 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
     var hd = this.pCt.pCt.header;
     return this.$(hd.indexOf(hd.$(colId)));
   },
-  
+
+/**
+ * 获得或设置列数据.
+ * @param {Number} columnIdOrIndex
+ * @param {Object} [value] 
+ * @return {Object}
+ */
+  dataAt : function(i, v){
+    if(v === undefined) return this.getCell(i).getValue();
+    this.getCell(i).setValue(v);
+  },
+/**
+ * 获得或设置列标题.
+ * @param {Number} columnIdOrIndex
+ * @param {Object} [text]
+ * @param {Boolean} update 是否更新到数据视图，此时保证数据视图(GridContent)已创建.
+ * @return {String}
+ */
+  textAt : function(i, v, update){
+    if(v === undefined) return this.$(i).getTitle();
+    var cell = this.getCell(i);
+    cell.setTitle(v);
+    if(update) {
+      this.pCt.updateCell(cell, v);
+    }
+  },
   fire:fGo
 });
 
