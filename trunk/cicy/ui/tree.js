@@ -78,7 +78,8 @@ CC.create('CC.ui.TreeItem', cbx, {
     //文件夹
     if(this.nodes) {
       this.domEvent('dblclick', this.expand, true, null, this._head.view);
-      this.domEvent('mousedown', this.expand, true, null, this._elbow.view, false);
+      this.domEvent('mousedown', this.expand, true, null, this._elbow.view);
+      this.domEvent('click', CC.Event.noUp, true, null, this._elbow.view);
     }
     else
       this._head.addClass(this.nodeLeafCS);

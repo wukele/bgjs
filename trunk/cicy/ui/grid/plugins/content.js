@@ -241,12 +241,20 @@ return {
   
   // @interface
   instanceItem : function(item){
-    if(!item.cacheId){
+    if(item && !item.cacheId){
       // 检查是否有非数据列
       var hds = this.grid.header.children;
-      if(item.array.length !== hds.length){
-        var arr = item.array;
-        for(var i=0,len=hds.length;i<len;i++){
+    	
+    	if(!item.array){
+    		var arr = item.array = []
+        for(i=0,len=hds.length;i<len;i++){
+          arr[arr.length] = {title:''};
+        }
+      }
+
+      else if(item.array.length !== hds.length){
+        arr = item.array;
+        for(i=0,len=hds.length;i<len;i++){
           if(!hds[i].dataCol){
             arr.insert(i, {});
           }
@@ -341,19 +349,23 @@ return {
  * 获得第i行j列的数据.
  * @param {Number} rowIndex
  * @param {Number} cellIndex
+ * @param {Object} [value] 
  * @return {Object}
  */
-  dataAt : function(i, j){
-    return this.$(i).$(j).getValue();
+  dataAt : function(i, j, v){
+    if(v === undefined) return this.$(i).$(j).getValue();
+    this.$(i).$(j).setValue(v);
   },
 /**
  * 获得第i行j列的标题.
  * @param {Number} rowIndex
  * @param {Number} cellIndex
+ * @param {Object} [text] 
  * @return {String}
  */
-  textAt : function(i, j){
-    return this.$(i).$(j).getTitle();
+  textAt : function(i, j, v){
+    if(v === undefined) return this.$(i).$(j).getTitle();
+    this.$(i).$(j).setTitle(v);
   }
 };
 });
