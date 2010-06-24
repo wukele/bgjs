@@ -150,8 +150,8 @@ Ajax.prototype =
     url : null,
 /**@cfg {Boolean} asynchronous=true 是否异步,默认true*/
     asynchronous: true,
-/**@cfg {Number} timeout=10000 设置超时,默认10000ms*/
-    timeout: 10000,
+/**@cfg {Number} timeout=false 设置超时,默认无限制*/
+    timeout: false,
 /**@cfg {DOMElement} disabledComp 在请求过程中禁止的元素,请求结束后解除*/
    disabledComp : undefined,
 /**@cfg {String} contentType 默认application/x-www-form-urlencoded*/
