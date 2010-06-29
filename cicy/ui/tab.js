@@ -222,11 +222,18 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     innerCS: 'g-tab',
 
     keyEventNode: '_scrollor',
-
+    
+    vcs : 'g-vtab',
+/**
+ * @cfg {Boolean} vtab 是否在下部显示
+ */
+    vtab : false,
+    
     selectionProvider : {
       UP: CC.Event.LEFT,
       DOWN: CC.Event.RIGHT,
-      tracker:true
+      tracker:true,
+      selectedCS:'g-tab-selectitem'
     },
 
     syncWrapper : false,
@@ -234,7 +241,9 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     maxH: 33,
 
     itemCls: CC.ui.TabItem,
-
+    
+    floatCS : 'g-tab-float',
+    
 /**
  * @cfg {Boolean} autoLoad 子项选择时是否自动加载子项内容, 默认为true
  */
@@ -262,6 +271,16 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       SP.initComponent.call(this);
 
       this.on('selected', this.onItemSelected);
+      
+      if(this.vtab){
+        this.addClass(this.vcs);
+        delete this.vtab;
+      }
+      
+      if(this.float){
+        this.addClass(this.floatCS + (this.float===true?'':this.float));
+        delete this.float;
+      }
     },
 
     onItemSelected : function(item){

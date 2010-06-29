@@ -1,8 +1,12 @@
-﻿(function(){
-var spr;
-var CC = window.CC;
-var Bx = CC.Base;
-var Tpl = CC.Tpl;
+﻿/**
+ * @class CC.ui.ContainerBase
+ */
+
+/**
+ * @cfg {Boolean} isForm 属性来自表单控件,注明该容器是否为一个表单容器。
+ */
+CC.ui.ContainerBase.prototype.isForm = false;
+
 /**
  * @class CC.ui.form
  * @namespace
@@ -20,30 +24,48 @@ var Tpl = CC.Tpl;
 /**
  * @event blur
  */
-CC.create('CC.ui.form.FormElement', Bx, {
 
 /**@cfg {String} name 指定提交字段的名称*/
-    name : false,
-    
-    value : undefined,
+
+/**@cfg {Object} value 值*/
+
 /**
  * @property element
  * 提交数据放在这个html form element里.
  * @type {HTMLElement}
  */
+
+/**
+ * @cfg {Function} validator 数据验证函数.
+ * 返回true或错误信息
+ */
+
+/**
+ * 
+ */
+/**
+ * @cfg {Boolean} validateOnblur=true 失去焦点时是否验证.
+ */
+(function(){
+var spr;
+var CC = window.CC;
+var Bx = CC.Base;
+var Tpl = CC.Tpl;
+
+CC.create('CC.ui.form.FormElement', Bx, {
+
+    name : false,
+
+    value : undefined,
+
     element : false,
     
     elementNode: '_el',
-    
-/**@cfg {Boolean} eventable=true*/
+
     eventable : true,
-/**
- * @cfg {Function} validator 数据验证函数.
- */
+
     validator : false,
-/**
- * @cfg {Boolean} validateOnblur 失去焦点时是否验证.
- */
+
     validateOnblur : true,
     
     elementCS: 'g-form-el',
@@ -73,8 +95,11 @@ CC.create('CC.ui.form.FormElement', Bx, {
 
       if (this.name) this.setName(this.name);
 
-      if (this.value) this.setValue(this.value);
-
+      if (this.value) {
+        v = CC.delAttr(this, 'value');
+        this.setValue(v);
+      }
+      
       if (this.focusCS)
         this.bindFocusCS();
     },
@@ -141,13 +166,12 @@ CC.create('CC.ui.form.FormElement', Bx, {
     onKeydownTrigger : function(evt){
       this.fire('keydown', evt);
     },
+
 /**
  * 验证控件,利用控件自身的validator验证,并调用{@link decorateValid}方法修饰结果
  * @return {Boolean}
  */
     checkValid : function(){
-      if(this.errorMsg)
-        this.errorMsg = false;
       var isv = this.validator? this.validator(this.getValue()):true;
       this.decorateValid(isv);
       return isv;
@@ -157,11 +181,12 @@ CC.create('CC.ui.form.FormElement', Bx, {
  * 验证失败后修饰控件的"错误"状态.重写该方法可自定义修饰"错误提示"的方法
  * @param {Boolean} isValid
  */
-    decorateValid : function(b){
+    decorateValid : function(msg){
     	var es = this.errorCS;
     	if(es)
-    		this.checkClass(es, !b);
+    		this.checkClass(es, !(msg === true));
     },
+
 /**
  * 置值
  * @param {Object} value
@@ -197,6 +222,20 @@ CC.create('CC.ui.form.FormElement', Bx, {
       this.name = n;
       return this;
     },
+
+/**
+ * 返回表单所在的表单容器，任何一个容器控件只需注明是否表单容器即可为表单容器,参见{@link CC.ui.ContainerBase#isForm}.
+ * @return {CC.ui.ContainerBase|NULL} formContainer 或 null
+ */   
+    getForm : function(){
+      var p = this.pCt;
+      while(p){
+        if(p.isForm)
+          return p;
+        p = p.pCt;
+      }
+      return null;
+    },
     
     active : fGo,
     
@@ -204,7 +243,8 @@ CC.create('CC.ui.form.FormElement', Bx, {
     
     // @override
     mouseupCallback: function(evt) {
-      if (this.onclick) this.onclick(evt, this.element);
+      if (this.onclick)
+        this.onclick(evt, this.element);
     }
 }
 );
@@ -217,7 +257,8 @@ var fr = CC.ui.form;
 Tpl.def('Text', '<input type="text" id="_el" class="g-ipt-text g-corner" />')
    .def('Textarea', '<textarea id="_el" class="g-textarea g-corner" />')
    .def('Checkbox', '<span tabindex="0" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>')
-   .def('Select', '<select class="g-corner"/>');
+   .def('Select', '<select class="g-corner"/>')
+   .def('CC.ui.form.Label', '<span><label id="_tle" class="cap"></label></span>');
 /**
  * @class CC.ui.form.Text
  * @extends CC.ui.form.FormElement
@@ -259,21 +300,32 @@ CC.create('CC.ui.form.Textarea', cf, fr.Text.constructors, {
 });
 
 CC.ui.def('textarea', fr.Textarea);
+
 /**
  * @class CC.ui.form.Checkbox
  * @extends CC.ui.form.FormElement
  */
-CC.create('CC.ui.form.Checkbox', cf, {
+
 /**
  * @cfg {Boolean} checked 是否选中状态,参见{@link #setChecked}
  */
+/**
+ * @cfg {Function} oncheck 状态改变时回调 oncheck(checked)
+ */
+CC.create('CC.ui.form.Checkbox', cf, {
     template : 'Checkbox',
     hoverCS: 'g-check-over',
     clickCS: 'g-check-click',
     checkedCS: 'g-check-checked',
+    
     initComponent: function() {
       spr.initComponent.call(this);
-      if (this.checked) this.setChecked(true);
+      
+      if (this.checked) {
+        delete this.checked;
+        this.setChecked(true);
+      }
+      
       this.domEvent('focus', this.onFocusTrigger)
           .domEvent('blur', this.onBlurTrigger)
           .domEvent('keydown', this.onKeydownTrigger);
@@ -285,24 +337,57 @@ CC.create('CC.ui.form.Checkbox', cf, {
     },
 /**
  * @param {Boolean} checked
+ * @return this
  */
     setChecked: function(b) {
-      this.checked = b;
-      this.element.checked = b;
-      this.checkClass(this.checkedCS, b);
-      if (this.onChecked) this.onChecked(b);
+      if(this.checked !== b){
+        this.checked = b;
+        this.element.checked = b;
+        this.checkClass(this.checkedCS, b);
+        if (this.oncheck) 
+          this.oncheck(b);
+      }
+      return this;
     }
 });
-
 CC.ui.def('checkbox', fr.Checkbox);
+
+CC.Tpl.def('CC.ui.form.RadioGroup', '<input type="hidden" />');
+CC.create('CC.ui.form.RadioGroup', cf, {
+
+  getChecked : function(){
+    return this.currentRadio && Bx.byCid(this.currentRadio);
+  },
+  
+  setChecked : function(radio, b){
+    if(b){
+      var c = this.getChecked();
+      if(!c || c !== radio){
+        if(c) {
+          c.setChecked(false);
+        }
+        this.currentRadio = radio.cacheId;
+        var v = radio.getValue();
+        if(v !== undefined)
+          this.setValue( v );
+      }
+    }else {
+      this.currentRadio = null;
+      this.setValue('');
+    }
+  }
+});
+CC.ui.def('radiogrp', CC.ui.form.RadioGroup);
+
 /**
  * @class CC.ui.form.Radio
  * @extends CC.ui.form.FormElement
  */
+
 /**
- * @param {Boolean} checked
- * @method setChecked
+ * @cfg {Function} oncheck 状态改变时回调 oncheck(checked)
  */
+
 CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
 /**
  * @cfg {Boolean} checked 是否选中状态,参见{@link #setChecked}
@@ -311,7 +396,48 @@ CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
   template: 'Checkbox',
   hoverCS: 'g-radio-over',
   clickCS: 'g-radio-click',
-  checkedCS: 'g-radio-checked'
+  checkedCS: 'g-radio-checked',
+  elementNode : false,
+  
+  mouseupCallback: function(evt) {
+    if(!this.checked)
+      this.setChecked(true);
+    spr.mouseupCallback.call(this, evt);
+  },
+  
+  getGroup : function(){
+    var f = this.getForm();
+    if(f) {
+      var rg = f._RADIOGROUPS;
+      if(!rg)
+        rg = f._RADIOGROUPS = {};
+        
+      var rs = rg[this.name];
+      if(rs) {
+        return Bx.byCid(rs);
+      } else {
+          rs = CC.ui.instance('radiogrp', {pCt:f, showTo:f.ct, name:this.name});
+          f.follow(rs);
+          rg[this.name] = rs.cacheId;
+          return rs;
+      }
+    }
+  },
+/**
+ * @param {Boolean} checked
+ * @return this
+ */
+  setChecked : function(checked){
+    var pc = this.checked;
+    fr.Checkbox.prototype.setChecked.apply(this, arguments);
+    
+    if(pc !== checked && checked && this.name){
+       var g = this.getGroup();
+       g && g.setChecked(this, true);
+    }
+    
+    return this;
+  }
 });
 CC.ui.def('radio', fr.Radio);
 
@@ -323,7 +449,9 @@ CC.ui.def('radio', fr.Radio);
  * @cfg {Array} array options
  */
 CC.create('CC.ui.form.Select', cf, {
+  
     template:'Select',
+    
     initComponent: function() {
       spr.initComponent.call(this);
       this.domEvent('focus', this.onFocusTrigger)
@@ -365,4 +493,8 @@ CC.create('CC.ui.form.Select', cf, {
 });
 
 CC.ui.def('select', fr.Select);
+
+CC.create('CC.ui.form.Label', CC.Base, {	labelNode : '_tle'});
+CC.ui.def('label', CC.ui.form.Label);
+
 })();

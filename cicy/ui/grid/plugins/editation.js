@@ -36,12 +36,31 @@ return {
  */
   editable : true,
   
+  trigMode : 'cellclick',
+  
 /**@private*/
   editorCS : 'g-flot-editor',
   
   initialize : function(opt){
     if(opt)
       CC.extend(this, opt);
+    
+    var self = this;
+    
+    switch(this.trigMode){
+      case 'cellclick' : 
+         this.grid.on(this.trigMode, function(cell){
+           self.strictStartEdit(cell);
+         });
+         break;
+      case 'rowdblclick' : 
+         this.grid.on(this.trigMode, function(row, cell){
+           if(cell)
+             self.strictStartEdit(cell);
+         });
+    }
+    
+    opt = null;
   },
 
 /**
@@ -62,16 +81,15 @@ return {
            cell.editable
   },
   
-  gridEventHandlers : {
-    cellclick : function(cell){
-        var idx = cell.pCt.indexOf(cell),
-            col = this.grid.header.$(idx);
-        if(this.isCellEditable(cell, col)){
-          this.startEdit(cell, idx, col);
-        }
+  // @private
+  strictStartEdit : function(cell){
+    var idx = cell.pCt.indexOf(cell),
+    col = this.grid.header.$(idx);
+    if(this.isCellEditable(cell, col)){
+      this.startEdit(cell, idx, col);
     }
   },
-
+  
 /**
  * 获得单元格编辑器.
  * @param {CC.ui.grid.Column} column

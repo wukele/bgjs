@@ -3,13 +3,9 @@
  */
 CC.Tpl.def('CC.ui.form.Line', '<li class="g-form-ln"><label class="desc" id="_lbl"><span id="_tle"></span><span class="req" id="_req">*</span></label><div id="_ctx" class="field-ct"></div></li>')
       .def('CC.ui.form.Layer', '<ul class="g-formfields"></ul>')
-      .def('CC.ui.form.Label', '<span><label id="_tle" class="cap"></label></span>')
       .def('CC.ui.form.FormLayer', '<form><ul id="_ctx" class="g-formfields"></ul></form>')
       .def('CC.ui.form.FieldsetUL', '<fieldset class="g-fieldset g-corner"><legend id="_tle"></legend><div id="_ctx" class="fieldset-ct"></div><div class="g-clear"></div></fieldset>');
 
-CC.create('CC.ui.form.Label', CC.Base, {	labelNode : '_tle'});
-
-CC.ui.def('label', CC.ui.form.Label);
 
 CC.create('CC.ui.form.Line', CC.ui.ContainerBase, function(spr) {
   return {
