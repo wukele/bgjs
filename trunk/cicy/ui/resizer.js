@@ -77,7 +77,7 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
           if(dxy[0] === 0 && dxy[1] === 0){
             H.applyResize(false);
             H.masker.fastStyleSet('cursor','');
-          }else{
+          }else if(this.initPS){
             var sz = H.layer.getSize(true);
             //TODO:hack
             if(!CC.borderBox){

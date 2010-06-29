@@ -26,6 +26,8 @@ var w =  new CC.more.ArtWin({
     layout:'table',
     width:739,
     height:280,
+    isForm:true,
+    title:'用于table布局表单元素',
     lyCfg:{
       tblCs:'myform',
     	group:{ 
@@ -46,7 +48,7 @@ var w =  new CC.more.ArtWin({
           null,
           {ctype:'label', title:'执行周期'},
           {ctype:'panel', layout:'tablize', items:[
-             {ctype:'radio', title:'每隔'},
+             {ctype:'checkbox', title:'每隔'},
              {ctype:'text', width:40},
              {ctype:'label', title:'*'},
              {ctype:'combo', width:100, array:[{title:'天'}, {title:'小时'}]}
@@ -54,14 +56,14 @@ var w =  new CC.more.ArtWin({
           }
         ],
         // row three
-        [null, null, {ctype:'radio', title:'使用Cron表达式'}],
+        [null, null, {ctype:'checkbox', title:'使用Cron表达式'}],
         // row four
         [
           null,
           {ctype:'label', title:'启用状态'},
           {ctype:'panel', layout:'tablize', items:[
-             {ctype:'radio', title:'启 用'},
-             {ctype:'radio', title:'停 用'}
+             {ctype:'radio', title:'启 用', name:'switcher', checked:true},
+             {ctype:'radio', title:'停 用', name:'switcher', checked:true}
            ]
           }
         ],
@@ -82,8 +84,8 @@ var w =  new CC.more.ArtWin({
           {ctype:'label', title:'附件设置'},
           {ctype:'label', title:'附件下载是否使用原始文件名:'},
           {ctype:'panel', layout:'tablize', items:[
-             {ctype:'radio', title:'是'},
-             {ctype:'radio', title:'否'}
+             {ctype:'radio', title:'是', name:'rawname', value:'yes'},
+             {ctype:'radio', title:'否', name:'rawname', value:'no'}
            ]
           }
         ],

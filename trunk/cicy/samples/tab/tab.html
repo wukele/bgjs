@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
   <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
 <style>
-	#mytab .auto-margin{margin-left:50px;}
+	#taba .auto-margin{margin-left:20px;}
 </style>
 </head>
 <body>
@@ -21,8 +21,9 @@ __debug=true;
   showTo:document.body,
   lyCfg:{
    items:[
-    {ctype:'tab',   id:'mytab', selectionProvider:{selected:0}, contentPanel:'tabcontentpanel', lyInf:{h:'auto'}, array:[{title:'选项_1', src:'http://www.g.cn'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4'}]},
-    {ctype:'panel', id:'tabcontentpanel', lyInf:{h:'lead'}, layout:'card'}
+    {ctype:'tab', layout:'tabitem', id:'taba', selectionProvider:{selected:0},  lyInf:{h:'auto'}, array:[{title:'选项_1'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4'}]},
+    {ctype:'panel', id:'tabcontentpanel', lyInf:{h:'lead'}, layout:'card'},
+    {ctype:'tab', float:'r', vtab:true, id:'tabb', selectionProvider:{selected:0}, contentPanel:'tabcontentpanel', lyInf:{h:'auto'}, array:[{title:'选项_1', src:'http://www.google.com'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4'}]}
    ]
   }
  });
@@ -30,7 +31,7 @@ __debug=true;
  win.center();
  
  //监听tabitem选择事件
- win.byId('mytab').on('selected', function(item){
+ win.byId('tabb').on('selected', function(item){
    CC.Util.ftip('你选择了'+item.title, '提示' , item);
  });
 });

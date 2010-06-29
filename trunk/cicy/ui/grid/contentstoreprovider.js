@@ -46,7 +46,7 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, {
 				opt.array.push({title:''});
 			});
 		}
-		CC.util.StoreProvider.prototype.createNew.call(this, opt, scroll);
+		return CC.util.StoreProvider.prototype.createNew.call(this, opt, scroll);
 	},
 
   // @override

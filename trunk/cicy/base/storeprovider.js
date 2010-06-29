@@ -212,7 +212,7 @@ CC.util.ProviderFactory.create('Store', null, {
 		var self = this;
 		if(this.filterChanged){
 			this.t.each(function(){
-				if(self.isModified(this)){
+				if(self.isNew(this) || self.isModified(this)){
 					cb.apply(this, arguments);
 				}
 			});

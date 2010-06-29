@@ -108,6 +108,14 @@ return {
              null,
              this.dom('_ct_tbl')
     );
+    
+    this.itemAction(
+             'dblclick',
+             this.onRowDblClick,
+             false,
+             null,
+             this.dom('_ct_tbl')
+    );    
   },
 
   updateContentWrapTblWidth : function(colWidth, dx){
@@ -188,6 +196,16 @@ return {
  * @param {DOMEvent} event
  * @member CC.ui.Grid
  */
+
+/**
+ * @event rowdblclick
+ * 行双击事件
+ * @param {CC.ui.grid.Row} row
+ * @param {CC.ui.grid.Cell} cell 双击所有地单元格，无则则为空
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+ 
  /**
   * 发送表格cellclick, itemclick事件
   * @private
@@ -195,13 +213,29 @@ return {
   onRowClick : function(row, e){
     if(!this.clickDisabled && !row.ignoreClick){
       var cell = row.$(e.srcElement || e.target), rt;
-      if(cell && !row.clickDisabled && !cell.ignoreClick){
-        rt = this.grid.fire('cellclick', cell, e);
+      if(cell){
+        if(cell.disabled)
+         return;
+        
+        if(!row.clickDisabled && !cell.ignoreClick){
+          rt = this.grid.fire('cellclick', cell, e);
+        }
       }
+      
       if(rt !== false){
         this.fire('itemclick', row, e);
         this.grid.fire('rowclick',  row, e);
       }
+    }
+  },
+  
+  dblclickDisabled : false,
+  
+  onRowDblClick : function(row, e){
+    if(!this.dblclickDisabled){
+      var cell = row.$(e.srcElement || e.target);
+      if(!cell || !cell.disabled)
+        this.grid.fire('rowdblclick', row, cell, e);
     }
   },
   
