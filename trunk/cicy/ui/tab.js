@@ -17,6 +17,13 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
  * 是否可关闭.
  * @cfg {Boolean} closeable
  */
+ 
+/**
+ * @cfg {Boolean} autoReload 当再次选择项或再次调用loadContent时是否自动重新加载内容，即使内容已经加载，默认为false.
+ */
+    
+    autoReload : false,
+    
     closeable: true,
 
     unselectable: true,
@@ -171,7 +178,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
           });
       }
 
-      if (url || (!ind.isLoaded() && !ind.isBusy())){
+      if (url || ( (this.autoReload || !ind.isLoaded()) && !ind.isBusy())){
         cp.connect(url || this.src || this.url);
       }
       return this;
