@@ -3,11 +3,37 @@
  * 封装IFramePanel容器的连接处理.
  * @extends CC.util.ConnectionProvider
  */
-CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
 
 /**
  * @cfg {Boolean} traceLoad 是否监听IFRAME加载事件,默认为true
  */
+
+/**
+ * @event connection:connectorsopen
+ * @param {CC.util.ConnectionProvider} current
+ * @param {CC.ui.IFramePanel} iframepanel
+ * 由{@link CC.util.ConnectionProvider} 批量请求开始时发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */
+ 
+/**
+ * @event connection:connectorsfinish
+ * @param {CC.util.ConnectionProvider} current
+ * @param {CC.ui.IFramePanel} iframepanel
+ * 由{@link CC.util.ConnectionProvider} 批量请求结束后发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */
+
+/**
+ * @event connection:success
+ * @param {CC.util.ConnectionProvider} current
+ * @param {CC.ui.IFramePanel} iframepanel
+ * 由{@link CC.util.ConnectionProvider} 加载完成后发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */
+ 
+CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
+
   traceLoad : true,
 
   indicatorDisabled : true,
@@ -31,7 +57,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
   onFrameLoad : function(e){
     var t = this.t;
     try{
-      t.fire('success', this, e);
+      this.t.fire('connection:success', this, t);
       if(this.success)
         this.success(this, e);
     }catch(ex){console.warn(ex);}
@@ -46,7 +72,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
     switch(status){
       case 'loading':  //IE  has several readystate transitions
         if(!t.busy)
-          t.fire('open', this, evt);
+          this.onConnectorFirstOpen(this, t);
       break;
       //
       //当用户手动刷新FRAME时该事件也会发送
@@ -67,11 +93,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
 
 /**@private*/
   onFinal : function(){
-    this.t.fire('final', this);
-
-    if(this['final']){
-      this['final'](this,  e);
-    }
+    this.onConnectorsFinish(this, this.t);
   },
 
 /**@private*/
@@ -85,7 +107,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
 
 /**@private*/
   connectInner : function(){
-    this.t.fire('open', this);
+    this.onConnectorFirstOpen(this, this.t);
     (function(){
       try{
         this.t.getFrameEl().src = this.url;
@@ -154,6 +176,13 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
    */
   $ : function(id){
     return CC.frameDoc(this.view).getElementById(id);
+  },
+
+/**
+ * 方法等同于 this.getConnectionProvider().connect(src), 加载一个页面。
+ */
+  connect : function(src){
+    this.getConnectionProvider().connect(src);
   }
 }
 );

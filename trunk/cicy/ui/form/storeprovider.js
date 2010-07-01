@@ -4,6 +4,7 @@
  */
 CC.create('CC.ui.form.StoreProvider', CC.util.StoreProvider, function(father){
 return {
+
 /**
  * 调用CC.formQuery 获得提交数据
  * @return {String}

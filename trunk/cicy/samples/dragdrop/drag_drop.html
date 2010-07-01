@@ -20,74 +20,12 @@ CC.ready(function(){
 	 new CC.ui.Button({title:'水平移动', onclick:setDirection, dir:'h', showTo:document.body, autoRender:true});
 	 new CC.ui.Button({title:'垂直移动', onclick:setDirection, dir:'v', showTo:document.body, autoRender:true});
 	 new CC.ui.Button({title:'自由移动', onclick:setDirection, dir:false, showTo:document.body, autoRender:true});
-	 
-	 var G = CC.util.dd.Mgr;
-	 
-	 //受限范围
-	 var bounds;
-	 
+
 	 var cfg = {
-	 	
 	 	ctype : 'titlepanel',
-	 	
 	 	cs:'box',
-	 	
-	 	title:'拖动我',
-	 	
-	 	//指定所属拖放组
-	 	dragZoom:'所属组名',
-	 	
-	 	beforedrag : function(){
-	 		G.setBounds(bounds);
-	 	},
-	 	
-	 	//开始拖动
-	 	dragstart : function(){
-	 		this.tmpIXY = [this.view.offsetLeft, this.view.offsetTop];
-	 		this.fastStyleSet('position','absolute')
-	 		    .setXY(this.tmpIXY)
-	 		    .setOpacity(0.8);
-	 		
-	 		var g = this.pCt.byId('ghost');
-	 		g.setSize(this.getSize());
-	 		this.pCt.swap(this, g);
-	 		g.show();
-	 	},
-	 	
-	 	//拖动中
-	 	drag :  function(){
-	 		var dxy = G.getDXY(), 
-	 		    ixy = this.tmpIXY;
-	 		this.view.style.left = (ixy[0]+dxy[0]) + 'px';
-	 		this.view.style.top  = (ixy[1]+dxy[1]) + 'px';
-	 	},
-	 	
-	 	//目标进入
-	 	sbover: function(onEl){
-	 		var g = this.pCt.byId('ghost');
-	 		g.setSize(onEl.getSize());
-	 		onEl.pCt.swap(onEl, g);
-	 		//交换后更新位置缓存
-	 		G.update();
-	 	},
-	 	
-	 	//目标离开
-	 	sbout : function(){
-	 		this.setOpacity(1);
-	 	},
-	 	
-	 	//结束拖放
-	 	dragend: function(){
-	 		this.setOpacity(1)
-	 		    .fastStyleSet('position','')
-	 		    .fastStyleSet('left','')
-	 		    .fastStyleSet('top','');
-	    var g = this.pCt.byId('ghost');
-	    this.pCt.swap(this, g);
-	    g.hide();
-	 	}
+	 	title:'拖动我'
 	 };
-	 
 	 
    var win = new CC.ui.Win({
    	
@@ -107,6 +45,63 @@ CC.ready(function(){
    
    win.render();
    win.center();
+   
+	 var G = CC.util.dd.Mgr;
+	 
+	 var zoom = new CC.util.d2d.ContainerDragZoom({ct:win});
+	 
+   var handler = {
+  	 	//开始拖动
+  	 	dragstart : function(e, source){
+  	 	  G.setBounds(bounds);
+  	 		source.tmpIXY = [source.view.offsetLeft, source.view.offsetTop];
+  	 		source.fastStyleSet('position','absolute')
+  	 		    .setXY(this.tmpIXY)
+  	 		    .setOpacity(0.8);
+  	 		
+  	 		var g = source.pCt.byId('ghost');
+  	 		g.setSize(source.getSize());
+  	 		source.pCt.swap(source, g);
+  	 		g.show();
+  	 	},
+  	 	
+  	 	//拖动中
+  	 	drag :  function(){
+  	 	  var source = G.getSource();
+  	 		var dxy = G.getDXY(), 
+  	 		    ixy = source.tmpIXY;
+  	 		source.view.style.left = (ixy[0]+dxy[0]) + 'px';
+  	 		source.view.style.top  = (ixy[1]+dxy[1]) + 'px';
+  	 	},
+  	 	
+  	 	//目标进入
+  	 	sbover: function(onEl){
+  	 		var g = source.pCt.byId('ghost');
+  	 		g.setSize(onEl.getSize());
+  	 		onEl.pCt.swap(onEl, g);
+  	 		//交换后更新位置缓存
+  	 		G.update();
+  	 	},
+  	 	
+  	 	//目标离开
+  	 	sbout : function(target , source){
+  	 		source.setOpacity(1);
+  	 	},
+  	 	
+  	 	//结束拖放
+  	 	dragend: function(e, source){
+  	 		source.setOpacity(1)
+  	 		    .fastStyleSet('position','')
+  	 		    .fastStyleSet('left','')
+  	 		    .fastStyleSet('top','');
+  	    var g = source.pCt.byId('ghost');
+  	    source.pCt.swap(source, g);
+  	    g.hide();
+  	 	}
+   };
+	 //受限范围
+	 var bounds;
+	 
    
    win.each(function(){
    	if(this.id !== 'ghost'){

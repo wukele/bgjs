@@ -72,7 +72,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
       }},
       {lyInf:{separator:true}, id:'total', template:'<span class="lbl">共<span id="_t">0</span>页</span>', ctype:'base', clickDisabled:true},
       {id:'refresh',tip:'刷新当前页', icon:'g-icon-ref', onclick:function(){
-        self.go(self.current, true);
+        self.refresh();
       }}
     ]);
     this.currentEl = tb.$('current').dom('_i');
@@ -84,6 +84,13 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
     } ,true, null, this.currentEl);
     
   },
+/**
+ * 刷新
+ */
+  refresh : function(){
+    this.go(this.current, true);
+  },
+  
 /**
  * 设置每页记录条数
  * @param {Number} size
@@ -149,7 +156,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
   
       this.grid.content.getConnectionProvider()
           .connect(
-             CC.templ(this, this.url), 
+             CC.templ(this, this.url, 2), 
              { success : this._onSuccess, params  : pageInf}
           );
     }
@@ -220,7 +227,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
     this.currentEl.value = cur||'';
     this.totalEl.innerHTML = cnt;
     
-    tb.$('refresh').disable(this.disabled);
+    tb.$('refresh').disable(this.disabled||(cnt==0));
   },
   
   next : function(){

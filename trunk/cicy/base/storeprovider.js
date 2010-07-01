@@ -4,6 +4,10 @@
  */
 CC.util.ProviderFactory.create('Store', null, {
 /**
+ * @cfg {String} enableIndicator 是否允许指示器.
+ */
+  enableIndicator : true,
+/**
  * @cfg {String} modifyUrl
  */
   modifyUrl : false,
@@ -44,30 +48,6 @@ CC.util.ProviderFactory.create('Store', null, {
   
 /**
  * @private
- */  
-  createAsycQueue : function(name){
-    this[name+'Queue'] = new CC.util.AsynchronizeQueue(this[name+'QueueCfg']);
-    if( this[name+'QueueCfg'] )
-      delete this[name+'QueueCfg'];
-  },
-
-  getDelQueue : function(){
-    if(!this.delQueue){
-      this.createAsycQueue('del');
-    }
-    return this.delQueue;
-  },
-
-  getSaveQueue : function(){
-    if(!this.saveQueue){
-      this.createAsycQueue('save');
-    }
-    return this.saveQueue;
-  },
-
-
-/**
- * @private
  */
   mappingUrl : function(url, item){
     if(url){
@@ -76,7 +56,7 @@ CC.util.ProviderFactory.create('Store', null, {
         url = CC.templ(this.shareParams, url, 2, true);
       // query data from item
       if(item && this.setupUrlFromItem)
-        url = CC.templ(item, url, 0, true);
+        url = CC.templ(item, url, 2, true);
     }
     return url;
   },
@@ -97,7 +77,7 @@ CC.util.ProviderFactory.create('Store', null, {
       // query data from item
       // query data from item
       if(q)
-        q = CC.templ(item, q, 0, true);
+        q = CC.templ(item, q, 2, true);
     }
           //query data from share object
     if(this.shareParams){
@@ -157,8 +137,7 @@ CC.util.ProviderFactory.create('Store', null, {
   },
 
   onDel : function(item){
-    CC.Ajax.connect({
-      url:this.getDelUrl(item),
+    this.t.getConnectionProvider().connect(this.getDelUrl(item), {
       method : 'POST',
       data : this.getDelQuery(item),
       caller : this,
@@ -172,13 +151,8 @@ CC.util.ProviderFactory.create('Store', null, {
       failure : function(j){
         this.onDelFail(item, j);
         this.t.fire('store:delfail', item, j, this);
-      },
-      
-      onfinal : function(){
-        this.getDelQueue().decrease();
       }
     });
-    this.getDelQueue().increase();
   },
 /**@cfg {Function} onDelFail */
   onDelFail : fGo,
@@ -254,8 +228,7 @@ CC.util.ProviderFactory.create('Store', null, {
   },
 
   onSave : function(item, isNew){
-      CC.Ajax.connect({
-        url : this.getSaveUrl(item, isNew),
+      this.t.getConnectionProvider().connect(this.getSaveUrl(item, isNew),{
         method : 'POST',
         caller : this,
         data : this.queryString(item, this.shareParams),
@@ -274,13 +247,9 @@ CC.util.ProviderFactory.create('Store', null, {
         failure : function(j){
           this.onSaveFail(item, isNew, j);
           this.t.fire('store:savefail', item, isNew, j, this);
-        },
-        
-        onfinal : function(){
-          this.getSaveQueue().decrease();
         }
       });
-      this.getSaveQueue().increase();
+      
   },
   
 /**
@@ -358,7 +327,7 @@ CC.util.ProviderFactory.create('Store', null, {
       
       // query data from item
       if(q)
-        q = CC.templ(item, q, 0, true);
+        q = CC.templ(item, q, 2, true);
        
       q = this.getItemQuery(item, q);
     }

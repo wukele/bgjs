@@ -254,8 +254,8 @@ spr = cf.prototype;
 
 var fr = CC.ui.form;
 
-Tpl.def('Text', '<input type="text" id="_el" class="g-ipt-text g-corner" />')
-   .def('Textarea', '<textarea id="_el" class="g-textarea g-corner" />')
+Tpl.def('Text', '<input type="text" class="g-ipt-text g-corner" />')
+   .def('Textarea', '<textarea class="g-textarea g-corner" />')
    .def('Checkbox', '<span tabindex="0" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>')
    .def('Select', '<select class="g-corner"/>')
    .def('CC.ui.form.Label', '<span><label id="_tle" class="cap"></label></span>');

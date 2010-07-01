@@ -12,7 +12,7 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
 
         ct:'_scrollor',
 
-        minH : 29,
+        minH : 22,
 
         openCS : 'g-icoOpn',
 
@@ -34,7 +34,7 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
         },
 
         getWrapperInsets : function(){
-          return [29 , 0, 0, 0, 29, 0];
+          return [this.minH , 0, 0, 0, this.minH, 0];
         },
 
 /**@cfg {Function} onTriggerClick 点击收缩图标时触发,可重写自定*/

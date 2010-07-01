@@ -4,9 +4,7 @@
  */
 CC.create('CC.ui.Mask', CC.Base, {
 
-  innerCS: 'g-modal-mask',
-
-  template : 'div',
+  template : '<div class="g-modal-mask"></div>',
 
 /**
  * @cfg {Function} onactive 点击层时响应回调
