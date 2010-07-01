@@ -13,6 +13,11 @@ CC.util.ProviderFactory.create('Connection', null, {
   indicatorDisabled : false,
 
 /**
+ * @cfg {Boolean} subscribe  是否订阅CC.Ajax连接器事件到target容器中,默认false
+ */
+  subscribe : false,
+  
+/**
  * @cfg {Object} ajaxCfg
  * 连接器设置,连接器保存当前默认的连接器connector配置信息,
  * 每次连接时都以该配置信息与新的配置结合发出连接.
@@ -44,6 +49,14 @@ CC.util.ProviderFactory.create('Connection', null, {
 
  /**@private*/
   initConnection : function(){
+    // init request queue
+    
+    this.syncQueue = new CC.util.AsynchronizeQueue({
+      caller   : this,
+      onempty : this.onConnectorsFinish,
+      onfirstopen   : this.onConnectorFirstOpen
+    });
+    
     if(this.ajaxCfg && this.ajaxCfg.url)
       this.connect();
   },
@@ -84,6 +97,7 @@ CC.util.ProviderFactory.create('Connection', null, {
  * @param {CC.Ajax} ajax
  */
   defaultLoadSuccess : function(j){
+    this.t.fire('defdataload', j, this);
     var t = this.loadType;
     if(t === 'html')
       this.defaultDataProcessor(t, j.getText());
@@ -103,7 +117,11 @@ CC.util.ProviderFactory.create('Connection', null, {
         break;
     }
   },
-
+  
+  _setConnectorMsg : function(msg){
+    this.caller.getIndicator().setTitle(msg);
+  },
+  
 /**
  * 获得连接指示器,
  * Loading类寻找路径 this.indicatorCls -> target ct.indicatorCls -> CC.ui.Loading
@@ -111,33 +129,21 @@ CC.util.ProviderFactory.create('Connection', null, {
  * @return {CC.ui.Loading}
  */
   getIndicator : function(opt){
-    if(this.indicator)
+    if(this.indicator && this.indicator.cacheId)
       return this.indicator;
-
-    var cls = this.indicatorCls   ||
-              this.t.indicatorCls ||
-              CC.ui.Loading;
-    var cfg = {
-      target: this.t,
-      targetLoadCS: this.loadCS
-    };
     
-    if (opt !== undefined)
-      opt = CC.extend(cfg, opt);
-
-    var it = this.indicator = new cls(cfg);
-    this.t.follow(it);
-    return it;
+    return this.createIndicator(opt);
   },
+  
 /**
  * 连接服务器, success操作如果未在配置中指定,默认调用当前ConnectionProvider类的defaultLoadSuccess方法
  * 如果当前未指定提示器,调用getIndicator方法实例化一个提示器;
  * 如果上一个正求正忙,终止上一个请求再连接;
  * 当前绑定容器将订阅请求过程中用到的Ajax类的所有消息;
- * indicator cfg 配置信息从 this.indicatorCfg -> target ct.indicatorCfg获得
+ * indicator 配置信息从 this.indicator -> target ct.indicator获得
  * @param {String} url, 未指定时用this.url
  * @param {Object} cfg 配置Ajax类的配置信息, 参考信息:cfg.url = url, cfg.caller = this
- * @return this
+ * @return {String} connectorKey connector in queue
  */
   connect : function(url, cfg){
     var afg = this.ajaxCfg;
@@ -160,23 +166,49 @@ CC.util.ProviderFactory.create('Connection', null, {
     }
 
 /**
- * @cfg {Object} indicatorCfg
+ * @cfg {Object|Function|String} indicator
  */
     if (!this.indicatorDisabled && !this.indicator)
-      this.getIndicator(this.indicatorCfg || this.t.indicatorCfg);
-
-    this.bindConnector(afg);
-    return this;
+      this.getIndicator();
+        
+    return this.bindConnector(afg);
   },
-
-/**
- * 获得连接器,该连接器只提供数据加载功能,默认用CC.Ajax类作为连接器.
- * @return {CC.Ajax}
- */
-  getConnector : function(){
-    return this.connector;
+  
+  getConnectionQueue : function(){
+    return this.syncQueue;
   },
-
+  
+  // private
+  createIndicator : function(opt){
+    var it, inner = this.indicator || this.t.indicator;
+    
+    if( !opt ) 
+      opt = {};
+    
+    opt.target = this.t;
+    opt.targetLoadCS = this.loadCS;
+    
+    if(typeof inner == 'function'){
+      it = new inner (opt);
+    }else {
+      if(typeof inner === 'string'){
+        if(!opt.ctype)
+          opt.ctype = inner;
+      } else if(typeof inner === 'object'){
+        CC.extendIf(opt, inner);
+      }
+      
+      if(!opt.ctype)
+        opt.ctype = 'loading';
+        
+      it = CC.ui.instance(opt); 
+    }
+    
+    this.indicator = it;
+    this.t.follow(it);
+    return it;
+  },
+  
 /**
  * 绑定连接器
  * 连接器接口为
@@ -185,32 +217,47 @@ CC.util.ProviderFactory.create('Connection', null, {
     //终止当前连接
     abort : fGo,
     //订阅连接事件
-    to : fGo(subsciber),
+    to : fGo(subscribe),
     //连接
     connect : fGo
   }
   </pre>
  * @private
+ * @return {String} connectorKey
  */
   bindConnector : function(cfg){
-
-    if(this.indicator.isBusy())
-      this.getConnector().abort();
-
-    var a = this.connector =  this.createConnector(cfg);
+    var a = this.createConnector(cfg);
     
-    // 应用url模板
-    a.url = CC.templ(this.t, a.url);
+    // 加入队列
+    var connectorKey = this.syncQueue.join(a);
+
+    if(this.subscribe)
+      a.to(this.t);
+
+    // 应用url模板 , 确保不覆盖原有ajaxCfg url
+    a.url = CC.templ(this.t, cfg.url);
     
-    a.to(this.t);
     a.connect();
+    
+    return connectorKey;
   },
+  
 /**
  * 创建并返回连接器
  * @private
  */
   createConnector : function(cfg){
-    return new CC.Ajax(cfg);
+     return new CC.Ajax(cfg);
+  },
+
+  onConnectorsFinish : function(j){
+    this.t.fire('connection:connectorsfinish', this, j);
+    this.getIndicator().stopIndicator();
+  },
+  
+  onConnectorFirstOpen   : function(j){
+    this.t.fire('connection:connectorsopen', this, j);
+    this.getIndicator().markIndicator();
   }
 });
 
@@ -228,61 +275,26 @@ CC.util.ProviderFactory.create('Connection', null, {
  /**
   * @class CC.ui.ContainerBase
   */
-         /**
-         * @event final
-         * 事件由{@link CC.util.ConnectionProvider}提供,connectionProvider请求结束后调用,无论成功与否都会触发.
-         * @param {CC.Ajax} ajax
-         */
-        /**
-         * @event open
-         * 事件由{@link CC.util.ConnectionProvider}提供,在connectionProvider打开连接前发送
-         * @param {CC.Ajax} ajax
-         */
- /**
-  * @event send
-  * 事件由{@link CC.util.ConnectionProvider}提供,在connectionProvider发送数据前发送
-  * @param {CC.Ajax} ajax
-  */
   
-        /**
-         * @event json
-         * 事件由{@link CC.util.ConnectionProvider}提供,在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
-         * @param {Object} o json对象
-         * @param {Ajax} ajax
-         */
-        /**
-         * @event xmlDoc
-         * 事件由{@link CC.util.ConnectionProvider}提供,在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
-         * @param {XMLDocument} doc
-         * @param {CC.Ajax} ajax
-         */
-        /**
-         * @event text
-         * 事件由{@link CC.util.ConnectionProvider}提供,在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
-         * @param {String} responseText
-         * @param {CC.Ajax} ajax
-         */
-/**
- * @event failure
- * 事件由{@link CC.util.ConnectionProvider}提供,数据请求失败返回后发送.
- * @param {CC.Ajax} ajax
- */
- 
-/**
- * @event success
- * 事件由{@link CC.util.ConnectionProvider}提供,数据成功返回加载后发送.
- * @param {CC.Ajax} ajax
- */
- 
-/**
- * @event load
- * 事件由{@link CC.util.ConnectionProvider}提供,请求响应返回加载后发送(此时readyState = 4).
- * @param {CC.Ajax} ajax
- */
- 
-/**
- * @event statuschange
- * 由{@link CC.util.ConnectionProvider}提供,在每个Ajax fire事件发送前该事件都会发送
- * @param {String} status
+ /**
+ * @event defdataload
+ * 由{@link CC.util.ConnectionProvider}提供,数据成功返回后，进行默认的数据处理前发送
  * @param {CC.Ajax} j
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */ 
+
+/**
+ * @event connection:connectorsopen
+ * @param {CC.util.ConnectionProvider} current
+ * @param {Object|CC.Ajax} connector
+ * 由{@link CC.util.ConnectionProvider} 批量请求开始时发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */
+ 
+/**
+ * @event connection:connectorsfinish
+ * @param {CC.util.ConnectionProvider} current
+ * @param {Object|CC.Ajax} connector
+ * 由{@link CC.util.ConnectionProvider} 批量请求结束后发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
  */

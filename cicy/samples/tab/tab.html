@@ -21,9 +21,9 @@ __debug=true;
   showTo:document.body,
   lyCfg:{
    items:[
-    {ctype:'tab', layout:'tabitem', id:'taba', selectionProvider:{selected:0},  lyInf:{h:'auto'}, array:[{title:'选项_1'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4'}]},
+    {ctype:'tab', layout:'tabitem', id:'taba', selectionProvider:{selected:0},  contentPanel:'tabcontentpanel', lyInf:{h:'auto'}, array:[{title:'选项_1', src:'http://www.google.com'}, {title:'选项_1'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4'}]},
     {ctype:'panel', id:'tabcontentpanel', lyInf:{h:'lead'}, layout:'card'},
-    {ctype:'tab', float:'r', vtab:true, id:'tabb', selectionProvider:{selected:0}, contentPanel:'tabcontentpanel', lyInf:{h:'auto'}, array:[{title:'选项_1', src:'http://www.google.com'},{title:'选项_2'},{title:'选项_3'},{title:'选项_4'}]}
+    {ctype:'tab', float:'r', vtab:true, id:'tabb', selectionProvider:{selected:0}, contentPanel:'tabcontentpanel', lyInf:{h:'auto'}, array:[{title:'选项_1', src:'http://www.google.com'},{title:'选项_2', src:'http://www.g.cn'},{title:'选项_3'},{title:'选项_4'}]}
    ]
   }
  });

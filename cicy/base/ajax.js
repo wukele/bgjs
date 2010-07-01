@@ -6,7 +6,8 @@
 (function(){
 	var CC = window.CC;
 /**
- * @class CC.Ajax Ajax请求封装类<br>
+ * @class CC.Ajax
+ * CC.Ajax Ajax请求封装类<br>
  <pre><code>
   //连接服务器并获得返回的JSON数据
   Ajax.connect({
@@ -41,6 +42,7 @@
   });
   ajax.connect('param=data');
   </code></pre>
+ * @extends CC.Eventable 
  */
 var Ajax = CC.Ajax = CC.create();
 /**
@@ -79,40 +81,41 @@ Ajax.connect = (function(option){
     return ajax;
 });
 
-        /**
-         * @event final
-         * 请求结束后调用,无论成功与否.
-         * @param {CC.Ajax} ajax
-         */
-        /**
-         * @event open
-         * 在打开前发送
-         * @param {CC.Ajax} ajax
-         */
+/**
+* @event final
+* 请求结束后调用,无论成功与否.
+* @param {CC.Ajax} ajax
+*/
+/**
+ * @event open
+ * 在打开前发送
+ * @param {CC.Ajax} ajax
+ */
+
  /**
   * @event send
   * 在发送数据前发送
   * @param {CC.Ajax} ajax
   */
   
-        /**
-         * @event json
-         * 在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
-         * @param {Object} o json对象
-         * @param {Ajax} ajax
-         */
-        /**
-         * @event xmlDoc
-         * 在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
-         * @param {XMLDocument} doc
-         * @param {CC.Ajax} ajax
-         */
-        /**
-         * @event text
-         * 在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
-         * @param {String} responseText
-         * @param {CC.Ajax} ajax
-         */
+/**
+ * @event json
+ * 在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
+ * @param {Object} o json对象
+ * @param {Ajax} ajax
+ */
+/**
+ * @event xmlDoc
+ * 在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
+ * @param {XMLDocument} doc
+ * @param {CC.Ajax} ajax
+ */
+/**
+ * @event text
+ * 在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
+ * @param {String} responseText
+ * @param {CC.Ajax} ajax
+ */
 /**
  * @event failure
  * 数据请求失败返回后发送.
@@ -197,10 +200,47 @@ Ajax.prototype =
  */
 
 /**
- * 指明当前Ajax是否处理请求处理状态,在open后直至close前该值为真.
  * @property busy
+ * 指明当前Ajax是否处理请求处理状态,在open后直至close前该值为真.
  * @type Boolean
  */
+ 
+/**
+ * @property loaded
+ * 指明当前请求是否已成功返回(状态码200).
+ * @type Boolean
+ */
+
+/**
+ * @property closed
+ * 指明当前请求是否已关闭.
+ * @type Boolean
+ */
+
+/**
+ * 在每个事件发送后,事件名称记录在该属性下.
+ * @property status
+ * @type String
+ */
+
+/**
+ * @property text
+ * 调用{@link #getText}方法后保存的text文本,在{@link #close}方法调用后销毁, 可重设以后某些过滤处理.
+ * @type String
+ */
+         
+/**
+ * @property xmlDoc
+ * 调用{@link #getXmlDoc}方法后保存的XMLDocument对象,在{@link #close}方法调用后销毁.
+ * @type XMLDocument
+ */
+
+/**
+ * @property json
+ * 调用{@link #getJson}方法后保存的json对象,在{@link #close}方法调用后销毁.
+ * @type Object
+ */
+             
 
     /**
      * @private
@@ -238,8 +278,12 @@ Ajax.prototype =
         this._close();
     }
     ,
+    
+    closed : false,
+    
     /**@private*/
     _close: function() {
+      if(!this.closed){
         if(this.timeout)
             clearTimeout(this._tid);
         if(this.onfinal)
@@ -265,6 +309,8 @@ Ajax.prototype =
         this.xmlReq = null;
         this.params = null;
         this.busy = 0;
+        this.closed = true;
+      }
     }
     ,
 
@@ -391,11 +437,7 @@ Ajax.prototype =
     ,
     
     _fire : function(e){
-/**
- * 在每个事件发送后,事件名称记录在该属性下.
- * @property status
- * @type String
- */
+
     	this.status = e;
     	
     	if(this.statuschange)
@@ -423,6 +465,7 @@ Ajax.prototype =
             // req.status 为 本地文件请求
             try{
                 if (req.status == 200) {
+                    this.loaded = true;
                     if(this._fire('success', this) === false)
                       return false;
                     if(success)
@@ -455,12 +498,6 @@ Ajax.prototype =
     getText : function() {
         if(this.text)
             return this.text;
-
-        /**
-         * 调用{@link #getText}方法后保存的text文本,在{@link #close}方法调用后销毁, 可重设以后某些过滤处理.
-         * @property text
-         * @type String
-         */
         var s = this.text = this.xmlReq.responseText;
         this._fire('text',s,this);
         return this.text;
@@ -471,11 +508,6 @@ Ajax.prototype =
    * @return {XMLDocument} XML Document 文档对象.
    */
     getXmlDoc : function() {
-        /**
-         * 调用{@link #getXmlDoc}方法后保存的XMLDocument对象,在{@link #close}方法调用后销毁.
-         * @property xmlDoc
-         * @type XMLDocument
-         */
         if(this.xmlDoc)
             return this.xmlDoc;
 
@@ -494,11 +526,6 @@ Ajax.prototype =
             return this.json;
         var o;
         try {
-            /**
-             * 调用{@link #getJson}方法后保存的json对象,在{@link #close}方法调用后销毁.
-             * @property json
-             * @type Object
-             */
             this.json = o = eval("("+this.getText()+");");
         }catch(e) {
             if(__debug) { console.log('Internal server error : a request responsed with wrong json format:\n'+e+"\n"+this.getText()); }
@@ -532,7 +559,7 @@ Ajax.prototype =
         return eval(this.getText());
     }
     ,
-    /**
+  /**
    * 应用请求返回的HTML文本,方法先提取JS(如果存在),style(如果存在),将剩下内容放入displayPanel(innerHTML)中,再运行提取的JS,style.
    */
     invokeHtml: function() {

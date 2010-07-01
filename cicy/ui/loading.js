@@ -6,20 +6,27 @@ var PR = CC.Base.prototype;
  * 加载提示类,参见{@link CC.util.ConnectionProvider}
  * @extends CC.Base
  */
-CC.Tpl.def( 'CC.ui.Loading' , '<div class="g-loading"><div class="g-loading-indicator"><span id="_tle">加载中,请稍候...</span></div></div>');
-
-CC.create('CC.ui.Loading', CC.Base,
- {
+ 
 /**
  * @cfg {String} loadMaskCS 掩层CSS类名
  */
-  loadMaskCS:'g-loading-mask',
+ 
+/**
+ * @cfg {Boolean} maskDisabled 是否禁用掩层
+ */
 
-  initComponent : function(){
-    PR.initComponent.call(this);
-    if(this.target)
-      this.attach(this.target);
-  },
+/**
+ * @cfg {String} targetLoadCS 加载时添加到目标的样式
+ */
+ 
+/**
+ * @cfg {Boolean} loadMsgDisabled 是否禁用消息提示
+ */
+ 
+/**
+ * @cfg {Boolean} monitor 监听连接事件源,默认为空,监听的事件为open, send, success, final.
+ */
+
 
 /**
  * @property target
@@ -27,59 +34,84 @@ CC.create('CC.ui.Loading', CC.Base,
  * @type CC.ui.ContainerBase
  */
  
+CC.Tpl.def( 'CC.ui.Loading' , '<div class="g-loading"><div class="g-loading-indicator"><span id="_tle">加载中,请稍候...</span></div></div>');
+
+CC.create('CC.ui.Loading', CC.Base,
+ {
+  loadMaskCS:'g-loading-mask',
+
+  monitor : false,
+  
+  initComponent : function(){
+    PR.initComponent.call(this);
+    if(this.monitor) {
+      this.setMonitor(CC.delAttr('monitor', this));
+    }
+  },
+
+ 
 /**
  * 装饰容器,当容器加载数据时出现提示.
  * @param {CC.ui.ContainerBase} targetContainer
  */
   attach : function(target){
     this.target = target;
-    this.target.
-      on('open',this.whenOpen,this).
-      on('send',this.whenSend,this).
-      on('success',this.whenSuccess,this).
-      on('final',this.whenFinal,this);
   },
 
+/**
+ * 设置监听事件源.
+ */
+  setMonitor : function(monitor){
+    if(this.monitor){
+      this.monitor.un('open',this.whenOpen,this).
+                   un('send',this.whenSend,this).
+                   un('success',this.whenSuccess,this).
+                   un('final',this.whenFinal,this);
+    }
+    if(monitor){
+      monitor.on('open',this.whenOpen,this).
+              on('send',this.whenSend,this).
+              on('success',this.whenSuccess,this).
+              on('final',this.whenFinal,this);
+    }
+    this.monitor = monitor;
+  },
+  
   /**@private*/
   whenSend : fGo,
+  
   /**@private*/
-  whenSuccess : function(){this.target.loaded = true;},
+  whenSuccess : function(){this.loaded = true;},
+  
   /**@private*/
   whenOpen : function(){
-    this.target.busy = true;
     this.markIndicator();
   },
+  
   /**@private*/
   whenFinal : function(){
-    this.target.busy = false;
-    this.loaded = true;
     this.stopIndicator();
     if(this.target.shadow){
       this.target.shadow.reanchor();
     }
   },
-/**
- * @cfg {String} targetLoadCS 加载时添加到目标的样式
- */
+
    targetLoadCS : false,
-   
-/**
- * @cfg {Boolean} maskDisabled 是否禁用掩层
- */
+
    maskDisabled : false,
-   
-/**
- * @cfg {Boolean} loadMsgDisabled 是否禁用消息提示
- */
+
    loadMsgDisabled : false,
    
 /**
  * 开始加载提示.
  */
   markIndicator : function(){
+    
     if(this.disabled)
       return;
-      
+    
+    this.busy = true;
+    
     if(this.targetLoadCS)
       CC.fly(this.target).addClass(this.targetLoadCS).unfly();
 
@@ -115,13 +147,17 @@ CC.create('CC.ui.Loading', CC.Base,
       }
       this.del();
     }
+    
+    this.busy = false;
+    this.loaded = true;
   },
+  
 /**
  * 目标是否正在加载中.
  * @return {Boolean}
  */
   isBusy : function(){
-    return this.target.busy;
+    return this.busy;
   },
   
 /**
@@ -129,7 +165,12 @@ CC.create('CC.ui.Loading', CC.Base,
  * @return {Boolean}
  */
   isLoaded : function(){
-    return this.target.loaded;
+    return this.loaded;
+  }, 
+  
+  destory : function(){
+    this.setMonitor(null);
+    this.superclass.destory.call(this);
   }
 });
 

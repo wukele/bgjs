@@ -1244,6 +1244,27 @@ CC.extend(Base.prototype,
         (this.ct||this.view).innerHTML = ss;
         return this;
     },
+
+/**
+ * @param {String} html
+ * @param {String} wrapTag
+ * @return this
+ */
+    appendHtml : function(html, wrapTag){
+      if(wrapTag)
+       html = '<'+wrapTag+'>'+html+'</'+wrapTag+'>';
+      (this.ct || this.view).appendChild(CC.Tpl.forNode(html));
+      return this;
+    },
+
+/**
+ * @param {String} text
+ * @return this
+ */
+    appendText : function(text){
+      (this.ct || this.view).appendChild(document.createTextNode(text));
+      return this;
+    },
     
     /**
      * where.appendChild(this.view);

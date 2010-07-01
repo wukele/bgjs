@@ -450,13 +450,16 @@ CC.create('CC.ui.tree.TreeItemLoadingIndicator', CC.ui.Loading, {
     var t = this.target;
     t._head.delClass(t.loadCS);
     //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
-    if(t.loaded)
+    if(t.getConnectionProvider()
+        .getConnectionQueue()
+        .isConnectorLoaded(t._dataConnectorId)){
       t.expand(true);
+    }
   }
 });
 
 
-CC.ui.TreeItem.prototype.indicatorCls = CC.ui.tree.TreeItemLoadingIndicator;
+CC.ui.TreeItem.prototype.indicator = CC.ui.tree.TreeItemLoadingIndicator;
 
 /**
  * @class CC.ui.Tree
@@ -562,9 +565,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
     // 如果结点已经加载,忽略.
     //
     if(this.autoLoad  && b){
-      if(!item.getConnectionProvider()
-              .getIndicator()
-              .isLoaded()){
+      if(!this.isItemRequested(item)){
         this.loadItem(item);
         return (item.children.length>0);
       }
@@ -580,11 +581,21 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
       var url = this.getItemUrl(item);
       if(url){
         var cp = item.getConnectionProvider(), ind = cp.getIndicator();
-        if(!ind.isLoaded() && !ind.isBusy())
-          cp.connect(url);
+        if(!this.isItemRequested(item)){
+          item._dataConnectorId = cp.connect(url);
+        }
       }
   },
 
+/**
+ * 判断子项数据是否加载中。
+ * @param {CC.ui.TreeItem} treeItem
+ */
+  isItemRequested : function(item){
+    return !!item._dataConnectorId; 
+    // item.getConnectionProvider().getConnectionQueue().isConnectorBusy(item._dataConnectorId);
+  },
+  
 /**
  * 获得子项用于请求数据的url,可重写该方法,自定义请定的URL.
  */
@@ -598,6 +609,9 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
     return url;
   },
 
+/**
+ * 该方法在树控件类中已被保留，取而代之的是{@link findH}方法
+ */
   $ : function(id){
     return id;
   },

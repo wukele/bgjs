@@ -1,0 +1,76 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+
+</head>
+<body>
+	<div id="panel"></div>
+</body>
+</html>
+<script>
+CC.ready(function(){
+__debug = true;
+// 将内容显示到一个DOM中
+CC.Ajax.connect({
+    url:'request.php',
+    // cache:false,
+    displayPanel:'panel'
+});
+
+CC.Ajax.connect({
+    url:'request.php',
+    // cache:false,
+    displayPanel:'panel',
+    
+    success : function(j){
+      alert(j.getText());
+    }
+});
+
+
+var scope = {name:'Cicy'};
+
+CC.Ajax.connect({
+    url:'request.php',
+    // cache:false,
+    displayPanel:'panel',
+    // 设置 scope 
+    caller:scope,
+    success : function(j){
+      alert(this.name);
+    }
+});
+
+// 错误
+
+CC.Ajax.connect({
+    url:'request.php',
+    // cache:false,
+    displayPanel:'panel',
+    // 设置 scope 
+    caller:scope,
+    
+    failure : function(j){
+      alert("请求时发生错误");
+    },
+    
+    onfinal : function(){
+      console.trace();
+      alert('无论出错与否都调用');
+    },
+    
+    events : {
+      send : [{cb:function(j){
+        (function(){
+          j.abort();
+        }).timeout(0);
+      }}]
+    }
+});
+
+});
+
+</script>
