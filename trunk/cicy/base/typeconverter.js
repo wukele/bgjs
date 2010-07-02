@@ -1,5 +1,6 @@
 ﻿(function(){
  var cvtMap = {};
+ var cptMap = {};
 /**
  * @class CC.util.TypeConverter
  * 数据类型转换器
@@ -40,6 +41,41 @@ CC.util.TypeConverter = {
       cvtMap[type] = c;
     }
 
+    return c;
+  },
+
+/**
+ * 获得类型比较器。
+ * @param {String} type
+ * @return {Function}
+ */
+  getComparator : function(type){
+    var c = cptMap[type];
+    if(!c){
+      var cv = this.get(type);
+      
+      c = cptMap[type] = cv ? 
+        (function(a, b){
+          var a = cv(a), b = cv(b);
+          if (a > b)
+            return 1;
+          
+          if (a < b)
+            return -1;
+          
+          return 0;
+        }) :
+         
+        (function(a, b){
+          if (a > b)
+            return 1;
+          
+          if (a < b)
+            return -1;
+          
+          return 0;
+        }) 
+    }
     return c;
   },
 

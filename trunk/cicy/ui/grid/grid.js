@@ -19,14 +19,63 @@ var CC = window.CC,
  * @class CC.ui.grid.Column
  * 表格中的列,包含在表头中.
  */
+ 
+/**@cfg {Boolean} resizeDisabled 是否禁止改变列宽*/
+
+/**
+ * @cfg {Function} cellBrush 可以统一设置该列数据的显示数据的具体内容, 返回字符串以innerHTML形式加进表单元格的内容元素中.
+ <pre><code>
+   header : {array:[ {title:'第一列' , cellBrush : function( v ){ return '<b>'+v+'</b>' } } ]}
+ </code></pre>
+ * @param {Object} cellValue
+ * @return {String}
+ */
+ 
+/**
+ * @cfg {Function} sortDecorator decorator(order, precolumn)
+ */
+ 
+/**
+ * @event colwidthchange
+ * 列宽改变前发送.
+ * @param {Number} columnIndex
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} width
+ * @param {Number} dx 前后改变宽差
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event aftercolwidthchange
+ * 列宽改变后发送.
+ * @param {Number} columnIndex
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} width
+ * @param {Number} dx 前后改变宽差
+ * @member CC.ui.Grid
+ */
+ 
+/**
+ * @property locked
+ * 列是否已锁定,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link lock}.
+ * @type Boolean
+ */
+
 CC.create('CC.ui.grid.Column', B, function(father){
 
     return {
-        
+
         // bdEl,
-/**@cfg {Boolean} resizeDisabled 是否禁止改变列宽*/
         resizeDisabled : false,
+
+        sortedCS : 'sorted',
         
+        ascCS : 'asc',
+        
+        descCS :'desc',
+        
+        sortIndicatorCS : 'sort-icon',
+          
         createView : function(){
           this.view = CC.$C({
             tagName:'TD',
@@ -58,37 +107,34 @@ CC.create('CC.ui.grid.Column', B, function(father){
           }
         },
 
-/**
- * @cfg {Function} cellBrush 可以统一设置该列数据的显示数据的具体内容, 返回字符串以innerHTML形式加进表单元格的内容元素中.
- <pre><code>
-   header : {array:[ {title:'第一列' , cellBrush : function( v ){ return '<b>'+v+'</b>' } } ]}
- </code></pre>
- * @param {Object} cellValue
- * @return {String}
- */
         cellBrush : function(v){
           return v;
         },
-/**
- * @event colwidthchange
- * 列宽改变前发送.
- * @param {Number} columnIndex
- * @param {CC.ui.grid.Column} column
- * @param {Number} width
- * @param {Number} dx 前后改变宽差
- * @member CC.ui.Grid
- */
 
-/**
- * @event aftercolwidthchange
- * 列宽改变后发送.
- * @param {Number} columnIndex
- * @param {CC.ui.grid.Column} column
- * @param {Number} width
- * @param {Number} dx 前后改变宽差
- * @member CC.ui.Grid
- */
- 
+        sortDecorator : function(order, pre){
+            this.addClassIf(this.sortedCS);
+            
+            if(pre && pre !== this &&  !pre.order){
+              pre.checkClass(this.descCS, false);
+              pre.checkClass(this.ascCS,  false);
+            }
+            
+            var desc = (order === 'desc');
+            this.switchClass(
+                            desc?this.ascCS:this.descCS, 
+                            desc?this.descCS:this.ascCS
+                           );
+            
+            if(this.pCt){
+               var decEl = this.pCt._sortDecorateEl;
+               if(!decEl){
+                 decEl = this.pCt._sortDecorateEl = CC.Tpl.forNode('<span class="'+this.sortIndicatorCS+'"></span>');
+               }
+               if(decEl.parentNode !== this.bdEl)
+                 this.bdEl.appendChild(decEl);
+            }
+        },
+        
 /**
  * 此时Column的setWidth不再执行具体的设宽操作,
  * 而是向grid发送一个事件,让其它处理列宽的插件(通常是表头)来执行实际的设宽操作,
@@ -128,11 +174,7 @@ CC.create('CC.ui.grid.Column', B, function(father){
           
           return this;
        },
-/**
- * @property locked
- * 列是否已锁定,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link lock}.
- * @type Boolean
- */
+       
        locked : 0,
  /**
   * 锁定/解锁列宽,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link locked}.

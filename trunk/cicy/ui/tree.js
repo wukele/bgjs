@@ -264,27 +264,6 @@ CC.create('CC.ui.TreeItem', cbx, {
     }
   },
 
-/**
- * 遍历查找结点(包括当前结点)
- * @param {String} childId
- * @return {CC.ui.TreeItem}
- */
-  findH : function(childId){
-    if(this.id === childId)
-      return this;
-
-    if(!this.nodes)
-       return false;
-
-    var n = false;
-    this.eachH(function(){
-      if(this.id === childId){
-        n = this;
-        return false;
-      }
-    });
-    return n;
-  },
 
   remove : function(item) {
     var item = this.$(item);

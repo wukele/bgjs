@@ -16,7 +16,7 @@ return {
   ct:'_ctx',
   
   peerCS : 'peer',
-  
+
   createView : function(){
     father.createView.call(this);
     this.grpEl = this.dom('_grp');
@@ -71,7 +71,7 @@ return {
           this.view.scrollLeft = scrollLeft;
     }
   },
-
+  
   // 发送父层表格事件,如果此时存在父组件,调用父组件的fire发送事件
   fireUp : function(){
     var p = this.pCt;
