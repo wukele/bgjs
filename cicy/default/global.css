@@ -510,6 +510,13 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-grid .g-grid-hd .hd-inner {overflow:hidden;float:left;padding-right:40px;}
 .g-grid .g-grid-hd td{border-right:1px solid #CCC;}
 .g-grid .g-grid-hd .hd-tbl .hdrcell{white-space:nowrap;position:relative;overflow:hidden;padding:4px 3px 4px 3px;}
+
+.g-grid .g-grid-hd .sorted {cursor:pointer;}
+
+.g-grid .g-grid-hd .sort-icon {height:10px;width:12px;font-size:1px;display:inline-block;}
+.g-grid .g-grid-hd .asc .sort-icon {background-position:-208px -63px;}
+.g-grid .g-grid-hd .desc .sort-icon {background-position:-240px -63px;}
+
 .g-grid .g-grid-ct {overflow:auto;position:relative;cursor:default;}
 .g-grid .g-grid-ct .cell{padding:4px 3px 3px;overflow:hidden;white-space:nowrap;}
 .g-grid .g-grid-ct .grid-td {border-bottom:1px solid #CCC;border-right:1px solid #DDD;}

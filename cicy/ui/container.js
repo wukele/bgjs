@@ -1376,6 +1376,13 @@ CC.create('CC.ui.ContainerBase', Base,
 
 var ccx = CC.ui.ContainerBase;
 var ccxp = CC.ui.ContainerBase.prototype;
+
+/**
+ * 等同 {@link byId}
+ * @type Function
+ */
+ccxp.find = ccxp.byId;
+
 UX.def('ct', ccx);
 /**
  * @class CC.ui.Panel

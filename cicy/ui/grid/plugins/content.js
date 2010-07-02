@@ -315,9 +315,22 @@ return {
     aftercolwidthchange : function(idx, col, width, dx){
       this.updateContentWrapTblWidth(width, dx);
       this.updateLeversWidth(idx, width, dx);
+    },
+    
+    sortcol : function(){
+      this.sortByCol.apply(this, arguments);
     }
   },
-
+  
+  
+  sortByCol : function(col, idx, order, comparator){
+    this.sort(function(ra, rb){
+      var a = ra.children[idx].getValue(),
+          b = rb.children[idx].getValue();
+      return order === 'asc' ? comparator(a, b) : comparator(b, a);
+    });
+  },
+  
   updateView : function(){
     var cs = this.grid.header.children,
         hl = cs.length,
