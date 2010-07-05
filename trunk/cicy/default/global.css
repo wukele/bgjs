@@ -532,6 +532,18 @@ filter: Alpha(opacity=50); opacity:0.5;
 
 .g-vrt-ins {position:absolute;overflow:hidden;width:5px;height:10px;z-index:8998;background-position:-54px -4px;}
 
+/** expandable row*/
+.g-grid .g-grid-ct .g-gridrow-expandarea {padding:10px;}
+.g-grid .g-grid-ct .cell a.trig {width:16px;height:16px;display:inline-block;background-position:-17px -1px;}
+.g-grid .g-grid-ct .cell a.trig:hover{background-position:-17px -17px;}
+.g-grid .g-grid-ct .g-gridrow-expand .grid-td {border-bottom:none;border-right:none;}
+.g-grid .g-grid-ct .g-gridrow-expand .exptrigcell {border-right:1px solid #CCC;}
+.g-grid .g-grid-ct .g-gridrow-expand .g-gridrow-expandtd0, .g-grid .g-grid-ct .g-gridrow-expand .g-gridrow-expandtd1 {border-bottom:1px solid #CCC;}
+.g-grid .g-grid-ct .g-gridrow-expandtd0 {border-right:1px solid #DDDDDD;}
+.g-grid .g-grid-ct .g-gridrow-expand .cell a.trig {background-position:-1px -1px;}
+.g-grid .g-grid-ct .g-gridrow-expand .cell a.trig:hover {background-position:-1px -17px;}
+
+
 .g-foldable {overflow:hidden;}
 .g-foldable .g-foldablewrap{
 	background-color:#F9F9F9;
