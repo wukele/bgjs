@@ -8,7 +8,7 @@
       minW : 20,
       resizeDisabled : true,
       id : 'rowCheckerCol',
-      dataCol : true,
+      dataCol : false,
       checkedCS : 'g-check-checked',
       cellBrush: function(){
         return '<span class="g-checkbox g-form-el"><img class="chkbk" src="'+CC.Tpl.BLANK_IMG+'"></span>';
