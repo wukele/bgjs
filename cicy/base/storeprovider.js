@@ -77,7 +77,7 @@ CC.util.ProviderFactory.create('Store', null, {
       // query data from item
       // query data from item
       if(q)
-        q = CC.templ(item, q, 2, true);
+        q = CC.templ(item, q);
     }
           //query data from share object
     if(this.shareParams){

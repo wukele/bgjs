@@ -46,19 +46,23 @@ CC.util.ProviderFactory.create('Connection', null, {
   	CC.util.ProviderBase.prototype.setTarget.apply(this, arguments);
   	this.initConnection();
   },
-
+  
  /**@private*/
   initConnection : function(){
     // init request queue
     
+    this.createSyncQueue();
+    
+    if(this.ajaxCfg && this.ajaxCfg.url)
+      this.connect();
+  },
+  
+  createSyncQueue : function(){
     this.syncQueue = new CC.util.AsynchronizeQueue({
       caller   : this,
       onempty : this.onConnectorsFinish,
       onfirstopen   : this.onConnectorFirstOpen
     });
-    
-    if(this.ajaxCfg && this.ajaxCfg.url)
-      this.connect();
   },
 
 /**
@@ -236,7 +240,6 @@ CC.util.ProviderFactory.create('Connection', null, {
 
     // 应用url模板 , 确保不覆盖原有ajaxCfg url
     a.url = CC.templ(this.t, cfg.url);
-    
     a.connect();
     
     return connectorKey;
@@ -252,12 +255,14 @@ CC.util.ProviderFactory.create('Connection', null, {
 
   onConnectorsFinish : function(j){
     this.t.fire('connection:connectorsfinish', this, j);
-    this.getIndicator().stopIndicator();
+    if(!this.indicatorDisabled)
+      this.getIndicator().stopIndicator();
   },
   
   onConnectorFirstOpen   : function(j){
     this.t.fire('connection:connectorsopen', this, j);
-    this.getIndicator().markIndicator();
+    if(!this.indicatorDisabled)
+      this.getIndicator().markIndicator();
   }
 });
 

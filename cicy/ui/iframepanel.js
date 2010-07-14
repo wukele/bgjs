@@ -47,17 +47,29 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
   	  this.connect(t.src || t.url);
   },
   
+  // @override
   initConnection : function(){
     if(this.traceLoad)
       this.t.domEvent(CC.ie?'readystatechange':'load', this.traceFrameLoad, false, this , this.t.getFrameEl());
     CC.util.ConnectionProvider.prototype.initConnection.apply(this, arguments);
   },
+  
+  // @override
+  createSyncQueue : function(){
+    CC.util.ConnectionProvider.prototype.createSyncQueue.call(this);
+    
+    this.syncQueue.openEvt = 'connection:open';
+    this.syncQueue.finalEvt = 'connection:final';
+  },
 
 /**@private*/
   onFrameLoad : function(e){
     var t = this.t;
+    // as connector status
+    t.loaded = true;
+    
     try{
-      this.t.fire('connection:success', this, t);
+      this.t.fire('connection:success', this.t, this);
       if(this.success)
         this.success(this, e);
     }catch(ex){console.warn(ex);}
@@ -71,8 +83,9 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
         t = this.t;
     switch(status){
       case 'loading':  //IE  has several readystate transitions
-        if(!t.busy)
-          this.onConnectorFirstOpen(this, t);
+        if(!this.syncQueue.isConnectorBusy(this.connectorKey)){
+          t.fire('connection:open', this.t, this);
+        }
       break;
       //
       //当用户手动刷新FRAME时该事件也会发送
@@ -80,7 +93,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
       case 'load': //Gecko, Opera
       case 'complete': //IE
         //May be ie would do a clean action before a new page loaded.
-        if(!CC.ie || this.url === t.view.src)
+        if((!CC.ie || this.url === t.view.src) && t.getFrameEl().src)
           this.onFrameLoad(evt);
         break;
     }
@@ -93,21 +106,26 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
 
 /**@private*/
   onFinal : function(){
-    this.onConnectorsFinish(this, this.t);
+    this.t.fire('connection:final', this.t, this);
   },
-
+  
 /**@private*/
   bindConnector : function(cfg){
-    if(this.t.busy)
-      this.abort();
 
+    if(this.connectorKey  && this.syncQueue.isConnectorBusy(this.connectorKey))
+      this.abort();
+      
+    // 加入队列
+    this.connectorKey = this.syncQueue.join(this.t);
     CC.extend(this, cfg);
     this.connectInner();
+    
+    return this.connectorKey;
   },
 
 /**@private*/
   connectInner : function(){
-    this.onConnectorFirstOpen(this, this.t);
+    this.t.fire('connection:open', this.t, this);
     (function(){
       try{
         this.t.getFrameEl().src = this.url;
