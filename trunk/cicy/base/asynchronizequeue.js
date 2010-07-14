@@ -17,6 +17,14 @@
 /**
  * @cfg {Function} onempty
  */
+
+/**
+ * @cfg {String} openEvt open event name fired by connector
+ */
+ 
+/**
+ * @cfg {String} finalEvt final event name fired by connector
+ */
  
 /**
  * @property waitQueue
@@ -28,6 +36,10 @@
  * @type Array 
  */
 CC.create('CC.util.AsynchronizeQueue',null, {
+
+  openEvt : 'open',
+  
+  finalEvt : 'final',
   
   initialize : function(opt){
     
@@ -53,7 +65,7 @@ CC.create('CC.util.AsynchronizeQueue',null, {
  */
   join : function(connector){
     this.waitQueue.push(connector);
-    connector.on('open', this.getConnectorBinder('open'));
+    connector.on(this.openEvt, this.getConnectorBinder(this.openEvt));
     this.max++;
     
     var key = CC.uniqueID().toString();
@@ -73,11 +85,11 @@ CC.create('CC.util.AsynchronizeQueue',null, {
   out : function(connector){
     if(this.waitQueue.indexOf(connector) >= 0){
       this.waitQueue.remove(connector);
-      connector.un('open', this.getConnectorBinder('open'));
+      connector.un(this.openEvt, this.getConnectorBinder(this.openEvt));
       this.onOut(connector);
     }else if(this.requestQueue.indexOf(connector) >= 0){
       this.requestQueue.remove(connector);
-      connector.un('final',this.getConnectorBinder('final'));
+      connector.un(this.finalEvt,this.getConnectorBinder(this.finalEvt));
       this.onOut(connector);
     }
   },
@@ -130,10 +142,10 @@ CC.create('CC.util.AsynchronizeQueue',null, {
     var bd = bnds[key];
     if(!bd){
       switch(key){
-        case 'final' :
+        case this.finalEvt :
           bd = this.onConnectorFinal.bindAsListener(this);
           break;
-        case 'open' :
+        case this.openEvt :
           bd = this.onConnectorOpen.bindAsListener(this);
           break;
       }
@@ -162,6 +174,6 @@ CC.create('CC.util.AsynchronizeQueue',null, {
     if(this.onopen)
       this.onopen.call(this.caller?this.caller:this, j, this);
       
-    j.on('final',this.getConnectorBinder('final'));
+    j.on(this.finalEvt,this.getConnectorBinder(this.finalEvt));
   }
 });

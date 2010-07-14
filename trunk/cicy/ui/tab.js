@@ -178,12 +178,31 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
           });
       }
 
-      if (url || ( (this.autoReload || !ind.isLoaded()) && !ind.isBusy())){
-        cp.connect(url || this.src || this.url);
+      if (url || ( (this.autoReload || !this.isContentLoaded()) && !this.isContentBusy())){
+        this._dataConnectorId = cp.connect(url || this.src || this.url);
       }
       return this;
     },
 
+/**
+ * 指示内容面板是否已加载。
+ */
+    isContentLoaded : function(){
+      return this._dataConnectorId && 
+        this.getContentPanel(true)
+            .getConnectionProvider()
+            .getConnectionQueue()
+            .isConnectorLoaded(this._dataConnectorId);
+    },
+    
+    isContentBusy : function(){
+      return this._dataConnectorId && 
+        this.getContentPanel(true)
+            .getConnectionProvider()
+            .getConnectionQueue()
+            .isConnectorBusy(this._dataConnectorId);
+    },
+    
     /**
      * TabItem内容面板加载时样式设置,这里主要在TabItem上显示一个loading图标.
      * @private
