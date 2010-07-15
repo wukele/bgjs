@@ -92,8 +92,7 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
       //case 'interactive': //IE
       case 'load': //Gecko, Opera
       case 'complete': //IE
-        //May be ie would do a clean action before a new page loaded.
-        if((!CC.ie || this.url === t.view.src) && t.getFrameEl().src)
+        if(t.getFrameEl().src && t.getFrameEl().src !== 'about:blank')
           this.onFrameLoad(evt);
         break;
     }
