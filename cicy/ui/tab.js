@@ -303,9 +303,9 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
         delete this.vtab;
       }
       
-      if(this.float){
-        this.addClass(this.floatCS + (this.float===true?'':this.float));
-        delete this.float;
+      if(this['float']){
+        this.addClass(this.floatCS + (this['float']===true?'':this['float']));
+        delete this['float'];
       }
     },
 
