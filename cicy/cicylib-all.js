@@ -1667,6 +1667,7 @@ CC.Cache.register('div', function() {
 })();
 ﻿(function(){
  var cvtMap = {};
+ var cptMap = {};
 /**
  * @class CC.util.TypeConverter
  * 数据类型转换器
@@ -1707,6 +1708,41 @@ CC.util.TypeConverter = {
       cvtMap[type] = c;
     }
 
+    return c;
+  },
+
+/**
+ * 获得类型比较器。
+ * @param {String} type
+ * @return {Function}
+ */
+  getComparator : function(type){
+    var c = cptMap[type];
+    if(!c){
+      var cv = this.get(type);
+      
+      c = cptMap[type] = cv ? 
+        (function(a, b){
+          var a = cv(a), b = cv(b);
+          if (a > b)
+            return 1;
+          
+          if (a < b)
+            return -1;
+          
+          return 0;
+        }) :
+         
+        (function(a, b){
+          if (a > b)
+            return 1;
+          
+          if (a < b)
+            return -1;
+          
+          return 0;
+        }) 
+    }
     return c;
   },
 
@@ -1840,6 +1876,7 @@ var C = {
   'l' :function(c, v){c.view.style.left = v;},
   'r' :function(c, v){c.view.style.right = v;},
   't' :function(c, v){c.view.style.top = v;},
+  'of':function(c, v){c.view.style.overflow = v;},
   'oh':['overflow','hidden'],
   'oa':['overflow','auto']
 };
@@ -1927,6 +1964,7 @@ var S = /\s+/, B  = CC.borderBox, inst;
   'l' :function(c, v){c.view.style.left = v;},
   'r' :function(c, v){c.view.style.right = v;},
   't' :function(c, v){c.view.style.top = v;},
+  'of':function(c, v){c.view.style.overflow = v;},
   'oh':['overflow','hidden'],
   'oa':['overflow','auto']
 }
@@ -2077,34 +2115,8 @@ CC.util.CssParser.getParser = function(){
  * @constructor
  * @param {Object} config config object
  */
-var Eventable = CC.Eventable = (function(opt){
-    /**
-     * @cfg {Object} events 保存的事件列表,格式为
-     <pre><code>
-       events : {
-         // names
-         'eventName' : [ //Array, handler list
-           // handler data
-           {  
-             // callback 简写
-             cb : function(arguments){
-               // ...
-             },
-             
-             // <b>this</b> caller
-             caller : object
-           },
-           ...
-         ],
-         ...
-       }
-     </code></pre>
-     */
-     if(opt)
-      CC.extend(this, opt);
-     CC.extend(this, Eventable.prototype);
-});
-
+ 
+ 
 /**
  * 发送对象事件.<br>
  <pre><code>
@@ -2118,47 +2130,7 @@ var Eventable = CC.Eventable = (function(opt){
  * @param {Object} eid 事件名称
  * @param {Object, Object, ...} args 传递的回调参数
  */
-Eventable.prototype.fire = function(eid){
 
-	if(__debug) {console.log('发送:%s,%o,源:%o',eid, arguments,this);}
-
-	if(this.events){
-		
-		var handlers = this.events[eid];
-		
-		if(handlers){
-			var fnArgs = CC.$A(arguments),
-			    argLen = fnArgs.length, 
-			    ret, i, len, oHand;
-			    
-			// remove eid the first argument
-			fnArgs.shift();
-
-			for(i=0,len=handlers.length;i<len;i++){
-				oHand = handlers[i];
-				// 如果注册处理中存在参数args,追加到当前参数列尾
-				if(oHand.args)
-				   fnArgs[argLen] = oHand.args;
-
-				// 如果注册处理中存在this,应用this调用处理函数
-				ret = (oHand.ds)?oHand.cb.apply(oHand.ds,fnArgs):oHand.cb.apply(this,fnArgs);
-				
-				//如果某个处理回调返回false,取消后续处理
-				if(ret === false)
-				   break;
-			}
-		}
-	}
-  if(this.subscribers){
-      var sr;
-      for(i=0,len=this.subscribers.length;i<len;i++){
-        sr = this.subscribers[i];
-        sr.fireSubscribe.apply(sr, arguments);
-      }
-  }
-	//返回最后一个处理的函数执行结果
-	return ret;
-};
 
 /**
  * 监听对象事件,如果回调函数返回false,取消后续的事件处理. <br>
@@ -2187,24 +2159,7 @@ Eventable.prototype.fire = function(eid){
  * @method on
  * @return this
  */
-Eventable.prototype.on = (function(eid,callback,ds,objArgs){
-    if(!eid || !callback){
-    	  if(__debug) console.trace();
-        throw ('eid or callback can not be null');
-    }
-    
-    if(!this.events)
-      this.events = {};
-    var hs = this.events[eid];
-    if(!hs)
-        hs = this.events[eid] = [];
-    hs[hs.length] = {
-        cb:callback,
-        ds:ds,
-        args:objArgs
-    };
-    return this;
-});
+
 /**
  * 移除事件监听.
  * @param {Object} eid
@@ -2212,28 +2167,6 @@ Eventable.prototype.on = (function(eid,callback,ds,objArgs){
  * @method un
  * @return this
  */
-Eventable.prototype.un = (function(eid,callback){
-    if(!this.events)
-      return this;
-
-    if(callback === undefined){
-      delete this.events[eid];
-      return this;
-    }
-
-    var handlers = this.events[eid];
-
-    if(handlers){
-        for(var i=0;i<handlers.length;i++){
-            var oHand = handlers[i];
-            if(oHand.cb == callback){
-                handlers.remove(i);
-                break;
-            }
-        }
-    }
-    return this;
-});
 
 /**
  * 发送一次后移除所有监听器,有些事件只通知一次的,此时可调用该方法发送事件
@@ -2241,11 +2174,6 @@ Eventable.prototype.un = (function(eid,callback){
  * @method fireOnce
  * @return this
  */
-Eventable.prototype.fireOnce = function(eid){
-  var r = this.fire.apply(this, arguments);
-  this.un(eid);
-  return r;
-};
 
 /**
  * 订阅当前对象所有事件
@@ -2253,14 +2181,7 @@ Eventable.prototype.fireOnce = function(eid){
  * @method to
  * @return this
  */
-Eventable.prototype.to = (function(target){
-  if(!this.subscribers)
-    this.subscribers = [];
-  if(this.subscribers.indexOf(target) > 0)
-    return;
-  this.subscribers.push(target);
-  return this;
-});
+
 
 /**
  * 默认为fire,自定订阅方式可重写.<br>
@@ -2276,6 +2197,156 @@ Eventable.prototype.to = (function(target){
  * @method fireSubscribe
  * @return this
  */
+ 
+var Eventable = CC.Eventable = (function(opt){
+    /**
+     * @cfg {Object} events 保存的事件列表,格式为
+     <pre><code>
+       events : {
+         // names
+         'eventName' : [ //Array, handler list
+           // handler data
+           {  
+             // callback 简写
+             cb : function(arguments){
+               // ...
+             },
+             
+             // <b>this</b> caller
+             caller : object
+           },
+           ...
+         ],
+         ...
+       }
+     </code></pre>
+     */
+     if(opt)
+      CC.extend(this, opt);
+     
+     CC.extend(this, Eventable.prototype);
+});
+
+Eventable.prototype = {
+
+  fire : function(eid){
+  
+  	if(__debug) {console.log('发送:%s,%o,源:%o',eid, arguments,this);}
+  
+  	if(this.events){
+  		
+  		var handlers = this.events[eid];
+  		
+  		if(handlers){
+  			var fnArgs = CC.$A(arguments),
+  			    argLen = fnArgs.length, 
+  			    ret, i, len, oHand;
+  			    
+  			// remove eid the first argument
+  			fnArgs.shift();
+        
+        handlers._evtLocked = true;
+        
+  			for(i=0,len=handlers.length;i<len;i++){
+  				oHand = handlers[i];
+  				
+  				// 标记已删除
+  				if( oHand.removed)
+  				   continue;
+  				// 如果注册处理中存在参数args,追加到当前参数列尾
+  				if(oHand.args)
+  				   fnArgs[argLen] = oHand.args;
+  
+  				// 如果注册处理中存在this,应用this调用处理函数
+  				ret = (oHand.ds)?oHand.cb.apply(oHand.ds,fnArgs):oHand.cb.apply(this,fnArgs);
+  				
+  				//如果某个处理回调返回false,取消后续处理
+  				if(ret === false)
+  				   break;
+  			}
+  			
+  			handlers._evtLocked = false;
+  		}
+  	}
+    if(this.subscribers){
+        var sr;
+        for(i=0,len=this.subscribers.length;i<len;i++){
+          sr = this.subscribers[i];
+          sr.fireSubscribe.apply(sr, arguments);
+        }
+    }
+  	//返回最后一个处理的函数执行结果
+  	return ret;
+  },
+  
+  on   :  function(eid,callback,ds,objArgs){
+      if(!eid || !callback){
+      	  if(__debug) console.trace();
+          throw ('eid or callback can not be null');
+      }
+
+      
+      if(!this.events)
+        this.events = {};
+      var hs = this.events[eid];
+      if(!hs)
+          hs = this.events[eid] = [];
+      hs[hs.length] = {
+          cb:callback,
+          ds:ds,
+          args:objArgs
+      };
+      return this;
+  },
+  
+  un : function(eid,callback){
+      if(!this.events)
+        return this;
+      
+      if(callback === undefined){
+        delete this.events[eid];
+        return this;
+      }
+  
+      var handlers = this.events[eid];
+  
+      if(handlers){
+        
+          if(handlers._evtLocked) {
+             // 产生迭代修改冲突，将复制新数组。
+             handlers = this.events[eid] = handlers.slice(0);
+          }
+          
+          for(var i=0;i<handlers.length;i++){
+              var oHand = handlers[i];
+              if(oHand.cb == callback){
+                  handlers.remove(i);
+                  // 标记删除
+                  oHand.removed = true;
+                  break;
+              }
+          }
+      }
+      return this;
+  },
+  
+  fireOnce : function(eid){
+    var r = this.fire.apply(this, arguments);
+    this.un(eid);
+    return r;
+  },
+  
+  to : function(target){
+    if(!this.subscribers)
+      this.subscribers = [];
+    if(this.subscribers.indexOf(target) > 0)
+      return;
+    this.subscribers.push(target);
+    return this;
+  }
+};
+
+
 Eventable.prototype.fireSubscribe = Eventable.prototype.fire;
 })();
 ﻿(function(){
@@ -2287,7 +2358,7 @@ Eventable.prototype.fireSubscribe = Eventable.prototype.fire;
 var Event = CC.Event = {};
 var document = window.document;
 var opera = CC.opera, chrome = CC.chrome, ie = CC.ie;
-
+var DocMouseDownEventable = new CC.Eventable();
 CC.extend(Event,
   {
     /**@property
@@ -2340,7 +2411,7 @@ CC.extend(Event,
      * @private
      */
     noUp : function(ev) {
-        Event.stop(ev||window.event);
+        Event.stopPropagation(ev||window.event);
         return false;
     },
 /**
@@ -2568,6 +2639,7 @@ CC.extend(Event,
  * @param {String} name 事件名称,无on开头
  * @param {Function} observer 事件处理函数
  * @param {Boolean} [useCapture]
+ * @return this
  */
     on: function(element, name, observer, useCapture) {
         useCapture = useCapture || false;
@@ -2577,6 +2649,7 @@ CC.extend(Event,
             name = 'keydown';
         }
         this._observeAndCache(element, name, observer, useCapture);
+        return this;
     }
     ,
 /**
@@ -2585,6 +2658,7 @@ CC.extend(Event,
  * @param {String} name 事件名称,无on开头
  * @param {Function} observer 事件处理函数
  * @param {Boolean} [useCapture]
+ * @return this
  */
     un: function(element, name, observer, useCapture) {
         var element = CC.$(element); useCapture = useCapture || false;
@@ -2599,6 +2673,7 @@ CC.extend(Event,
         } else if (element.detachEvent) {
             element.detachEvent('on' + name, observer);
         }
+        return this;
     },
 /**
  * 提供元素拖动行为,在RIA中不建议用该方式实现元素拖放,而应实例化一个Base对象,使之具有一个完整的控件生命周期.<br>
@@ -2857,7 +2932,8 @@ CC.extendIf(tester, {
 (function(){
 	var CC = window.CC;
 /**
- * @class CC.Ajax Ajax请求封装类<br>
+ * @class CC.Ajax
+ * CC.Ajax Ajax请求封装类<br>
  <pre><code>
   //连接服务器并获得返回的JSON数据
   Ajax.connect({
@@ -2892,6 +2968,7 @@ CC.extendIf(tester, {
   });
   ajax.connect('param=data');
   </code></pre>
+ * @extends CC.Eventable 
  */
 var Ajax = CC.Ajax = CC.create();
 /**
@@ -2930,40 +3007,41 @@ Ajax.connect = (function(option){
     return ajax;
 });
 
-        /**
-         * @event final
-         * 请求结束后调用,无论成功与否.
-         * @param {CC.Ajax} ajax
-         */
-        /**
-         * @event open
-         * 在打开前发送
-         * @param {CC.Ajax} ajax
-         */
+/**
+* @event final
+* 请求结束后调用,无论成功与否.
+* @param {CC.Ajax} ajax
+*/
+/**
+ * @event open
+ * 在打开前发送
+ * @param {CC.Ajax} ajax
+ */
+
  /**
   * @event send
   * 在发送数据前发送
   * @param {CC.Ajax} ajax
   */
   
-        /**
-         * @event json
-         * 在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
-         * @param {Object} o json对象
-         * @param {Ajax} ajax
-         */
-        /**
-         * @event xmlDoc
-         * 在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
-         * @param {XMLDocument} doc
-         * @param {CC.Ajax} ajax
-         */
-        /**
-         * @event text
-         * 在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
-         * @param {String} responseText
-         * @param {CC.Ajax} ajax
-         */
+/**
+ * @event json
+ * 在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
+ * @param {Object} o json对象
+ * @param {Ajax} ajax
+ */
+/**
+ * @event xmlDoc
+ * 在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
+ * @param {XMLDocument} doc
+ * @param {CC.Ajax} ajax
+ */
+/**
+ * @event text
+ * 在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
+ * @param {String} responseText
+ * @param {CC.Ajax} ajax
+ */
 /**
  * @event failure
  * 数据请求失败返回后发送.
@@ -3001,8 +3079,8 @@ Ajax.prototype =
     url : null,
 /**@cfg {Boolean} asynchronous=true 是否异步,默认true*/
     asynchronous: true,
-/**@cfg {Number} timeout=10000 设置超时,默认10000ms*/
-    timeout: 10000,
+/**@cfg {Number} timeout=false 设置超时,默认无限制*/
+    timeout: false,
 /**@cfg {DOMElement} disabledComp 在请求过程中禁止的元素,请求结束后解除*/
    disabledComp : undefined,
 /**@cfg {String} contentType 默认application/x-www-form-urlencoded*/
@@ -3048,10 +3126,47 @@ Ajax.prototype =
  */
 
 /**
- * 指明当前Ajax是否处理请求处理状态,在open后直至close前该值为真.
  * @property busy
+ * 指明当前Ajax是否处理请求处理状态,在open后直至close前该值为真.
  * @type Boolean
  */
+ 
+/**
+ * @property loaded
+ * 指明当前请求是否已成功返回(状态码200).
+ * @type Boolean
+ */
+
+/**
+ * @property closed
+ * 指明当前请求是否已关闭.
+ * @type Boolean
+ */
+
+/**
+ * 在每个事件发送后,事件名称记录在该属性下.
+ * @property status
+ * @type String
+ */
+
+/**
+ * @property text
+ * 调用{@link #getText}方法后保存的text文本,在{@link #close}方法调用后销毁, 可重设以后某些过滤处理.
+ * @type String
+ */
+         
+/**
+ * @property xmlDoc
+ * 调用{@link #getXmlDoc}方法后保存的XMLDocument对象,在{@link #close}方法调用后销毁.
+ * @type XMLDocument
+ */
+
+/**
+ * @property json
+ * 调用{@link #getJson}方法后保存的json对象,在{@link #close}方法调用后销毁.
+ * @type Object
+ */
+             
 
     /**
      * @private
@@ -3089,8 +3204,12 @@ Ajax.prototype =
         this._close();
     }
     ,
+    
+    closed : false,
+    
     /**@private*/
     _close: function() {
+      if(!this.closed){
         if(this.timeout)
             clearTimeout(this._tid);
         if(this.onfinal)
@@ -3116,6 +3235,8 @@ Ajax.prototype =
         this.xmlReq = null;
         this.params = null;
         this.busy = 0;
+        this.closed = true;
+      }
     }
     ,
 
@@ -3169,9 +3290,9 @@ Ajax.prototype =
             var isQ = theUrl.indexOf('?') > 0;
             if(ch){
                 if (isQ)
-                    theUrl = theUrl + '&__uid=' + CC.uniqueID();
+                    theUrl = theUrl + '&__uid=' + (+new Date());
                 else
-                    theUrl = theUrl + '?__uid=' + CC.uniqueID();
+                    theUrl = theUrl + '?__uid=' + (+new Date());
             }
 
             if(ps){
@@ -3242,11 +3363,7 @@ Ajax.prototype =
     ,
     
     _fire : function(e){
-/**
- * 在每个事件发送后,事件名称记录在该属性下.
- * @property status
- * @type String
- */
+
     	this.status = e;
     	
     	if(this.statuschange)
@@ -3274,6 +3391,7 @@ Ajax.prototype =
             // req.status 为 本地文件请求
             try{
                 if (req.status == 200) {
+                    this.loaded = true;
                     if(this._fire('success', this) === false)
                       return false;
                     if(success)
@@ -3306,12 +3424,6 @@ Ajax.prototype =
     getText : function() {
         if(this.text)
             return this.text;
-
-        /**
-         * 调用{@link #getText}方法后保存的text文本,在{@link #close}方法调用后销毁, 可重设以后某些过滤处理.
-         * @property text
-         * @type String
-         */
         var s = this.text = this.xmlReq.responseText;
         this._fire('text',s,this);
         return this.text;
@@ -3322,11 +3434,6 @@ Ajax.prototype =
    * @return {XMLDocument} XML Document 文档对象.
    */
     getXmlDoc : function() {
-        /**
-         * 调用{@link #getXmlDoc}方法后保存的XMLDocument对象,在{@link #close}方法调用后销毁.
-         * @property xmlDoc
-         * @type XMLDocument
-         */
         if(this.xmlDoc)
             return this.xmlDoc;
 
@@ -3345,11 +3452,6 @@ Ajax.prototype =
             return this.json;
         var o;
         try {
-            /**
-             * 调用{@link #getJson}方法后保存的json对象,在{@link #close}方法调用后销毁.
-             * @property json
-             * @type Object
-             */
             this.json = o = eval("("+this.getText()+");");
         }catch(e) {
             if(__debug) { console.log('Internal server error : a request responsed with wrong json format:\n'+e+"\n"+this.getText()); }
@@ -3383,7 +3485,7 @@ Ajax.prototype =
         return eval(this.getText());
     }
     ,
-    /**
+  /**
    * 应用请求返回的HTML文本,方法先提取JS(如果存在),style(如果存在),将剩下内容放入displayPanel(innerHTML)中,再运行提取的JS,style.
    */
     invokeHtml: function() {
@@ -3420,6 +3522,7 @@ var Eventable = CC.Eventable;
 var CPC = {};
 var Cache = CC.Cache;
 var Event = CC.Event;
+
 /**
  * @class CC.Base
  * 为所有控件的基类,定义控件的基本属性与方法,管理控件的生命周期.<br>
@@ -3811,7 +3914,7 @@ CC.extend(Base.prototype,
            this.constructor.prototype.hasOwnProperty('template') ||
            (this.superclass && this.superclass.hasOwnProperty('template'))){
           // come from a html string or cache
-          this.view = this.template.charAt(0) === '<' ? Tpl.forNode(this.template) : Tpl.$(this.template);
+          this.view = this.template.charAt(0) === '<' ? Tpl.forNode(this.template, this) : Tpl.$(this.template);
           
           delete this.template;
 
@@ -4659,6 +4762,27 @@ CC.extend(Base.prototype,
         (this.ct||this.view).innerHTML = ss;
         return this;
     },
+
+/**
+ * @param {String} html
+ * @param {String} wrapTag
+ * @return this
+ */
+    appendHtml : function(html, wrapTag){
+      if(wrapTag)
+       html = '<'+wrapTag+'>'+html+'</'+wrapTag+'>';
+      (this.ct || this.view).appendChild(CC.Tpl.forNode(html));
+      return this;
+    },
+
+/**
+ * @param {String} text
+ * @return this
+ */
+    appendText : function(text){
+      (this.ct || this.view).appendChild(document.createTextNode(text));
+      return this;
+    },
     
     /**
      * where.appendChild(this.view);
@@ -5324,10 +5448,10 @@ CC.extend(Base.prototype,
         if(nx + w > vw)
           nx = by+bh>ny && by<ny+h ? bx - w : vw - w;
 
-        if(ny < 0)
+        if(ny < 0 && by+bh + h <= vh)
           ny = bx+bw>nx && bx<nx+w ? by+bh : 0;
 
-        if(ny + h > vh)
+        if( ny + h > vh && by - h >= 0 )
           ny = bx+bw>nx && bx<nx+w ? by - h : vh - h;
       }
 
@@ -6078,7 +6202,14 @@ CC.ui = {
   def : function(ctype, clazz){
     this.ctypes[ctype] = clazz;
   },
-
+/**
+ * 根据ctype获得类.
+ * @param {String} ctype
+ * @return {Function} class
+ */
+  getCls : function(ct){
+    return this.ctypes[ct];
+  },
 /**
  * 根据类初始化信息返回类实例,如果初始化信息未指定ctype,默认类为CC.Base,
  * 如果初始化信息中存在ctype属性,在实例化前将移除该属性.
@@ -6272,9 +6403,15 @@ CC.util.BrushFactory = {
       this.w = l[2];
       this.h = l[3];
     }
+    
+    this.valid = true;
   };
 
   CC.extend(CC.util.d2d.Rect.prototype, {
+    valid : true,
+/**
+ * @cfg {Boolean} valid 指示矩形数据是否有效，无效的数据将忽略对矩形的各种检测.
+ */
 /**
  * @cfg {Number} l left值
  */
@@ -6297,10 +6434,14 @@ CC.util.BrushFactory = {
  * @return {Boolean}
  */
     isEnter : function(p){
-      var x = p.x, y = p.y;
-
-      return x>=this.l && x<=this.l+this.w &&
-             y>=this.t && y<=this.t+this.h;
+      if(this.valid){
+        var x = p.x, y = p.y;
+  
+        x =    x>=this.l && x<=this.l+this.w &&
+               y>=this.t && y<=this.t+this.h;
+        return x ? this : false;
+      }
+      return false
     },
 /**
  * 接口,刷新矩形缓存数据,默认为空调用
@@ -6324,7 +6465,7 @@ CC.util.BrushFactory = {
 /**
  * @class CC.util.d2d.RectZoom
  * 矩域, 由多个矩形或矩域组成树型结构,
- * 矩域大小由矩形链内最小的left,top与最大的left+width,top+height决定
+ * 矩域大小由矩形链内最小的left,top与最大的left+width,top+height决定.
  * @extends CC.util.d2d.Rect
  * @constructor
  * @param {Array} rects 由矩形数组创建矩域
@@ -6343,16 +6484,24 @@ CC.util.BrushFactory = {
  * @private
  * @param {Array} rects 包含CC.util.Rect实例的数组
  */
-     initialize : function(rects){
-        this.rects = [];
-        if(rects){
+     initialize : function(opt){
+       this.valid = true;
+       if(opt) CC.extend(this, opt);
+       var rects = CC.delAttr(this, 'rects');
+       this.rects = [];
+       if(rects){
          for(var i=0,len=rects.length;i<len;i++){
-          this.add(rects[i]);
+            this.add(rects[i]);
          }
-         this.update();
-        }
+       }
+        // 跳过prototype
+        //this.isEnter = this.isEnter;
       },
 
+
+/**@interface*/
+      prepare : fGo,
+      
 /**
  * 返回域内所有矩形, 返回的并不是矩形的复制,
  * 而是实例内所有矩形的引用,所以对返回矩形数据的修改也就是对矩域内矩形数据的修改.
@@ -6418,15 +6567,16 @@ CC.util.BrushFactory = {
    */
       isEnter : function(p){
         //先大范围检测
-        if(father.isEnter.call(this, p)){
-          var i, rs = this.rects, len = rs.length;
+        if(this.valid && father.isEnter.call(this, p)){
+          var i, rs = this.rects, len = rs.length, rt;
           for(i=0;i<len;i++){
-            if(rs[i].isEnter(p)){
-              return rs[i];
+            rt = rs[i].isEnter(p);
+            if(rt){
+              return rt;
             }
           }
-        }
-        return false;
+       }
+       return false;
       },
 
   /**@private*/
@@ -6458,16 +6608,22 @@ CC.util.BrushFactory = {
  * @override
  */
      update : function(){
+      this.clear();
+      this.prepare();
       var i, rs = this.rects, len = rs.length;
       for(i=0;i<len;i++){
         rs[i].update();
       }
       this.union();
-     }
+     },
+/**
+ * @interface
+ */
+     clear : fGo
    };
 
   });
-
+  
 /**
  * @class CC.util.d2d.ComponentRect
  * 组件封装后的矩形
@@ -6488,11 +6644,15 @@ CC.util.BrushFactory = {
  * 该属性是由{@link CC.util.d2d.ComponentRect}类引入的.
  * @type {CC.util.d2d.ComponentRect}
  * @member CC.Base
+ * @constructor
+ * @param {CC.Base} component binding component
+ * @param {Boolean} autoUpdate 是否立即更新矩形数据,默认false.
  */
-    initialize : function(comp){
+    initialize : function(comp, autoUpdate){
       this.comp = comp;
+      this.valid = true;
       comp.ownRect = this;
-      this.update();
+      if(autoUpdate) this.update();
     },
 
 /**
@@ -6523,632 +6683,182 @@ CC.util.BrushFactory = {
     }
   });
 ﻿/**
- * @class CC.util.dd
- * 库drag & drop效果实现
- * drag & drop实现有两种方法<ul>
- * <li>基于空间划分检测</li>
- * <li>一种基于浏览器自身的mouse over + mouse out检测</li></ul>
- * 这里采用第一种.
- * @namespace
- */
-(function(){
-
-var CC = window.CC;
-CC.util.dd = {};
-
-var E = CC.Event,
-
-    _w = window,
-
-    doc = _w.document,
-
-    M = _w.Math,
-
-    //位于上方的控件
-    onEl = null,
-
-    //拖动中的控件
-    dragEl = null,
-
-    //拖动开始时鼠标位置
-    IXY,
-
-    //当前鼠标位置
-    PXY,
-
-    //鼠标离初始位置偏移量
-    DXY = [0,0],
-
-    //开始时拖动元素位置
-    IEXY,
-
-    //是否拖动中
-    ing = false,
-
-    //当前拖动compoent所在域
-    zoom,
-
-    //寄存点
-    P = new CC.util.d2d.Point,
-
-    //寄存ComponentRect
-    R,
-
-    //拖放事件是否已绑定,避免重复绑定
-    binded = false,
-
-    //拖放控件是否位于当前域中
-    ownZoom = false,
-
-    //[MAX_DX,MIN_DX,MAX_DY,MIN_DY]
-    bounds = false;
-
-    function noSelect(e){
-      e = e || window.E;
-      E.stop(e);
-      return false;
-    }
-
-    function before(e){
-      if(this.draggable){
-        IXY = PXY = E.pageXY(e);
-        IEXY = this.absoluteXY();
-        dragEl = this;
-        if(__debug) console.group("拖放"+this);
-        if(__debug) console.log('beforedrag');
-        if(this.beforedrag(e)!==false && this.fire('beforedrag', e) !== false){
-          //doc.ondragstart = E.noUp;
-          if(!binded){
-            binded = true;
-            E.on(doc, "mouseup", drop);
-            E.on(doc, "mousemove", drag);
-            E.on(doc, "selectstart", noSelect);
-            zoom = mgr.$(this.dragZoom);
-            if(zoom){
-              if(this.ownRect){
-                ownZoom = zoom.contains(this.ownRect);
-                if(ownZoom){
-                  ownZoom.remove(this.ownRect);
-                }
-              }
-              zoom.update();
-            }
-            if(__debug && zoom) console.log('当前zoom:',this.dragZoom||zoom);
-          }
-        }
-      }
-    }
-
-    function GDXY(){
-      var d = DXY;
-          d[0] = PXY[0] - IXY[0];
-          d[1] = PXY[1] - IXY[1];
-          if(bounds){
-             var b = bounds;
-             if(d[0]<b[1]) d[0]=b[1];
-             else if(d[0]>b[0]) d[0]=b[0];
-
-             if(d[1]<b[3]) d[1]=b[3];
-             else if(d[1]>b[2]) d[1]=b[2];
-          }
-    }
-
-
-    function drag(e){
-      e = e || _w.E;
-      PXY = E.pageXY(e);
-
-
-      P.x = PXY[0];
-      P.y = PXY[1];
-
-      GDXY();
-
-      if(!ing){
-        if(__debug) console.log('dragstart       mouse x,y is ', PXY,'dxy:',DXY);
-        if(dragEl.dragstart(e) !== false && dragEl.fire('dragstart', e) !== false){
-          ing = true;
-        }
-      }
-
-      if(dragEl.drag(e, onEl) !== false && zoom){
-        //区域检测
-        R = zoom.isEnter(P);
-
-        if(R && R.comp !== dragEl) {
-          if(onEl !== R.comp){
-            //首次进入,检测之前
-            if(onEl !== null){
-              onEl.sbout(dragEl, e);
-              if(__debug) console.log('离开目标:',onEl);
-            }
-            onEl = R.comp;
-            if(!onEl.disabled){
-              onEl.sbover(dragEl, e);
-              if(__debug) console.log('进入目标:',onEl);
-            }else {
-              onEl = null;
-            }
-          }
-          //目标内移动
-          if(onEl)
-            onEl.sbmove(dragEl, e);
-        }else{
-          if(onEl!== null){
-            onEl.sbout(dragEl, e);
-            if(__debug) console.log('离开目标:',onEl);
-            onEl = null;
-          }
-        }
-      }
-    }
-
-    function drop(e){
-      if(dragEl){
-        e = e || _w.E;
-        if(binded){
-          //doc.ondragstart = null;
-          //清空全局监听器
-          E.un(doc, "mouseup", arguments.callee);
-          E.un(doc, "mousemove", drag);
-          E.un(doc, "selectstart", noSelect);
-          if(ing){
-            //如果在拖动过程中松开鼠标
-            if(onEl !== null){
-              onEl.sbdrop(dragEl, e);
-              if(__debug) console.log(dragEl.toString(), '丢在', onEl.toString(),'上面');
-            }
-            dragEl.dragend(e);
-            ing = false;
-            if(__debug) console.log('dragend         mouse delta x,y is ',DXY, ',mouse event:',e);
-          }
-          binded = false;
-          onEl = null;
-          if(zoom){
-            //重新将自己放入域
-            if(ownZoom){
-              ownZoom.add(dragEl.ownRect);
-              ownZoom = false;
-            }
-            zoom = null;
-          }
-          R = null;
-        }
-        if(__debug) console.log('afterdrag');
-        dragEl.afterdrag(e);
-        dragEl.fire('afterdrag', e);
-        dragEl = null;
-        bounds = false;
-        if(__debug) console.groupEnd();
-      }
-    }
-
-
-/**
- * @class CC.util.dd.Mgr
- * Drag & Drop 管理器
- */
-  var mgr = CC.util.dd.Mgr = {
-/**
- * 矩域缓存
- * @private
- */
-        zmCache : {root:new CC.util.d2d.RectZoom()},
-
-/**
- * 给控件安装可拖动功能,安装后控件component具有
- * component.draggable = true;
- * 如果并不想控件view结点触发拖动事件,可设置component.dragNode
- * 指定触发结点.
- * @param {CC.Base} component
- * @param {Boolean} install 安装或取消安装
- * @param {HTMLElement} 触发事件的结点,如无则采用c.dragNode
- */
-        installDrag : function(c, b, dragNode){
-          if(b===undefined || b){
-            c.draggable = true;
-            c.domEvent('mousedown', before, false, null, dragNode||c.dragNode);
-          }else {
-            c.draggable = false;
-            c.unEvent('mousedown', before,dragNode||c.dragNode);
-          }
-        },
-
-/**
- * 设置拖动中的控件, 在dragbefore时可以指定某个控件作为拖动源对象.
- * @param {CC.Base} draggingComponent
- */
-        setSource : function(comp){
-          dragEl = comp;
-        },
-
-/**
- * 返回矩域
- * @param {String} name 矩域名称
- * @param {String} parent 父层矩域,如果该参数为非空,并且name域未存在,则创建一个新域并返回该域
- * @return {CC.util.d2d.RectZoom}
- * @method $
- */
-        $ : function(k, p){
-          var z = this.zmCache[k];
-          if(!z && p){
-            var c = this.zmCache;
-            if(k === 'root')
-              throw "can't named root";
-            if(typeof p === 'string'){
-              p = c[p];
-              if(!p)
-                throw "parent zoom doesn't exist."
-            }else if(p === true)
-              p = c.root;
-
-            z = c[k] = new CC.util.d2d.RectZoom();
-            p.add(z);
-          }
-          return z;
-        },
-/**
- * 设置拖放区域大小,在X方向上,最小的delta x与最大的delta x,
- * 在Y方向上,最小的delta y与最大的delta y, 所以数组数据为
- * [max_delta_x, min_delta_x, max_delta_y, min_delta_y],
- * 设置拖动区域后,超出区域的行为将被忽略,也就是并不回调
- * component.drag方法,所以,在drag方法内的操作都是安全的.
- * 受限区域在拖放结束后清空.
- * @param {Array} constrainBounds
- * @return this
- */
-        setBounds : function(arr){
-          bounds = arr;
-          return this;
-        },
-
-/**
- * 获得受限区域
- * @return {Array} [MAX_DX,MIN_DX,MAX_DY,MIN_DY]
- */
-        getBounds : function(){
-          return bounds;
-        },
-/**
- * 返回根域
- * @return {CC.util.d2d.RectZoom}
- */
-        getRoot : function(){
-          return this.zmCache.root;
-        },
-/**
- * 从域链中移除名称为name的域
- * @param {String} name
- * @return {CC.util.d2d.RectZoom} 返回移除的域
- */
-        remove : function(k){
-         var z = this.zmCache[k];
-         if(z && k !== 'root'){
-          z.pZoom.remove(z);
-          delete this.zmCache[k];
-         }
-         return z;
-        },
-
-/**
- * 将控件加入name域
- * @param {CC.Base} 控件
- * @param {String} name 矩域名
- * @return this
- */
-        addComp : function(comp, k){
-          k = this.$(k, true);
-          k.add(new CC.util.d2d.ComponentRect(comp));
-          return this;
-        },
-/**
- * 控件移出域
- * @param {CC.Base} 控件
- * @param {String} name 矩域名
- * @return this
- */
-        removeComp : function(comp, k){
-          k = this.$(k);
-          var rs = k.getRects();
-          CC.each(rs, function(){
-            if(this.comp === comp){
-              k.remove(this);
-              this.destory();
-              return false;
-            }
-          });
-          return this;
-        },
-
-/**
- * 获得对象拖动开始时鼠标坐标
- * @return {Array} [x, y]
- */
-        getIMXY : function(){
-          return IXY;
-        },
-/**
- * 获得对象拖动开始时对象坐标
- * @return {Array} [x,y]
- */
-        getIEXY : function(){
-          return IEXY;
-        },
-
-/**
- * 获得自鼠标拖动起至今的x,y方向偏移量
- * @return {Array} [dx, dy]
- */
-        getDXY : function(){
-          return DXY;
-        },
-/**
- * 获得当前鼠标位置
- * @return {Array} [x,y]
- */
-        getXY : function(){
-          return PXY;
-        },
-/**
- * 获得当前拖动的对象
- * @return {CC.Base}
- */
-        getSource : function(){
-          return dragEl;
-        },
-/**
- * 获得当前位正下方的对象,如果无,返回null
- * @return {CC.Base}
- */
-        getTarget : function(){
-          return onEl;
-        },
-
-/**
- * 更新当前拖动的矩域数据.
- * @return this
- */
-    update : function(){
-      if(zoom)
-        zoom.update();
-      return this;
-    },
-
-/**
- * 是否拖放中
- * @return {Boolean}
- */
-        isDragging : function(){
-          return ing;
-        },
-/**
- * @class CC.util.dd.Mgr.resizeHelper
- * 当控件需要resize时调用,可以创建resize相关的掩层和映像,防止其它干扰resize的因素,如iframe
- * @singleton
- */
-
-        resizeHelper : {
-
-          resizeCS : 'g-resize-ghost',
-
-          maskerCS : 'g-resize-mask',
-/**
- * @property  layer
- * 映像层,只读,当调用applyLayer方法后可直接引用
- * @type CC.Base
+ * @class CC.util.AsynchronizeQueue
  */
 
 /**
- * @property masker
- * 页面掩层,只读,当调用applyMasker方法后可直接引用
- * @type CC.Base
- */
-
-/**
- * 在resize开始或结束时调用
- * @param {Boolean} applyOrNot
- * @param {String}  [maskerCursor] 掩层的style.cursor值
- */
-          applyResize : function(b, cursor){
-            this.resizing = b;
-            this.applyLayer(b);
-            this.applyMasker(b, cursor);
-          },
-/**
- * 是否应用映像层
- * @param {Boolean} apply
- * @return this
- */
-          applyLayer : function(b){
-            var y = this.layer;
-            if(!y){
-              y = this.layer =
-                  CC.Base.create({
-                    view:CC.$C('DIV'),
-                    autoRender:true,
-                    cs:this.resizeCS,
-                    hidden:true
-                  });
-            }
-            b ? y.appendTo(doc.body) : y.del();
-            y.display(b);
-            return this;
-          },
-/**
- * 创建或移除页面掩层,在resize拖动操作开始时,创建一个页面掩层,
- * 以防止受iframe或其它因素影响resize
- * @param {Boolean} cor 创建或移除页面掩层
- * @param {String}  cursor 掩层style.cursor值
- * @return this
- */
-          applyMasker : function(b, cursor){
-            var r = this.masker;
-            if(!r)
-              r = this.masker =
-                CC.Base.create({
-                  view:CC.$C('DIV'),
-                  autoRender:true,
-                  cs:this.maskerCS,
-                  hidden:true,
-                  unselectable:true
-                });
-
-            if(b && CC.ie)
-              r.setSize(CC.getViewport());
-            b ? r.appendTo(doc.body) : r.del();
-            r.display(b);
-            
-            if(cursor !== undefined)
-              r.fastStyleSet('cursor', cursor);
-            return this;
-          }
-        }
-  };
-/**
- * @class CC.Base
- */
-  CC.extendIf(CC.Base.prototype, {
-/**
- * @cfg {String|HTMLElement} dragNode 触发控件拖动开始的结点或结点ID,属性由{@link CC.util.dd.Mgr}引入
- */
-
-/**
- * @cfg {Boolean} draggable 是否允许拖动功能,该值只有在已安装拖动功能情况下才生效.<br>
- * 属性由{@link CC.util.dd.Mgr}类引入.
+ * @cfg {Object} caller scope object of callbacks.
  */
  
 /**
-* @cfg {String} dragZoom 设置或获取控件目标拖放区域名称(组),只有控件已安装拖动功能该设置才生效.<br>
-* 属性由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}
-*/
+ * @cfg {Function} onincrease
+ */
 
 /**
-* 是否安装结点拖放效果,方法由{@link CC.util.dd.Mgr}引入.
-* @param {Boolean} true | false
-* @return this
-*/
-    installDrag : function(b){
-      mgr.installDrag(this, b);
-      return this;
-    },
+ * @cfg {Function} ondecrease
+ */
+ 
 /**
-* 获得drag & drop 管理器,由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
-* @return {CC.util.dd.Mgr}
-*/
-    getDDProvider : function(){
-      return mgr;
-    },
+ * @cfg {Function} onempty
+ */
 
 /**
- * 如果已安装拖放,
- * 函数在鼠标按下时触发,方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {DOMEvent} event
- * @method beforedrag
+ * @cfg {String} openEvt open event name fired by connector
  */
-    beforedrag : fGo,
+ 
 /**
- * 如果已安装拖放,拖动开始时触发.方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {DOMEvent} event
- * @method dragstart
+ * @cfg {String} finalEvt final event name fired by connector
  */
-    dragstart : fGo,
+ 
 /**
- * 如果已安装拖放,
- * 函数在鼠标松开时触发,拖动曾经发生过.
- * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {DOMEvent} event
- * @method dragend
+ * @property waitQueue
+ * @type Array
  */
-    dragend : fGo,
-/**
- * 如果已安装拖放,
- * 函数在鼠标松开时触发,拖动不一定发生过.
- * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {DOMEvent} event
- * @method afterdrag
- */
-    afterdrag : fGo,
-/**
- * 如果已安装拖放,
- * 函数在鼠标拖动时触发.
- * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {DOMEvent} event
- * @param {CC.Base} overComponent 在下方的控件,无则为空
- * @method drag
- */
-    drag : fGo,
 
 /**
- * 如果已加入拖放组,
- * 函数在目标进入时触发.
- * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {CC.Base} dragingComponent 正在拖动的控件
- * @param {DOMEvent} event
- * @method sbover
- */
-    sbover : fGo,
-/**
- * 如果已加入拖放组,
- * 函数在目标离开时触发.
- * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {CC.Base} dragingComponent 正在拖动的控件
- * @param {DOMEvent} event
- * @method sbout
- */
-    sbout : fGo,
-/**
- * 如果已加入拖放组,
- * 函数在目标丢下时触发.
- * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {CC.Base} dragingComponent 正在拖动的控件
- * @param {DOMEvent} event
- * @method sbdrop
- */
-    sbdrop : fGo,
-/**
- * 如果已加入拖放组,
- * 函数在目标移动时触发.
- * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
- * @param {CC.Base} dragingComponent 正在拖动的控件
- * @param {DOMEvent} event
- * @method sbmove
- */
-    sbmove : fGo
-  });
-})();
-﻿/**
- * @class CC.util.AsynchronizeQueue
+ * @property requestQueue
+ * @type Array 
  */
 CC.create('CC.util.AsynchronizeQueue',null, {
+
+  openEvt : 'open',
+  
+  finalEvt : 'final',
   
   initialize : function(opt){
     
-    this.seed = this.seed || 0;
+    this.waitQueue = [];
+    
+    this.requestQueue = [];
     
     if(opt)
       CC.extend(this, opt);
-      
-    this.counter = this.seed;
+
+    // connector cache
+    // connector -- > key
+    this.connectorKeys = {};
+    // key -- > connector
+    this.connectors    = {};
+    
+    this.max = 0;
   },
-  
-  increase : function() {
-    this.seed ++;
-    if(this.seed > this.counter)
-      this.counter = this.seed;
+/**
+ * 入队
+ * @param {CC.Ajax} connector
+ * @return {String} connectorKey uniqued indexed id for this connector
+ */
+  join : function(connector){
+    this.waitQueue.push(connector);
+    connector.on(this.openEvt, this.getConnectorBinder(this.openEvt));
+    this.max++;
+    
+    var key = CC.uniqueID().toString();
+    this.connectorKeys[connector] = key;
+    this.connectors[key] = connector;
     
     if(this.onincrease)
-      this.onincrease.call(this.caller?this.caller:this, this);
+      this.onincrease.call(this.caller?this.caller:this, connector, this);
+      
+    return key;
+  },
+
+/**
+ * 出队
+ * @param {CC.Ajax} connector
+ */
+  out : function(connector){
+    if(this.waitQueue.indexOf(connector) >= 0){
+      this.waitQueue.remove(connector);
+      connector.un(this.openEvt, this.getConnectorBinder(this.openEvt));
+      this.onOut(connector);
+    }else if(this.requestQueue.indexOf(connector) >= 0){
+      this.requestQueue.remove(connector);
+      connector.un(this.finalEvt,this.getConnectorBinder(this.finalEvt));
+      this.onOut(connector);
+    }
+  },
+
+/**
+ * @param {String} connectorKey
+ * @return {CC.Ajax} ajax
+ */
+  getConnector : function(key){
+    return this.connectors[key];
+  },
+
+/**
+ * 是否请求中
+ * @return {Boolean} busy
+ */
+  isConnectorBusy : function(key){
+    var c = this.getConnector(key);
+    return c && c.busy;
   },
   
-  decrease : function() {
-    this.seed --;
+/**
+ * 是否已成功返回
+ * @return {Boolean} busy
+ */
+  isConnectorLoaded : function(key){
+    var c = this.getConnector(key);
+    return c && c.loaded;
+  },
+  
+  // private
+  onOut : function(connector){
+    
+    delete this.connectors[CC.delAttr(connector, this.connectorKeys)];
     
     if(this.ondecrease)
-      this.ondecrease.call(this.caller?this.caller:this, this);
+      this.ondecrease.call(this.caller?this.caller:this, connector, this);
       
-    if(this.seed <= 0 && this.callback){
-        this.callback.call(this.caller?this.caller:this, this);
+    if(this.waitQueue.length == 0 && this.requestQueue.length == 0 && this.onempty){
+        this.onempty.call(this.caller?this.caller:this, this);
+        this.max = 0;
     }
+  },
+
+  // private
+  getConnectorBinder : function(key){
+    var bnds = this.connectorBinders;
+    if(!bnds)
+      bnds = this.connectorBinders = {};
+    var bd = bnds[key];
+    if(!bd){
+      switch(key){
+        case this.finalEvt :
+          bd = this.onConnectorFinal.bindAsListener(this);
+          break;
+        case this.openEvt :
+          bd = this.onConnectorOpen.bindAsListener(this);
+          break;
+      }
+      
+      if(bd)
+        bnds[key] = bd;
+    }
+    return bd;
+  },
+
+  onConnectorFinal : function(j){
+    if(this.onfinal)
+      this.onfinal.call(this.caller?this.caller:this, j, this);
+    this.out(j);
+  },
+  
+  onConnectorOpen : function(j){
+    this.waitQueue.remove(j);
+    this.requestQueue.push(j);
+    
+    if(this.requestQueue.length === 1) {
+      if(this.onfirstopen)
+        this.onfirstopen.call(this.caller?this.caller:this, j, this);
+    }
+    
+    if(this.onopen)
+      this.onopen.call(this.caller?this.caller:this, j, this);
+      
+    j.on(this.finalEvt,this.getConnectorBinder(this.finalEvt));
   }
 });
 ﻿/**
@@ -7227,6 +6937,7 @@ var CC = window.CC;
 var Base = CC.Base;
 var cptx = Base.prototype;
 var UX = CC.ui;
+
 /**
  * @class CC.layout
  * 容器布局管理器类库
@@ -7255,10 +6966,17 @@ CC.layout.def = function(type, cls){
  CC.create('CC.ui.Item', Base, {});
  CC.ui.def('item', CC.ui.Item);
 
+
 /**
  * @class CC.layout.Layout
- * 布局管理器基类
+ * 布局管理器基类.<br>
+布局管理,布局管理可理解为一个容器怎么去摆放它的子项,因为CSS本身可以布局,所以,大多数时候并不必手动,即用脚本去布局子项,但当一些复杂灵活的布局CSS无能为力的时候,就需要脚本实现了,脚本实现的类可称为布局管理器.
+<br>lyCfg就是一个容器布局管理器的配置(属性)信息,用于初始化容器自身的布局管理器,具体配置因不同布局管理器而不同.
+<br>lyCfg.items 表明所有容器子项由布局管理器加入容器,而不是直接添加到容器,直接调用容器的add方法是不经过布局管理器的,这时如果需要布局的话,就不能对加入的子项进行布局了.
+<br>container.array 配置也是所有将要加入到窗口子项组成数组,lyCfg.item不同的是,它们不经过布局管理器,直接调用容器add方法加到容器,当一些用CSS就能布局的容器通过以这种方式加载子项.
+<br>container.items 意义与 container.layCfg.items一样,只是为了方便书写初始化.
  */
+
 CC.create('CC.layout.Layout', null, {
         /**
          * @cfg {CC.Base} ct
@@ -7548,16 +7266,16 @@ CC.create('CC.layout.Layout', null, {
         }
 });
 
-var lyx = CC.layout.Layout;
+var Lt = CC.layout.Layout.prototype;
+var Adapert = CC.create(CC.layout.Layout, {
+  doLayout : function(){
+    Lt.doLayout.call(this);
+    this.doLayout = fGo;
+  }
+});
+CC.layout.def('default', Adapert);
 
-CC.layout.def('default', lyx);
-//
-// WrapPanel模板, 设置wrap结点的padding,border而不会影响到panel层的宽高的计算,
-// 可绕过浏览器对BoxModel解析的不同
-//
-CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>')
-      .def( 'CC.ui.WrapPanel', '<div class="g-panel"><div class="g-panel-wrap" id="_wrap"></div></div>');
-
+CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>');
 /**
  * @class CC.ui.ContainerBase
  * 容器类控件,容器是基类的扩展,可包含多个子组件,
@@ -7696,7 +7414,6 @@ CC.create('CC.ui.ContainerBase', Base,
   lyCfg : false,
   
   createLayout : function(){
-    if (this.layout) {
       if (typeof this.layout === 'string') {
         var cfg = this.lyCfg || {};
         cfg.ct = this;
@@ -7704,9 +7421,6 @@ CC.create('CC.ui.ContainerBase', Base,
         if (this.lyCfg) delete this.lyCfg;
       }
       else this.layout.attach(this);
-    }
-    else this.layout = new lyx({ ct: this });
-
   },
   
 /**
@@ -7791,7 +7505,7 @@ CC.create('CC.ui.ContainerBase', Base,
 
     // 由JSON格式创建
     if(!a.cacheId){
-      a = UX.instance(a);
+      a = this.instanceItem(a);
     }
 
 /**
@@ -8057,7 +7771,12 @@ CC.create('CC.ui.ContainerBase', Base,
       idx --;
 
     if(this.fire('beforeadd', item) !== false && this.beforeAdd(item) !== false){
-      item.pCt = this;
+      
+      if (item.pCt){
+          item.pCt.remove(item);
+          item.pCt = this;
+      }
+
       this.children.insert(idx, item);
       var nxt = this.children[idx+1];
       if (nxt)
@@ -8590,6 +8309,13 @@ CC.create('CC.ui.ContainerBase', Base,
 
 var ccx = CC.ui.ContainerBase;
 var ccxp = CC.ui.ContainerBase.prototype;
+
+/**
+ * 等同 {@link byId}
+ * @type Function
+ */
+ccxp.find = ccxp.byId;
+
 UX.def('ct', ccx);
 /**
  * @class CC.ui.Panel
@@ -8791,6 +8517,864 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
 
 UX.def('panel', CC.ui.Panel);
 })();
+﻿/**
+ * @class CC.util.dd
+ * 库drag & drop效果实现
+ * drag & drop实现有两种方法<ul>
+ * <li>基于空间划分检测</li>
+ * <li>一种基于浏览器自身的mouse over + mouse out检测</li></ul>
+ * 这里采用第一种.
+ * @namespace
+ */
+(function(){
+
+var CC = window.CC;
+CC.util.dd = {};
+
+var E = CC.Event,
+
+    _w = window,
+
+    doc = _w.document,
+
+    M = _w.Math,
+
+    //位于上方的控件
+    onEl = null,
+
+    //拖动中的控件
+    dragEl = null,
+
+    //拖动开始时鼠标位置
+    IXY,
+
+    //当前鼠标位置
+    PXY,
+
+    //鼠标离初始位置偏移量
+    DXY = [0,0],
+
+    //开始时拖动元素位置
+    IEXY,
+
+    //是否拖动中
+    ing = false,
+
+    //当前拖动compoent所在域
+    zoom,
+
+    //寄存点
+    P = new CC.util.d2d.Point,
+
+    //寄存ComponentRect
+    R,
+    
+    // drag monitor
+    AM,
+    
+    // drog monitor
+    OM = false,
+    //拖放事件是否已绑定,避免重复绑定
+    binded = false,
+
+    //drag source控件所在的域
+    ownZoom = false,
+
+    //[MAX_DX,MIN_DX,MAX_DY,MIN_DY]
+    bounds = false,
+    
+    tmpValid = undefined,
+    
+    // temp DOMEvent on move
+    V;
+
+    function noSelect(e){
+      e = e || window.E;
+      E.stop(e);
+      return false;
+    }
+    
+    function checkZoom(){
+      // check zoom, if not set zoom in beforedrag
+      if(!zoom)
+        zoom = mgr.$(dragEl.dragZoom);
+      
+      if(zoom) {
+        if(dragEl.ownRect){
+          if(zoom.contains(dragEl.ownRect)){
+            tmpValid = dragEl.ownRect.valid;
+            dragEl.ownRect.valid = false;
+          }
+        }
+        zoom.update();
+      }
+    }
+    
+    function before(e){
+        dragEl = this;
+        if(__debug) console.group("拖放"+this);
+        if(__debug) console.log('beforedrag');
+        if((!this.beforedrag || this.beforedrag(e)!==false) && this.fire('beforedrag', e) !== false){
+          // check drag monitor, this instead of null
+          if(!AM)
+            AM = this;
+      
+          if(AM !== this && AM.beforedrag){
+            if(AM.beforedrag(e) === false){
+              dragEl = false;
+              AM = false;
+              return;
+            }
+          }
+          
+          IEXY = dragEl.absoluteXY();
+          IXY = PXY = E.pageXY(e);
+          
+          E.stop(e);
+          
+          if(!binded){
+            // bind dom events
+            binded = true;
+            // chec drop monitor
+            if(!OM)
+            OM = this;
+        
+            if(!OM.movesb)
+            OM.movesb = false;
+        
+            // 加速处理
+            if(!AM.drag)
+              AM.drag = false;
+        
+            E.on(doc, "mouseup", drop)
+             .on(doc, "mousemove", drag)
+             .on(doc, "selectstart", noSelect);
+          }
+          
+          checkZoom();
+      
+          if(__debug && zoom) console.log('当前zoom:',this.dragZoom||zoom);
+        }else {
+          dragEl = false;
+        }
+    }
+
+    function GDXY(){
+      var d = DXY;
+          d[0] = PXY[0] - IXY[0];
+          d[1] = PXY[1] - IXY[1];
+          if(bounds){
+             var b = bounds;
+             if(d[0]<b[1]) d[0]=b[1];
+             else if(d[0]>b[0]) d[0]=b[0];
+
+             if(d[1]<b[3]) d[1]=b[3];
+             else if(d[1]>b[2]) d[1]=b[2];
+          }
+    }
+    // 检测是否进入范围
+    function _(){
+        //区域检测
+        R = zoom.isEnter(P);
+        if(R && R.comp !== dragEl) {
+          if(onEl !== R.comp){
+            //首次进入,检测之前
+            if(onEl !== null){
+                if(__debug) console.log('离开:',onEl.title||onEl);
+                OM.sbout && OM.sbout(onEl, dragEl, V);
+            }
+            //
+            onEl = R.comp;
+            if(!onEl.disabled){
+              if(__debug) console.log('进入:',onEl.title||onEl);
+              OM.sbover && OM.sbover(onEl, dragEl, V);
+              // 可能已重新检测onEl
+            }else {
+              onEl = null;
+            }
+          }
+          //源内移动
+          if(onEl){
+            if(OM.sbmove) OM.sbmove(onEl, V);
+          }
+        }else{
+          if(onEl!== null){
+            if(__debug) console.log('离开:',onEl.title||onEl);
+            OM.sbout && OM.sbout(onEl, dragEl, V);
+            onEl = null;
+          }
+        }
+    }
+    
+    function drag(e){
+      V = e || _w.E;
+      PXY = E.pageXY(e);
+
+
+      P.x = PXY[0];
+      P.y = PXY[1];
+
+      GDXY();
+
+      if(!ing){
+        if(__debug) console.log('dragstart       mouse x,y is ', PXY,'dxy:',DXY);
+        if(!AM.dragstart || AM.dragstart(e, dragEl) !== false){
+          ing = true;
+        }
+      }
+      
+      if((AM.drag === false || AM.drag(e) !== false) && zoom)
+        _();
+        
+      E.stop(e);
+    }
+
+    function drop(e){
+      // drag has started
+      if(dragEl){
+        e = e || _w.E;
+        if(binded){
+          //doc.ondragstart = null;
+          //清空全局监听器
+          E.un(doc, "mouseup", arguments.callee)
+           .un(doc, "mousemove", drag)
+           .un(doc, "selectstart", noSelect);
+          if(ing){
+             if(__debug) console.log('dragend         mouse delta x,y is ',DXY, ',mouse event:',e);
+            //如果在拖动过程中松开鼠标
+            if(onEl !== null){
+              OM.sbdrop && OM.sbdrop(onEl, dragEl, e);
+              if(__debug) console.log(dragEl.toString(), '丢在', onEl.title||onEl,'上面');
+            }
+
+            AM.dragend && AM.dragend(e, dragEl);
+            ing = false;
+          }
+          
+          onEl = null;
+          if(zoom){
+            zoom.clear();
+            //不再将自己放入域
+            ownZoom = false;
+            zoom = null;
+          }
+          R = null;
+          binded = false;
+        }
+        
+        if(__debug) console.log('afterdrag');
+        AM.afterdrag && AM.afterdrag(e);
+        dragEl.fire('afterdrag', e);
+        
+        // 恢复
+        if(tmpValid !== undefined){
+           dragEl.ownRect.valid = tmpValid;
+           tmpValid = undefined;
+        }
+        
+        dragEl = null;
+        bounds = false;
+        OM = AM = false;
+        V = null;
+        if(__debug) console.groupEnd();
+      }
+    }
+
+
+/**
+ * @class CC.util.dd.Mgr
+ * Drag & Drop 管理器
+ */
+  var mgr = CC.util.dd.Mgr = {
+/**
+ * 矩域缓存
+ * @private
+ */
+        zmCache : {root:new CC.util.d2d.RectZoom()},
+
+/**
+ * 给控件安装可拖动功能,安装后控件component具有
+ * component.draggable = true;
+ * 如果并不想控件view结点触发拖动事件,可设置component.dragNode
+ * 指定触发结点.
+ * @param {CC.Base} component
+ * @param {Boolean} install 安装或取消安装
+ * @param {HTMLElement|String} dragNode 触发事件的结点,如无则采用c.dragNode
+ */
+        installDrag : function(c, b, dragNode, monitor, dragtrigger){
+          if(!b){
+            c.draggable = false;
+            c.unEvent('mousedown', before,dragNode||c.dragNode);
+          }else {
+            c.draggable = true;
+            if(dragtrigger){
+              dragtrigger = c.dom(dragtrigger) || dragtrigger;
+              if(dragtrigger){
+                c.domEvent('mousedown',  function(e){
+                   var el = E.element(e);
+                   if(el === dragtrigger || el.id === dragtrigger){
+                     mgr.startDrag(this, e);
+                   }
+                }, false, null, dragNode);
+              }
+            }else {
+              c.domEvent('mousedown', before, false, null, dragNode);
+            }
+            
+            if(monitor){
+              c.beforedrag = function(){
+                AM = OM = monitor;
+              };
+            }
+          }
+        },
+/**
+ * 手动触发拖放处理.
+ * @param {CC.Base} dragSource
+ * @param {DOMEvent} event 传入初始化事件.
+ */
+        startDrag : function(source, e){
+          before.call(source, e);
+        },
+
+/**
+ * 设置拖动中的控件, 在dragbefore时可以指定某个控件作为拖动源对象.
+ * @param {CC.Base} draggingComponent
+ * @return this
+ */
+        setSource : function(comp){
+          dragEl = comp;
+          return this;
+        },
+/**
+ * 设置拖动监听器, 在dragbefore时可以指定某个对象作为拖动监听器,如果未设置,drag source控件将作为监听器.<br>
+ * monitor具有以下接口
+   beforedrag<br>
+   dragstart <br>
+   drag      <br>
+   dragend   <br>
+ * @param {Object} dragMonitor
+ * @return this
+ */
+        setDragMonitor : function(monitor){
+          DN = monitor;
+          return this;
+        },
+/**
+ * 设置drop监听器, 在dragbefore时可以指定某个对象作为监听器,如果未设置,drag source控件将作为监听器.<br>
+ * monitor具有以下接口
+   sbover    <br>
+   sbout     <br>
+   sbmove    <br>
+   sbdrop    <br>
+ * @param {Object} dropgMonitor
+ * @return this
+ */        
+        setDropMonitor : function(monitor){
+          AM = monitor;
+          return this;
+        },
+/**
+ * 集中一个监听器.
+ * @param {Object} monitor
+ * @return this
+ */
+        setMonitor : function(monitor){
+          DN = AM = monitor;
+          return this;
+        },
+/**
+ * 可在dragbefore重定义当前拖放区域.
+ * @param {CC.util.d2d.RectZoom} rectzoom
+ * @param {Boolean} update
+ * @return this
+ */
+        setZoom : function(z, update){
+          zoom = z;
+          if(z && update) zoom.update();
+          return this;
+        },
+/**
+ * 返回矩域
+ * @param {String} name 矩域名称
+ * @param {String} parent 父层矩域,如果该参数为非空,并且name域未存在,则创建一个新域并返回该域
+ * @return {CC.util.d2d.RectZoom}
+ * @method $
+ */
+        $ : function(k, p){
+          var z = this.zmCache[k];
+          if(!z && p){
+            var c = this.zmCache;
+            if(k === 'root')
+              throw "can't named root";
+            if(typeof p === 'string'){
+              p = c[p];
+              if(!p)
+                throw "parent zoom doesn't exist."
+            }else if(p === true)
+              p = c.root;
+
+            z = c[k] = new CC.util.d2d.RectZoom();
+            p.add(z);
+          }
+          return z;
+        },
+/**
+ * 设置拖放区域大小,在X方向上,最小的delta x与最大的delta x,
+ * 在Y方向上,最小的delta y与最大的delta y, 所以数组数据为
+ * [max_delta_x, min_delta_x, max_delta_y, min_delta_y],
+ * 设置拖动区域后,超出区域的行为将被忽略,也就是并不回调
+ * component.drag方法,所以,在drag方法内的操作都是安全的.
+ * 受限区域在拖放结束后清空.
+ * @param {Array} constrainBounds
+ * @return this
+ */
+        setBounds : function(arr){
+          bounds = arr;
+          return this;
+        },
+
+/**
+ * 获得受限区域
+ * @return {Array} [MAX_DX,MIN_DX,MAX_DY,MIN_DY]
+ */
+        getBounds : function(){
+          return bounds;
+        },
+/**
+ * 返回根域
+ * @return {CC.util.d2d.RectZoom}
+ */
+        getRoot : function(){
+          return this.zmCache.root;
+        },
+/**
+ * 从域链中移除名称为name的域
+ * @param {String} name
+ * @return {CC.util.d2d.RectZoom} 返回移除的域
+ */
+        remove : function(k){
+         var z = this.zmCache[k];
+         if(z && k !== 'root'){
+          z.pZoom.remove(z);
+          delete this.zmCache[k];
+         }
+         return z;
+        },
+
+/**
+ * 将控件加入name域
+ * @param {CC.Base} 控件
+ * @param {String} name 矩域名
+ * @return this
+ */
+        addComp : function(comp, k){
+          k = this.$(k, true);
+          k.add(new CC.util.d2d.ComponentRect(comp));
+          return this;
+        },
+/**
+ * 控件移出域
+ * @param {CC.Base} 控件
+ * @param {String} name 矩域名
+ * @return this
+ */
+        removeComp : function(comp, k){
+          k = this.$(k);
+          var rs = k.getRects();
+          CC.each(rs, function(){
+            if(this.comp === comp){
+              k.remove(this);
+              this.destory();
+              return false;
+            }
+          });
+          return this;
+        },
+
+/**
+ * 拖动开始时鼠标位置
+ * @return {Array} [x, y]
+ */
+        getIMXY : function(){
+          return IXY;
+        },
+/**
+ * 获得对象拖动开始时对象坐标
+ * @return {Array} [x,y]
+ */
+        getIEXY : function(){
+          return IEXY;
+        },
+
+/**
+ * 获得自鼠标拖动起至今的x,y方向偏移量
+ * @return {Array} [dx, dy]
+ */
+        getDXY : function(){
+          return DXY;
+        },
+/**
+ * 获得当前鼠标位置
+ * @return {Array} [x,y]
+ */
+        getXY : function(){
+          return PXY;
+        },
+/**
+ * 获得当前拖动的对象
+ * @return {CC.Base}
+ */
+        getSource : function(){
+          return dragEl;
+        },
+/**
+ * 获得当前位正下方的对象,如果无,返回null
+ * @return {CC.Base}
+ */
+        getTarget : function(){
+          return onEl;
+        },
+
+/**
+ * 更新当前拖动的矩域数据.
+ * @return this
+ */
+    update : function(){
+      if(zoom){
+        zoom.update();
+        // recheck again
+      }
+      return this;
+    },
+
+/**
+ * 是否拖放中
+ * @return {Boolean}
+ */
+        isDragging : function(){
+          return ing;
+        },
+/**
+ * @class CC.util.dd.Mgr.resizeHelper
+ * 当控件需要resize时调用,可以创建resize相关的掩层和映像,防止其它干扰resize的因素,如iframe
+ * @singleton
+ */
+
+        resizeHelper : {
+
+          resizeCS : 'g-resize-ghost',
+
+          maskerCS : 'g-resize-mask',
+/**
+ * @property  layer
+ * 映像层,只读,当调用applyLayer方法后可直接引用
+ * @type CC.Base
+ */
+
+/**
+ * @property masker
+ * 页面掩层,只读,当调用applyMasker方法后可直接引用
+ * @type CC.Base
+ */
+
+/**
+ * 在resize开始或结束时调用
+ * @param {Boolean} applyOrNot
+ * @param {String}  [maskerCursor] 掩层的style.cursor值
+ */
+          applyResize : function(b, cursor){
+            this.resizing = b;
+            this.applyLayer(b);
+            this.applyMasker(b, cursor);
+          },
+/**
+ * 是否应用映像层
+ * @param {Boolean} apply
+ * @return this
+ */
+          applyLayer : function(b){
+            var y = this.layer;
+            if(!y){
+              y = this.layer =
+                  CC.Base.create({
+                    view:CC.$C('DIV'),
+                    autoRender:true,
+                    cs:this.resizeCS,
+                    hidden:true
+                  });
+            }
+            b ? y.appendTo(doc.body) : y.del();
+            y.display(b);
+            return this;
+          },
+/**
+ * 创建或移除页面掩层,在resize拖动操作开始时,创建一个页面掩层,
+ * 以防止受iframe或其它因素影响resize
+ * @param {Boolean} cor 创建或移除页面掩层
+ * @param {String}  cursor 掩层style.cursor值
+ * @return this
+ */
+          applyMasker : function(b, cursor){
+            var r = this.masker;
+            if(!r)
+              r = this.masker =
+                CC.Base.create({
+                  view:CC.$C('DIV'),
+                  autoRender:true,
+                  cs:this.maskerCS,
+                  hidden:true,
+                  unselectable:true
+                });
+
+            if(b && CC.ie)
+              r.setSize(CC.getViewport());
+            b ? r.appendTo(doc.body) : r.del();
+            r.display(b);
+            
+            if(cursor !== undefined)
+              r.fastStyleSet('cursor', cursor);
+            return this;
+          }
+        }
+  };
+/**
+ * @class CC.Base
+ */
+  CC.extendIf(CC.Base.prototype, {
+/**
+ * @cfg {String|HTMLElement} dragNode 触发控件拖动开始的结点或结点ID,属性由{@link CC.util.dd.Mgr}引入
+ */
+
+/**
+ * @cfg {Boolean} draggable 是否允许拖动功能,该值只有在已安装拖动功能情况下才生效.<br>
+ * 属性由{@link CC.util.dd.Mgr}类引入.
+ */
+ 
+/**
+* @cfg {String} dragZoom 设置或获取控件源拖放区域名称(组),只有控件已安装拖动功能该设置才生效.<br>
+* 属性由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}
+*/
+
+/**
+* 是否安装结点拖放效果,方法由{@link CC.util.dd.Mgr}引入.
+* @param {Boolean} true | false
+* @return this
+*/
+    installDrag : function(b){
+      mgr.installDrag(this, b);
+      return this;
+    },
+/**
+* 获得drag & drop 管理器,由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+* @return {CC.util.dd.Mgr}
+*/
+    getDDProvider : function(){
+      return mgr;
+    },
+
+/**
+ * 如果已安装拖放,
+ * 函数在鼠标按下时触发,方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method beforedrag
+ */
+    beforedrag : false,
+/**
+ * 如果已安装拖放,拖动开始时触发.方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @param {CC.Base}  source
+ * @method dragstart
+ */
+    dragstart : false,
+/**
+ * 如果已安装拖放,
+ * 函数在鼠标松开时触发,拖动曾经发生过.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @param {CC.Base}  source
+ * @method dragend
+ */
+    dragend : false,
+/**
+ * 如果已安装拖放,
+ * 函数在鼠标松开时触发,拖动不一定发生过.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @method afterdrag
+ */
+    afterdrag : false,
+/**
+ * 如果已安装拖放,
+ * 函数在鼠标拖动时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {DOMEvent} event
+ * @param {CC.Base} overComponent 在下方的控件,无则为空
+ * @method drag
+ */
+    drag : false,
+
+/**
+ * 如果已加入拖放组,
+ * 函数在源进入时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragTarget 下方控件
+ * @param {CC.Base} dragSource 上方控件
+ * @param {DOMEvent} event
+ * @method sbover
+ */
+    sbover : false,
+/**
+ * 如果已加入拖放组,
+ * 函数在源离开时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragTarget 下方控件
+ * @param {CC.Base} dragSource 上方控件
+ * @param {DOMEvent} event
+ * @method sbout
+ */
+    sbout : false,
+/**
+ * 如果已加入拖放组,
+ * 函数在源丢下时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragTarget 下方控件
+ * @param {CC.Base} dragSource 上方控件
+ * @param {DOMEvent} event
+ * @method sbdrop
+ */
+    sbdrop : false,
+/**
+ * 如果已加入拖放组,
+ * 函数在源移动时触发.
+ * 方法由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
+ * @param {CC.Base} dragTarget 下方组件
+ * @param {DOMEvent} event
+ * @method sbmove
+ */
+    sbmove : false
+  });
+  
+/**@class**/
+  CC.create('CC.util.d2d.ContainerDragZoom', CC.util.d2d.RectZoom, {
+    prepare : function(){
+      var sv = this.ct.getScrollor().view, 
+          ch = sv.clientHeight,
+          st = sv.scrollTop,
+          source = mgr.getSource();
+      if( __debug ) console.group('zoom rects');
+      var zoom = this;
+      this.ct.each(function(){
+        if(this !== source){
+          var v = this.view, ot = v.offsetTop, oh = v.offsetHeight;
+          // 是否可见范围
+          if(ot + oh - st > 0){
+            if(ot - st - ch < 0){
+              zoom.add( new CC.util.d2d.ComponentRect(this) );
+              if(__debug) console.log('item index:', arguments[1]);
+            }else {
+              return false;
+            }
+          }
+        }
+      });
+      if( __debug ) console.groupEnd();
+    },
+    
+    clear   : function(){
+      this.rects.clear();
+    },
+/**
+ * @param {CC.Base} component
+ */
+    addComp : function(comp){
+      if(CC.isArray(comp)){
+        for(var i=0,len=comp.length;i<len;i++){
+          this.addComp(comp[i]);
+        }
+      }
+      else this.add( new CC.util.d2d.ComponentRect(comp) );
+    }
+  });
+  
+  CC.ui.def('ctzoom', CC.util.d2d.ContainerDragZoom);
+  
+  CC.create('CC.util.dd.Indicator', CC.ui.ContainerBase, {
+      
+      hidden : true,
+      
+      template : CC.ie ? 
+           '<table class="g-float-tip g-clear g-openhand"><tr><td><table class="tipbdy"><tr><td id="_tle" class="important_txt"></td></tr><tr><td id="_msg" class="important_subtxt"></td></tr></table></td></tr></table>' :
+           '<div class="g-float-tip g-clear g-openhand"><div class="tipbdy"><div id="_tle" class="important_txt"></div><div id="_msg" class="important_subtxt"></div></div></div>',
+      
+      shadow : {ctype:'shadow', inpactY:-1,inpactH:5},
+      
+      setMsg : function(text, title){
+        if(text !== false) {
+          if(!this.msgNode)
+            this.msgNode = this.dom('_msg');
+          this.msgNode.innerHTML = text;
+        }
+        if(title !== undefined){
+          if(!this.titleNode)
+            this.titleNode = this.dom('_tle');
+          this.titleNode.innerHTML = title;
+        }
+        
+        if(this.shadow)
+          this.shadow.resize();
+      },
+      
+      prepare : function(x, y){
+        if(x === undefined)
+          x = 15;
+          
+        if(y === undefined)
+          y = -10;
+
+        if(!this.rendered) {
+          this.render();
+        }
+        var ixy = mgr.getIMXY();
+        x += ixy[0]; 
+        y += ixy[1];
+        this.initX = x;
+        this.initY = y;
+        this.setXY(x, y);
+        this.show();
+        mgr.resizeHelper.applyMasker(true);
+        mgr.resizeHelper.masker.addClass('g-openhand');
+        this.appendTo(document.body);
+      },
+      
+      setXY : function(){
+        this.superclass.setXY.apply(this, arguments);
+        if(this.shadow)
+          this.shadow.repos();
+        return this;
+      },
+      
+      reanchor : function(){
+        this.setXY(this.initX + DXY[0], this.initY + DXY[1]);
+      },
+      
+      end : function(){
+        mgr.resizeHelper.applyMasker(false);
+        mgr.resizeHelper.masker.delClass('g-openhand');
+        this.hide().del();
+      }
+  });
+  
+  CC.ui.def('ddindicator', CC.util.dd.Indicator);
+  
+  mgr.getIndicator = function(cfg){
+    var idc = this.indicator;
+    if(!idc){
+      idc = this.indicator = CC.ui.instance(CC.extend({ctype:'ddindicator'}, cfg));
+    }
+    return idc;
+  };
+})();
 ﻿(function(){
 var ccxp = CC.ui.ContainerBase.prototype;
 
@@ -8899,6 +9483,11 @@ CC.util.ProviderFactory.create('Connection', null, {
   indicatorDisabled : false,
 
 /**
+ * @cfg {Boolean} subscribe  是否订阅CC.Ajax连接器事件到target容器中,默认false
+ */
+  subscribe : false,
+  
+/**
  * @cfg {Object} ajaxCfg
  * 连接器设置,连接器保存当前默认的连接器connector配置信息,
  * 每次连接时都以该配置信息与新的配置结合发出连接.
@@ -8927,11 +9516,23 @@ CC.util.ProviderFactory.create('Connection', null, {
   	CC.util.ProviderBase.prototype.setTarget.apply(this, arguments);
   	this.initConnection();
   },
-
+  
  /**@private*/
   initConnection : function(){
+    // init request queue
+    
+    this.createSyncQueue();
+    
     if(this.ajaxCfg && this.ajaxCfg.url)
       this.connect();
+  },
+  
+  createSyncQueue : function(){
+    this.syncQueue = new CC.util.AsynchronizeQueue({
+      caller   : this,
+      onempty : this.onConnectorsFinish,
+      onfirstopen   : this.onConnectorFirstOpen
+    });
   },
 
 /**
@@ -8970,6 +9571,7 @@ CC.util.ProviderFactory.create('Connection', null, {
  * @param {CC.Ajax} ajax
  */
   defaultLoadSuccess : function(j){
+    this.t.fire('defdataload', j, this);
     var t = this.loadType;
     if(t === 'html')
       this.defaultDataProcessor(t, j.getText());
@@ -8985,11 +9587,15 @@ CC.util.ProviderFactory.create('Connection', null, {
         this.t.wrapper.html(data, true);
         break;
       default :
-        this.t.layout.fromArray(data);
+        (this.t.layout||this.t).fromArray(data);
         break;
     }
   },
-
+  
+  _setConnectorMsg : function(msg){
+    this.caller.getIndicator().setTitle(msg);
+  },
+  
 /**
  * 获得连接指示器,
  * Loading类寻找路径 this.indicatorCls -> target ct.indicatorCls -> CC.ui.Loading
@@ -8997,41 +9603,29 @@ CC.util.ProviderFactory.create('Connection', null, {
  * @return {CC.ui.Loading}
  */
   getIndicator : function(opt){
-    if(this.indicator)
+    if(this.indicator && this.indicator.cacheId)
       return this.indicator;
-
-    var cls = this.indicatorCls   ||
-              this.t.indicatorCls ||
-              CC.ui.Loading;
-    var cfg = {
-      target: this.t,
-      targetLoadCS: this.loadCS
-    };
     
-    if (opt !== undefined)
-      opt = CC.extend(cfg, opt);
-
-    var it = this.indicator = new cls(cfg);
-    this.t.follow(it);
-    return it;
+    return this.createIndicator(opt);
   },
+  
 /**
  * 连接服务器, success操作如果未在配置中指定,默认调用当前ConnectionProvider类的defaultLoadSuccess方法
  * 如果当前未指定提示器,调用getIndicator方法实例化一个提示器;
  * 如果上一个正求正忙,终止上一个请求再连接;
  * 当前绑定容器将订阅请求过程中用到的Ajax类的所有消息;
- * indicator cfg 配置信息从 this.indicatorCfg -> target ct.indicatorCfg获得
+ * indicator 配置信息从 this.indicator -> target ct.indicator获得
  * @param {String} url, 未指定时用this.url
  * @param {Object} cfg 配置Ajax类的配置信息, 参考信息:cfg.url = url, cfg.caller = this
- * @return this
+ * @return {String} connectorKey connector in queue
  */
   connect : function(url, cfg){
     var afg = this.ajaxCfg;
     
     if(!afg)
-      afg = {};
+      afg = {url:url||this.url};
       
-    if(url)
+    else if(url)
       afg.url = url;
 
     afg.caller = this;
@@ -9046,23 +9640,49 @@ CC.util.ProviderFactory.create('Connection', null, {
     }
 
 /**
- * @cfg {Object} indicatorCfg
+ * @cfg {Object|Function|String} indicator
  */
     if (!this.indicatorDisabled && !this.indicator)
-      this.getIndicator(this.indicatorCfg || this.t.indicatorCfg);
-
-    this.bindConnector(afg);
-    return this;
+      this.getIndicator();
+        
+    return this.bindConnector(afg);
   },
-
-/**
- * 获得连接器,该连接器只提供数据加载功能,默认用CC.Ajax类作为连接器.
- * @return {CC.Ajax}
- */
-  getConnector : function(){
-    return this.connector;
+  
+  getConnectionQueue : function(){
+    return this.syncQueue;
   },
-
+  
+  // private
+  createIndicator : function(opt){
+    var it, inner = this.indicator || this.t.indicator;
+    
+    if( !opt ) 
+      opt = {};
+    
+    opt.target = this.t;
+    opt.targetLoadCS = this.loadCS;
+    
+    if(typeof inner == 'function'){
+      it = new inner (opt);
+    }else {
+      if(typeof inner === 'string'){
+        if(!opt.ctype)
+          opt.ctype = inner;
+      } else if(typeof inner === 'object'){
+        CC.extendIf(opt, inner);
+      }
+      
+      if(!opt.ctype)
+        opt.ctype = 'loading';
+        
+      it = CC.ui.instance(opt); 
+    }
+    
+    this.indicator = it;
+    this.t.follow(it);
+    return it;
+  },
+  
 /**
  * 绑定连接器
  * 连接器接口为
@@ -9071,32 +9691,48 @@ CC.util.ProviderFactory.create('Connection', null, {
     //终止当前连接
     abort : fGo,
     //订阅连接事件
-    to : fGo(subsciber),
+    to : fGo(subscribe),
     //连接
     connect : fGo
   }
   </pre>
  * @private
+ * @return {String} connectorKey
  */
   bindConnector : function(cfg){
-
-    if(this.indicator.isBusy())
-      this.getConnector().abort();
-
-    var a = this.connector =  this.createConnector(cfg);
+    var a = this.createConnector(cfg);
     
-    // 应用url模板
-    a.url = CC.templ(this.t, a.url);
-    
-    a.to(this.t);
+    // 加入队列
+    var connectorKey = this.syncQueue.join(a);
+
+    if(this.subscribe)
+      a.to(this.t);
+
+    // 应用url模板 , 确保不覆盖原有ajaxCfg url
+    a.url = CC.templ(this.t, cfg.url);
     a.connect();
+    
+    return connectorKey;
   },
+  
 /**
  * 创建并返回连接器
  * @private
  */
   createConnector : function(cfg){
-    return new CC.Ajax(cfg);
+     return new CC.Ajax(cfg);
+  },
+
+  onConnectorsFinish : function(j){
+    this.t.fire('connection:connectorsfinish', this, j);
+    if(!this.indicatorDisabled)
+      this.getIndicator().stopIndicator();
+  },
+  
+  onConnectorFirstOpen   : function(j){
+    this.t.fire('connection:connectorsopen', this, j);
+    if(!this.indicatorDisabled)
+      this.getIndicator().markIndicator();
   }
 });
 
@@ -9114,63 +9750,28 @@ CC.util.ProviderFactory.create('Connection', null, {
  /**
   * @class CC.ui.ContainerBase
   */
-         /**
-         * @event final
-         * 事件由{@link CC.util.ConnectionProvider}提供,connectionProvider请求结束后调用,无论成功与否都会触发.
-         * @param {CC.Ajax} ajax
-         */
-        /**
-         * @event open
-         * 事件由{@link CC.util.ConnectionProvider}提供,在connectionProvider打开连接前发送
-         * @param {CC.Ajax} ajax
-         */
- /**
-  * @event send
-  * 事件由{@link CC.util.ConnectionProvider}提供,在connectionProvider发送数据前发送
-  * @param {CC.Ajax} ajax
-  */
   
-        /**
-         * @event json
-         * 事件由{@link CC.util.ConnectionProvider}提供,在获得XMLHttpRequest数据调后Ajax.getJson方法后发送,可直接对当前json对象作更改,这样可对返回的json数据作预处理.
-         * @param {Object} o json对象
-         * @param {Ajax} ajax
-         */
-        /**
-         * @event xmlDoc
-         * 事件由{@link CC.util.ConnectionProvider}提供,在获得XMLHttpRequest数据调后Ajax.getXMLDoc方法后发送,可直接对当前xmlDoc对象作更改,这样可对返回的XMLDoc数据作预处理.
-         * @param {XMLDocument} doc
-         * @param {CC.Ajax} ajax
-         */
-        /**
-         * @event text
-         * 事件由{@link CC.util.ConnectionProvider}提供,在获得XMLHttpRequest数据调后Ajax.getText方法后发送,如果要改变当前text数据,在更改text后设置当前Ajax对象text属性即可,这样可对返回的文件数据作预处理.
-         * @param {String} responseText
-         * @param {CC.Ajax} ajax
-         */
-/**
- * @event failure
- * 事件由{@link CC.util.ConnectionProvider}提供,数据请求失败返回后发送.
- * @param {CC.Ajax} ajax
- */
- 
-/**
- * @event success
- * 事件由{@link CC.util.ConnectionProvider}提供,数据成功返回加载后发送.
- * @param {CC.Ajax} ajax
- */
- 
-/**
- * @event load
- * 事件由{@link CC.util.ConnectionProvider}提供,请求响应返回加载后发送(此时readyState = 4).
- * @param {CC.Ajax} ajax
- */
- 
-/**
- * @event statuschange
- * 由{@link CC.util.ConnectionProvider}提供,在每个Ajax fire事件发送前该事件都会发送
- * @param {String} status
+ /**
+ * @event defdataload
+ * 由{@link CC.util.ConnectionProvider}提供,数据成功返回后，进行默认的数据处理前发送
  * @param {CC.Ajax} j
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */ 
+
+/**
+ * @event connection:connectorsopen
+ * @param {CC.util.ConnectionProvider} current
+ * @param {Object|CC.Ajax} connector
+ * 由{@link CC.util.ConnectionProvider} 批量请求开始时发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */
+ 
+/**
+ * @event connection:connectorsfinish
+ * @param {CC.util.ConnectionProvider} current
+ * @param {Object|CC.Ajax} connector
+ * 由{@link CC.util.ConnectionProvider} 批量请求结束后发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
  */
 ﻿/**
  * @class CC.util.SelectionProvider
@@ -9760,6 +10361,10 @@ CC.util.ProviderFactory.create('Validation', null, {
  */
 CC.util.ProviderFactory.create('Store', null, {
 /**
+ * @cfg {String} enableIndicator 是否允许指示器.
+ */
+  enableIndicator : true,
+/**
  * @cfg {String} modifyUrl
  */
   modifyUrl : false,
@@ -9800,30 +10405,6 @@ CC.util.ProviderFactory.create('Store', null, {
   
 /**
  * @private
- */  
-  createAsycQueue : function(name){
-    this[name+'Queue'] = new CC.util.AsynchronizeQueue(this[name+'QueueCfg']);
-    if( this[name+'QueueCfg'] )
-      delete this[name+'QueueCfg'];
-  },
-
-  getDelQueue : function(){
-    if(!this.delQueue){
-      this.createAsycQueue('del');
-    }
-    return this.delQueue;
-  },
-
-  getSaveQueue : function(){
-    if(!this.saveQueue){
-      this.createAsycQueue('save');
-    }
-    return this.saveQueue;
-  },
-
-
-/**
- * @private
  */
   mappingUrl : function(url, item){
     if(url){
@@ -9832,7 +10413,7 @@ CC.util.ProviderFactory.create('Store', null, {
         url = CC.templ(this.shareParams, url, 2, true);
       // query data from item
       if(item && this.setupUrlFromItem)
-        url = CC.templ(item, url, 0, true);
+        url = CC.templ(item, url, 2, true);
     }
     return url;
   },
@@ -9853,7 +10434,7 @@ CC.util.ProviderFactory.create('Store', null, {
       // query data from item
       // query data from item
       if(q)
-        q = CC.templ(item, q, 0, true);
+        q = CC.templ(item, q);
     }
           //query data from share object
     if(this.shareParams){
@@ -9913,8 +10494,7 @@ CC.util.ProviderFactory.create('Store', null, {
   },
 
   onDel : function(item){
-    CC.Ajax.connect({
-      url:this.getDelUrl(item),
+    this.t.getConnectionProvider().connect(this.getDelUrl(item), {
       method : 'POST',
       data : this.getDelQuery(item),
       caller : this,
@@ -9928,13 +10508,8 @@ CC.util.ProviderFactory.create('Store', null, {
       failure : function(j){
         this.onDelFail(item, j);
         this.t.fire('store:delfail', item, j, this);
-      },
-      
-      onfinal : function(){
-        this.getDelQueue().decrease();
       }
     });
-    this.getDelQueue().increase();
   },
 /**@cfg {Function} onDelFail */
   onDelFail : fGo,
@@ -9968,7 +10543,7 @@ CC.util.ProviderFactory.create('Store', null, {
 		var self = this;
 		if(this.filterChanged){
 			this.t.each(function(){
-				if(self.isModified(this)){
+				if(self.isNew(this) || self.isModified(this)){
 					cb.apply(this, arguments);
 				}
 			});
@@ -9998,7 +10573,7 @@ CC.util.ProviderFactory.create('Store', null, {
   createNew : function(itemOption, scrollIntoView){
     var item = this.t.instanceItem(itemOption);
     this.decorateNew(item, true);
-    this.t.layout.add(item);
+    (this.t.layout||this.t).add(item);
     if(scrollIntoView) {
       item.scrollIntoView( this.t.getScrollor() );
     }
@@ -10010,11 +10585,10 @@ CC.util.ProviderFactory.create('Store', null, {
   },
 
   onSave : function(item, isNew){
-      CC.Ajax.connect({
-        url : this.getSaveUrl(item, isNew),
+      this.t.getConnectionProvider().connect(this.getSaveUrl(item, isNew),{
         method : 'POST',
         caller : this,
-        data : this.queryString(item),
+        data : this.queryString(item, this.shareParams),
         success:function(j){
           if(this.isResponseOk(j)) {
             this.decorateModified(item, false);
@@ -10030,13 +10604,9 @@ CC.util.ProviderFactory.create('Store', null, {
         failure : function(j){
           this.onSaveFail(item, isNew, j);
           this.t.fire('store:savefail', item, isNew, j, this);
-        },
-        
-        onfinal : function(){
-          this.getSaveQueue().decrease();
         }
       });
-      this.getSaveQueue().increase();
+      
   },
   
 /**
@@ -10104,25 +10674,26 @@ CC.util.ProviderFactory.create('Store', null, {
  * @param {CC.Base} item
  * @return String
  */
-  queryString : function(item){
+  queryString : function(item, params){
     var q = '';
     if(item){
     	q = this.itemQueryTempl || '';
       //query data from share object
-      if(this.shareParams)
-        q = CC.templ(this.shareParams, q, 2, true);
+      if(params)
+        q = CC.templ(params, q, 2, true);
       
       // query data from item
       if(q)
-        q = CC.templ(item, q, 0, true);
+        q = CC.templ(item, q, 2, true);
        
       q = this.getItemQuery(item, q);
     }
-    if(this.shareParams)
-     if(q){
-       q += '&';
-     }
-     q += CC.queryString(this.shareParams);
+    if(params){
+       if(q)
+         q += '&';
+         
+       q += CC.queryString(params);
+    }
     return q;
   },
   
@@ -10150,6 +10721,119 @@ CC.util.Validators = {
     return !CC.isMail(v)?'邮箱格式不正确':true;
   }
 };
+(function(){
+  
+var E = CC.Event,
+    G = CC.util.dd.Mgr;
+/**
+ * @class CC.util.dd.AbstractCtMonitor
+ * 为容器提供方便子项拖放的功能.
+ * 只需要往容器绑定一次,不必为每个子项绑定拖放事件.
+ */  
+CC.create('CC.util.dd.AbstractCtMonitor', null, {
+  
+  initialize : function(cfg){
+    if(cfg) CC.extend(this, cfg);
+    
+    var zoom = this.zoom;
+    
+    if(!zoom)
+      zoom =  {ctype:'ctzoom'};
+     
+    if(zoom.ctype !== undefined)
+       zoom = this.zoom = CC.ui.instance(zoom);
+    
+    if(this.pZoom){
+      this.pZoom.add(zoom);
+    }
+  },
+  
+/**
+ * @cfg {String} trigger 触发drag DOM元素ID,默认为'_dragger'
+ */
+  trigger : '_dragger',
+
+/**
+ * @cfg {String} dragCS 拖动中源控件样式
+ */
+  dragCS : false,
+/***/
+  indicator : false,
+/***/
+  mgrIndicator : true,
+  
+/**
+ * trigger按下时,寻找trigger所在的子项作为拖放源.
+ * @private
+ */
+  beforedrag : function(e){
+    // 查看是否为子项发出
+    var el = E.element(e);
+    
+    if(el.id !== this.trigger) 
+      return false;
+    
+    // 将drag source设为当前子项
+    G.setSource(this.ct.$(el));
+    E.stop(e);
+  },
+/**
+ * 拖放开始时,获得可视范围内的子控件作为区域项,更新区域矩形数据.
+ * @private
+ */
+  dragstart : function(e , source){
+    //
+    //  组建当前的dragzoom为表可见列
+    //
+    G.setZoom(this.pZoom||this.zoom, true);
+
+    if(this.dragCS)
+      source.addClass(this.dragCS);
+      
+    if(this.mgrIndicator) {
+      G.getIndicator().prepare();
+    }
+  },
+/**
+ * 如果未设置showTo,showTo到document.body
+ * @private
+ * @protected
+ */
+  getIndicator : function(){
+    
+    var idt = this.indicator;
+    
+    if(idt && !idt.cacheId){
+      if(!idt.showTo)
+        idt.showTo = document.body;
+      this.indicator = idt = CC.ui.instance(idt);
+    }
+    
+    return idt;
+  },
+  
+  drag : function(){
+    if(this.mgrIndicator)
+      G.getIndicator().reanchor();
+  },
+  
+  dragend : function(e, source){
+
+    if(this.indicator) 
+      this.getIndicator().hide();
+      
+    if(this.dragCS)
+      source.delClass(this.dragCS);
+      
+    if(this.mgrIndicator)
+      G.getIndicator().end();
+  },
+  sbover:fGo,
+  sbout:fGo,
+  sbdrop:fGo,
+  afterdrag:fGo
+});
+})();
 ﻿  /**
    * @class CC.layout.BorderLayout
    * 东南西北中布局, 与Java swing中的BorderLayout具有相同效果.
@@ -11811,15 +12495,26 @@ CC.create('CC.ui.Shadow', CC.Base,
       this.setXY(pos[0]+this.inpactX, pos[1]+this.inpactY - 1);
     },
 /**
+ * 假如目标只是宽高改变，可调用本方法重新调整阴影。
+ */
+  resize : function(){
+    var d = this.target.getSize(true);
+    this.setRightSize(d.width, d.height);
+  },
+/**
+ * 假如目标只是x,y改变，可调用本方法重新调整阴影。
+ */
+  repos : function(){
+    this.setRightPos(this.target.absoluteXY());
+  },
+/**
  * 更新至当前状态,当阴影大小或位置与目标不一致时调用.
  * @return this
  */
   reanchor : function(){
-    var pos, t = !this.hidden;
-    d = this.target.getSize(true);
-    this.setRightSize(d.width, d.height);
-    pos = this.target.absoluteXY();
-    this.setRightPos(pos);
+    var t = !this.hidden;
+    this.resize();
+    this.repos();
     if(t)
       PR.display.call(this, true);
     return this;
@@ -11852,20 +12547,27 @@ var PR = CC.Base.prototype;
  * 加载提示类,参见{@link CC.util.ConnectionProvider}
  * @extends CC.Base
  */
-CC.Tpl.def( 'CC.ui.Loading' , '<div class="g-loading"><div class="g-loading-indicator"><span id="_tle">加载中,请稍候...</span></div></div>');
-
-CC.create('CC.ui.Loading', CC.Base,
- {
+ 
 /**
  * @cfg {String} loadMaskCS 掩层CSS类名
  */
-  loadMaskCS:'g-loading-mask',
+ 
+/**
+ * @cfg {Boolean} maskDisabled 是否禁用掩层
+ */
 
-  initComponent : function(){
-    PR.initComponent.call(this);
-    if(this.target)
-      this.attach(this.target);
-  },
+/**
+ * @cfg {String} targetLoadCS 加载时添加到目标的样式
+ */
+ 
+/**
+ * @cfg {Boolean} loadMsgDisabled 是否禁用消息提示
+ */
+ 
+/**
+ * @cfg {Boolean} monitor 监听连接事件源,默认为空,监听的事件为open, send, success, final.
+ */
+
 
 /**
  * @property target
@@ -11873,59 +12575,84 @@ CC.create('CC.ui.Loading', CC.Base,
  * @type CC.ui.ContainerBase
  */
  
+CC.Tpl.def( 'CC.ui.Loading' , '<div class="g-loading"><div class="g-loading-indicator"><span id="_tle">加载中,请稍候...</span></div></div>');
+
+CC.create('CC.ui.Loading', CC.Base,
+ {
+  loadMaskCS:'g-loading-mask',
+
+  monitor : false,
+  
+  initComponent : function(){
+    PR.initComponent.call(this);
+    if(this.monitor) {
+      this.setMonitor(CC.delAttr('monitor', this));
+    }
+  },
+
+ 
 /**
  * 装饰容器,当容器加载数据时出现提示.
  * @param {CC.ui.ContainerBase} targetContainer
  */
   attach : function(target){
     this.target = target;
-    this.target.
-      on('open',this.whenOpen,this).
-      on('send',this.whenSend,this).
-      on('success',this.whenSuccess,this).
-      on('final',this.whenFinal,this);
   },
 
+/**
+ * 设置监听事件源.
+ */
+  setMonitor : function(monitor){
+    if(this.monitor){
+      this.monitor.un('open',this.whenOpen,this).
+                   un('send',this.whenSend,this).
+                   un('success',this.whenSuccess,this).
+                   un('final',this.whenFinal,this);
+    }
+    if(monitor){
+      monitor.on('open',this.whenOpen,this).
+              on('send',this.whenSend,this).
+              on('success',this.whenSuccess,this).
+              on('final',this.whenFinal,this);
+    }
+    this.monitor = monitor;
+  },
+  
   /**@private*/
   whenSend : fGo,
+  
   /**@private*/
-  whenSuccess : function(){this.target.loaded = true;},
+  whenSuccess : function(){this.loaded = true;},
+  
   /**@private*/
   whenOpen : function(){
-    this.target.busy = true;
     this.markIndicator();
   },
+  
   /**@private*/
   whenFinal : function(){
-    this.target.busy = false;
-    this.loaded = true;
     this.stopIndicator();
     if(this.target.shadow){
       this.target.shadow.reanchor();
     }
   },
-/**
- * @cfg {String} targetLoadCS 加载时添加到目标的样式
- */
+
    targetLoadCS : false,
-   
-/**
- * @cfg {Boolean} maskDisabled 是否禁用掩层
- */
+
    maskDisabled : false,
-   
-/**
- * @cfg {Boolean} loadMsgDisabled 是否禁用消息提示
- */
+
    loadMsgDisabled : false,
    
 /**
  * 开始加载提示.
  */
   markIndicator : function(){
+    
     if(this.disabled)
       return;
-      
+    
+    this.busy = true;
+    
     if(this.targetLoadCS)
       CC.fly(this.target).addClass(this.targetLoadCS).unfly();
 
@@ -11961,13 +12688,17 @@ CC.create('CC.ui.Loading', CC.Base,
       }
       this.del();
     }
+    
+    this.busy = false;
+    this.loaded = true;
   },
+  
 /**
  * 目标是否正在加载中.
  * @return {Boolean}
  */
   isBusy : function(){
-    return this.target.busy;
+    return this.busy;
   },
   
 /**
@@ -11975,7 +12706,12 @@ CC.create('CC.ui.Loading', CC.Base,
  * @return {Boolean}
  */
   isLoaded : function(){
-    return this.target.loaded;
+    return this.loaded;
+  }, 
+  
+  destory : function(){
+    this.setMonitor(null);
+    this.superclass.destory.call(this);
   }
 });
 
@@ -11987,9 +12723,7 @@ CC.ui.def('loading', CC.ui.Loading);
  */
 CC.create('CC.ui.Mask', CC.Base, {
 
-  innerCS: 'g-modal-mask',
-
-  template : 'div',
+  template : '<div class="g-modal-mask"></div>',
 
 /**
  * @cfg {Function} onactive 点击层时响应回调
@@ -12428,6 +13162,13 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
  * 是否可关闭.
  * @cfg {Boolean} closeable
  */
+ 
+/**
+ * @cfg {Boolean} autoReload 当再次选择项或再次调用loadContent时是否自动重新加载内容，即使内容已经加载，默认为false.
+ */
+    
+    autoReload : false,
+    
     closeable: true,
 
     unselectable: true,
@@ -12564,10 +13305,11 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
    
 /**
  * 加载项面板内容
+ * @param {String} url
  * @return this
  */
 
-    loadContent : function(reload){
+    loadContent : function(url){
       var p = this.getContentPanel(true);
       // 设置默认返回应用html内容
       p.getConnectionProvider().loadType = this.loadType||'html';
@@ -12581,12 +13323,31 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
           });
       }
 
-      if (reload || (!ind.isLoaded() && !ind.isBusy())){
-        cp.connect(this.src || this.url);
+      if (url || ( (this.autoReload || !this.isContentLoaded()) && !this.isContentBusy())){
+        this._dataConnectorId = cp.connect(url || this.src || this.url);
       }
       return this;
     },
 
+/**
+ * 指示内容面板是否已加载。
+ */
+    isContentLoaded : function(){
+      return this._dataConnectorId && 
+        this.getContentPanel(true)
+            .getConnectionProvider()
+            .getConnectionQueue()
+            .isConnectorLoaded(this._dataConnectorId);
+    },
+    
+    isContentBusy : function(){
+      return this._dataConnectorId && 
+        this.getContentPanel(true)
+            .getConnectionProvider()
+            .getConnectionQueue()
+            .isConnectorBusy(this._dataConnectorId);
+    },
+    
     /**
      * TabItem内容面板加载时样式设置,这里主要在TabItem上显示一个loading图标.
      * @private
@@ -12632,11 +13393,18 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     innerCS: 'g-tab',
 
     keyEventNode: '_scrollor',
-
+    
+    vcs : 'g-vtab',
+/**
+ * @cfg {Boolean} vtab 是否在下部显示
+ */
+    vtab : false,
+    
     selectionProvider : {
       UP: CC.Event.LEFT,
       DOWN: CC.Event.RIGHT,
-      tracker:true
+      tracker:true,
+      selectedCS:'g-tab-selectitem'
     },
 
     syncWrapper : false,
@@ -12644,7 +13412,9 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     maxH: 33,
 
     itemCls: CC.ui.TabItem,
-
+    
+    floatCS : 'g-tab-float',
+    
 /**
  * @cfg {Boolean} autoLoad 子项选择时是否自动加载子项内容, 默认为true
  */
@@ -12672,6 +13442,16 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       SP.initComponent.call(this);
 
       this.on('selected', this.onItemSelected);
+      
+      if(this.vtab){
+        this.addClass(this.vcs);
+        delete this.vtab;
+      }
+      
+      if(this['float']){
+        this.addClass(this.floatCS + (this['float']===true?'':this['float']));
+        delete this['float'];
+      }
     },
 
     onItemSelected : function(item){
@@ -13093,7 +13873,7 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
 
         ct:'_scrollor',
 
-        minH : 29,
+        minH : 22,
 
         openCS : 'g-icoOpn',
 
@@ -13115,7 +13895,7 @@ CC.create('CC.ui.TitlePanel', CC.ui.Panel, function(superclass){
         },
 
         getWrapperInsets : function(){
-          return [29 , 0, 0, 0, 29, 0];
+          return [this.minH , 0, 0, 0, this.minH, 0];
         },
 
 /**@cfg {Function} onTriggerClick 点击收缩图标时触发,可重写自定*/
@@ -13214,11 +13994,37 @@ CC.ui.def('foldable', CC.ui.Folderable);
  * 封装IFramePanel容器的连接处理.
  * @extends CC.util.ConnectionProvider
  */
-CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
 
 /**
  * @cfg {Boolean} traceLoad 是否监听IFRAME加载事件,默认为true
  */
+
+/**
+ * @event connection:connectorsopen
+ * @param {CC.util.ConnectionProvider} current
+ * @param {CC.ui.IFramePanel} iframepanel
+ * 由{@link CC.util.ConnectionProvider} 批量请求开始时发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */
+ 
+/**
+ * @event connection:connectorsfinish
+ * @param {CC.util.ConnectionProvider} current
+ * @param {CC.ui.IFramePanel} iframepanel
+ * 由{@link CC.util.ConnectionProvider} 批量请求结束后发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */
+
+/**
+ * @event connection:success
+ * @param {CC.util.ConnectionProvider} current
+ * @param {CC.ui.IFramePanel} iframepanel
+ * 由{@link CC.util.ConnectionProvider} 加载完成后发送
+ * @param {CC.util.ConnectionProvider} connectionProvider
+ */
+ 
+CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
+
   traceLoad : true,
 
   indicatorDisabled : true,
@@ -13232,17 +14038,29 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
   	  this.connect(t.src || t.url);
   },
   
+  // @override
   initConnection : function(){
     if(this.traceLoad)
       this.t.domEvent(CC.ie?'readystatechange':'load', this.traceFrameLoad, false, this , this.t.getFrameEl());
     CC.util.ConnectionProvider.prototype.initConnection.apply(this, arguments);
   },
+  
+  // @override
+  createSyncQueue : function(){
+    CC.util.ConnectionProvider.prototype.createSyncQueue.call(this);
+    
+    this.syncQueue.openEvt = 'connection:open';
+    this.syncQueue.finalEvt = 'connection:final';
+  },
 
 /**@private*/
   onFrameLoad : function(e){
     var t = this.t;
+    // as connector status
+    t.loaded = true;
+    
     try{
-      t.fire('success', this, e);
+      this.t.fire('connection:success', this.t, this);
       if(this.success)
         this.success(this, e);
     }catch(ex){console.warn(ex);}
@@ -13256,16 +14074,16 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
         t = this.t;
     switch(status){
       case 'loading':  //IE  has several readystate transitions
-        if(!t.busy)
-          t.fire('open', this, evt);
+        if(!this.syncQueue.isConnectorBusy(this.connectorKey)){
+          t.fire('connection:open', this.t, this);
+        }
       break;
       //
       //当用户手动刷新FRAME时该事件也会发送
       //case 'interactive': //IE
       case 'load': //Gecko, Opera
       case 'complete': //IE
-        //May be ie would do a clean action before a new page loaded.
-        if(!CC.ie || this.url === t.view.src)
+        if(t.getFrameEl().src && t.getFrameEl().src !== 'about:blank')
           this.onFrameLoad(evt);
         break;
     }
@@ -13278,25 +14096,26 @@ CC.create('CC.util.IFrameConnectionProvider', CC.util.ConnectionProvider, {
 
 /**@private*/
   onFinal : function(){
-    this.t.fire('final', this);
-
-    if(this['final']){
-      this['final'](this,  e);
-    }
+    this.t.fire('connection:final', this.t, this);
   },
-
+  
 /**@private*/
   bindConnector : function(cfg){
-    if(this.t.busy)
-      this.abort();
 
+    if(this.connectorKey  && this.syncQueue.isConnectorBusy(this.connectorKey))
+      this.abort();
+      
+    // 加入队列
+    this.connectorKey = this.syncQueue.join(this.t);
     CC.extend(this, cfg);
     this.connectInner();
+    
+    return this.connectorKey;
   },
 
 /**@private*/
   connectInner : function(){
-    this.t.fire('open', this);
+    this.t.fire('connection:open', this.t, this);
     (function(){
       try{
         this.t.getFrameEl().src = this.url;
@@ -13342,6 +14161,14 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
     return this.view;
   },
 
+/**
+ * 获得iframe中的widnow对象.
+ * @return {Window} window
+ */
+  getWin : function(){
+    return CC.frameWin(this.getFrameEl());
+  },
+  
   //
   // 实例化时可重写该方法,以自定义IFRAME宽高.
   //
@@ -13357,6 +14184,13 @@ CC.create('CC.ui.IFramePanel', CC.ui.Panel, {
    */
   $ : function(id){
     return CC.frameDoc(this.view).getElementById(id);
+  },
+
+/**
+ * 方法等同于 this.getConnectionProvider().connect(src), 加载一个页面。
+ */
+  connect : function(src){
+    this.getConnectionProvider().connect(src);
   }
 }
 );
@@ -13441,7 +14275,7 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
           if(dxy[0] === 0 && dxy[1] === 0){
             H.applyResize(false);
             H.masker.fastStyleSet('cursor','');
-          }else{
+          }else if(this.initPS){
             var sz = H.layer.getSize(true);
             //TODO:hack
             if(!CC.borderBox){
@@ -14014,6 +14848,9 @@ CC.ui.def('win', CC.ui.Win);
 CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
   var CC = window.CC;
   var Event = CC.Event;
+  
+  // 当前正在打开的对话框,方便从子frame窗口中关闭父层对话框.
+  var Openning;
   return {
     /**
      * 内部高度，与CSS一致
@@ -14140,6 +14977,9 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
       this.center(this.modalParent);
       this.trackZIndex.bind(this).timeout(0);
       this.focusDefButton();
+      
+      // 记录当前打开的对话框
+      Openning = this.cacheId;
     },
 
     onHide : function(){
@@ -14202,8 +15042,21 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
       return s;
     }
   };
-});
+  
+/**
+ * 获得最近打开的对话框,方便从子iframe页面中关闭父页面的对话框.
+ * @static
+ * @return {CC.ui.Dialog}
+ */
+ 
+CC.ui.Dialog.getOpenning = function(){
+	return CC.Base.byCid(Openning);
+};
+
 CC.ui.def('dlg', CC.ui.Dialog);
+
+});
+
 ﻿CC.Tpl.def('Util.alert.input', '<div class="msgbox-input"><table class="swTb"><tbody><tr><td valign="top"><b class="icoIfo" id="_ico"></b></td><td><span id="_msg" class="swTit"></span>&nbsp;<input type="text" style="" class="gIpt" id="_input"/><p class="swEroMsg"><span id="_err"></span></p></span></td></tr></tbody></table></div>');
 CC.extendIf(CC.Util, (function(){
   /**
@@ -15010,7 +15863,7 @@ CC.create('CC.ui.TreeItem', cbx, {
   /**@cfg {Boolean} nodes 树结点是否为目录,默认false.*/
   nodes : false,
 
-  clickEvent : 'mousedown',
+  clickEvent : 'click',
 
   clickEventNode : '_head',
 
@@ -15029,7 +15882,8 @@ CC.create('CC.ui.TreeItem', cbx, {
     //文件夹
     if(this.nodes) {
       this.domEvent('dblclick', this.expand, true, null, this._head.view);
-      this.domEvent('mousedown', this.expand, true, null, this._elbow.view, false);
+      this.domEvent('mousedown', this.expand, true, null, this._elbow.view);
+      this.domEvent('click', CC.Event.noUp, true, null, this._elbow.view);
     }
     else
       this._head.addClass(this.nodeLeafCS);
@@ -15214,27 +16068,6 @@ CC.create('CC.ui.TreeItem', cbx, {
     }
   },
 
-/**
- * 遍历查找结点(包括当前结点)
- * @param {String} childId
- * @return {CC.ui.TreeItem}
- */
-  findH : function(childId){
-    if(this.id === childId)
-      return this;
-
-    if(!this.nodes)
-       return false;
-
-    var n = false;
-    this.eachH(function(){
-      if(this.id === childId){
-        n = this;
-        return false;
-      }
-    });
-    return n;
-  },
 
   remove : function(item) {
     var item = this.$(item);
@@ -15400,13 +16233,16 @@ CC.create('CC.ui.tree.TreeItemLoadingIndicator', CC.ui.Loading, {
     var t = this.target;
     t._head.delClass(t.loadCS);
     //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
-    if(t.loaded)
+    if(t.getConnectionProvider()
+        .getConnectionQueue()
+        .isConnectorLoaded(t._dataConnectorId)){
       t.expand(true);
+    }
   }
 });
 
 
-CC.ui.TreeItem.prototype.indicatorCls = CC.ui.tree.TreeItemLoadingIndicator;
+CC.ui.TreeItem.prototype.indicator = CC.ui.tree.TreeItemLoadingIndicator;
 
 /**
  * @class CC.ui.Tree
@@ -15512,9 +16348,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
     // 如果结点已经加载,忽略.
     //
     if(this.autoLoad  && b){
-      if(!item.getConnectionProvider()
-              .getIndicator()
-              .isLoaded()){
+      if(!this.isItemRequested(item)){
         this.loadItem(item);
         return (item.children.length>0);
       }
@@ -15530,11 +16364,21 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
       var url = this.getItemUrl(item);
       if(url){
         var cp = item.getConnectionProvider(), ind = cp.getIndicator();
-        if(!ind.isLoaded() && !ind.isBusy())
-          cp.connect(url);
+        if(!this.isItemRequested(item)){
+          item._dataConnectorId = cp.connect(url);
+        }
       }
   },
 
+/**
+ * 判断子项数据是否加载中。
+ * @param {CC.ui.TreeItem} treeItem
+ */
+  isItemRequested : function(item){
+    return !!item._dataConnectorId; 
+    // item.getConnectionProvider().getConnectionQueue().isConnectorBusy(item._dataConnectorId);
+  },
+  
 /**
  * 获得子项用于请求数据的url,可重写该方法,自定义请定的URL.
  */
@@ -15543,11 +16387,14 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
     if(url){
       //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
       //contains '?' already ??
-      url+= url.indexOf('?') > 0 ?'&':'?' +encodeURIComponent(this.parentParamName)+'='+encodeURIComponent(item.id);
+      url+= (url.indexOf('?') > 0 ?'&':'?') + encodeURIComponent(this.parentParamName)+'='+encodeURIComponent(item.id);
     }
     return url;
   },
 
+/**
+ * 该方法在树控件类中已被保留，取而代之的是{@link findH}方法
+ */
   $ : function(id){
     return id;
   },
@@ -15564,7 +16411,8 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
   setSize : function(w, h){
     sprs.setSize.apply(this, arguments);
     if(w !== false && CC.ie){
-      this.getScrollor().setWidth(this.width);
+      var sc = this.getScrollor();
+      if(sc !== this) sc.setWidth(this.width);
     }
   }
 });
@@ -15940,13 +16788,63 @@ var CC = window.CC,
  * @class CC.ui.grid.Column
  * 表格中的列,包含在表头中.
  */
+ 
+/**@cfg {Boolean} resizeDisabled 是否禁止改变列宽*/
+
+/**
+ * @cfg {Function} cellBrush 可以统一设置该列数据的显示数据的具体内容, 返回字符串以innerHTML形式加进表单元格的内容元素中.
+ <pre><code>
+   header : {array:[ {title:'第一列' , cellBrush : function( v ){ return '<b>'+v+'</b>' } } ]}
+ </code></pre>
+ * @param {Object} cellValue
+ * @return {String}
+ */
+ 
+/**
+ * @cfg {Function} sortDecorator decorator(order, precolumn)
+ */
+ 
+/**
+ * @event colwidthchange
+ * 列宽改变前发送.
+ * @param {Number} columnIndex
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} width
+ * @param {Number} dx 前后改变宽差
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event aftercolwidthchange
+ * 列宽改变后发送.
+ * @param {Number} columnIndex
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} width
+ * @param {Number} dx 前后改变宽差
+ * @member CC.ui.Grid
+ */
+ 
+/**
+ * @property locked
+ * 列是否已锁定,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link lock}.
+ * @type Boolean
+ */
+
 CC.create('CC.ui.grid.Column', B, function(father){
 
     return {
+
         // bdEl,
-/**@cfg {Boolean} resizeDisabled 是否禁止改变列宽*/
         resizeDisabled : false,
+
+        sortedCS : 'sorted',
         
+        ascCS : 'asc',
+        
+        descCS :'desc',
+        
+        sortIndicatorCS : 'sort-icon',
+          
         createView : function(){
           this.view = CC.$C({
             tagName:'TD',
@@ -15978,37 +16876,34 @@ CC.create('CC.ui.grid.Column', B, function(father){
           }
         },
 
-/**
- * @cfg {Function} cellBrush 可以统一设置该列数据的显示数据的具体内容, 返回字符串以innerHTML形式加进表单元格的内容元素中.
- <pre><code>
-   header : {array:[ {title:'第一列' , cellBrush : function( v ){ return '<b>'+v+'</b>' } } ]}
- </code></pre>
- * @param {Object} cellValue
- * @return {String}
- */
         cellBrush : function(v){
           return v;
         },
-/**
- * @event colwidthchange
- * 列宽改变前发送.
- * @param {Number} columnIndex
- * @param {CC.ui.grid.Column} column
- * @param {Number} width
- * @param {Number} dx 前后改变宽差
- * @member CC.ui.Grid
- */
 
-/**
- * @event aftercolwidthchange
- * 列宽改变后发送.
- * @param {Number} columnIndex
- * @param {CC.ui.grid.Column} column
- * @param {Number} width
- * @param {Number} dx 前后改变宽差
- * @member CC.ui.Grid
- */
- 
+        sortDecorator : function(order, pre){
+            this.addClassIf(this.sortedCS);
+            
+            if(pre && pre !== this &&  !pre.order){
+              pre.checkClass(this.descCS, false);
+              pre.checkClass(this.ascCS,  false);
+            }
+            
+            var desc = (order === 'desc');
+            this.switchClass(
+                            desc?this.ascCS:this.descCS, 
+                            desc?this.descCS:this.ascCS
+                           );
+            
+            if(this.pCt){
+               var decEl = this.pCt._sortDecorateEl;
+               if(!decEl){
+                 decEl = this.pCt._sortDecorateEl = CC.Tpl.forNode('<span class="'+this.sortIndicatorCS+'"></span>');
+               }
+               if(decEl.parentNode !== this.bdEl)
+                 this.bdEl.appendChild(decEl);
+            }
+        },
+        
 /**
  * 此时Column的setWidth不再执行具体的设宽操作,
  * 而是向grid发送一个事件,让其它处理列宽的插件(通常是表头)来执行实际的设宽操作,
@@ -16020,10 +16915,6 @@ CC.create('CC.ui.grid.Column', B, function(father){
  */
         setWidth : function(w, autoLock){
           var p = this.pCt;
-
-          if(this.resizeDisabled)
-            return this;
-
           var pr = this.preWidth, dx;
 
           dx = !pr ? false : w - pr;
@@ -16032,8 +16923,10 @@ CC.create('CC.ui.grid.Column', B, function(father){
             
             // 锁定列宽,使得列宽改变能正确完成.
             if(autoLock) this.lock(true);
+            // 留给事件处理器来设置列宽
+            // 并更新this.width
             p.fireUp('colwidthchange', this.pCt.indexOf(this), this, w, dx);
-            
+            //
             if(w !== this.width){
               w  = this.width;
               if(dx !== false)
@@ -16050,11 +16943,7 @@ CC.create('CC.ui.grid.Column', B, function(father){
           
           return this;
        },
-/**
- * @property locked
- * 列是否已锁定,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link lock}.
- * @type Boolean
- */
+       
        locked : 0,
  /**
   * 锁定/解锁列宽,该属性主要提供给控制列宽的插件,提示该列宽已锁定,将影响自适应宽度的计算,参见{@link locked}.
@@ -16101,8 +16990,8 @@ return {
  </code></pre>
  */
   plugins : [
-    {name:'header', weight:-100, ctype:'gridhd'},
-    {name:'content',weight:-80,  ctype:'gridcontent'}
+    {name:'header', ctype:'gridhd'},
+    {name:'content',ctype:'gridcontent'}
   ],
 
   initComponent : function(){
@@ -16168,9 +17057,11 @@ return {
  * @private
  */
   pluginComparator : function(p1, p2){
-    if(p1.weight === p2.weight)
+    var w1 = p1.weight === undefined? p1.ctype? CC.ui.getCls(p1.ctype).prototype.weight:0 : p1.weight;
+    var w2 = p2.weight === undefined? p2.ctype? CC.ui.getCls(p2.ctype).prototype.weight:0 : p2.weight;
+    if(w1 === w2)
       return 0;
-    return (p1.weight||0) < (p2.weight||0) ? -1 : 1;
+    return w1 < w2 ? -1 : 1;
   },
   
 /**
@@ -16374,7 +17265,6 @@ C.register('CC.ui.grid.Row', function(){
 CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
 
   eventable: false,
-
   brush : false,
 
   itemCls: CC.ui.grid.Cell,
@@ -16412,13 +17302,38 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
     var hd = this.pCt.pCt.header;
     return this.$(hd.indexOf(hd.$(colId)));
   },
-  
+
+/**
+ * 获得或设置列数据.
+ * @param {Number} columnIdOrIndex
+ * @param {Object} [value] 
+ * @return {Object}
+ */
+  dataAt : function(i, v){
+    if(v === undefined) return this.getCell(i).getValue();
+    this.getCell(i).setValue(v);
+  },
+/**
+ * 获得或设置列标题.
+ * @param {Number} columnIdOrIndex
+ * @param {Object} [text]
+ * @param {Boolean} update 是否更新到数据视图，此时保证数据视图(GridContent)已创建.
+ * @return {String}
+ */
+  textAt : function(i, v, update){
+    if(v === undefined) return this.$(i).getTitle();
+    var cell = this.getCell(i);
+    cell.setTitle(v);
+    if(update) {
+      this.pCt.updateCell(cell, v);
+    }
+  },
   fire:fGo
 });
 
 CC.ui.def('gridrow', CC.ui.grid.Row);
 })();
-﻿CC.Tpl.def('CC.ui.grid.Header', '<div class="g-grid-hd"><div class="hd-inner" id="_hd_inner"><table class="hd-tbl" id="_hd_tbl" cellspacing="0" cellpadding="0" border="0"><tbody><tr id="_ctx"></tr></tbody></table></div><div class="g-clear"></div></div>');
+﻿CC.Tpl.def('CC.ui.grid.Header', '<div class="g-grid-hd"><div class="hd-inner" id="_hd_inner"><table class="hd-tbl" id="_hd_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup><tbody><tr id="_ctx"></tr></tbody></table></div><div class="g-clear"></div></div>');
 
 /**
  * @class CC.ui.grid.Header
@@ -16434,12 +17349,24 @@ return {
   itemCls : CC.ui.grid.Column,
 
   ct:'_ctx',
+  
+  peerCS : 'peer',
 
-  initComponent : function(){
-    father.initComponent.call(this);
+  createView : function(){
+    father.createView.call(this);
+    this.grpEl = this.dom('_grp');
     this.hdTbl = this.$$('_hd_tbl');
   },
-
+  
+  // create td <-> col peer
+  onAdd : function(col){
+    father.onAdd.apply(this, arguments);
+    var peer = CC.$C('COL');
+    peer.className = this.peerCS;
+    this.grpEl.appendChild(peer);
+    col._colPeer = peer;
+  },
+  
   initPlugin : function(grid){
     // add to grid container
     return true;
@@ -16463,7 +17390,10 @@ return {
 
     colwidthchange : function(idx, col, w){
       // 由表头设置具体列宽
+      var tmp = col.view;
+      col.view = col._colPeer;
       B.prototype.setWidth.call(col, w);
+      col.view = tmp;
     },
 
     aftercolwidthchange : function(idx, col, width, dx){
@@ -16476,7 +17406,7 @@ return {
           this.view.scrollLeft = scrollLeft;
     }
   },
-
+  
   // 发送父层表格事件,如果此时存在父组件,调用父组件的fire发送事件
   fireUp : function(){
     var p = this.pCt;
@@ -16490,6 +17420,11 @@ return {
   }
 };
 });
+/**
+ * 表头权重
+ * @static
+ */
+CC.ui.grid.Header.WEIGHT = CC.ui.grid.Header.prototype.weight = -100;
 
 CC.ui.def('gridhd', CC.ui.grid.Header);
 ﻿/**
@@ -16524,7 +17459,7 @@ return {
   initPlugin : function(){
     return true;
   },
-
+  
 /**
  * 创建列宽控制器,这里采用 &lt;colgroup&gt;&lt;col /&gt;&lt;/colgroup&gt;控制方式
  * @private
@@ -16602,6 +17537,14 @@ return {
              null,
              this.dom('_ct_tbl')
     );
+    
+    this.itemAction(
+             'dblclick',
+             this.onRowDblClick,
+             false,
+             null,
+             this.dom('_ct_tbl')
+    );    
   },
 
   updateContentWrapTblWidth : function(colWidth, dx){
@@ -16682,6 +17625,16 @@ return {
  * @param {DOMEvent} event
  * @member CC.ui.Grid
  */
+
+/**
+ * @event rowdblclick
+ * 行双击事件
+ * @param {CC.ui.grid.Row} row
+ * @param {CC.ui.grid.Cell} cell 双击所有地单元格，无则则为空
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+ 
  /**
   * 发送表格cellclick, itemclick事件
   * @private
@@ -16689,13 +17642,29 @@ return {
   onRowClick : function(row, e){
     if(!this.clickDisabled && !row.ignoreClick){
       var cell = row.$(e.srcElement || e.target), rt;
-      if(cell && !row.clickDisabled && !cell.ignoreClick){
-        rt = this.grid.fire('cellclick', cell, e);
+      if(cell){
+        if(cell.disabled)
+         return;
+        
+        if(!row.clickDisabled && !cell.ignoreClick){
+          rt = this.grid.fire('cellclick', cell, e);
+        }
       }
+      
       if(rt !== false){
         this.fire('itemclick', row, e);
         this.grid.fire('rowclick',  row, e);
       }
+    }
+  },
+  
+  dblclickDisabled : false,
+  
+  onRowDblClick : function(row, e){
+    if(!this.dblclickDisabled){
+      var cell = row.$(e.srcElement || e.target);
+      if(!cell || !cell.disabled)
+        this.grid.fire('rowdblclick', row, cell, e);
     }
   },
   
@@ -16732,7 +17701,32 @@ return {
       this.grid.fire('rowout', r, e);
     }
   },
+  
+  // @interface
+  instanceItem : function(item){
+    if(item && !item.cacheId){
+      // 检查是否有非数据列
+      var hds = this.grid.header.children;
+    	
+    	if(!item.array){
+    		var arr = item.array = []
+        for(i=0,len=hds.length;i<len;i++){
+          arr[arr.length] = {title:''};
+        }
+      }
 
+      else if(item.array.length !== hds.length){
+        arr = item.array;
+        for(i=0,len=hds.length;i<len;i++){
+          if(!hds[i].dataCol){
+            arr.insert(i, {});
+          }
+        }
+      }
+    }
+    return father.instanceItem.apply(this, arguments);
+  },
+  
   onResized : function(w){
     if(w !== false){
       //fix ie no scroll event bug
@@ -16750,9 +17744,22 @@ return {
     aftercolwidthchange : function(idx, col, width, dx){
       this.updateContentWrapTblWidth(width, dx);
       this.updateLeversWidth(idx, width, dx);
+    },
+    
+    sortcol : function(){
+      this.sortByCol.apply(this, arguments);
     }
   },
-
+  
+  
+  sortByCol : function(col, idx, order, comparator){
+    this.sort(function(ra, rb){
+      var a = ra.children[idx].getValue(),
+          b = rb.children[idx].getValue();
+      return order === 'asc' ? comparator(a, b) : comparator(b, a);
+    });
+  },
+  
   updateView : function(){
     var cs = this.grid.header.children,
         hl = cs.length,
@@ -16818,23 +17825,36 @@ return {
  * 获得第i行j列的数据.
  * @param {Number} rowIndex
  * @param {Number} cellIndex
+ * @param {Object} [value] 
  * @return {Object}
  */
-  dataAt : function(i, j){
-    return this.$(i).$(j).getValue();
+  dataAt : function(i, j, v){
+    if(v === undefined) return this.$(i).$(j).getValue();
+    this.$(i).$(j).setValue(v);
   },
 /**
  * 获得第i行j列的标题.
  * @param {Number} rowIndex
  * @param {Number} cellIndex
+ * @param {Object} [text] 
  * @return {String}
  */
-  textAt : function(i, j){
-    return this.$(i).$(j).getTitle();
+  textAt : function(i, j, v){
+    if(v === undefined) return this.$(i).$(j).getTitle();
+    this.$(i).$(j).setTitle(v);
   }
 };
 });
 
+/**
+ * 指明该列是否为数据项,如果为非数据项,则表格数据视图在添加行时自动插入数据到该列.
+ */
+CC.ui.grid.Column.prototype.dataCol = true;
+/**
+ * 权重
+ * @static
+ */
+CC.ui.grid.Content.WEIGHT = CC.ui.grid.Content.prototype.weight = -80;
 CC.ui.def('gridcontent', CC.ui.grid.Content);
 ﻿/**
  * @class CC.ui.grid.ContentStoreProvider
@@ -16884,17 +17904,18 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, {
 				opt.array.push({title:''});
 			});
 		}
-		CC.util.StoreProvider.prototype.createNew.call(this, opt, scroll);
+		return CC.util.StoreProvider.prototype.createNew.call(this, opt, scroll);
 	},
 
   // @override
 	getItemQuery : function(item, qs){
-		var s = [], q, idx=0, chs = item.children;
+		var s = [], q, idx=0, chs = item.children, v;
 		this.t.pCt.header.each(function(a, cnt){
 			q = this.qid || this.id;
+			v = chs[cnt].getValue();
 			//query id string
-			if(q)
-				s[s.length] = q + '=' + encodeURIComponent(chs[cnt].getValue());
+			if(q && v!== undefined)
+				s[s.length] = q + '=' + encodeURIComponent(v);
 		});
 		q = s.length?s.join('&') : '';
 		if(q){
@@ -17016,7 +18037,7 @@ return {
       }
     },
     
-    colwidthchange : function(idx, col){
+    aftercolwidthchange : function(idx, col){
         if(!col._widthcontrolset) this.autoColWidths();
     }
   },
@@ -17060,6 +18081,7 @@ return {
   
   // 瓜分多出的宽度到列
   deliverDelta : function(dw){
+    if(__debug) console.log('auto dw:',dw);
     var chs = this.grid.header.children,
         len = chs.length,
         // 每列瓜分均值
@@ -17080,7 +18102,7 @@ return {
         
     // clone array
     for(i=0;i<len;i++){
-      if(!chs[i].locked)
+      if(!chs[i].locked && !chs[i].resizeDisabled)
         queue[queue.length] = chs[i];
     }
     
@@ -17104,7 +18126,7 @@ return {
       delqueue = [];
     }
     
-    // ('remain dw:',dw);
+    if(__debug)  console.log('remain dw:',dw);
   },
   
   autoColWidths : function(w){
@@ -17120,6 +18142,8 @@ return {
       });
       
       var dw  = w - ws; // 每列扩展的宽度值delta width
+      
+      if(__debug) console.log('grid width:',w,',current width:',ws,',dw:',dw);
       var self = this;
       if(dw != 0){
          this.deliverDelta(dw);
@@ -17199,12 +18223,31 @@ return {
  */
   editable : true,
   
+  trigMode : 'cellclick',
+  
 /**@private*/
   editorCS : 'g-flot-editor',
   
   initialize : function(opt){
     if(opt)
       CC.extend(this, opt);
+    
+    var self = this;
+    
+    switch(this.trigMode){
+      case 'cellclick' : 
+         this.grid.on(this.trigMode, function(cell){
+           self.strictStartEdit(cell);
+         });
+         break;
+      case 'rowdblclick' : 
+         this.grid.on(this.trigMode, function(row, cell){
+           if(cell)
+             self.strictStartEdit(cell);
+         });
+    }
+    
+    opt = null;
   },
 
 /**
@@ -17225,16 +18268,15 @@ return {
            cell.editable
   },
   
-  gridEventHandlers : {
-    cellclick : function(cell){
-        var idx = cell.pCt.indexOf(cell),
-            col = this.grid.header.$(idx);
-        if(this.isCellEditable(cell, col)){
-          this.startEdit(cell, idx, col);
-        }
+  // @private
+  strictStartEdit : function(cell){
+    var idx = cell.pCt.indexOf(cell),
+    col = this.grid.header.$(idx);
+    if(this.isCellEditable(cell, col)){
+      this.startEdit(cell, idx, col);
     }
   },
-
+  
 /**
  * 获得单元格编辑器.
  * @param {CC.ui.grid.Column} column
@@ -17509,7 +18551,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
       }},
       {lyInf:{separator:true}, id:'total', template:'<span class="lbl">共<span id="_t">0</span>页</span>', ctype:'base', clickDisabled:true},
       {id:'refresh',tip:'刷新当前页', icon:'g-icon-ref', onclick:function(){
-        self.go(self.current, true);
+        self.refresh();
       }}
     ]);
     this.currentEl = tb.$('current').dom('_i');
@@ -17521,6 +18563,13 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
     } ,true, null, this.currentEl);
     
   },
+/**
+ * 刷新
+ */
+  refresh : function(){
+    this.go(this.current, true);
+  },
+  
 /**
  * 设置每页记录条数
  * @param {Number} size
@@ -17586,7 +18635,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
   
       this.grid.content.getConnectionProvider()
           .connect(
-             CC.templ(this, this.url), 
+             CC.templ(this, this.url, 2), 
              { success : this._onSuccess, params  : pageInf}
           );
     }
@@ -17657,7 +18706,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
     this.currentEl.value = cur||'';
     this.totalEl.innerHTML = cnt;
     
-    tb.$('refresh').disable(this.disabled);
+    tb.$('refresh').disable(this.disabled||(cnt==0));
   },
   
   next : function(){
@@ -17685,24 +18734,18 @@ CC.create('CC.ui.grid.plugins.ColumnResizer', null, function(){
       // 当前resize列
       currentCol,
       
-      // 列resize时宽度最小,最大长度限制
-      constrains = [0, 0],
-      
-      // resize前鼠标x
-      IX, 
-      
-      // 移动中的x偏移
-      CX, 
+      // 列resize时宽度最大,最小长度限制
+      bounds = [0, 0, 0, 0],
       
       // indicator 初始 xy
       IDX = 0;
 
 /**
- * @cfg {Boolean} disabledResize 是否允许列缩放.<br>
+ * @cfg {Boolean} resizeDisabled 是否允许列缩放.<br>
  * 该属性来自{@link CC.ui.grid.plugins.ColumnResizer},一个列宽调整的插件.
  * @member CC.ui.grid.Column
  */
-  CC.ui.grid.Column.prototype.disabledResize = false;
+  CC.ui.grid.Column.prototype.resizeDisabled = false;
 
 return {
   
@@ -17711,30 +18754,52 @@ return {
   
 /**@cfg {Number} monitorW*/
   monitorLen : 10,
-
-/**
- * @property resizing
- * 是否拖放中
- * @type Boolean
- */
-  resizing : false,
  
   initialize : function(opt){
     CC.extend(this, opt);
-  },
-  
-  initPlugin : function(g) {
-    this.grid = g;
   },
   
   install : function(hd){    
     hd.itemAction('mousemove', this.onColMouseMove, false, this)
       .itemAction('mousedown', this.onColMouseDown, false, this);
   },
-
+  
+  // 拖动开始时
+  dragstart : function(){
+     this.grid.fire('colresizestart', currentCol, currentCol.pCt.indexOf(currentCol));
+     // indicator定位到初始位置
+     var rdc = this.getIndicator(), 
+         ldc = this.leftIndicator, 
+         cxy = currentCol.absoluteXY(), 
+         y;
+         
+     IDX     = cxy[0] + currentCol.view.offsetWidth - Math.floor(rdc.getWidth(true)/2);
+     y       = cxy[1] + currentCol.view.offsetHeight;
+     
+     rdc.setXY(IDX, y).appendTo(document.body);
+     ldc.setXY(cxy[0] - Math.floor(rdc.getWidth(true)/2), y).appendTo(document.body);
+  },
+  
+  drag : function(){
+    this.rightIndicator.view.style.left = (IDX + G.getDXY()[0]) + 'px';
+  },
+  
+  dragend : function(){
+     var dx = G.getDXY()[0];
+     if(dx) currentCol.setWidth(currentCol.getWidth(true) + dx, true);
+     this.leftIndicator.del();
+     this.rightIndicator.del();
+     this.grid.fire('colresizeend', this, currentCol.pCt.indexOf(currentCol));
+  },
+  
+  afterdrag : function(){
+     currentCol = null;
+     Rz.applyMasker(false, '');
+  },
+  
   onColMouseMove : function(col, e){
      var st = col.view.style;
-     if (this.resizeDisabled || this.resizing || G.isDragging()) {
+     if (col.resizeDisabled || G.isDragging()) {
           if (st.cursor != '') 
              st.cursor = "";
           return;
@@ -17752,80 +18817,29 @@ return {
 
   onColMouseDown: function(col, e){
      var el = col.view;
-     if (el.style.cursor === 'col-resize' && !col.disabledResize){
+     if (el.style.cursor === 'col-resize' && !col.resizeDisabled && !G.isDragging()){
         // preparing for resizing
         // 记录当前列
         currentCol = col;
-        // 绑定body范围事件
-        CC.$body.domEvent('mouseup', this.onDocMouseUp, true, this)
-                .domEvent('mousemove', this.onDocMouseMove, true, this);
-        IX = E.pageX(e);
-        this.calColWidthConstrain(col);
+        
         Rz.applyMasker(true, 'col-resize');
+        G.setMonitor(this)
+         .setBounds(this.calColWidthConstrain(col))
+         .startDrag(col, e);
         E.preventDefault(e);
      }
   },
   
-  onColResizeStart : function(e){
-     this.grid.fire('colresizestart', currentCol, currentCol.pCt.indexOf(currentCol));
-     // indicator定位到初始位置
-     var rdc = this.getIndicator(), 
-         ldc = this.leftIndicator, 
-         cxy = currentCol.absoluteXY(), 
-         y;
-         
-     IDX     = cxy[0] + currentCol.view.offsetWidth - Math.floor(rdc.getWidth(true)/2);
-     y       = cxy[1] + currentCol.view.offsetHeight;
-     
-     rdc.setXY(IDX, y).appendTo(document.body);
-     ldc.setXY(cxy[0] - Math.floor(rdc.getWidth(true)/2), y).appendTo(document.body);
-  },
-  
-  onColResizeEnd : function(e){
-     currentCol.setWidth(currentCol.getWidth(true) + CX, true);
-     this.leftIndicator.del();
-     this.rightIndicator.del();
-     this.grid.fire('colresizeend', this, currentCol.pCt.indexOf(currentCol));
-  },
-
-  onDocMouseUp : function(e){
-     CC.$body.unEvent('mouseup',   this.onDocMouseUp)
-             .unEvent('mousemove', this.onDocMouseMove);
-     if(this.resizing){
-       this.resizing = false;
-       this.onColResizeEnd(e);
-     }
-     
-     currentCol = null;
-     Rz.applyMasker(false, '');
-  },
-  
-  onDocMouseMove : function(e){
-    if(!this.resizing){
-      this.resizing = true;
-      this.onColResizeStart(e);
-    }
-    CX = E.pageX(e);
-    var dx = CX - IX;
-    if(dx < 0){
-      if(dx < constrains[0])
-         dx = constrains[0];
-    }else if(dx > 0){
-      if(dx > constrains[1])
-        dx = constrains[1];
-    }
-    CX = dx;
-    this.rightIndicator.view.style.left = (IDX + dx) + 'px';
-  },
-  
   calColWidthConstrain : function(col){
      if(this.grid.colwidthctrl){
-       constrains = this.grid.colwidthctrl.getConstrain(col);
-       constrains[0] = -1*constrains[0];
+       dx = this.grid.colwidthctrl.getConstrain(col);
+       bounds[1] = -1*dx[0];
+       bounds[0] = dx[1];
      }else {
-       constrains[0] = Math.max(col.minW, 0);
-       constrains[1] = Math.MAX_VALUE;
+       bounds[1] = Math.max(col.minW, 0);
+       bounds[0] = Math.MAX_VALUE;
      }
+     return bounds;
   },
   
   gridEventHandlers : {
@@ -17878,11 +18892,318 @@ CC.ui.Grid.prototype.plugins.push({name:'colresizer', ctype:'colresizer'});
  * @member CC.ui.Grid
  */
 
-﻿(function(){
-var spr;
-var CC = window.CC;
-var Bx = CC.Base;
-var Tpl = CC.Tpl;
+﻿CC.create('CC.ui.grid.plugins.RowChecker', null, {
+   
+   name : 'rowchecker',
+   
+   cell :  {
+      title:'&nbsp;',
+      maxW : 20,
+      minW : 20,
+      resizeDisabled : true,
+      id : 'rowCheckerCol',
+      dataCol : false,
+      checkedCS : 'g-check-checked',
+      cellBrush: function(){
+        return '<span class="g-checkbox g-form-el"><img class="chkbk" src="'+CC.Tpl.BLANK_IMG+'"></span>';
+      },
+      
+      brush : function(){
+        return '<span class="g-checkbox g-form-el" title="全选/反选"><img class="chkbk" src="'+CC.Tpl.BLANK_IMG+'"></span>';
+      },
+      
+      //添加全选反选事件
+      onRender : function(){
+        this.superclass.onRender.call(this);
+        this.domEvent('click', function(){
+          var sp = this.pCt.pCt.content.getSelectionProvider();
+          var sel = this.selected = !this.selected;
+          this.checkClass(this.checkedCS, sel);
+          if(sp.mode === 0)
+            sp.selectAll(sel);
+        });
+      }
+   },
+   
+   initialize : function( opt ){
+      var cell = CC.extend({}, this.cell);
+      if(opt){
+        if(opt.cell) {
+          CC.extend(cell, CC.delAttr('cell', opt));
+        }
+        CC.extend(this, opt);
+      }
+      
+      this.grid.header.array && this.grid.header.array.insert(0, cell);
+   },
+   
+   gridEventHandlers : {
+  	 afteraddcontent : function(ct){
+  	   ct.on('selectchange', function(current, previous, selProvider){
+  	       var cell = current.getCell('rowCheckerCol');
+  	       var col  = ct.grid.header.$('rowCheckerCol');
+   	       cell.checkClass(col.checkedCS, selProvider.isSelected( current ));
+   	       if(previous){
+   	         var preCell = previous.getCell('rowCheckerCol');
+   	         preCell.checkClass(col.checkedCS, selProvider.isSelected( previous ));
+   	       }
+   	   });
+  	}
+   }
+});
+
+CC.ui.grid.plugins.RowChecker.WEIGHT = CC.ui.grid.plugins.RowChecker.prototype.weight = CC.ui.grid.Header.WEIGHT - 2;
+
+CC.ui.def('gridrowchecker', CC.ui.grid.plugins.RowChecker);
+﻿/**
+ * @cfg {Boolean} sortable 属性来自{@link CC.ui.grid.plugins.Sorter},
+ * 表示是否允许排序该列，默认为undefined。当值为undefined时，
+ * 如果列为{@link CC.ui.grid.Column.dataCol}，允许对该列排序，否则不允许排序。
+ * @member CC.ui.grid.Column
+ */
+
+/**
+ * @cfg {Boolean} dt 属性来自{@link CC.ui.grid.plugins.Sorter},
+ * 指明当前列的数据类型，可选类型有 string|bool|float|int|date, 参见{@link CC.util.TypeConverter}可注册自定义的数据类型
+ * @member CC.ui.grid.Column
+ */
+ 
+/**
+ * @property order 属性来自{@link CC.ui.grid.plugins.Sorter},表示当前列的排序方式，'asc','desc'或undefined。
+ * @type String
+ */
+ 
+
+CC.ui.grid.Column.prototype.sortable = undefined;
+CC.ui.grid.Column.prototype.order    = undefined;
+CC.ui.grid.Column.prototype.dt       = undefined;
+
+/**
+ * @class CC.ui.grid.plugins.Sorter
+ * 一个列辅助排序插件。
+ */
+
+/**
+ * @cfg {String} trigEvent 排序触发事件，默认为click
+ */
+ 
+/**
+ * @cfg {String} order 首次排序方式[asc, desc]，默认为降序, desc.
+ */
+ 
+/**
+ * @cfg {String} dt 默认列数据类型为string
+ */
+ 
+CC.create('CC.ui.grid.plugins.Sorter', null, {
+  
+  trigEvent : 'click',
+  
+  order : 'desc',
+  
+  dt : 'string',
+  
+  initialize : function(opt){
+    CC.extend(this, opt);
+  },
+
+  gridEventHandlers : {
+    afteraddheader : function(hd){
+      hd.itemAction(this.trigEvent, this.onColClick, false, this);
+    }
+  },
+  
+  onColClick : function(col){
+    if(col.sortable || (col.sortable === undefined && col.dataCol)){
+      var order = 
+            col.order === undefined ? 
+              this.order :
+              col.order === 'desc' ? 'asc':'desc';
+
+      this.sort(col, order);
+    }
+  },
+  
+  sort : function(col, order){
+    var idx = col.pCt.indexOf(col), 
+        dt  = col.dt === undefined ? this.dt:col.dt, 
+        comparator = col.comparator ? 
+          col.comparator : CC.util.TypeConverter.getComparator(dt);
+      
+    if(this.grid.fire('sortcol', col, idx, order, comparator) !== false){
+      var pre = this.preSorted;
+      if(pre)
+        pre = CC.Base.byCid(pre);
+      
+      if(pre && pre !== col){
+          // reset order
+          pre.order = undefined;
+      }
+      
+      this.preSorted = col.cacheId;
+
+      col.order = order;
+      col.sortDecorator(order, pre);
+      this.grid.fire('sortcolend', col, idx, order, pre);
+    }
+  }
+});
+
+CC.ui.def('gridsorter', CC.ui.grid.plugins.Sorter);
+
+CC.ui.Grid.prototype.plugins.push({name:'sorter', ctype:'gridsorter'});
+
+/**
+ * @event sortcol
+ * 发送排序某列请求
+ * @param {CC.ui.grid.Column} sortCol
+ * @param {Number} colIndex
+ * @param {String} order order asc or desc.
+ * @param {String} comparator use this comparator to compare two column values.
+ */
+ 
+/**
+ * @event sortcolend
+ * 排序某列后发送
+ * @param {CC.ui.grid.Column} sortCol
+ * @param {Number} colIndex
+ * @param {String} order order asc or desc.
+ * @param {CC.ui.grid.Column} previous sorted column if existed.
+ */
+
+/**
+ * @cfg {String} expandableRowContent 该属性来自{@link CC.ui.grid.plugins.ExpandableRow}, 行内容模板,将应用CC.templ结合当前行数据进行匹配
+ * <br>
+ <code>
+   {
+     // apply CC.templ(row, expandableRowContent);
+     expandableRowContent : '<div>name:{name}</div>'
+   }
+ </code>
+ * @member CC.ui.grid.Content
+ */
+ 
+
+CC.ui.grid.Content.prototype.expandableRowContent = false;
+
+CC.ui.grid.Cell.prototype._isExpandTrig = false;
+
+/**
+ * @class CC.ui.grid.plugins.ExpandableRow
+ */
+ 
+CC.create('CC.ui.grid.plugins.ExpandableRow', null, {
+   
+   initialize : function( opt ){
+      var cell = CC.extend({}, this.cell);
+      if(opt){
+        if(opt.cell) {
+          CC.extend(cell, CC.delAttr('cell', opt));
+        }
+        CC.extend(this, opt);
+      }
+      
+      this.grid.header.array && this.grid.header.array.insert(0, cell);
+      
+      // implements
+      var gct = this.grid.content;
+      if(gct) {
+        gct.template = '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup></table></div>';
+        gct.ct = '_ct_tbl';
+        gct.createRowView = this._createRowViewProxy;
+      }
+   },
+  
+  cell : {
+    dataCol : false,
+    title:'&nbsp;',
+    maxW : 20,
+    minW : 20,
+    resizeDisabled : true,
+    sortable : false,
+    cellBrush: function(){
+      // 做个标识
+      this.pCt._rowExpandind = false;
+      this._isExpandTrig     = true;
+      this.addClass('exptrigcell');
+      return '<a href="javascript:void(0)" class="trig"></a>';
+    }
+  },
+  
+  _createRowViewProxy : function(row){
+      var cols = this.grid.header.children.length,
+          erc = this.expandableRowContent;
+      
+      if(erc)
+        erc = CC.templ(row, erc);
+      
+      var nd = CC.Tpl.forNode([
+        '<table><tbody>',
+          // cell data
+          '<tr></tr>',
+          
+          // content
+          '<tr>',
+            // 竖条
+            '<td class="g-gridrow-expandtd0"></td>',
+            '<td class="g-gridrow-expandtd1" colspan="'+ (cols - 1) +'"><div id="_expand_area" class="g-gridrow-expandarea hid">' + (erc?erc:'') +'</div></td>',
+          '</tr>',
+        '</tbody></table>'
+      ].join(''), row);
+  
+      row.view = nd.removeChild(nd.firstChild);
+      row.ct = row.view.firstChild;
+      row.expandRowContentEl = row.dom('_expand_area');
+      
+      nd = null;
+      cols = null;
+  },
+  
+  gridEventHandlers : {
+    cellclick : function(cell, e){
+      if(cell._isExpandTrig){
+        var row = cell.pCt;
+        this.expandRow(row, !row._rowExpandind);
+        CC.Event.stop(e);
+      }
+    }
+  },
+
+/**
+ * @return {HTMLElement}
+ */
+  getRowContentEl : function(row){
+    return row.dom('_expand_area');
+  },
+  
+  expandRow : function(row, expand){
+    if(row._rowExpandind !== expand){
+      if(this.grid.fire('expandablerow:beforeexpand', row, expand) !== false){
+        row._rowExpandind = expand;
+        CC.fly(row.expandRowContentEl)
+          .display(expand)
+          .unfly();
+          
+        row.checkClass('g-gridrow-expand', expand);
+        
+        this.grid.fire('expandablerow:afterexpand', row, expand);
+      }
+    }
+  }
+});
+
+CC.ui.grid.plugins.ExpandableRow.WEIGHT = CC.ui.grid.plugins.ExpandableRow.prototype.weight = CC.ui.grid.Header.WEIGHT - 1;
+
+CC.ui.def('gridexpandablerow', CC.ui.grid.plugins.ExpandableRow);
+﻿/**
+ * @class CC.ui.ContainerBase
+ */
+
+/**
+ * @cfg {Boolean} isForm 属性来自表单控件,注明该容器是否为一个表单容器。
+ */
+CC.ui.ContainerBase.prototype.isForm = false;
+
 /**
  * @class CC.ui.form
  * @namespace
@@ -17900,30 +19221,48 @@ var Tpl = CC.Tpl;
 /**
  * @event blur
  */
-CC.create('CC.ui.form.FormElement', Bx, {
 
 /**@cfg {String} name 指定提交字段的名称*/
-    name : false,
-    
-    value : undefined,
+
+/**@cfg {Object} value 值*/
+
 /**
  * @property element
  * 提交数据放在这个html form element里.
  * @type {HTMLElement}
  */
+
+/**
+ * @cfg {Function} validator 数据验证函数.
+ * 返回true或错误信息
+ */
+
+/**
+ * 
+ */
+/**
+ * @cfg {Boolean} validateOnblur=true 失去焦点时是否验证.
+ */
+(function(){
+var spr;
+var CC = window.CC;
+var Bx = CC.Base;
+var Tpl = CC.Tpl;
+
+CC.create('CC.ui.form.FormElement', Bx, {
+
+    name : false,
+
+    value : undefined,
+
     element : false,
     
     elementNode: '_el',
-    
-/**@cfg {Boolean} eventable=true*/
+
     eventable : true,
-/**
- * @cfg {Function} validator 数据验证函数.
- */
+
     validator : false,
-/**
- * @cfg {Boolean} validateOnblur 失去焦点时是否验证.
- */
+
     validateOnblur : true,
     
     elementCS: 'g-form-el',
@@ -17945,19 +19284,19 @@ CC.create('CC.ui.form.FormElement', Bx, {
         this.element = el;
       }
       
-      el.id = this.id || 'comp' + CC.uniqueID();
-      this.focusNode = el.id;
-
-      if (v != el && !v.id) v.id = 'comp' + CC.uniqueID();
-      //
+      this.focusNode = el;
+      
       this.addClass(this.elementCS);
 
       Bx.prototype.initComponent.call(this);
 
       if (this.name) this.setName(this.name);
 
-      if (this.value) this.setValue(this.value);
-
+      if (this.value) {
+        v = CC.delAttr(this, 'value');
+        this.setValue(v);
+      }
+      
       if (this.focusCS)
         this.bindFocusCS();
     },
@@ -18024,13 +19363,12 @@ CC.create('CC.ui.form.FormElement', Bx, {
     onKeydownTrigger : function(evt){
       this.fire('keydown', evt);
     },
+
 /**
  * 验证控件,利用控件自身的validator验证,并调用{@link decorateValid}方法修饰结果
  * @return {Boolean}
  */
     checkValid : function(){
-      if(this.errorMsg)
-        this.errorMsg = false;
       var isv = this.validator? this.validator(this.getValue()):true;
       this.decorateValid(isv);
       return isv;
@@ -18040,11 +19378,12 @@ CC.create('CC.ui.form.FormElement', Bx, {
  * 验证失败后修饰控件的"错误"状态.重写该方法可自定义修饰"错误提示"的方法
  * @param {Boolean} isValid
  */
-    decorateValid : function(b){
+    decorateValid : function(msg){
     	var es = this.errorCS;
     	if(es)
-    		this.checkClass(es, !b);
+    		this.checkClass(es, !(msg === true));
     },
+
 /**
  * 置值
  * @param {Object} value
@@ -18080,6 +19419,20 @@ CC.create('CC.ui.form.FormElement', Bx, {
       this.name = n;
       return this;
     },
+
+/**
+ * 返回表单所在的表单容器，任何一个容器控件只需注明是否表单容器即可为表单容器,参见{@link CC.ui.ContainerBase#isForm}.
+ * @return {CC.ui.ContainerBase|NULL} formContainer 或 null
+ */   
+    getForm : function(){
+      var p = this.pCt;
+      while(p){
+        if(p.isForm)
+          return p;
+        p = p.pCt;
+      }
+      return null;
+    },
     
     active : fGo,
     
@@ -18087,7 +19440,8 @@ CC.create('CC.ui.form.FormElement', Bx, {
     
     // @override
     mouseupCallback: function(evt) {
-      if (this.onclick) this.onclick(evt, this.element);
+      if (this.onclick)
+        this.onclick(evt, this.element);
     }
 }
 );
@@ -18097,10 +19451,11 @@ spr = cf.prototype;
 
 var fr = CC.ui.form;
 
-Tpl.def('Text', '<input type="text" id="_el" class="g-ipt-text g-corner" />')
-   .def('Textarea', '<textarea id="_el" class="g-textarea g-corner" />')
+Tpl.def('Text', '<input type="text" class="g-ipt-text g-corner" />')
+   .def('Textarea', '<textarea class="g-textarea g-corner" />')
    .def('Checkbox', '<span tabindex="0" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>')
-   .def('Select', '<select class="g-corner"/>');
+   .def('Select', '<select class="g-corner"/>')
+   .def('CC.ui.form.Label', '<span><label id="_tle" class="cap"></label></span>');
 /**
  * @class CC.ui.form.Text
  * @extends CC.ui.form.FormElement
@@ -18142,21 +19497,32 @@ CC.create('CC.ui.form.Textarea', cf, fr.Text.constructors, {
 });
 
 CC.ui.def('textarea', fr.Textarea);
+
 /**
  * @class CC.ui.form.Checkbox
  * @extends CC.ui.form.FormElement
  */
-CC.create('CC.ui.form.Checkbox', cf, {
+
 /**
  * @cfg {Boolean} checked 是否选中状态,参见{@link #setChecked}
  */
+/**
+ * @cfg {Function} oncheck 状态改变时回调 oncheck(checked)
+ */
+CC.create('CC.ui.form.Checkbox', cf, {
     template : 'Checkbox',
     hoverCS: 'g-check-over',
     clickCS: 'g-check-click',
     checkedCS: 'g-check-checked',
+    
     initComponent: function() {
       spr.initComponent.call(this);
-      if (this.checked) this.setChecked(true);
+      
+      if (this.checked) {
+        delete this.checked;
+        this.setChecked(true);
+      }
+      
       this.domEvent('focus', this.onFocusTrigger)
           .domEvent('blur', this.onBlurTrigger)
           .domEvent('keydown', this.onKeydownTrigger);
@@ -18168,24 +19534,57 @@ CC.create('CC.ui.form.Checkbox', cf, {
     },
 /**
  * @param {Boolean} checked
+ * @return this
  */
     setChecked: function(b) {
-      this.checked = b;
-      this.element.checked = b;
-      this.checkClass(this.checkedCS, b);
-      if (this.onChecked) this.onChecked(b);
+      if(this.checked !== b){
+        this.checked = b;
+        this.element.checked = b;
+        this.checkClass(this.checkedCS, b);
+        if (this.oncheck) 
+          this.oncheck(b);
+      }
+      return this;
     }
 });
-
 CC.ui.def('checkbox', fr.Checkbox);
+
+CC.Tpl.def('CC.ui.form.RadioGroup', '<input type="hidden" />');
+CC.create('CC.ui.form.RadioGroup', cf, {
+
+  getChecked : function(){
+    return this.currentRadio && Bx.byCid(this.currentRadio);
+  },
+  
+  setChecked : function(radio, b){
+    if(b){
+      var c = this.getChecked();
+      if(!c || c !== radio){
+        if(c) {
+          c.setChecked(false);
+        }
+        this.currentRadio = radio.cacheId;
+        var v = radio.getValue();
+        if(v !== undefined)
+          this.setValue( v );
+      }
+    }else {
+      this.currentRadio = null;
+      this.setValue('');
+    }
+  }
+});
+CC.ui.def('radiogrp', CC.ui.form.RadioGroup);
+
 /**
  * @class CC.ui.form.Radio
  * @extends CC.ui.form.FormElement
  */
+
 /**
- * @param {Boolean} checked
- * @method setChecked
+ * @cfg {Function} oncheck 状态改变时回调 oncheck(checked)
  */
+
 CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
 /**
  * @cfg {Boolean} checked 是否选中状态,参见{@link #setChecked}
@@ -18194,7 +19593,48 @@ CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
   template: 'Checkbox',
   hoverCS: 'g-radio-over',
   clickCS: 'g-radio-click',
-  checkedCS: 'g-radio-checked'
+  checkedCS: 'g-radio-checked',
+  elementNode : false,
+  
+  mouseupCallback: function(evt) {
+    if(!this.checked)
+      this.setChecked(true);
+    spr.mouseupCallback.call(this, evt);
+  },
+  
+  getGroup : function(){
+    var f = this.getForm();
+    if(f) {
+      var rg = f._RADIOGROUPS;
+      if(!rg)
+        rg = f._RADIOGROUPS = {};
+        
+      var rs = rg[this.name];
+      if(rs) {
+        return Bx.byCid(rs);
+      } else {
+          rs = CC.ui.instance('radiogrp', {pCt:f, showTo:f.ct, name:this.name});
+          f.follow(rs);
+          rg[this.name] = rs.cacheId;
+          return rs;
+      }
+    }
+  },
+/**
+ * @param {Boolean} checked
+ * @return this
+ */
+  setChecked : function(checked){
+    var pc = this.checked;
+    fr.Checkbox.prototype.setChecked.apply(this, arguments);
+    
+    if(pc !== checked && checked && this.name){
+       var g = this.getGroup();
+       g && g.setChecked(this, true);
+    }
+    
+    return this;
+  }
 });
 CC.ui.def('radio', fr.Radio);
 
@@ -18206,7 +19646,9 @@ CC.ui.def('radio', fr.Radio);
  * @cfg {Array} array options
  */
 CC.create('CC.ui.form.Select', cf, {
+  
     template:'Select',
+    
     initComponent: function() {
       spr.initComponent.call(this);
       this.domEvent('focus', this.onFocusTrigger)
@@ -18248,19 +19690,19 @@ CC.create('CC.ui.form.Select', cf, {
 });
 
 CC.ui.def('select', fr.Select);
+
+CC.create('CC.ui.form.Label', CC.Base, {	labelNode : '_tle'});
+CC.ui.def('label', CC.ui.form.Label);
+
 })();
 ﻿/**
  *
  */
 CC.Tpl.def('CC.ui.form.Line', '<li class="g-form-ln"><label class="desc" id="_lbl"><span id="_tle"></span><span class="req" id="_req">*</span></label><div id="_ctx" class="field-ct"></div></li>')
       .def('CC.ui.form.Layer', '<ul class="g-formfields"></ul>')
-      .def('CC.ui.form.Label', '<span><label id="_tle" class="cap"></label></span>')
       .def('CC.ui.form.FormLayer', '<form><ul id="_ctx" class="g-formfields"></ul></form>')
       .def('CC.ui.form.FieldsetUL', '<fieldset class="g-fieldset g-corner"><legend id="_tle"></legend><div id="_ctx" class="fieldset-ct"></div><div class="g-clear"></div></fieldset>');
 
-CC.create('CC.ui.form.Label', CC.Base, {	labelNode : '_tle'});
-
-CC.ui.def('label', CC.ui.form.Label);
 
 CC.create('CC.ui.form.Line', CC.ui.ContainerBase, function(spr) {
   return {
@@ -18657,26 +20099,29 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
     showBox: function(b) {
       var st = this.selector, ds = !st.hidden;
-      if (b.type) b = !ds;
-      if (!b) {
-        st.display(false);
-        if (!this._leaveFocus) {
-          if (!this.uneditable) this.editor.focus(true);
-          else this.focus(true);
+      if(ds != b){
+        if (!b) {
+          st.display(false);
+          if (!this._leaveFocus) {
+            if (!this.uneditable) this.editor.focus(true);
+            else this.focus(true);
+          }
+          this.delClass(this.downCS);
+          return;
+        }else {
+          st.display(true);
         }
-        this.delClass(this.downCS);
-        return;
+  
+        this.preferPosition();
+        if (st.shadow) st.shadow.reanchor();
+        if (!this.uneditable) this.editor.focus(true);
+        else this.focus(true);
+  
+        if (ds) return;
+        this.checkSelected();
+        this.addClass(this.downCS);
+        st.bindContext(this.onBoxContexted, false, this).display(true);
       }
-
-      this.preferPosition();
-      if (st.shadow) st.shadow.reanchor();
-      if (!this.uneditable) this.editor.focus(true);
-      else this.focus(true);
-
-      if (ds) return;
-      this.checkSelected();
-      this.addClass(this.downCS);
-      st.bindContext(this.onBoxContexted, false, this).display(true);
     },
 
     active : function(){
@@ -18695,24 +20140,24 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       var sn = this.selectioner,
           p  = sn.getSelectionProvider();
 
-      var v = this.editor.element.value;
+      var v = this.getValue();
 
-      if (!v && p.selected) {
+      if (v === '' && p.selected) {
         p.select(null);
         return;
       }
 
-      if (p.selected && p.selected.title == v) return;
+      if (p.selected && this.getItemValue(p.selected) == v) return;
 
       p.select(null);
-
+      
+      var self = this;
       sn.each(function(it) {
-        if (!it.hidden && !it.disabled && it.title == this) {
+        if (!it.hidden && !it.disabled && self.getItemValue(it) === v) {
           p.select(it);
           return false;
         }
-      },
-      v);
+      });
     },
 
    /**
@@ -18804,7 +20249,8 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
       if (tle.indexOf(v) >= 0) {
         //item.addClass('g-match');
-        item.dom('_tle').innerHTML = tle.replace(v, '<span class="g-match">' + v + '</span>');
+        var nd = item.titleNode || item.dom('_tle');
+        if(nd) nd.innerHTML = tle.replace(v, '<span class="g-match">' + v + '</span>');
         return true;
       }
       item.setTitle(tle);
@@ -19074,6 +20520,7 @@ CC.ui.form.FormLayer.prototype.validationProvider = CC.ui.form.ValidationProvide
  */
 CC.create('CC.ui.form.StoreProvider', CC.util.StoreProvider, function(father){
 return {
+
 /**
  * 调用CC.formQuery 获得提交数据
  * @return {String}
