@@ -122,7 +122,7 @@ CC.util.ProviderFactory.create('Connection', null, {
         this.t.wrapper.html(data, true);
         break;
       default :
-        this.reader ? (this.t.layout||this.t).fromArray(CC.util.DataTranslator.get(this.reader).read(data, this.t))
+        this.reader ? (this.t.layout||this.t).fromArray(CC.util.DataTranslator.get(this.reader).read(data, this.t)) :
           (this.t.layout||this.t).fromArray(data);
         break;
     }
