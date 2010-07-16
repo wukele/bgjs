@@ -16,6 +16,11 @@ CC.util.ProviderFactory.create('Connection', null, {
  * @cfg {Boolean} subscribe  是否订阅CC.Ajax连接器事件到target容器中,默认false
  */
   subscribe : false,
+
+/**
+ * @cfg {String} reader 指定数据载入后格式转换器，默认无。
+ */
+  reader : false,
   
 /**
  * @cfg {Object} ajaxCfg
@@ -117,7 +122,8 @@ CC.util.ProviderFactory.create('Connection', null, {
         this.t.wrapper.html(data, true);
         break;
       default :
-        (this.t.layout||this.t).fromArray(data);
+        this.reader ? (this.t.layout||this.t).fromArray(CC.util.DataTranslator.get(this.reader).read(data, this.t))
+          (this.t.layout||this.t).fromArray(data);
         break;
     }
   },
