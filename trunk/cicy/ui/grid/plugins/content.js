@@ -427,3 +427,50 @@ CC.ui.grid.Column.prototype.dataCol = true;
  */
 CC.ui.grid.Content.WEIGHT = CC.ui.grid.Content.prototype.weight = -80;
 CC.ui.def('gridcontent', CC.ui.grid.Content);
+
+CC.util.DataTranslator.reg(
+ 'gridarraytranslator', {
+    read : function(rows){
+      var arr = CC.util.DataTranslator.get('array');
+      for(var i=0,len=rows.length;i<len;i++){
+        rows[i] = {array:arr.read(rows[i])};
+      }
+      return rows;
+    }
+ }
+)
+.reg(
+  /* 
+  源格式 [
+    {name:'rock', project:'js'},
+  ]
+  */
+  'gridmaptranslator', {
+     read : function(rows, ct){
+       var cols = ct.grid.header.children,
+           idxMap = {}, row, arr, newRow;
+       
+       for(var i=0,len=cols.length;i<len;i++){
+         idxMap[cols[i].id] = i;
+       }
+       
+       for(var i=0,len=rows.length;i<len;i++){
+         row = rows[i];
+         arr = [];
+         for(var k in row){
+           newRow = {};
+           if(idxMap[k] !== undefined){
+             arr[idxMap[k]] = {title:row[k]};
+           }else {
+             // 作为row属性
+             newRow[k] = row[k];
+           }
+         }
+         newRow.array = arr;
+         rows[i] = newRow;
+       }
+       
+       return rows;
+     }
+  }
+);
