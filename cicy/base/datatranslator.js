@@ -17,7 +17,70 @@ CC.util.DataTranslator = {
         }
         return items;
       }
-    }
+    },
+    
+    gridmaptranslator : {
+       read : function(rows, ct){
+         var cols = ct.grid.header.children,
+             idxMap = {}, 
+             dataIdx = 0, i, len;  
+         
+         for(i=0,len=cols.length;i<len;i++){
+           if(cols[i].dataCol){
+             idxMap[cols[i].id] = dataIdx;
+             dataIdx++;
+           }
+         }
+         
+         var def = rows.shift(), newRows = [];
+         
+         if(def){
+           for(i=0,len=def.length;i<len;i++){
+             // if index found
+             if(idxMap[def[i]] !== undefined){
+               // key -> index
+               def[i] = idxMap[def[i]];
+             }
+           }
+  
+           // maybe def status:['id', 3, 0, 2, 1]
+           var k, 
+               len2, 
+               row, 
+               isIdx, 
+               colIdx;
+  
+           for(i=0;i<len;i++){
+             colIdx = def[i];
+             isIdx = typeof colIdx === 'number';
+             for(var k=0,len2=rows.length;k<len2;k++){
+               row = newRows[k];
+               
+               if(!row)
+                  row = newRows[k] = {array:[]};
+               
+               if(isIdx) {
+                 row.array[colIdx] = {title:rows[k][i]};
+               }else {
+                 // row attributes
+                 row[colIdx] = rows[k][i];
+               }
+             }
+           }
+         }    
+         return newRows;
+       }
+    },
+
+    gridarraytranslator : {
+      read : function(rows){
+        var arr = CC.util.DataTranslator.get('array');
+        for(var i=0,len=rows.length;i<len;i++){
+          rows[i] = {array:arr.read(rows[i])};
+        }
+        return rows;
+      }
+   }
   },
   
   reg : function(key, trans){

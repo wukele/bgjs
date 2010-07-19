@@ -3,6 +3,78 @@
  * 表格数据视图控件.
  * @extends CC.ui.ContainerBase
  */
+ 
+/**
+ * @cfg {Boolean} ignoreClick 是否禁止本单元的cellclick事件的发送,如果为true,当点击该单元时Grid并不发送cellclick事件,默认未置值
+ * @member CC.ui.grid.Cell
+ */
+
+/**
+ * @cfg {Boolean} ignoreClick 是否禁止本行的itemclick事件的发送,如果为true,当点击该行时Grid并不发送itemclick事件,默认未置值
+ * @member CC.ui.grid.Row
+ */
+
+/**@cfg {Boolean} hoverEvent 是否允许发送rowover,rowout事件.*/
+
+/**
+ * @property batchUpdating
+ * 是否正在批量更新中
+ * @type {Boolean}
+ * @private
+ */
+ 
+/**
+ * @event cellclick
+ * 单元格点击事件
+ * @param {CC.ui.grid.Cell} cell
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowclick
+ * 行点击事件
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowdblclick
+ * 行双击事件
+ * @param {CC.ui.grid.Row} row
+ * @param {CC.ui.grid.Cell} cell 双击所有地单元格，无则则为空
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event contentscroll
+ * 数据视图grid.content滚动条滚动时发送.
+ * @param {DOMEvent} event
+ * @param {Number} scrollLeft
+ * @param {CC.ui.grid.plugin.Content} content
+ * @member CC.ui.Grid
+ */
+
+
+/**
+ * @event rowover
+ * 允许content.hoverEvent后,鼠标mouseover时发送.
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowout
+ * 允许content.hoverEvent后,鼠标mouseout时发送.
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+ 
+ 
 CC.Tpl.def('CC.ui.grid.Content', '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup><tbody id="_ctx"></tbody></table></div>');
 CC.create('CC.ui.grid.Content', CC.ui.Panel, function(father){
 	var undefined, C = CC.Cache, CX = CC.ui.ContainerBase.prototype;
@@ -37,27 +109,28 @@ return {
  */
   setupColumnLever : function(){
     var n, i,
-        levers = [],
+        levers = this.levers = [],
         cs = this.grid.header.children,
         len = cs.length,
         cp = this.dom('_grp');
 
     // 创建列宽控制点
     for(i=0;i<len;i++){
-      n = CC.$C('COL');
+      n = this.$$(CC.$C('COL'));
       levers[i] = n;
-      cp.appendChild(n);
+      if(cs[i].hidden)
+        this.setCellsVisible(false, i, n);
+      cp.appendChild(n.view);
     }
-
-    this.levers = levers;
 
     var cws = this.cacheWidths;
 
     if(cws){
       delete this.cacheWidths;
       for(i=0,len=cws.length;i<len;i++){
-        if(cws[i] !== undefined)
-          CC.fly(levers[i]).setWidth(cws[i]).unfly();
+        if(cws[i] !== undefined){
+          levers[i].setWidth(cws[i]);
+        }
       }
     }
   },
@@ -68,12 +141,7 @@ return {
   onRender : function(){
    this.setup();
    father.onRender.call(this);
-/**
- * @property batchUpdating
- * 是否正在批量更新中
- * @type {Boolean}
- * @private
- */
+
    this.batchUpdating = true;
    this.updateView();
    this.batchUpdating = false;
@@ -117,7 +185,7 @@ return {
              this.dom('_ct_tbl')
     );    
   },
-
+  
   updateContentWrapTblWidth : function(colWidth, dx){
     var ctTbl = this.ctTbl;
     if(ctTbl.width === false){
@@ -131,13 +199,22 @@ return {
   
   updateLeversWidth : function(idx, width, dx){
     if(this.levers){
-      CC.fly(this.levers[idx]).setWidth(width).unfly();
+      this.levers[idx].setWidth(width);
     }else {
       var cws = this.cacheWidths;
       if(!cws){
         cws = this.cacheWidths = [];
       }
       cws[idx] = width;
+    }
+  },
+  
+  setCellsVisible : function(b, idx, lever){
+    if(this.levers){
+      var lv = lever || this.levers[idx];
+      if(!b)
+        lv.view.style.width = '0px';
+      else lv.view.style.width = lv.width + 'px';
     }
   },
   
@@ -157,59 +234,13 @@ return {
   },
   
 /**
- * @event contentscroll
- * 数据视图grid.content滚动条滚动时发送.
- * @param {DOMEvent} event
- * @param {Number} scrollLeft
- * @param {CC.ui.grid.plugin.Content} content
- * @member CC.ui.Grid
- */
-/**
  * @private
  */
   onScroll : function(e){
     this.grid.fire('contentscroll', e, parseInt(this.view.scrollLeft, 10) || 0, this);
   },
 
-/**
- * @cfg {Boolean} ignoreClick 是否禁止本单元的cellclick事件的发送,如果为true,当点击该单元时Grid并不发送cellclick事件,默认未置值
- * @member CC.ui.grid.Cell
- */
 
-/**
- * @cfg {Boolean} ignoreClick 是否禁止本行的itemclick事件的发送,如果为true,当点击该行时Grid并不发送itemclick事件,默认未置值
- * @member CC.ui.grid.Row
- */
-
-/**
- * @event cellclick
- * 单元格点击事件
- * @param {CC.ui.grid.Cell} cell
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
-
-/**
- * @event rowclick
- * 行点击事件
- * @param {CC.ui.grid.Row} row
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
-
-/**
- * @event rowdblclick
- * 行双击事件
- * @param {CC.ui.grid.Row} row
- * @param {CC.ui.grid.Cell} cell 双击所有地单元格，无则则为空
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
- 
- /**
-  * 发送表格cellclick, itemclick事件
-  * @private
-  */
   onRowClick : function(row, e){
     if(!this.clickDisabled && !row.ignoreClick){
       var cell = row.$(e.srcElement || e.target), rt;
@@ -221,7 +252,7 @@ return {
           rt = this.grid.fire('cellclick', cell, e);
         }
       }
-      
+
       if(rt !== false){
         this.fire('itemclick', row, e);
         this.grid.fire('rowclick',  row, e);
@@ -240,24 +271,6 @@ return {
   },
   
   hoverEvent : false,
-
-/**@cfg {Boolean} hoverEvent 是否允许发送rowover,rowout事件.*/
-
-/**
- * @event rowover
- * 允许content.hoverEvent后,鼠标mouseover时发送.
- * @param {CC.ui.grid.Row} row
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
-
-/**
- * @event rowout
- * 允许content.hoverEvent后,鼠标mouseout时发送.
- * @param {CC.ui.grid.Row} row
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
  
   // @interface
   onRowOver : function(r, e){
@@ -319,6 +332,12 @@ return {
     
     sortcol : function(){
       this.sortByCol.apply(this, arguments);
+    },
+    
+    showcolumn : function(b, col, idx){
+      this.setCellsVisible(b, idx);
+      if(!b)
+        this.updateContentWrapTblWidth(false, -col.width);
     }
   },
   
@@ -349,6 +368,7 @@ return {
   },
 /**
  * 当行初始化时,委托父类生成view结点,当通过fromArray方式载行数据时才生效.
+ * @param {CC.ui.grid.GridRow} row
  */
   createRowView : function(row){
     row.view = C.get('CC.ui.grid.Row');
@@ -357,6 +377,7 @@ return {
   
 /**
  * 当一行数据添加到表格时,调用该方法更新行数据.
+ * @param {CC.ui.grid.GridRow} row
  */
   updateRow : function(row){
     var cs = this.grid.header.children,
@@ -418,59 +439,11 @@ return {
 });
 
 /**
- * 指明该列是否为数据项,如果为非数据项,则表格数据视图在添加行时自动插入数据到该列.
+ * @cfg {Boolean} dataCol 指明该列是否为数据项,如果为非数据项,则表格数据视图在添加行时自动插入数据到该列.
+ * @member CC.ui.grid.Column
  */
 CC.ui.grid.Column.prototype.dataCol = true;
-/**
- * 权重
- * @static
- */
+
+// 插件权重
 CC.ui.grid.Content.WEIGHT = CC.ui.grid.Content.prototype.weight = -80;
 CC.ui.def('gridcontent', CC.ui.grid.Content);
-
-CC.util.DataTranslator.reg(
- 'gridarraytranslator', {
-    read : function(rows){
-      var arr = CC.util.DataTranslator.get('array');
-      for(var i=0,len=rows.length;i<len;i++){
-        rows[i] = {array:arr.read(rows[i])};
-      }
-      return rows;
-    }
- }
-)
-.reg(
-  /* 
-  源格式 [
-    {name:'rock', project:'js'},
-  ]
-  */
-  'gridmaptranslator', {
-     read : function(rows, ct){
-       var cols = ct.grid.header.children,
-           idxMap = {}, row, arr, newRow;
-       
-       for(var i=0,len=cols.length;i<len;i++){
-         idxMap[cols[i].id] = i;
-       }
-       
-       for(var i=0,len=rows.length;i<len;i++){
-         row = rows[i];
-         arr = [];
-         for(var k in row){
-           newRow = {};
-           if(idxMap[k] !== undefined){
-             arr[idxMap[k]] = {title:row[k]};
-           }else {
-             // 作为row属性
-             newRow[k] = row[k];
-           }
-         }
-         newRow.array = arr;
-         rows[i] = newRow;
-       }
-       
-       return rows;
-     }
-  }
-);

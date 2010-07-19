@@ -54,6 +54,14 @@ var CC = window.CC,
  * @param {Number} dx 前后改变宽差
  * @member CC.ui.Grid
  */
+
+/**
+ * @event showcolumn
+ * 显示或隐藏列后发送
+ * @param {Boolean} displayOrNot
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} columnIndex
+ */
  
 /**
  * @property locked
@@ -173,6 +181,14 @@ CC.create('CC.ui.grid.Column', B, function(father){
           this.preWidth = w;
           
           return this;
+       },
+       
+       onShow : function(){
+         this.pCt.fireUp('showcolumn', true, this, this.pCt.indexOf(this));
+       },
+       
+       onHide : function(){
+         this.pCt.fireUp('showcolumn', false, this, this.pCt.indexOf(this));
        },
        
        locked : 0,

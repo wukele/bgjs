@@ -44,6 +44,10 @@ return {
     
     aftercolwidthchange : function(idx, col){
         if(!col._widthcontrolset) this.autoColWidths();
+    },
+    
+    showcolumn : function(b, col, idx){
+      this.autoColWidths();
     }
   },
   // 第一次初始化
@@ -51,22 +55,24 @@ return {
      var lf = w, hd = this.grid.header, len = hd.getColumnCount();
      var cw, min = this.minColWidth, self = this;
      hd.each(function(){
-       cw = this.width;
-       if(cw !== false){
-         //小数,按百分比计
-         if(cw < 1){
-           cw = Math.floor(w * cw);
+      if(!this.hidden){
+         cw = this.width;
+         if(cw !== false){
+           //小数,按百分比计
+           if(cw < 1){
+             cw = Math.floor(w * cw);
+           }
+           len --;
+           self.setColWidth0(this, Math.max(cw, min));
+           lf -= this.width;
          }
-         len --;
-         self.setColWidth0(this, Math.max(cw, min));
-         lf -= this.width;
-       }
+      }
      });
 
      cw = Math.max(Math.floor(lf/len), min);
 
      hd.each(function(){
-      if(this.width === false){
+      if(this.width === false && !this.hidden){
         self.setColWidth0(this, cw);
       }
      });
@@ -107,7 +113,7 @@ return {
         
     // clone array
     for(i=0;i<len;i++){
-      if(!chs[i].locked && !chs[i].resizeDisabled)
+      if(!chs[i].locked && !chs[i].resizeDisabled && !chs[i].hidden)
         queue[queue.length] = chs[i];
     }
     
@@ -143,7 +149,8 @@ return {
       var hd  = this.grid.header, ws = 0;
       
       hd.each(function(){
-          ws += this.width;
+          if(!this.hidden)
+            ws += (this.width||0);
       });
       
       var dw  = w - ws; // 每列扩展的宽度值delta width
@@ -162,7 +169,9 @@ return {
  * @public
  */
   getConstrain : function(col){
-    
+    if(col.hidden)
+      return [0, 0];
+
     if(col.resizeDisabled)
       return [col.width, col.width];
     
@@ -174,8 +183,10 @@ return {
           chs = hd.children;
           maxW = 0, minW = 0;
       for(var i=idx+1,len=chs.length;i<len;i++){
-        maxW += chs[i].width;
-        minW =  Math.max(this.minColWidth, chs[i].minW, 0);
+        if(!chs[i].hidden){
+          maxW += chs[i].width;
+          minW =  Math.max(this.minColWidth, chs[i].minW, 0);
+        }
       }
       
       return [min, maxW - minW];

@@ -69,6 +69,12 @@ return {
     contentscroll : function(e, scrollLeft, ct){
         if(parseInt(this.view.scrollLeft, 10) !== scrollLeft)
           this.view.scrollLeft = scrollLeft;
+    },
+    
+    showcolumn : function(b, col, idx){
+      col._colPeer.style.width = b ? col.width+'px' : '0px';
+      if(!b)
+        this.updateColWrapTblWidth(false, -col.width);
     }
   },
   
