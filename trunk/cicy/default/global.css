@@ -508,7 +508,7 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-grid .g-grid-hd {overflow:hidden;border-bottom:1px solid #CCC;background-image:url(../default/ru/fregment2.gif); background-repeat:repeat-x;background-position:0 -627px;}
 .g-grid .g-grid-hd .hd-tbl{table-layout:fixed;}
 .g-grid .g-grid-hd .hd-inner {overflow:hidden;float:left;padding-right:40px;}
-.g-grid .g-grid-hd td{border-right:1px solid #CCC;}
+.g-grid .g-grid-hd td{border-right:1px solid #CCC;overflow:hidden;}
 .g-grid .g-grid-hd .hd-tbl .hdrcell{white-space:nowrap;position:relative;overflow:hidden;padding:4px 3px 4px 3px;}
 
 .g-grid .g-grid-hd .sorted {cursor:pointer;}
@@ -519,7 +519,7 @@ filter: Alpha(opacity=50); opacity:0.5;
 
 .g-grid .g-grid-ct {overflow:auto;position:relative;cursor:default;}
 .g-grid .g-grid-ct .cell{padding:4px 3px 3px;overflow:hidden;white-space:nowrap;}
-.g-grid .g-grid-ct .grid-td {border-bottom:1px solid #CCC;border-right:1px solid #DDD;}
+.g-grid .g-grid-ct .grid-td {border-bottom:1px solid #CCC;border-right:1px solid #DDD;overflow:hidden;}
 .g-grid .g-grid-ct .ct-tbl{table-layout:fixed;}
 .g-grid .g-grid-ct .row-over {background-color:#FFFFE1;}
 /*.g-grid .g-grid-ct .grid-row {}*/
