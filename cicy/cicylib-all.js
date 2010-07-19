@@ -9486,6 +9486,11 @@ CC.util.ProviderFactory.create('Connection', null, {
  * @cfg {Boolean} subscribe  是否订阅CC.Ajax连接器事件到target容器中,默认false
  */
   subscribe : false,
+
+/**
+ * @cfg {String} reader 指定数据载入后格式转换器，默认无。
+ */
+  reader : false,
   
 /**
  * @cfg {Object} ajaxCfg
@@ -9587,7 +9592,8 @@ CC.util.ProviderFactory.create('Connection', null, {
         this.t.wrapper.html(data, true);
         break;
       default :
-        (this.t.layout||this.t).fromArray(data);
+        this.reader ? (this.t.layout||this.t).fromArray(CC.util.DataTranslator.get(this.reader).read(data, this.t)) :
+          (this.t.layout||this.t).fromArray(data);
         break;
     }
   },
@@ -10834,6 +10840,100 @@ CC.create('CC.util.dd.AbstractCtMonitor', null, {
   afterdrag:fGo
 });
 })();
+/**
+ * UI容器只加载符合一定格式的子项数据，这个格式为{title:'...'}，在通过情况下，数据从后台加载进来，并不是UI容器可接受的格式类型，
+ * 些时可运用本类将特定类型的数据数组转换成适合UI加载的数据数组。
+ * 例如，可将一单纯数组数据['a', 'b', 'c']，转换为[{title:'a'}, {title:'b'}, {title:'c'}]。
+ * 在容器的connectionProvider里设置reader属性指明运用的转换器即可，不必手动处理.
+ */
+CC.util.DataTranslator = {
+  // private
+  trans : {
+    array : {
+      /**
+       * 注意:本方法会直接往传入的items里更新数据。
+       */
+      read : function(items, ct){
+        for(var i=0,len=items.length;i<len;i++){
+          items[i] = {title:items[i]};
+        }
+        return items;
+      }
+    },
+    
+    gridmaptranslator : {
+       read : function(rows, ct){
+         var cols = ct.grid.header.children,
+             idxMap = {}, 
+             dataIdx = 0, i, len;  
+         
+         for(i=0,len=cols.length;i<len;i++){
+           if(cols[i].dataCol){
+             idxMap[cols[i].id] = dataIdx;
+             dataIdx++;
+           }
+         }
+         
+         var def = rows.shift(), newRows = [];
+         
+         if(def){
+           for(i=0,len=def.length;i<len;i++){
+             // if index found
+             if(idxMap[def[i]] !== undefined){
+               // key -> index
+               def[i] = idxMap[def[i]];
+             }
+           }
+  
+           // maybe def status:['id', 3, 0, 2, 1]
+           var k, 
+               len2, 
+               row, 
+               isIdx, 
+               colIdx;
+  
+           for(i=0;i<len;i++){
+             colIdx = def[i];
+             isIdx = typeof colIdx === 'number';
+             for(var k=0,len2=rows.length;k<len2;k++){
+               row = newRows[k];
+               
+               if(!row)
+                  row = newRows[k] = {array:[]};
+               
+               if(isIdx) {
+                 row.array[colIdx] = {title:rows[k][i]};
+               }else {
+                 // row attributes
+                 row[colIdx] = rows[k][i];
+               }
+             }
+           }
+         }    
+         return newRows;
+       }
+    },
+
+    gridarraytranslator : {
+      read : function(rows){
+        var arr = CC.util.DataTranslator.get('array');
+        for(var i=0,len=rows.length;i<len;i++){
+          rows[i] = {array:arr.read(rows[i])};
+        }
+        return rows;
+      }
+   }
+  },
+  
+  reg : function(key, trans){
+    this.trans[key] = trans;
+    return this;
+  },
+  
+  get : function(key){
+    return this.trans[key];
+  }
+};
 ﻿  /**
    * @class CC.layout.BorderLayout
    * 东南西北中布局, 与Java swing中的BorderLayout具有相同效果.
@@ -16823,6 +16923,14 @@ var CC = window.CC,
  * @param {Number} dx 前后改变宽差
  * @member CC.ui.Grid
  */
+
+/**
+ * @event showcolumn
+ * 显示或隐藏列后发送
+ * @param {Boolean} displayOrNot
+ * @param {CC.ui.grid.Column} column
+ * @param {Number} columnIndex
+ */
  
 /**
  * @property locked
@@ -16942,6 +17050,14 @@ CC.create('CC.ui.grid.Column', B, function(father){
           this.preWidth = w;
           
           return this;
+       },
+       
+       onShow : function(){
+         this.pCt.fireUp('showcolumn', true, this, this.pCt.indexOf(this));
+       },
+       
+       onHide : function(){
+         this.pCt.fireUp('showcolumn', false, this, this.pCt.indexOf(this));
        },
        
        locked : 0,
@@ -17404,6 +17520,12 @@ return {
     contentscroll : function(e, scrollLeft, ct){
         if(parseInt(this.view.scrollLeft, 10) !== scrollLeft)
           this.view.scrollLeft = scrollLeft;
+    },
+    
+    showcolumn : function(b, col, idx){
+      col._colPeer.style.width = b ? col.width+'px' : '0px';
+      if(!b)
+        this.updateColWrapTblWidth(false, -col.width);
     }
   },
   
@@ -17432,6 +17554,78 @@ CC.ui.def('gridhd', CC.ui.grid.Header);
  * 表格数据视图控件.
  * @extends CC.ui.ContainerBase
  */
+ 
+/**
+ * @cfg {Boolean} ignoreClick 是否禁止本单元的cellclick事件的发送,如果为true,当点击该单元时Grid并不发送cellclick事件,默认未置值
+ * @member CC.ui.grid.Cell
+ */
+
+/**
+ * @cfg {Boolean} ignoreClick 是否禁止本行的itemclick事件的发送,如果为true,当点击该行时Grid并不发送itemclick事件,默认未置值
+ * @member CC.ui.grid.Row
+ */
+
+/**@cfg {Boolean} hoverEvent 是否允许发送rowover,rowout事件.*/
+
+/**
+ * @property batchUpdating
+ * 是否正在批量更新中
+ * @type {Boolean}
+ * @private
+ */
+ 
+/**
+ * @event cellclick
+ * 单元格点击事件
+ * @param {CC.ui.grid.Cell} cell
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowclick
+ * 行点击事件
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowdblclick
+ * 行双击事件
+ * @param {CC.ui.grid.Row} row
+ * @param {CC.ui.grid.Cell} cell 双击所有地单元格，无则则为空
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event contentscroll
+ * 数据视图grid.content滚动条滚动时发送.
+ * @param {DOMEvent} event
+ * @param {Number} scrollLeft
+ * @param {CC.ui.grid.plugin.Content} content
+ * @member CC.ui.Grid
+ */
+
+
+/**
+ * @event rowover
+ * 允许content.hoverEvent后,鼠标mouseover时发送.
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+
+/**
+ * @event rowout
+ * 允许content.hoverEvent后,鼠标mouseout时发送.
+ * @param {CC.ui.grid.Row} row
+ * @param {DOMEvent} event
+ * @member CC.ui.Grid
+ */
+ 
+ 
 CC.Tpl.def('CC.ui.grid.Content', '<div class="g-grid-ct"><table class="ct-tbl" id="_ct_tbl" cellspacing="0" cellpadding="0" border="0"><colgroup id="_grp"></colgroup><tbody id="_ctx"></tbody></table></div>');
 CC.create('CC.ui.grid.Content', CC.ui.Panel, function(father){
 	var undefined, C = CC.Cache, CX = CC.ui.ContainerBase.prototype;
@@ -17466,27 +17660,28 @@ return {
  */
   setupColumnLever : function(){
     var n, i,
-        levers = [],
+        levers = this.levers = [],
         cs = this.grid.header.children,
         len = cs.length,
         cp = this.dom('_grp');
 
     // 创建列宽控制点
     for(i=0;i<len;i++){
-      n = CC.$C('COL');
+      n = this.$$(CC.$C('COL'));
       levers[i] = n;
-      cp.appendChild(n);
+      if(cs[i].hidden)
+        this.setCellsVisible(false, i, n);
+      cp.appendChild(n.view);
     }
-
-    this.levers = levers;
 
     var cws = this.cacheWidths;
 
     if(cws){
       delete this.cacheWidths;
       for(i=0,len=cws.length;i<len;i++){
-        if(cws[i] !== undefined)
-          CC.fly(levers[i]).setWidth(cws[i]).unfly();
+        if(cws[i] !== undefined){
+          levers[i].setWidth(cws[i]);
+        }
       }
     }
   },
@@ -17497,12 +17692,7 @@ return {
   onRender : function(){
    this.setup();
    father.onRender.call(this);
-/**
- * @property batchUpdating
- * 是否正在批量更新中
- * @type {Boolean}
- * @private
- */
+
    this.batchUpdating = true;
    this.updateView();
    this.batchUpdating = false;
@@ -17546,7 +17736,7 @@ return {
              this.dom('_ct_tbl')
     );    
   },
-
+  
   updateContentWrapTblWidth : function(colWidth, dx){
     var ctTbl = this.ctTbl;
     if(ctTbl.width === false){
@@ -17560,13 +17750,22 @@ return {
   
   updateLeversWidth : function(idx, width, dx){
     if(this.levers){
-      CC.fly(this.levers[idx]).setWidth(width).unfly();
+      this.levers[idx].setWidth(width);
     }else {
       var cws = this.cacheWidths;
       if(!cws){
         cws = this.cacheWidths = [];
       }
       cws[idx] = width;
+    }
+  },
+  
+  setCellsVisible : function(b, idx, lever){
+    if(this.levers){
+      var lv = lever || this.levers[idx];
+      if(!b)
+        lv.view.style.width = '0px';
+      else lv.view.style.width = lv.width + 'px';
     }
   },
   
@@ -17586,59 +17785,13 @@ return {
   },
   
 /**
- * @event contentscroll
- * 数据视图grid.content滚动条滚动时发送.
- * @param {DOMEvent} event
- * @param {Number} scrollLeft
- * @param {CC.ui.grid.plugin.Content} content
- * @member CC.ui.Grid
- */
-/**
  * @private
  */
   onScroll : function(e){
     this.grid.fire('contentscroll', e, parseInt(this.view.scrollLeft, 10) || 0, this);
   },
 
-/**
- * @cfg {Boolean} ignoreClick 是否禁止本单元的cellclick事件的发送,如果为true,当点击该单元时Grid并不发送cellclick事件,默认未置值
- * @member CC.ui.grid.Cell
- */
 
-/**
- * @cfg {Boolean} ignoreClick 是否禁止本行的itemclick事件的发送,如果为true,当点击该行时Grid并不发送itemclick事件,默认未置值
- * @member CC.ui.grid.Row
- */
-
-/**
- * @event cellclick
- * 单元格点击事件
- * @param {CC.ui.grid.Cell} cell
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
-
-/**
- * @event rowclick
- * 行点击事件
- * @param {CC.ui.grid.Row} row
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
-
-/**
- * @event rowdblclick
- * 行双击事件
- * @param {CC.ui.grid.Row} row
- * @param {CC.ui.grid.Cell} cell 双击所有地单元格，无则则为空
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
- 
- /**
-  * 发送表格cellclick, itemclick事件
-  * @private
-  */
   onRowClick : function(row, e){
     if(!this.clickDisabled && !row.ignoreClick){
       var cell = row.$(e.srcElement || e.target), rt;
@@ -17650,7 +17803,7 @@ return {
           rt = this.grid.fire('cellclick', cell, e);
         }
       }
-      
+
       if(rt !== false){
         this.fire('itemclick', row, e);
         this.grid.fire('rowclick',  row, e);
@@ -17669,24 +17822,6 @@ return {
   },
   
   hoverEvent : false,
-
-/**@cfg {Boolean} hoverEvent 是否允许发送rowover,rowout事件.*/
-
-/**
- * @event rowover
- * 允许content.hoverEvent后,鼠标mouseover时发送.
- * @param {CC.ui.grid.Row} row
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
-
-/**
- * @event rowout
- * 允许content.hoverEvent后,鼠标mouseout时发送.
- * @param {CC.ui.grid.Row} row
- * @param {DOMEvent} event
- * @member CC.ui.Grid
- */
  
   // @interface
   onRowOver : function(r, e){
@@ -17748,6 +17883,12 @@ return {
     
     sortcol : function(){
       this.sortByCol.apply(this, arguments);
+    },
+    
+    showcolumn : function(b, col, idx){
+      this.setCellsVisible(b, idx);
+      if(!b)
+        this.updateContentWrapTblWidth(false, -col.width);
     }
   },
   
@@ -17778,6 +17919,7 @@ return {
   },
 /**
  * 当行初始化时,委托父类生成view结点,当通过fromArray方式载行数据时才生效.
+ * @param {CC.ui.grid.GridRow} row
  */
   createRowView : function(row){
     row.view = C.get('CC.ui.grid.Row');
@@ -17786,6 +17928,7 @@ return {
   
 /**
  * 当一行数据添加到表格时,调用该方法更新行数据.
+ * @param {CC.ui.grid.GridRow} row
  */
   updateRow : function(row){
     var cs = this.grid.header.children,
@@ -17847,13 +17990,12 @@ return {
 });
 
 /**
- * 指明该列是否为数据项,如果为非数据项,则表格数据视图在添加行时自动插入数据到该列.
+ * @cfg {Boolean} dataCol 指明该列是否为数据项,如果为非数据项,则表格数据视图在添加行时自动插入数据到该列.
+ * @member CC.ui.grid.Column
  */
 CC.ui.grid.Column.prototype.dataCol = true;
-/**
- * 权重
- * @static
- */
+
+// 插件权重
 CC.ui.grid.Content.WEIGHT = CC.ui.grid.Content.prototype.weight = -80;
 CC.ui.def('gridcontent', CC.ui.grid.Content);
 ﻿/**
@@ -18039,6 +18181,10 @@ return {
     
     aftercolwidthchange : function(idx, col){
         if(!col._widthcontrolset) this.autoColWidths();
+    },
+    
+    showcolumn : function(b, col, idx){
+      this.autoColWidths();
     }
   },
   // 第一次初始化
@@ -18046,22 +18192,24 @@ return {
      var lf = w, hd = this.grid.header, len = hd.getColumnCount();
      var cw, min = this.minColWidth, self = this;
      hd.each(function(){
-       cw = this.width;
-       if(cw !== false){
-         //小数,按百分比计
-         if(cw < 1){
-           cw = Math.floor(w * cw);
+      if(!this.hidden){
+         cw = this.width;
+         if(cw !== false){
+           //小数,按百分比计
+           if(cw < 1){
+             cw = Math.floor(w * cw);
+           }
+           len --;
+           self.setColWidth0(this, Math.max(cw, min));
+           lf -= this.width;
          }
-         len --;
-         self.setColWidth0(this, Math.max(cw, min));
-         lf -= this.width;
-       }
+      }
      });
 
      cw = Math.max(Math.floor(lf/len), min);
 
      hd.each(function(){
-      if(this.width === false){
+      if(this.width === false && !this.hidden){
         self.setColWidth0(this, cw);
       }
      });
@@ -18102,7 +18250,7 @@ return {
         
     // clone array
     for(i=0;i<len;i++){
-      if(!chs[i].locked && !chs[i].resizeDisabled)
+      if(!chs[i].locked && !chs[i].resizeDisabled && !chs[i].hidden)
         queue[queue.length] = chs[i];
     }
     
@@ -18138,7 +18286,8 @@ return {
       var hd  = this.grid.header, ws = 0;
       
       hd.each(function(){
-          ws += this.width;
+          if(!this.hidden)
+            ws += (this.width||0);
       });
       
       var dw  = w - ws; // 每列扩展的宽度值delta width
@@ -18157,7 +18306,9 @@ return {
  * @public
  */
   getConstrain : function(col){
-    
+    if(col.hidden)
+      return [0, 0];
+
     if(col.resizeDisabled)
       return [col.width, col.width];
     
@@ -18169,8 +18320,10 @@ return {
           chs = hd.children;
           maxW = 0, minW = 0;
       for(var i=idx+1,len=chs.length;i<len;i++){
-        maxW += chs[i].width;
-        minW =  Math.max(this.minColWidth, chs[i].minW, 0);
+        if(!chs[i].hidden){
+          maxW += chs[i].width;
+          minW =  Math.max(this.minColWidth, chs[i].minW, 0);
+        }
       }
       
       return [min, maxW - minW];
