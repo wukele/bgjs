@@ -62,7 +62,12 @@ var C = {
   't' :function(c, v){c.view.style.top = v;},
   'of':function(c, v){c.view.style.overflow = v;},
   'oh':['overflow','hidden'],
-  'oa':['overflow','auto']
+  'oa':['overflow','auto'],
+  
+  'v' : function(c, v){
+     v = v.split('=');
+     c.view.style[v[0]] = v[1];
+   }
 };
 
 var S = /\s+/, B  = CC.borderBox, inst;
