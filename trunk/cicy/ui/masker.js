@@ -9,6 +9,11 @@ CC.create('CC.ui.Mask', CC.Base, {
 /**
  * @cfg {Function} onactive 点击层时响应回调
  */
+
+/**
+ * @cfg {Number} opacity 遮罩层透明度, 0 - 1
+ */
+ 
   onactive : null,
 
 /**
@@ -22,7 +27,9 @@ CC.create('CC.ui.Mask', CC.Base, {
     if(this.target){
       this.attach(this.target);
     }
-
+    if(this.opacity){
+      this.setOpacity(this.opacity);
+    }
     this.domEvent('mousedown', this.onMaskResponsed, true);
   },
 
