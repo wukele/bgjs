@@ -4,8 +4,16 @@
  * @class CC.ui.Folder
  * @extends CC.ui.ContainerBase
  */
-CC.create('CC.ui.Folder', CC.ui.ContainerBase, /**@lends CC.ui.Folder#*/{
-  itemCfg : {template : 'CC.ui.FolderItem', hoverCS:'on', icon:'icoNote', blockMode:2},
+/**
+ * 
+ */
+CC.create('CC.ui.Folder', CC.ui.ContainerBase, {
+  itemCfg : {
+    template : 'CC.ui.FolderItem', 
+    hoverCS:'on', 
+    icon:'icoNote', 
+    blockMode:2
+  },
   keyEvent : true,
   ct : '_bdy',
   clickEvent : true,

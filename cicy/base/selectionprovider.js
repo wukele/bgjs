@@ -309,12 +309,12 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * 测试某子项是否已被选择
+ * 测试某子项是否已被选择，两个条件：非隐藏状态和具备selectedCS样式。
  * @param item
  * @return {Boolean}
  */
  isSelected : function(item){
-  return item.hasClass(this.selectedCS);
+  return !item.hidden && item.hasClass(this.selectedCS);
  },
 
 /**

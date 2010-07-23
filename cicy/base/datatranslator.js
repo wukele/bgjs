@@ -80,7 +80,7 @@ CC.util.DataTranslator = {
         }
         return rows;
       }
-   }
+    }
   },
   
   reg : function(key, trans){
