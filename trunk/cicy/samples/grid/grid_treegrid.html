@@ -1,0 +1,102 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+
+<style>
+</style>
+</head>
+<body>
+</body>
+</html>
+<script>
+
+CC.ready(function(){
+  __debug = false;
+
+  window.g = new CC.ui.Grid({
+   sortable : false,
+   plugins : [
+     {name:'edition', ctype:'grideditor'},
+     {name:'tb', ctype:'gridtb', tb: {css:'lnt',array:[
+        {ctype:'checkbox', title:'叶子结点', id:'leaf'},
+        {title:'增加', onclick:function(){
+           var selected = g.content.getSelectionProvider().selected;
+           var item = {array:[{title:'ac'}, {title:'ac'}, {title:'ac'}]};
+           if(!this.pCt.$('leaf').checked)
+              item.nodes = [];
+
+           if(selected)
+             selected.addItem(item);
+           else g.content.add(item);
+         }
+        },
+        {title:'删除', 
+         onclick : function(){
+          var selected = g.content.getSelectionProvider().selected;
+          if(selected) {
+            if(selected.pNode)
+              selected.pNode.removeItem(selected);
+            else g.content.remove(selected);
+          }
+         }
+        }
+   		]
+   	  }
+     }
+   ],
+   autoFit:true,
+   header:
+    {
+     array:[
+      {title:'第一列', colCls:'treecell',editor:'text'},
+      {title:'第二列'},
+      {title:'第三列'}
+     ]
+    },
+   content : {
+    ctype:'treecontent', 
+    array : [
+    /**/
+      {
+        expanded : true,
+        array:[{title:'a'}, {title:'a'}, {title:'a'}],
+        nodes : [
+          {
+            array:[{title:'a'}, {title:'a'}, {title:'a'}],
+            nodes : [
+              { array:[{title:'a'}, {title:'a'}, {title:'a'}] }
+            ]
+          }
+        ]
+      }
+    ]
+   }
+  });
+
+  var win = new CC.ui.Win({
+    title:'TreeGrid演示',
+    showTo:document.body,
+    layout:'card',
+    items:[g]
+  });
+
+
+  win.render();
+
+  win.center();
+  // 也可手动载入
+  g.content.$(0).addItem({
+      array:[{title:'ac'}, {title:'ac'}, {title:'ac'}],
+      nodes : [
+        { array:[{title:'aca'}, {title:'acb'}, {title:'acc'}] }
+      ]
+  });
+  
+  g.content.add({array:[{title:'a'}, {title:'b'}, {title:'c'}]});
+  window.ct = g.content;
+});
+</script>

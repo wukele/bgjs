@@ -1,0 +1,35 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+	body {overflow:hidden;}
+</style>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+CC.ready(function(){
+/**
+ * viewport 是一个布满整个浏览器客户区域的面板
+ */
+var vp = new CC.ui.Viewport({
+   showTo : document.body,
+   layout:'card',
+   items:[
+    { ctype:'base', template : '<img src="http://www.i816.net/sucaisoso/attachments/day_090929/09092915041e3293ea53e46d25.jpg">' }
+   ]
+ });
+ 
+ vp.render();
+ 
+ var masker =  new CC.ui.Mask({target:vp, opacity:.3, css:'v:backgroundColor=red'});
+ 
+ (function(){masker.detach();}).timeout(5000);
+});
+</script>

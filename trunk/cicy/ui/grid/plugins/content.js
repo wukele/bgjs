@@ -94,12 +94,8 @@ return {
 
  lyInf : {h:'lead'},
 
- initComponent : function(){
-    father.initComponent.call(this);
-    this.ctTbl = this.$$('_ct_tbl');
-  },
-
   initPlugin : function(){
+    this.ctTbl = this.$$('_ct_tbl');
     return true;
   },
   
@@ -231,6 +227,19 @@ return {
     if(this.rendered && !this.batchUpdating){
       this.updateRow(c);
     }
+    
+    if(!c.rendered)
+      c.render();
+  },
+  
+  onInsert : function(idx, row){
+    father.onInsert.apply(this, arguments);
+    if(this.rendered && !this.batchUpdating){
+      this.updateRow(row);
+    }
+    
+    if(!row.rendered)
+      row.render();
   },
   
 /**

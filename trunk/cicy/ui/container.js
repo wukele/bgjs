@@ -581,7 +581,7 @@ CC.create('CC.ui.ContainerBase', Base,
  * @param {CC.Base} component
  */
       if(this.fire('beforeadd', a) !== false && this.beforeAdd(a) !== false){
-        this.onAdd(a);
+        this.onAdd.apply(this, arguments);
         this.afterAdd(a);
 /**
  * @event add
@@ -681,7 +681,7 @@ CC.create('CC.ui.ContainerBase', Base,
           a.view.parentNode.removeChild(a.view);
     }
     else if(this.fire('beforeremove', a)!==false && this.beforeRemove(a) !== false){
-      this.onRemove(a);
+      this.onRemove.apply(this, arguments);
         this.fire('remove', a);
     }
     return this;
@@ -692,6 +692,7 @@ CC.create('CC.ui.ContainerBase', Base,
   onRemove : function(a){
     a.pCt = null;
     this.children.remove(a);
+    
     this._removeNode(a.view);
   },
 
@@ -839,23 +840,25 @@ CC.create('CC.ui.ContainerBase', Base,
 
     if(this.fire('beforeadd', item) !== false && this.beforeAdd(item) !== false){
       
-      if (item.pCt){
+      if (item.pCt && item.rendered){
           item.pCt.remove(item);
           item.pCt = this;
       }
-
-      this.children.insert(idx, item);
-      var nxt = this.children[idx+1];
-      if (nxt)
-         this._insertBefore(item.view, nxt.view);
-      else this._addNode(item.view);
+      this.onInsert.apply(this, arguments);
       this.fire('add', item);
       //this.layout.insertComponent.apply(this.layout, arguments);
     }
     return this;
   },
 
-
+  onInsert : function(idx, item){
+      this.children.insert(idx, item);
+      var nxt = this.children[idx+1];
+      if (nxt)
+         this._insertBefore(item.view, nxt.view);
+      else this._addNode(item.view);
+  },
+  
   /**
  * 重写,同{@link #removeAll}
  * @override

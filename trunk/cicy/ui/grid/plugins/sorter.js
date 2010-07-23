@@ -6,6 +6,12 @@
  */
 
 /**
+ * @cfg {Boolean} sortable 属性来自{@link CC.ui.grid.plugins.Sorter},
+ * 表示是否允许排序表格，默认为true, false时关闭表格排序功能.
+ * @member CC.ui.Grid
+ */
+ 
+/**
  * @cfg {Boolean} dt 属性来自{@link CC.ui.grid.plugins.Sorter},
  * 指明当前列的数据类型，可选类型有 string|bool|float|int|date, 参见{@link CC.util.TypeConverter}可注册自定义的数据类型
  * @member CC.ui.grid.Column
@@ -16,7 +22,7 @@
  * @type String
  */
  
-
+CC.ui.Grid.prototype.sortable = true;
 CC.ui.grid.Column.prototype.sortable = undefined;
 CC.ui.grid.Column.prototype.order    = undefined;
 CC.ui.grid.Column.prototype.dt       = undefined;
@@ -52,7 +58,8 @@ CC.create('CC.ui.grid.plugins.Sorter', null, {
 
   gridEventHandlers : {
     afteraddheader : function(hd){
-      hd.itemAction(this.trigEvent, this.onColClick, false, this);
+      if(this.grid.sortable)
+        hd.itemAction(this.trigEvent, this.onColClick, false, this);
     }
   },
   

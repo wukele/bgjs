@@ -543,7 +543,12 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-grid .g-grid-ct .g-gridrow-expand .cell a.trig {background-position:-1px -1px;}
 .g-grid .g-grid-ct .g-gridrow-expand .cell a.trig:hover {background-position:-1px -17px;}
 
-
+/** tree grid */
+.g-treegrid-cell .g-tree-ec-icon, .g-treegrid-cell .g-tree-nd-icon, .g-treegrid-cell .g-tree-nd-anchor {float:left;}
+.g-treegrid-cell .g-tree-nd-indent {float:left;margin-right: 3px;}
+.g-treegrid-cell .g-tree-nd .g-tree-nd-over { background-color:transparent;}
+.g-treegrid-cell .g-tree-nd-el {width:auto;}
+  
 .g-foldable {overflow:hidden;}
 .g-foldable .g-foldablewrap{
 	background-color:#F9F9F9;

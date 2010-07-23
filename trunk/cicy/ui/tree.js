@@ -15,6 +15,11 @@ var spr = cbx.prototype;
  * @class CC.ui.TreeItem
  * @extends CC.ui.ContainerBase
  */
+ 
+/**@cfg {Boolean} nodes 树结点是否为目录,默认false.*/
+
+/**@cfg {String} expandEvent 展开/收缩事件，默认为dblclick,当树项双击时展开或收起子项面板，设为false时取消该操作。*/
+
 CC.create('CC.ui.TreeItem', cbx, {
   /**
    * 每个TreeItem都有一个指向根结点的指针以方便访问根结点.
@@ -24,6 +29,8 @@ CC.create('CC.ui.TreeItem', cbx, {
 
   ct : '_bdy',
 
+  expandEvent : 'dblclick',
+  
   dragNode : '_head',
   hoverCS : 'g-tree-nd-over g-tree-ec-over',
   splitEndPlusCS : 'g-tree-split-end-plus',
@@ -56,7 +63,6 @@ CC.create('CC.ui.TreeItem', cbx, {
    */
   mouseoverTarget : '_head',
 
-  /**@cfg {Boolean} nodes 树结点是否为目录,默认false.*/
   nodes : false,
 
   clickEvent : 'click',
@@ -77,9 +83,12 @@ CC.create('CC.ui.TreeItem', cbx, {
 
     //文件夹
     if(this.nodes) {
-      this.domEvent('dblclick', this.expand, true, null, this._head.view);
-      this.domEvent('mousedown', this.expand, true, null, this._elbow.view);
-      this.domEvent('click', CC.Event.noUp, true, null, this._elbow.view);
+      
+      if(this.expandEvent)
+        this.domEvent(this.expandEvent, this.expand, true, null, this._head.view)
+      
+      this.domEvent('mousedown', this.expand, true, null, this._elbow.view)
+          .domEvent('click', CC.Event.noUp, true, null, this._elbow.view);
     }
     else
       this._head.addClass(this.nodeLeafCS);
@@ -121,8 +130,7 @@ CC.create('CC.ui.TreeItem', cbx, {
     CC.display(this.ct,b);
     this.expanded = b;
 
-    if(this.root.tree.fire('expanded', this, b)===false)
-        return false;
+    return  this.root.tree.fire('expanded', this, b);
   },
 
   _decElbowSt : function(b) {
@@ -172,10 +180,10 @@ CC.create('CC.ui.TreeItem', cbx, {
   },
 
   add : function(item) {
-    var pre = this.children[this.children.length-1];
     spr.add.call(this, item);
     item._decElbowSt();
     item._applyChange(this);
+    var pre = item.previous;
     if(pre){
       pre._decElbowSt();
       pre._applyChange(this);
@@ -295,8 +303,10 @@ CC.create('CC.ui.TreeItem', cbx, {
     this.root = this.pCt.root;
     this._applySibling();
     spr.onRender.call(this);
-    if(this.expanded)
+    if(this.expanded){
+      delete this.expanded;
       this.expand(true);
+    }
   },
 
   insert : function(idx, item){

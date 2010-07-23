@@ -502,6 +502,13 @@ return {
  * @class CC.ui.grid.Row
  * @extends CC.ui.ContainerBase
  */
+
+/**
+ * @cfg {String|CC.Base} 指定该列单元格类，未设定时采用CC.ui.grid.Cell 
+ * @member CC.ui.grid.Column
+ */ 
+CC.ui.grid.Column.prototype.colCls = CC.ui.grid.Cell;
+
 C.register('CC.ui.grid.Row', function(){
   return CC.$C({
     tagName: 'TR',
@@ -512,6 +519,7 @@ C.register('CC.ui.grid.Row', function(){
 CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
 
   eventable: false,
+  
   brush : false,
 
   itemCls: CC.ui.grid.Cell,
@@ -539,6 +547,33 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
 
   mouseoutCallback: function(e){
     this.pCt.onRowOut(this, e);
+  },
+  
+  /**
+   * @param {Array} array
+   */
+  fromArray: function(array) {
+    
+    var it, cols = this.pCt.grid.header.children;
+
+    for (var i = 0, len = array.length; i < len; i++) {
+      cls = cols[i].colCls;
+      if (typeof cls === 'string')
+        cls = CC.ui.ctypes[cls];
+
+      it = array[i];
+      // already instanced
+      if (!it.cacheId){
+      
+        if(!it.ctype)
+          it = CC.extendIf(it);
+          
+        it = this.instanceItem(it, cls, true);
+      }
+      
+      this.add(it);
+    }
+    return this;
   },
 /**
  * 根据列id获得单元格.
