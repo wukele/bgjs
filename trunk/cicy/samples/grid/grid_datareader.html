@@ -25,11 +25,11 @@ var arrayStream = [
 
 // 原始记录映射数据
 var mappedStream = [
-  ['id' , 'second', 'first','third' ,'fourth'],
-  ['row12345a' , '2', '1', '3', '4'],
-  ['row12345b' , '2', '1', '3', '4'],
-  ['row12345c' , '2', '1', '3', '4'],
-  ['row13423d' , '2', '1', '3', '4']
+  ['id' , 'second',   ['first','value'], 'third' ,'fourth'],
+  ['row12345a' , '2', ['1','aaa'], '3', '4'],
+  ['row12345b' , '2', ['1','bbb'], '3', '4'],
+  ['row12345c' , '2', ['1','bbb'], '3', '4'],
+  ['row13423d' , '2', ['1','bbb'], '3', '4']
 ];
 
 
@@ -64,7 +64,7 @@ CC.ready(function(){
   grid.content.fromArray(arrayDataAfterTrans);
 
   var mappedDataAfterTrans = CC.util.DataTranslator.get('gridmaptranslator').read(mappedStream, grid.content);
-  if(__debug) console.log(mappedDataAfterTrans);
+  console.log(mappedDataAfterTrans);
   grid.content.fromArray(mappedDataAfterTrans);
   //
   // 如果是通过ajax加载数据，可设置connectionProvider的reader属性来适用的数据转换器

@@ -1,0 +1,42 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <script type="text/javascript" src="../../more/texthighlighter.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+</head>
+<body>
+  <div>
+    <input type="text" onkeyup="hl()" id="ipt" value="如果 ， 大 bgscript.com" />
+    <input type="button" value="高亮" onclick="hl()"/>
+    <input type="button" value="清除" onclick="cls()"/>
+  </div>
+  <pre>
+/*
+ * Javascript Utility for web development.
+ * 反馈 : <a href="http://www.bgscript.com/" target="_blank"><strong>www.bgscript.com/forum</strong></a>
+ * www.bgscript.com ? 2010 - 构建自由的WEB应用
+ */
+  </pre>
+  <h1>这是个大标题</h1>
+  <p>
+    好结果是一个量变到质变的过程，
+    如果事件是好了的，每个细节肯定见证了作者的努力。
+    所以如果一件事情想变好，得保证每个细节都是优化的， 
+    这里来不得空谈。
+  </p>
+</body>
+</html>
+<script>
+
+function hl(){
+ cls();
+ // 全文检索，也可精确到某个元素，速度更快
+ CC.fly(document).heighlight(CC.$('ipt').value.trim().split(' ')).unfly();
+}
+
+function cls(){
+ CC.fly(document).clearHeighlight().unfly();
+}
+</script>
