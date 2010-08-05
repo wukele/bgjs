@@ -18,7 +18,12 @@ CC.util.DataTranslator = {
         return items;
       }
     },
-    
+
+/**
+ * 数据格式为
+   ['col a',  'col b', ['col c','cell_data',...], 'row_attribute', ...],
+   ['data a', '..',    ['title', '...', '...'],    '..']
+ */
     gridmaptranslator : {
        read : function(rows, ct){
          var cols = ct.grid.header.children,
@@ -32,23 +37,29 @@ CC.util.DataTranslator = {
            }
          }
          
-         var def = rows.shift(), newRows = [];
+         var def = rows.shift(), newRows = [], k;
          
          if(def){
            for(i=0,len=def.length;i<len;i++){
-             // if index found
-             if(idxMap[def[i]] !== undefined){
+             k = def[i];
+             // [a, b, [key, v1, v2]]
+             if(CC.isArray(k)){
+               k[0] = idxMap[k[0]];
+               k._isa = true;
+             }
+             else if(idxMap[k] !== undefined){
+               // if index found
                // key -> index
-               def[i] = idxMap[def[i]];
+               def[i] = idxMap[k];
              }
            }
   
            // maybe def status:['id', 3, 0, 2, 1]
-           var k, 
-               len2, 
+           var len2, 
                row, 
                isIdx, 
-               colIdx;
+               colIdx,
+               arr, j, len3, cell;
   
            for(i=0;i<len;i++){
              colIdx = def[i];
@@ -61,13 +72,18 @@ CC.util.DataTranslator = {
                
                if(isIdx) {
                  row.array[colIdx] = {title:rows[k][i]};
+               }else if(colIdx._isa){
+                 arr = rows[k][i];
+                 cell = row.array[colIdx[0]] = {title:arr[0]};
+                 for(j=1,len3=arr.length;j<len3;j++)
+                   cell[colIdx[j]] = arr[j];
                }else {
                  // row attributes
                  row[colIdx] = rows[k][i];
                }
              }
            }
-         }    
+         }
          return newRows;
        }
     },

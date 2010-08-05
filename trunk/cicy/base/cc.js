@@ -1076,7 +1076,7 @@ function testNoForm() {
 /**
  * 应用一段CSS样式文本.
  * <pre><code>
-   CC.loadStyle('customCS', '.g-custom {background-color:#DDD;}');
+   CC.loadStyle('.g-custom {background-color:#DDD;}');
    //在元素中应用新增样式类
    &lt;div class=&quot;g-custom&quot;&gt;动态加载样式&lt;/div&gt;
    </code></pre>

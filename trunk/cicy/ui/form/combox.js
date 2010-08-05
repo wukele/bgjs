@@ -79,12 +79,13 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       // 由于Combox由多个控件拼装而成, 为了能正确捕获Combox控件的blur, focus事件,
       // 不得不多监听几个事件,并作一处特殊处理.
       //
-      this.domEvent('focus', this.onFocusTrigger);
-      this.domEvent('blur', this.onBodyBlurTrigger);
-      this.domEvent('focus', this.onFocusTrigger, false, null, this.editor.element);
-      this.domEvent('blur', this.onBodyBlurTrigger, false, null, this.editor.element);
-      this.domEvent('keydown', this.onKeydownTrigger);
-      this.wheelEvent(this.onMouseWheel, true);
+      this.domEvent('focus', this.onFocusTrigger)
+          .domEvent('blur', this.onBodyBlurTrigger)
+          .domEvent('focus', this.onFocusTrigger, false, null, this.editor.element)
+          .domEvent('blur', this.onBodyBlurTrigger, false, null, this.editor.element)
+          .domEvent('keydown', this.onKeydownTrigger)
+          .wheelEvent(this.onMouseWheel, true);
+      
       //焦点消失时检查输入值是否是下拉项的某一项,如果有,选择之.
       this.on('blur', this.checkSelected);
     },

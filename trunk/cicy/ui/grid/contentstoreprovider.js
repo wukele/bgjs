@@ -10,7 +10,7 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, {
  * @cfg {Boolean} filterChanged 是否只提交已更改的行记录,默认为true, false时提交所有行记录.
  */
 	filterChanged : true,
-
+	
   // @override
 	isModified : function(row){
 		var md = false;
@@ -51,13 +51,15 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, {
 
   // @override
 	getItemQuery : function(item, qs){
-		var s = [], q, idx=0, chs = item.children, v;
+		var s = [], q, idx=0, chs = item.children, v, m = this.submitModify;
 		this.t.pCt.header.each(function(a, cnt){
-			q = this.qid || this.id;
-			v = chs[cnt].getValue();
-			//query id string
-			if(q && v!== undefined)
-				s[s.length] = q + '=' + encodeURIComponent(v);
+		  if(!m || chs[cnt].modified){
+  			q = this.qid || this.id;
+  			v = chs[cnt].getValue();
+  			//query id string
+  			if(q && v!== undefined)
+  				s[s.length] = q + '=' + encodeURIComponent(v);
+		  }
 		});
 		q = s.length?s.join('&') : '';
 		if(q){
