@@ -473,6 +473,8 @@ Ajax.prototype =
                             success.call(this.caller, this);
                         else success.call(this,this);
                 } else {
+                	  if(req.status == 0)
+                	    if(__debug) console.error('拒绝访问,确认是否跨域,',this.url); 
                     if(this._fire('failure', this) === false)
                       return false;
                     if(failure)

@@ -35,7 +35,11 @@ CC.util.ProviderFactory.create('Store', null, {
  * @cfg {Boolean} setupUrlFromItem 每次提交前是否将子项数据影射到URL中,默认为true.
  */  
   setupUrlFromItem : true,
-
+/**
+ * @cfg {Boolean} submitModify 是否只提交已修改的数据，默认为true
+ */
+	submitModify : true,
+	
 /**
  * @cfg {Function} isResponseOk 可以重写该函数,以定义返回的数据是否正常.
  * @return {Boolean}

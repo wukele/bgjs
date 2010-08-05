@@ -155,12 +155,6 @@ return {
       if(!nds.length)
         this.nodes = nds;
     }
-    // 父行
-    // so it needs to apply this cfg
-    if(this.hidden){
-      delete this.hidden;
-      this.display(false);
-    }
   },
   
   onRender : function(){
