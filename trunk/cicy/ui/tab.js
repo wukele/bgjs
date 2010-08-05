@@ -172,6 +172,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       var cp = p.getConnectionProvider(), ind = cp.indicator;
       if (!ind) {
           //自定Loading标识
+          // 取消iframepanel默认indicatorDisabled:true
+          cp.indicatorDisabled = false;
           ind = cp.getIndicator({
             markIndicator: this.onIndicatorStart,
             stopIndicator: this.onIndicatorStop
