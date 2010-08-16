@@ -1076,7 +1076,7 @@ function testNoForm() {
 /**
  * 应用一段CSS样式文本.
  * <pre><code>
-   CC.loadStyle('customCS', '.g-custom {background-color:#DDD;}');
+   CC.loadStyle('.g-custom {background-color:#DDD;}');
    //在元素中应用新增样式类
    &lt;div class=&quot;g-custom&quot;&gt;动态加载样式&lt;/div&gt;
    </code></pre>
@@ -1878,7 +1878,12 @@ var C = {
   't' :function(c, v){c.view.style.top = v;},
   'of':function(c, v){c.view.style.overflow = v;},
   'oh':['overflow','hidden'],
-  'oa':['overflow','auto']
+  'oa':['overflow','auto'],
+  
+  'v' : function(c, v){
+     v = v.split('=');
+     c.view.style[v[0]] = v[1];
+   }
 };
 
 var S = /\s+/, B  = CC.borderBox, inst;
@@ -3399,6 +3404,8 @@ Ajax.prototype =
                             success.call(this.caller, this);
                         else success.call(this,this);
                 } else {
+                	  if(req.status == 0)
+                	    if(__debug) console.error('拒绝访问,确认是否跨域,',this.url); 
                     if(this._fire('failure', this) === false)
                       return false;
                     if(failure)
@@ -7514,7 +7521,7 @@ CC.create('CC.ui.ContainerBase', Base,
  * @param {CC.Base} component
  */
       if(this.fire('beforeadd', a) !== false && this.beforeAdd(a) !== false){
-        this.onAdd(a);
+        this.onAdd.apply(this, arguments);
         this.afterAdd(a);
 /**
  * @event add
@@ -7614,7 +7621,7 @@ CC.create('CC.ui.ContainerBase', Base,
           a.view.parentNode.removeChild(a.view);
     }
     else if(this.fire('beforeremove', a)!==false && this.beforeRemove(a) !== false){
-      this.onRemove(a);
+      this.onRemove.apply(this, arguments);
         this.fire('remove', a);
     }
     return this;
@@ -7625,6 +7632,7 @@ CC.create('CC.ui.ContainerBase', Base,
   onRemove : function(a){
     a.pCt = null;
     this.children.remove(a);
+    
     this._removeNode(a.view);
   },
 
@@ -7772,23 +7780,25 @@ CC.create('CC.ui.ContainerBase', Base,
 
     if(this.fire('beforeadd', item) !== false && this.beforeAdd(item) !== false){
       
-      if (item.pCt){
+      if (item.pCt && item.rendered){
           item.pCt.remove(item);
           item.pCt = this;
       }
-
-      this.children.insert(idx, item);
-      var nxt = this.children[idx+1];
-      if (nxt)
-         this._insertBefore(item.view, nxt.view);
-      else this._addNode(item.view);
+      this.onInsert.apply(this, arguments);
       this.fire('add', item);
       //this.layout.insertComponent.apply(this.layout, arguments);
     }
     return this;
   },
 
-
+  onInsert : function(idx, item){
+      this.children.insert(idx, item);
+      var nxt = this.children[idx+1];
+      if (nxt)
+         this._insertBefore(item.view, nxt.view);
+      else this._addNode(item.view);
+  },
+  
   /**
  * 重写,同{@link #removeAll}
  * @override
@@ -10090,12 +10100,12 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
  },
 
 /**
- * 测试某子项是否已被选择
+ * 测试某子项是否已被选择，两个条件：非隐藏状态和具备selectedCS样式。
  * @param item
  * @return {Boolean}
  */
  isSelected : function(item){
-  return item.hasClass(this.selectedCS);
+  return !item.hidden && item.hasClass(this.selectedCS);
  },
 
 /**
@@ -10398,7 +10408,11 @@ CC.util.ProviderFactory.create('Store', null, {
  * @cfg {Boolean} setupUrlFromItem 每次提交前是否将子项数据影射到URL中,默认为true.
  */  
   setupUrlFromItem : true,
-
+/**
+ * @cfg {Boolean} submitModify 是否只提交已修改的数据，默认为true
+ */
+	submitModify : true,
+	
 /**
  * @cfg {Function} isResponseOk 可以重写该函数,以定义返回的数据是否正常.
  * @return {Boolean}
@@ -10860,7 +10874,12 @@ CC.util.DataTranslator = {
         return items;
       }
     },
-    
+
+/**
+ * 数据格式为
+   ['col a',  'col b', ['col c','cell_data',...], 'row_attribute', ...],
+   ['data a', '..',    ['title', '...', '...'],    '..']
+ */
     gridmaptranslator : {
        read : function(rows, ct){
          var cols = ct.grid.header.children,
@@ -10874,23 +10893,29 @@ CC.util.DataTranslator = {
            }
          }
          
-         var def = rows.shift(), newRows = [];
+         var def = rows.shift(), newRows = [], k;
          
          if(def){
            for(i=0,len=def.length;i<len;i++){
-             // if index found
-             if(idxMap[def[i]] !== undefined){
+             k = def[i];
+             // [a, b, [key, v1, v2]]
+             if(CC.isArray(k)){
+               k[0] = idxMap[k[0]];
+               k._isa = true;
+             }
+             else if(idxMap[k] !== undefined){
+               // if index found
                // key -> index
-               def[i] = idxMap[def[i]];
+               def[i] = idxMap[k];
              }
            }
   
            // maybe def status:['id', 3, 0, 2, 1]
-           var k, 
-               len2, 
+           var len2, 
                row, 
                isIdx, 
-               colIdx;
+               colIdx,
+               arr, j, len3, cell;
   
            for(i=0;i<len;i++){
              colIdx = def[i];
@@ -10903,13 +10928,18 @@ CC.util.DataTranslator = {
                
                if(isIdx) {
                  row.array[colIdx] = {title:rows[k][i]};
+               }else if(colIdx._isa){
+                 arr = rows[k][i];
+                 cell = row.array[colIdx[0]] = {title:arr[0]};
+                 for(j=1,len3=arr.length;j<len3;j++)
+                   cell[colIdx[j]] = arr[j];
                }else {
                  // row attributes
                  row[colIdx] = rows[k][i];
                }
              }
            }
-         }    
+         }
          return newRows;
        }
     },
@@ -10922,7 +10952,7 @@ CC.util.DataTranslator = {
         }
         return rows;
       }
-   }
+    }
   },
   
   reg : function(key, trans){
@@ -12828,6 +12858,11 @@ CC.create('CC.ui.Mask', CC.Base, {
 /**
  * @cfg {Function} onactive 点击层时响应回调
  */
+
+/**
+ * @cfg {Number} opacity 遮罩层透明度, 0 - 1
+ */
+ 
   onactive : null,
 
 /**
@@ -12841,7 +12876,9 @@ CC.create('CC.ui.Mask', CC.Base, {
     if(this.target){
       this.attach(this.target);
     }
-
+    if(this.opacity){
+      this.setOpacity(this.opacity);
+    }
     this.domEvent('mousedown', this.onMaskResponsed, true);
   },
 
@@ -12979,8 +13016,16 @@ CC.ui.def('viewport', CC.ui.Viewport);
  * @class CC.ui.Folder
  * @extends CC.ui.ContainerBase
  */
-CC.create('CC.ui.Folder', CC.ui.ContainerBase, /**@lends CC.ui.Folder#*/{
-  itemCfg : {template : 'CC.ui.FolderItem', hoverCS:'on', icon:'icoNote', blockMode:2},
+/**
+ * 
+ */
+CC.create('CC.ui.Folder', CC.ui.ContainerBase, {
+  itemCfg : {
+    template : 'CC.ui.FolderItem', 
+    hoverCS:'on', 
+    icon:'icoNote', 
+    blockMode:2
+  },
   keyEvent : true,
   ct : '_bdy',
   clickEvent : true,
@@ -13417,6 +13462,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       var cp = p.getConnectionProvider(), ind = cp.indicator;
       if (!ind) {
           //自定Loading标识
+          // 取消iframepanel默认indicatorDisabled:true
+          cp.indicatorDisabled = false;
           ind = cp.getIndicator({
             markIndicator: this.onIndicatorStart,
             stopIndicator: this.onIndicatorStop
@@ -14951,6 +14998,19 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
   
   // 当前正在打开的对话框,方便从子frame窗口中关闭父层对话框.
   var Openning;
+  
+/**
+ * 获得最近打开的对话框,方便从子iframe页面中关闭父页面的对话框.
+ * @static
+ * @return {CC.ui.Dialog}
+ */
+ 
+CC.ui.Dialog.getOpenning = function(){
+	return CC.Base.byCid(Openning);
+};
+
+CC.ui.def('dlg', CC.ui.Dialog);
+
   return {
     /**
      * 内部高度，与CSS一致
@@ -15143,18 +15203,6 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
     }
   };
   
-/**
- * 获得最近打开的对话框,方便从子iframe页面中关闭父页面的对话框.
- * @static
- * @return {CC.ui.Dialog}
- */
- 
-CC.ui.Dialog.getOpenning = function(){
-	return CC.Base.byCid(Openning);
-};
-
-CC.ui.def('dlg', CC.ui.Dialog);
-
 });
 
 ﻿CC.Tpl.def('Util.alert.input', '<div class="msgbox-input"><table class="swTb"><tbody><tr><td valign="top"><b class="icoIfo" id="_ico"></b></td><td><span id="_msg" class="swTit"></span>&nbsp;<input type="text" style="" class="gIpt" id="_input"/><p class="swEroMsg"><span id="_err"></span></p></span></td></tr></tbody></table></div>');
@@ -15919,6 +15967,11 @@ var spr = cbx.prototype;
  * @class CC.ui.TreeItem
  * @extends CC.ui.ContainerBase
  */
+ 
+/**@cfg {Boolean} nodes 树结点是否为目录,默认false.*/
+
+/**@cfg {String} expandEvent 展开/收缩事件，默认为dblclick,当树项双击时展开或收起子项面板，设为false时取消该操作。*/
+
 CC.create('CC.ui.TreeItem', cbx, {
   /**
    * 每个TreeItem都有一个指向根结点的指针以方便访问根结点.
@@ -15928,6 +15981,8 @@ CC.create('CC.ui.TreeItem', cbx, {
 
   ct : '_bdy',
 
+  expandEvent : 'dblclick',
+  
   dragNode : '_head',
   hoverCS : 'g-tree-nd-over g-tree-ec-over',
   splitEndPlusCS : 'g-tree-split-end-plus',
@@ -15960,7 +16015,6 @@ CC.create('CC.ui.TreeItem', cbx, {
    */
   mouseoverTarget : '_head',
 
-  /**@cfg {Boolean} nodes 树结点是否为目录,默认false.*/
   nodes : false,
 
   clickEvent : 'click',
@@ -15981,9 +16035,12 @@ CC.create('CC.ui.TreeItem', cbx, {
 
     //文件夹
     if(this.nodes) {
-      this.domEvent('dblclick', this.expand, true, null, this._head.view);
-      this.domEvent('mousedown', this.expand, true, null, this._elbow.view);
-      this.domEvent('click', CC.Event.noUp, true, null, this._elbow.view);
+      
+      if(this.expandEvent)
+        this.domEvent(this.expandEvent, this.expand, true, null, this._head.view)
+      
+      this.domEvent('mousedown', this.expand, true, null, this._elbow.view)
+          .domEvent('click', CC.Event.noUp, true, null, this._elbow.view);
     }
     else
       this._head.addClass(this.nodeLeafCS);
@@ -16025,8 +16082,7 @@ CC.create('CC.ui.TreeItem', cbx, {
     CC.display(this.ct,b);
     this.expanded = b;
 
-    if(this.root.tree.fire('expanded', this, b)===false)
-        return false;
+    return  this.root.tree.fire('expanded', this, b);
   },
 
   _decElbowSt : function(b) {
@@ -16076,10 +16132,10 @@ CC.create('CC.ui.TreeItem', cbx, {
   },
 
   add : function(item) {
-    var pre = this.children[this.children.length-1];
     spr.add.call(this, item);
     item._decElbowSt();
     item._applyChange(this);
+    var pre = item.previous;
     if(pre){
       pre._decElbowSt();
       pre._applyChange(this);
@@ -16199,8 +16255,10 @@ CC.create('CC.ui.TreeItem', cbx, {
     this.root = this.pCt.root;
     this._applySibling();
     spr.onRender.call(this);
-    if(this.expanded)
+    if(this.expanded){
+      delete this.expanded;
       this.expand(true);
+    }
   },
 
   insert : function(idx, item){
@@ -17371,6 +17429,13 @@ return {
  * @class CC.ui.grid.Row
  * @extends CC.ui.ContainerBase
  */
+
+/**
+ * @cfg {String|CC.Base} 指定该列单元格类，未设定时采用CC.ui.grid.Cell 
+ * @member CC.ui.grid.Column
+ */ 
+CC.ui.grid.Column.prototype.colCls = CC.ui.grid.Cell;
+
 C.register('CC.ui.grid.Row', function(){
   return CC.$C({
     tagName: 'TR',
@@ -17381,6 +17446,7 @@ C.register('CC.ui.grid.Row', function(){
 CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
 
   eventable: false,
+  
   brush : false,
 
   itemCls: CC.ui.grid.Cell,
@@ -17408,6 +17474,33 @@ CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
 
   mouseoutCallback: function(e){
     this.pCt.onRowOut(this, e);
+  },
+  
+  /**
+   * @param {Array} array
+   */
+  fromArray: function(array) {
+    
+    var it, cols = this.pCt.grid.header.children;
+
+    for (var i = 0, len = array.length; i < len; i++) {
+      cls = cols[i].colCls;
+      if (typeof cls === 'string')
+        cls = CC.ui.ctypes[cls];
+
+      it = array[i];
+      // already instanced
+      if (!it.cacheId){
+      
+        if(!it.ctype)
+          it = CC.extendIf(it);
+          
+        it = this.instanceItem(it, cls, true);
+      }
+      
+      this.add(it);
+    }
+    return this;
   },
 /**
  * 根据列id获得单元格.
@@ -17645,12 +17738,8 @@ return {
 
  lyInf : {h:'lead'},
 
- initComponent : function(){
-    father.initComponent.call(this);
-    this.ctTbl = this.$$('_ct_tbl');
-  },
-
   initPlugin : function(){
+    this.ctTbl = this.$$('_ct_tbl');
     return true;
   },
   
@@ -17782,6 +17871,19 @@ return {
     if(this.rendered && !this.batchUpdating){
       this.updateRow(c);
     }
+    
+    if(!c.rendered)
+      c.render();
+  },
+  
+  onInsert : function(idx, row){
+    father.onInsert.apply(this, arguments);
+    if(this.rendered && !this.batchUpdating){
+      this.updateRow(row);
+    }
+    
+    if(!row.rendered)
+      row.render();
   },
   
 /**
@@ -17998,6 +18100,485 @@ CC.ui.grid.Column.prototype.dataCol = true;
 // 插件权重
 CC.ui.grid.Content.WEIGHT = CC.ui.grid.Content.prototype.weight = -80;
 CC.ui.def('gridcontent', CC.ui.grid.Content);
+﻿CC.Tpl.def('CC.ui.grid.TreeCellBody', [
+  '<div class="g-tree-nd-el g-tree-nd-cls g-tree-nd g-tree-arrows">',
+      '<div class="g-tree-nd-indent" id="_ident">',
+        '<div class="g-tree-ec-icon" id="_pls"></div>',
+        '<div class="g-tree-nd-icon" id="_ico"></div>',
+      '</div>',
+      '<div class="g-tree-nd-anchor" id="_wr">',
+        '<span id="_tle" class="g-unsel" unselectable="on"></span>',
+      '</div>',
+      '<div class="g-clear"></div>',
+  '</div>'
+].join(''));
+
+/**
+ * 该类并无新增公开的方法和属性，生成了控制表格树项的单元格UI。
+ * @class CC.ui.grid.TreeCell
+ * @extends CC.ui.grid.Cell
+ */
+
+CC.create('CC.ui.grid.TreeCell', CC.ui.grid.Cell, function(superclass){
+
+return {
+  splitPlusCS : 'g-tree-split-plus',
+  splitMinCS :'g-tree-split-minus',
+  nodeOpenCS : 'g-tree-nd-opn',
+  nodeClsCS : 'g-tree-nd-cls',
+  nodeLeafCS : 'g-tree-nd-leaf',
+  // private
+  rowHoverCS : 'g-tree-nd-over g-tree-ec-over',
+
+  identW : 16,
+  
+  initComponent : function(){
+    superclass.initComponent.call(this);
+      // init event
+      this.domEvent('mousedown', this.onElbowClick, true, null, this._elbow.view)
+          .domEvent('click', CC.Event.noUp, true, null, this._elbow.view);
+      
+      this._checkIfNodes(false);
+    // make parent row a reference to self
+    this.pCt.treeCell = this;
+  },
+  
+  // private
+  onElbowClick : function(){
+    this.pCt.expand(!this.pCt.expanded);
+  },
+  
+  // private
+  createView : function(){
+    superclass.createView.call(this);
+    var bd = CC.Tpl.$('CC.ui.grid.TreeCellBody');
+    // 标题结点
+    this.titleNode = CC.$('_tle', bd);
+    // expand装饰结点
+    this._elbow    = this.$$(CC.$("_pls", bd));
+    // 图标装饰结点
+    this._icon     = this.$$(CC.$("_ico", bd));
+    
+    this._ident     = this.$$(CC.$("_ident", bd));
+    
+    // 
+    this._head     = this.$$(bd);
+    var wrap = this.view.firstChild;
+    // 取消作为标题结点
+    wrap.id = '';
+    wrap.appendChild(bd);
+    this.addClass('g-treegrid-cell');
+  },
+  
+  // override
+  getTitleNode : function(){
+    return this.titleNode;
+  },
+  
+  // 调整结点样式,展开/收缩时调用本方法更新结点样式状态
+  _decElbowSt : function(b) {
+    
+    console.log('_decElbowSt', this.cacheId);
+    console.trace();
+    
+    if(b===undefined)
+      b = this.pCt.expanded;
+
+    if(this.pCt.nodes){
+      if (b) {
+         this._elbow.switchClass(this.splitPlusCS, this.splitMinCS);
+         this._head.switchClass(this.nodeClsCS, this.nodeOpenCS);
+      } else {
+         this._elbow.switchClass(this.splitMinCS, this.splitPlusCS);
+         this._head.switchClass(this.nodeOpenCS, this.nodeClsCS);
+      }
+    }
+  },
+  
+  // 调整结点叶子结点/非叶子结点样式，当子项数量发生变动时调用更新
+  // 里面同时也调用了_decElbowSt方法
+  _checkIfNodes : function(b){
+    if(this.pCt.nodes){
+      if(this._head.hasClass(this.nodeLeafCS)){
+        this._head.delClass(this.nodeLeafCS);
+      }
+    }else if(!this._head.hasClass(this.nodeLeafCS)){
+        this._head.addClass(this.nodeLeafCS);
+    }
+    
+    this._decElbowSt(b);
+  }
+};
+});
+
+
+CC.ui.def('treecell', CC.ui.grid.TreeCell);
+
+/**
+ * @class CC.ui.grid.TreeRow
+ * @extends CC.ui.grid.Row
+ */
+
+/**
+ * @property previous
+ * 上个结点
+ * @type CC.ui.grid.TreeRow
+ */
+
+/**
+ * @property next
+ * 下个结点
+ * @type CC.ui.grid.TreeRow
+ */
+
+/**
+ * @property treeCell
+ * 该行树结点UI所在单元的格
+ * @type CC.ui.grid.GridCell
+ */
+
+/**
+ * @cfg {Boolean} expanded 是否展开
+ */
+CC.create('CC.ui.grid.TreeRow', CC.ui.grid.Row, function(superclass){
+return {
+  // private
+  _curIdent : 0,
+  
+  initComponent : function(){
+    superclass.initComponent.call(this);
+    // folder node
+    if(this.nodes){
+      nds = CC.delAttr(this, 'nodes');
+      for(var i=0,len=nds.length;i<len;i++){
+        this.addItem(nds[i]);
+      }
+      
+      if(!nds.length)
+        this.nodes = nds;
+    }
+  },
+  
+  onRender : function(){
+    superclass.onRender.call(this);
+    if(this.expanded){
+      delete this.expanded;
+      this.expand(true);
+    }
+  },
+
+/**
+ * 添加子项
+ * @param {CC.ui.grid.TreeRow} treeRow
+ <pre><code>
+   row.addItem({
+      array:[{title:'ac'}, {title:'ac'}, {title:'ac'}],
+      nodes : [
+        { array:[{title:'aca'}, {title:'acb'}, {title:'acc'}] }
+      ]
+  });
+ </code></pre>
+ */
+  addItem : function(item, cancelAddIntoView){
+    var nds = this.nodes;
+    if(!nds)
+      nds = this.nodes = [];
+    item.hidden = this.hidden || !this.expanded;
+    
+    item = this.pCt.instanceItem(item);
+    
+    item.pNode = this;
+    
+    if(this.view.parentNode === this.pCt.ct)
+      this._addItemView(item);
+      
+    nds.push(item);
+    
+    //item.treeCell._decElbowSt();
+    item._applyChange(this);
+    
+    if(this.rendered)
+      this.treeCell._checkIfNodes();
+    
+    var pre = item.previous;
+    if(pre){
+      //pre.treeCell._decElbowSt();
+      pre._applyChange(this);
+    }
+    return item;
+  },
+
+/**
+ * 删除子项
+ * @param {CC.ui.grid.TreeRow} treeRow
+ */
+  removeItem : function(item, cancelNotifyParent){
+    if(this.rendered)
+      item._removeFromView(cancelNotifyParent);
+    
+    item.pNode = null;
+    var pre  = item.previous;
+
+    this.nodes.remove(item);
+    item._applySibling(true);
+
+    if(pre)
+      pre._applySibling();
+    
+    if(this.rendered)
+      this.treeCell._checkIfNodes();
+  },
+/**
+ * 插入子项表结点
+ * @param {Number} index
+ * @param {CC.ui.grid.TreeRow} item
+ * @return {CC.ui.grid.TreeRow}
+ */
+  insertItem: function(idx, item) {
+    var nds = this.nodes;
+
+    if(item.pNode === this && nds.indexOf(item)<idx)
+      idx --;
+
+
+      if(!nds)
+        nds = this.nodes = [];
+        
+      if (item.pNode){
+          item.pNode.removeItem(item);
+          item.pNode = this;
+      }
+      else {
+        item.hidden = this.hidden || !this.expanded;
+        item = this.pCt.instanceItem(item);
+        item.pNode = this;
+      }
+
+      nds.insert(idx, item);
+      
+      if(this.rendered){
+        delete item.pCt;
+        if (nds[idx+1])
+           this.pCt.insert(this.pCt.indexOf(nds[idx+1]), item);
+        else this.pCt.insert(this.pCt.indexOf(this)+1, item);
+        item.pCt = this.pCt;
+        this.treeCell._checkIfNodes();
+      }
+      // child nodes..
+      item._applyChange(this);
+    return item;
+  },
+
+  expanded : false,
+  
+/**
+ * 展开/收缩子项.
+ * @param {Boolean} expand
+ */
+  expand : function(b) {
+    if(this.expanded !== b){
+      if(this.pCt.grid.fire('expandtree', this, b)===false)
+        return false;
+      this.treeCell._decElbowSt(b);
+      this._expandContent(b);
+      this.expanded = b;
+      return this.pCt.grid.fire('expandedtree', this, b);
+    }
+  },
+
+  // override
+  onHide : function(){
+    superclass.onHide.call(this);
+    if(this.nodes){
+      for(var i=0,nds=this.nodes,len=nds.length;i<len;i++){
+        if(!nds.hidden)
+          nds[i].display(false);
+      }
+    }
+  },
+  
+  // override
+  onShow : function(){
+    superclass.onShow.call(this);
+    if(this.expanded && this.nodes){
+      for(var i=0,nds=this.nodes,len=nds.length;i<len;i++){
+        if(nds[i].hidden)
+          nds[i].display(true);
+      }
+    }
+  },
+  
+  _applySibling : function(detach){
+    if(detach){
+      if(this.previous)
+        this.previous.next = this.next;
+      if(this.next)
+        this.next.previous = this.previous;
+      this.next = this.previous = null;
+    }else {
+      var ct = this.pNode;
+      if(ct){
+        c = ct.nodes, idx = c.indexOf(this);
+        this.next = c[idx+1];
+        if(this.next)
+          this.next.previous = this;
+        this.previous = c[idx-1];
+        if(this.previous)
+          this.previous.next = this;        
+      }else {
+        this.previous = this.next = null;
+      }
+    }
+  },
+  
+  _applyChange : function(){
+    this._applySibling();
+    this._fixSpacer();
+  },
+  
+  _fixSpacer : function(pNode) {
+    pNode = pNode || this.pNode;
+    if(pNode){
+      var tc  = this.treeCell, 
+          idt = pNode._curIdent + tc.identW;
+      
+      tc._head.view.style.paddingLeft = idt + 'px';
+      this._curIdent = idt;
+      
+      if(this.nodes){
+        for(var i=0,nds = this.nodes,len=nds.length;i<len;i++) {
+          nds[i]._fixSpacer(this);
+        }
+      }
+    }
+  },
+  
+  _navInsertPlaceHold : function(){
+    return this.nodes ?
+      !this.nodes[this.nodes.length - 1] ? this : this.nodes[this.nodes.length - 1]._navInsertPlaceHold() 
+      : this;
+  },
+  
+  _addItemView : function(item){
+    // 是否已在nodes列表中而还没加到grid view上?
+    var nxt = this._navInsertPlaceHold(), 
+        idx = this.pCt.indexOf(nxt) + 1;
+    
+    delete item.pCt;
+    this.pCt.insert(idx, item);
+    item.pCt = this.pCt;
+    
+    if(item.nodes){
+      idx ++;
+      for(var nds=item.nodes,len=nds.length, i=0;i<len;i++){
+        idx = item._batchAddItemView(nds[i], idx);
+      }
+    }
+  },
+  
+  _batchAddItemView : function(item, idx){
+    delete item.pCt;
+
+    this.pCt.insert(idx, item);
+    item.pCt = this.pCt;
+    idx++;
+    
+    if(item.nodes){
+      for(var nds=item.nodes,len=nds.length, i=0;i<len;i++){
+        idx = item._batchAddItemView(nds[i], idx);
+      }
+    }
+    return idx;
+  },
+    
+  _removeFromView : function(cancelNotifyParent){
+    // remove from grid view
+    if(this.nodes){
+      var nds = this.nodes;
+      for(var i=0,len=nds.length;i<len;i++){
+        if(nds[i].nodes)
+          nds[i]._removeFromView();
+        else if(nds[i].pCt)
+          nds[i].pCt.remove(nds[i], true);
+      }
+    }
+    // 防止重复调用
+    if(!cancelNotifyParent && this.pCt)
+      this.pCt.remove(this, true);
+  },
+   
+  _expandContent : function(b){
+    if(this.nodes){
+      for(var i=0,nds=this.nodes,len=nds.length;i<len;i++)
+         nds[i].display(b);
+    }
+  },
+  
+  mouseoverCallback : function(){
+    this.treeCell._ident.addClass(this.treeCell.rowHoverCS);
+    superclass.mouseoverCallback.apply(this, arguments);
+  },
+  
+  mouseoutCallback : function(){
+    this.treeCell._ident.delClass(this.treeCell.rowHoverCS);
+    superclass.mouseoutCallback.apply(this, arguments);
+  },
+  
+  destory : function(){
+    if(this.nodes){
+      for(var i=0,nds=this.nodes,len=nds.length;i<len;i++){
+        nds[i].destory();
+      }
+    }
+    superclass.destory.call(this);
+  }
+};
+});
+
+/**
+ * @class CC.ui.grid.TreeContent
+ * @extends CC.ui.grid.Content
+ */
+CC.create('CC.ui.grid.TreeContent', CC.ui.grid.Content, function(superclass){
+return {
+  
+  itemCls : CC.ui.grid.TreeRow,
+  
+  onAdd : function(row){
+    superclass.onAdd.apply(this, arguments);
+    row._applyChange();
+    if(row.nodes){
+      var idx = this.indexOf(row) + 1;
+      for(var i=0,nds=row.nodes,len=nds.length;i<len;i++){
+        idx = row._batchAddItemView(nds[i], idx);
+      }
+    }
+  },
+  /*
+  onInsert : function(row){
+    superclass.onInsert.apply(this, arguments);
+    row._applyChange();
+    if(row.nodes){
+      var idx = this.indexOf(row) + 1;
+      for(var i=0,nds=row.nodes,len=nds.length;i<len;i++){
+        idx = row._batchAddItemView(nds[i], idx);
+      }
+    }
+  },
+  */
+  remove : function(item , cancelNotifyPNode){
+    superclass.remove.apply(this, arguments);
+    if(!cancelNotifyPNode && item.pNode) {
+      item.pNode.removeItem(item, true);
+    }else {
+      // grid level
+      item._removeFromView(true);
+    }
+  }
+};
+});
+
+CC.ui.def('treecontent', CC.ui.grid.TreeContent);
 ﻿/**
  * @class CC.ui.grid.ContentStoreProvider
  * 提供表格数据视图的数据存储功能.
@@ -18010,7 +18591,7 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, {
  * @cfg {Boolean} filterChanged 是否只提交已更改的行记录,默认为true, false时提交所有行记录.
  */
 	filterChanged : true,
-
+	
   // @override
 	isModified : function(row){
 		var md = false;
@@ -18051,13 +18632,15 @@ CC.create('CC.ui.grid.ContentStoreProvider', CC.util.StoreProvider, {
 
   // @override
 	getItemQuery : function(item, qs){
-		var s = [], q, idx=0, chs = item.children, v;
+		var s = [], q, idx=0, chs = item.children, v, m = this.submitModify;
 		this.t.pCt.header.each(function(a, cnt){
-			q = this.qid || this.id;
-			v = chs[cnt].getValue();
-			//query id string
-			if(q && v!== undefined)
-				s[s.length] = q + '=' + encodeURIComponent(v);
+		  if(!m || chs[cnt].modified){
+  			q = this.qid || this.id;
+  			v = chs[cnt].getValue();
+  			//query id string
+  			if(q && v!== undefined)
+  				s[s.length] = q + '=' + encodeURIComponent(v);
+		  }
 		});
 		q = s.length?s.join('&') : '';
 		if(q){
@@ -19116,6 +19699,12 @@ CC.ui.def('gridrowchecker', CC.ui.grid.plugins.RowChecker);
  */
 
 /**
+ * @cfg {Boolean} sortable 属性来自{@link CC.ui.grid.plugins.Sorter},
+ * 表示是否允许排序表格，默认为true, false时关闭表格排序功能.
+ * @member CC.ui.Grid
+ */
+ 
+/**
  * @cfg {Boolean} dt 属性来自{@link CC.ui.grid.plugins.Sorter},
  * 指明当前列的数据类型，可选类型有 string|bool|float|int|date, 参见{@link CC.util.TypeConverter}可注册自定义的数据类型
  * @member CC.ui.grid.Column
@@ -19126,7 +19715,7 @@ CC.ui.def('gridrowchecker', CC.ui.grid.plugins.RowChecker);
  * @type String
  */
  
-
+CC.ui.Grid.prototype.sortable = true;
 CC.ui.grid.Column.prototype.sortable = undefined;
 CC.ui.grid.Column.prototype.order    = undefined;
 CC.ui.grid.Column.prototype.dt       = undefined;
@@ -19162,7 +19751,8 @@ CC.create('CC.ui.grid.plugins.Sorter', null, {
 
   gridEventHandlers : {
     afteraddheader : function(hd){
-      hd.itemAction(this.trigEvent, this.onColClick, false, this);
+      if(this.grid.sortable)
+        hd.itemAction(this.trigEvent, this.onColClick, false, this);
     }
   },
   
@@ -20043,12 +20633,13 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       // 由于Combox由多个控件拼装而成, 为了能正确捕获Combox控件的blur, focus事件,
       // 不得不多监听几个事件,并作一处特殊处理.
       //
-      this.domEvent('focus', this.onFocusTrigger);
-      this.domEvent('blur', this.onBodyBlurTrigger);
-      this.domEvent('focus', this.onFocusTrigger, false, null, this.editor.element);
-      this.domEvent('blur', this.onBodyBlurTrigger, false, null, this.editor.element);
-      this.domEvent('keydown', this.onKeydownTrigger);
-      this.wheelEvent(this.onMouseWheel, true);
+      this.domEvent('focus', this.onFocusTrigger)
+          .domEvent('blur', this.onBodyBlurTrigger)
+          .domEvent('focus', this.onFocusTrigger, false, null, this.editor.element)
+          .domEvent('blur', this.onBodyBlurTrigger, false, null, this.editor.element)
+          .domEvent('keydown', this.onKeydownTrigger)
+          .wheelEvent(this.onMouseWheel, true);
+      
       //焦点消失时检查输入值是否是下拉项的某一项,如果有,选择之.
       this.on('blur', this.checkSelected);
     },
@@ -20672,6 +21263,10 @@ CC.ui.form.FormLayer.prototype.validationProvider = CC.ui.form.ValidationProvide
  * @extends CC.util.StoreProvider
  */
 CC.create('CC.ui.form.StoreProvider', CC.util.StoreProvider, function(father){
+
+
+CC.ui.def('formstore' , CC.ui.form.StoreProvider);
+
 return {
 
 /**
@@ -20702,8 +21297,6 @@ return {
     return this.t.getValidationProvider().validateAll()===true;
   }
 };
-
-CC.ui.def('formstore' , CC.ui.form.StoreProvider);
 
 });
 CC.ui.form.FormLayer.prototype.storeProvider = CC.ui.form.StoreProvider;
