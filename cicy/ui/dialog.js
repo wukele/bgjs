@@ -10,6 +10,19 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
   
   // 当前正在打开的对话框,方便从子frame窗口中关闭父层对话框.
   var Openning;
+  
+/**
+ * 获得最近打开的对话框,方便从子iframe页面中关闭父页面的对话框.
+ * @static
+ * @return {CC.ui.Dialog}
+ */
+ 
+CC.ui.Dialog.getOpenning = function(){
+	return CC.Base.byCid(Openning);
+};
+
+CC.ui.def('dlg', CC.ui.Dialog);
+
   return {
     /**
      * 内部高度，与CSS一致
@@ -202,16 +215,4 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
     }
   };
   
-/**
- * 获得最近打开的对话框,方便从子iframe页面中关闭父页面的对话框.
- * @static
- * @return {CC.ui.Dialog}
- */
- 
-CC.ui.Dialog.getOpenning = function(){
-	return CC.Base.byCid(Openning);
-};
-
-CC.ui.def('dlg', CC.ui.Dialog);
-
 });
