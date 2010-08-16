@@ -3,6 +3,10 @@
  * @extends CC.util.StoreProvider
  */
 CC.create('CC.ui.form.StoreProvider', CC.util.StoreProvider, function(father){
+
+
+CC.ui.def('formstore' , CC.ui.form.StoreProvider);
+
 return {
 
 /**
@@ -33,8 +37,6 @@ return {
     return this.t.getValidationProvider().validateAll()===true;
   }
 };
-
-CC.ui.def('formstore' , CC.ui.form.StoreProvider);
 
 });
 CC.ui.form.FormLayer.prototype.storeProvider = CC.ui.form.StoreProvider;
