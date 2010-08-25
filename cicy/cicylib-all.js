@@ -3627,7 +3627,7 @@ CC.extend(Tpl,
  * img标签主要优点是可放大,缩小图片,目前兼容的css难做到这点.<br>
  * 可以通过window.BLANK_IMG指定空图片.
  */
-      BLANK_IMG : window.BLANK_IMG || 'http://www.bgscript.com/bgjs/default/s.gif',
+      BLANK_IMG : window.BLANK_IMG || 'http://bgjs.googlecode.com/svn/trunk/cicy/default/s.gif',
 /**
  * 根据模板名称获得模板字符串对应的HTML结点集,该结点生成只有一次,第二次调用时将从缓存克隆结点数据.<br>
  * <pre><code>
