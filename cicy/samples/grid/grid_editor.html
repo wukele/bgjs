@@ -33,7 +33,6 @@ function createCellData(cols, rows){
 function getComboTreeEditor(url){
  return {
   ctype:'combo',
-  uneditable:true,
   minW:120,
   /**将树项ID作为值*/
   getItemValue : function(treeitem){
@@ -82,7 +81,7 @@ CC.ready(function(){
       },
       {title:'第四列', editor:'datepicker'},
       {title:'第五列', editor:getComboTreeEditor()},
-      {title:'第六列', editor:{ctype:'select',array:[{text:'请选择..', selected:true},{text:'第一项', value:5},{text:'第二项', value:6},{text:'第三项', value:7}]}},
+      {title:'第六列', editor:{ctype:'select',array:[{text:'请选择..', selected:true},{text:'第一项', value:5},{text:'第二项', value:6},{text:'第三项', value:7}]}}
      ]
     },
     
