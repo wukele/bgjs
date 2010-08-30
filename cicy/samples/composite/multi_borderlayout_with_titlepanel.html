@@ -89,7 +89,30 @@
 														}}
 									    		 ]}
 									    },
-									    {name:'rowmover', ctype:'rowmover', pZoom:new CC.util.d2d.RectZoom()}
+									    { name:'rowmover', 
+									      ctype:'rowmover', 
+									      pZoom:new CC.util.d2d.RectZoom(),
+                                          dragstart : function(e, source){
+                                            CC.ui.getCls('rowmover').prototype.dragstart.apply(this, arguments);
+                                            if(this.mgrIndicator) {
+                                              CC.util.dd.Mgr.getIndicator().setMsg('Dragging..', 'Source:'+source.$(2).title);
+                                            }
+                                          },
+                                          
+                                          sbover : function(target, source){
+                                            CC.ui.getCls('rowmover').prototype.sbover.apply(this, arguments);
+                                            if(this.mgrIndicator) {
+                                              CC.util.dd.Mgr.getIndicator().setMsg('Target:<font color="red">' + target.$(2).title + '</font>');
+                                            }
+                                          },
+                                          
+                                          sbout : function(target, source){
+                                            CC.ui.getCls('rowmover').prototype.sbout.apply(this, arguments);
+                                            if(this.mgrIndicator) {
+                                              CC.util.dd.Mgr.getIndicator().setMsg('Dragging..');
+                                            }
+                                          }
+									    }
 									   ],
 									   
 									   header:
