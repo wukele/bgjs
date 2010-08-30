@@ -32,7 +32,7 @@ __debug=true;
          // 可以往菜单上添加自己的内容
          var customItem = menu.$('customitem');
          if(!customItem){
-           customItem = menu.instanceItem({title:'自定义项', id:'customitem'});
+           customItem = menu.instanceItem({title:'自定义项', onselect:function(){CC.Util.alert(this.title);}, id:'customitem'});
            menu.layout.add(customItem);
          }
        } } ]
