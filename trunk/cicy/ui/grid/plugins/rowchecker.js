@@ -11,6 +11,7 @@
       dataCol : false,
       checkedCS : 'g-check-checked',
       cellBrush: function(){
+        this.id = 'rowcheckercell';
         return '<span class="g-checkbox g-form-el"><img class="chkbk" src="'+CC.Tpl.BLANK_IMG+'"></span>';
       },
       
@@ -46,11 +47,11 @@
    gridEventHandlers : {
   	 afteraddcontent : function(ct){
   	   ct.on('selectchange', function(current, previous, selProvider){
-  	       var cell = current.getCell('rowCheckerCol');
+  	       var cell = current.$('rowcheckercell');
   	       var col  = ct.grid.header.$('rowCheckerCol');
    	       cell.checkClass(col.checkedCS, selProvider.isSelected( current ));
    	       if(previous){
-   	         var preCell = previous.getCell('rowCheckerCol');
+   	         var preCell = previous.$('rowcheckercell');
    	         preCell.checkClass(col.checkedCS, selProvider.isSelected( previous ));
    	       }
    	   });
