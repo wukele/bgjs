@@ -146,7 +146,7 @@ Ajax.prototype =
     */
    {
 /**
- * @cfg {String} method GET 或者 POST,默认GET.
+ * @cfg {String} method GET 或者 POST 或者 JSONP,默认GET.
  */
     method :'GET',
 /**@cfg {String} url 请求URL*/
@@ -178,7 +178,7 @@ Ajax.prototype =
  */
 
 /**
- * @cfg {String|Object} params GET时提交的字符串参数或Map键值对,结果被追加到url尾.
+ * @cfg {String|Object} params G提交的字符串参数或Map键值对,结果被追加到<b>url</b>尾.
  */
  /**
   *@cfg {Function} success 设置成功后的回调,默认为运行服务器返回的数据内容.
@@ -326,12 +326,14 @@ Ajax.prototype =
     /**@private*/
     _req : function(){
         if(!this.xmlReq)
-            this.xmlReq = CC.ajaxRequest();
+            this.xmlReq = this.method==='JSONP'? 
+                new CC.util.JSONPConnector(this) : 
+                CC.ajaxRequest();
     },
     /**@private*/
     _setHeaders: function() {
         this._req();
-        if (this.method.toLowerCase() == 'post') {
+        if (this.method === 'POST') {
             this.xmlReq.setRequestHeader('Content-type', this.contentType + (this.encoding ? '; charset=' + this.encoding: ''));
         }
         var j = this.xmlReq;
@@ -370,15 +372,10 @@ Ajax.prototype =
             }
 
             if(ps){
-              if(this.method === 'GET'){
                 if(!isQ && !ch)
                     theUrl = theUrl+'?';
 
                 theUrl = theUrl + '&' + ((typeof ps === 'string') ? ps : CC.queryString(ps));
-              }
-              else {
-                this.data = (typeof ps === 'string') ? ps : CC.queryString(CC.extend(this.data, ps));
-              }
             }
         }
         this.xmlReq.open(this.method, theUrl, this.asynchronous);
@@ -391,11 +388,18 @@ Ajax.prototype =
     send: function(data) {
         this._fire('send', this);
         this._setHeaders();
-        this.xmlReq.onreadystatechange = this._onReadyStateChange.bind(this);
+        this.xmlReq.onreadystatechange = this._onReadyStateChange.bindRaw(this);
         this.setMsg(this.msg);
-        if("POST" === this.method)
-          this.xmlReq.send(data || this.data);
-        else this.xmlReq.send();
+    
+    if(!data)
+        data = this.data;
+        
+    if(data){
+      if(typeof data === 'object')
+        data = CC.queryString(data);
+      this.xmlReq.send(data);
+    }
+    else this.xmlReq.send();
   }
     ,
     /**
@@ -468,19 +472,18 @@ Ajax.prototype =
                     this.loaded = true;
                     if(this._fire('success', this) === false)
                       return false;
-                    if(success)
-                        if(this.caller)
-                            success.call(this.caller, this);
-                        else success.call(this,this);
+                    if(success){
+                        if(this.method === 'JSONP')
+                            success.apply(this.caller||this, arguments);
+                        else success.call(this.caller||this, this);
+                    }
                 } else {
                 	  if(req.status == 0)
                 	    if(__debug) console.error('拒绝访问,确认是否跨域,',this.url); 
                     if(this._fire('failure', this) === false)
                       return false;
                     if(failure)
-                        if(this.caller)
-                            failure.call(this.caller, this);
-                        else failure.call(this,this);
+                        failure.call(this.caller||this, this);
                 }
             }catch(reqEx){
                 if(__debug) console.error(reqEx);

@@ -1,0 +1,50 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function(){
+__debug = true;
+
+
+var win = new CC.ui.Win({
+    showTo:document.body,
+    title:'Google字典',
+    autoRender:true,
+    layout:'row',
+    items:[
+        {ctype:'smallbar', layout:'tablize',items:[
+            {ctype:'label', title:'单词：'},
+            {ctype:'text', id:'word', value:'界面'},
+            {ctype:'button', title:'查询', onclick : function(){
+                var k = win.byId('word').getValue().trim();
+                if(k){
+                    CC.Ajax.connect({
+                        method:'JSONP',
+                        url:'http://suggestqueries.google.com/complete/search?ds=d&hl=zh-CN',
+                        params:{q:k},
+                        success:function(data){
+                            var p = win.byId('ct');
+                            if(!data[0][1].length)
+                                data[0][1][0] = '没找到\''+data[0]+'\'';
+                            p.html('<div style="padding:10px;20px;">'+data[0][1].join('<br>')+'</div>');
+                        }
+                    });
+                }
+            }}
+        ]},
+        {ctype:'ct', id:'ct'}
+    ]
+});
+
+win.center();
+win.byId('word').focus();
+});
+
+</script>

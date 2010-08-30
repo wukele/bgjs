@@ -180,7 +180,7 @@ CC.extendIf(String.prototype,  (function(){
  */
 CC.extendIf(Function.prototype, {
 /**
- * 绑定this对象到函数 <br>
+ * 绑定this对象到函数，可绑定固定变量参数。<br>
  <pre><code>
   var self = {name:'Rock'};
   function getName(){
@@ -198,7 +198,7 @@ CC.extendIf(Function.prototype, {
   bind : function() {
     var _md = this, args = Slice.call(arguments, 1), object = arguments[0];
     return function() {
-        return _md.apply(object, args);
+       return _md.apply(object, args);
     }
   },
 /**
@@ -217,6 +217,15 @@ CC.extendIf(Function.prototype, {
       var _md = this;
       return function(event) {
           return _md.call(self, event||window.event);
+      }
+  },
+/**
+ * 如果仅仅想切换this范围，而又使代理函数参数与原来参数一致的，可使用本方法。
+ */
+  bindRaw : function(scope){
+      var md = this;
+      return function() {
+          return md.apply(scope, arguments);
       }
   },
 

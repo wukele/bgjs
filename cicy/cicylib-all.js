@@ -1403,7 +1403,7 @@ CC.extendIf(String.prototype,  (function(){
  */
 CC.extendIf(Function.prototype, {
 /**
- * 绑定this对象到函数 <br>
+ * 绑定this对象到函数，可绑定固定变量参数。<br>
  <pre><code>
   var self = {name:'Rock'};
   function getName(){
@@ -1421,7 +1421,7 @@ CC.extendIf(Function.prototype, {
   bind : function() {
     var _md = this, args = Slice.call(arguments, 1), object = arguments[0];
     return function() {
-        return _md.apply(object, args);
+       return _md.apply(object, args);
     }
   },
 /**
@@ -1440,6 +1440,15 @@ CC.extendIf(Function.prototype, {
       var _md = this;
       return function(event) {
           return _md.call(self, event||window.event);
+      }
+  },
+/**
+ * 如果仅仅想切换this范围，而又使代理函数参数与原来参数一致的，可使用本方法。
+ */
+  bindRaw : function(scope){
+      var md = this;
+      return function() {
+          return md.apply(scope, arguments);
       }
   },
 
@@ -2929,6 +2938,120 @@ CC.extendIf(tester, {
   },
   testDone : fGo
 });
+/**
+ * @class CC.util.JSONPConnector
+ * 该类实现JSONP跨域请求，并实现XMLHttpRequest类常用方法，使得可以直接应用到{@link CC.Ajax}类中.<br>
+ * 要发起JSONP请求，可利用{@link CC.Ajax}类，不必直接调用本类。
+ * <br>JSONP原理:<br><pre>
+Jsonp原理：
+首先在客户端注册一个callback, 然后把callback的名字传给服务器。
+此时，服务器生成 json 数据,然后以 javascript 语法的方式，生成一个function , function 名字就是传递上来的参数 jsonp.
+最后将 json 数据直接以入参的方式，放置到 function 中，这样就生成了一段 js 语法的文档，返回给客户端。
+客户端浏览器，解析script标签，并执行返回的 javascript 文档，此时数据作为参数，传入到了客户端预先定义好的 callback 函数里.（动态执行回调函数）
+</pre>
+<pre>
+<code>
+    
+</code></pre>
+ * @param {Object} config
+ */
+
+/**
+ * @cfg {Function} onreadystatechange 状态变更后回调
+ */
+
+CC.create('CC.util.JSONPConnector', null, {
+    
+    initialize : function(cfg){
+        this.cfg = cfg;
+    },
+    
+/**
+ * 中止请求
+ */
+    abort : function(){
+        if(!this.cleaned)
+            this._clean();
+    },
+    
+    setRequestHeader : fGo,
+    getResponseHeader : fGo,
+
+    open : function(method, url){
+        if(url)
+            this.url = url;
+    },
+    
+    send : function(data){
+        var cfg = this.cfg || {};
+            url = this.url || cfg.url, 
+            isQ = url.indexOf('?')>=0,
+            win = cfg.win || window,
+            fn  = 'jsonp_' + (+new Date()),
+            doc = cfg.win ? CC.frameDoc(win) : document,
+            script = doc.createElement('script'),
+            jsonp = cfg.jsonp || 'jsonp',
+            hd = doc.getElementsByTagName("head")[0],
+            self = this;
+            
+        url = url + ( isQ ? '&'+jsonp+'='+fn : '?'+jsonp+'='+fn);
+        
+        data && ( url = url + ( typeof data === 'string' ? data : CC.queryString(data) ));
+
+        script.type = 'text/javascript';
+        cfg.charset && (script.charset = cfg.charset);
+        cfg.deffer  && (script.deffer  = cfg.deffer);
+        script.src = url;
+        
+        win[fn] = function(){
+            self._clean();
+        };
+        
+        this._win = win;
+        this._script = script;
+        this._fn = fn;
+        
+        this.cleaned = false;
+        
+        // jsonp callback
+        win[fn] = function(){
+            if(!self.cleaned){
+                self._clean();
+                self._fireState(4, 200, arguments);
+            }
+        };
+
+        script.onreadystatechange = script.onload = function(e){
+            var rs = this.readyState;
+            if( !self.cleaned && (!rs || rs === 'loaded' || rs === 'complete') ){
+                self._clean();
+                self._fireState(4, -1);
+            }
+        };
+                
+        hd.appendChild(script);
+    },
+    
+    _clean : function(){
+        try {
+            delete this._win[this._fn];
+            delete this._win;
+            delete this._fn;
+            this._script.onreadystatechange = null;
+            this._script.parentNode.removeChild(this._script);
+            delete this._script;
+            delete this.cfg;
+        }catch(e){}
+        this.cleaned = true;
+    },
+    
+    _fireState : function(rs, status, args){
+        this.readyState = rs;
+        if(status !== undefined)
+            this.status = status;
+        this.onreadystatechange.call(this, args);
+    }
+});
 ﻿/*!
  * Javascript Utility for web development.
  * 反馈 : www.bgscript.com/forum
@@ -3077,7 +3200,7 @@ Ajax.prototype =
     */
    {
 /**
- * @cfg {String} method GET 或者 POST,默认GET.
+ * @cfg {String} method GET 或者 POST 或者 JSONP,默认GET.
  */
     method :'GET',
 /**@cfg {String} url 请求URL*/
@@ -3109,7 +3232,7 @@ Ajax.prototype =
  */
 
 /**
- * @cfg {String|Object} params GET时提交的字符串参数或Map键值对,结果被追加到url尾.
+ * @cfg {String|Object} params G提交的字符串参数或Map键值对,结果被追加到<b>url</b>尾.
  */
  /**
   *@cfg {Function} success 设置成功后的回调,默认为运行服务器返回的数据内容.
@@ -3257,12 +3380,14 @@ Ajax.prototype =
     /**@private*/
     _req : function(){
         if(!this.xmlReq)
-            this.xmlReq = CC.ajaxRequest();
+            this.xmlReq = this.method==='JSONP'? 
+                new CC.util.JSONPConnector(this) : 
+                CC.ajaxRequest();
     },
     /**@private*/
     _setHeaders: function() {
         this._req();
-        if (this.method.toLowerCase() == 'post') {
+        if (this.method === 'POST') {
             this.xmlReq.setRequestHeader('Content-type', this.contentType + (this.encoding ? '; charset=' + this.encoding: ''));
         }
         var j = this.xmlReq;
@@ -3301,15 +3426,10 @@ Ajax.prototype =
             }
 
             if(ps){
-              if(this.method === 'GET'){
                 if(!isQ && !ch)
                     theUrl = theUrl+'?';
 
                 theUrl = theUrl + '&' + ((typeof ps === 'string') ? ps : CC.queryString(ps));
-              }
-              else {
-                this.data = (typeof ps === 'string') ? ps : CC.queryString(CC.extend(this.data, ps));
-              }
             }
         }
         this.xmlReq.open(this.method, theUrl, this.asynchronous);
@@ -3322,11 +3442,18 @@ Ajax.prototype =
     send: function(data) {
         this._fire('send', this);
         this._setHeaders();
-        this.xmlReq.onreadystatechange = this._onReadyStateChange.bind(this);
+        this.xmlReq.onreadystatechange = this._onReadyStateChange.bindRaw(this);
         this.setMsg(this.msg);
-        if("POST" === this.method)
-          this.xmlReq.send(data || this.data);
-        else this.xmlReq.send();
+    
+    if(!data)
+        data = this.data;
+        
+    if(data){
+      if(typeof data === 'object')
+        data = CC.queryString(data);
+      this.xmlReq.send(data);
+    }
+    else this.xmlReq.send();
   }
     ,
     /**
@@ -3399,19 +3526,18 @@ Ajax.prototype =
                     this.loaded = true;
                     if(this._fire('success', this) === false)
                       return false;
-                    if(success)
-                        if(this.caller)
-                            success.call(this.caller, this);
-                        else success.call(this,this);
+                    if(success){
+                        if(this.method === 'JSONP')
+                            success.apply(this.caller||this, arguments);
+                        else success.call(this.caller||this, this);
+                    }
                 } else {
                 	  if(req.status == 0)
                 	    if(__debug) console.error('拒绝访问,确认是否跨域,',this.url); 
                     if(this._fire('failure', this) === false)
                       return false;
                     if(failure)
-                        if(this.caller)
-                            failure.call(this.caller, this);
-                        else failure.call(this,this);
+                        failure.call(this.caller||this, this);
                 }
             }catch(reqEx){
                 if(__debug) console.error(reqEx);
