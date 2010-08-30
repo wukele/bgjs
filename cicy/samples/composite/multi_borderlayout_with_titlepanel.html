@@ -3,6 +3,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>经典DEMO</title>
   <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <!--Extensions-->
+  <script type="text/javascript" src="../../more/texthighlighter.js"></script>
+  <script type="text/javascript" src="../../more/grid/rowmover/rowmover.js"></script>
+  <script type="text/javascript" src="../../more/tabcontextmenu.js"></script>
   <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
   <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
   <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
@@ -27,18 +31,28 @@
 					 	lyCfg:{items:[
 					 	 {ctype:'tab', id:'northTab',
 					 	 	selectionProvider:{selected:0},
-					 	 	events : {selected : [ { cb : function(item){CC.Util.ftip('你选择了'+item.title, '提示' , item.pCt);} } ]},
+					 	 	events : {
+					 	 	   selected : [ { cb : function(item){CC.Util.ftip('你选择了'+item.title, '提示' , item.pCt);} } ],
+                               contextmenu : [ { cb:function(menu, tabitem){
+                                 // 引入tab contextmenu扩展,可以往菜单上添加自己的内容
+                                 var customItem = menu.$('customitem');
+                                 if(!customItem){
+                                   customItem = menu.instanceItem({title:'自定义项', onselect:function(){CC.Util.alert(this.title);}, id:'customitem'});
+                                   menu.layout.add(customItem);
+                                 }
+                               } } ]
+					 	 	},
 					 	 	contentPanel : 'tabContent', 
 					 	 	layout:'tabitem',
 					 	 	lyCfg:{
 					 	 	 marginLeft:190,
 					 	 	 items:
 					 	 	  [ //此项用个IFrame作为显示面
-					 	 	   { title: '工作区', panel:
+					 	 	   { title: '工作区', closeable:false, panel:
 					 	 	   	 {
 									   ctype:'grid',
 									   plugins : [
-									   	
+									   	{ctype:'gridrowchecker'},
 									   	{name:'edition', ctype:'grideditor'}, 
 									   	
 									   	{name:'pagenation',ctype:'gridpage', count:100, url:'http://localhost/'},
@@ -61,9 +75,21 @@
 														{icon:'iconTabs', ctype:'bigbardropbtn', title:'下拉', qtip:'Tab图标', array:[{title:'菜单项', array:[{title:'菜单项'}]}, {title:'菜单项'}]},
 														{disabled:true,icon:'iconLeaf', qtip:'该项已禁用'},
 														{icon:'iconRef',dockable:true, docked:true,  qtip:'点击刷新'},
-														{icon:'iconUser', qtip:'单个图标按钮,无文本'}
+														{icon:'iconUser', qtip:'单个图标按钮,无文本'},
+														{ctype:'label', title:'查找：'},
+														{ctype:'text',  value:'你好', events:{
+														    rendered : [{cb:function(){
+														        this.domEvent('keyup', function(){
+														            CC.fly(document)
+														              .clearHeighlight()
+														              .heighlight(this.getValue().trim().split(' '))
+														              .unfly();
+														        });
+														    }}]
+														}}
 									    		 ]}
-									    }
+									    },
+									    {name:'rowmover', ctype:'rowmover', pZoom:new CC.util.d2d.RectZoom()}
 									   ],
 									   
 									   header:
@@ -100,7 +126,71 @@
 			    		 ]
 			    		} 
 					 ]},
-					 {ctype:'titlepanel', width:160, css:'lnt lnb lnl', title:'东部面板', lyInf:{split:true, dir:'east',collapsed: false}},
+					 {ctype:'titlepanel', width:250, css:'lnt lnb lnl', title:'东部面板', lyInf:{split:true, dir:'east',collapsed: false}, layout:'card',items:[
+					    {
+                           ctype:'grid',
+                           sortable : false,
+                           id:'treegrid',
+                           plugins : [
+                             {name:'edition', ctype:'grideditor'},
+                             {name:'tb', ctype:'gridtb', tb: {css:'lnt',array:[
+                                {ctype:'checkbox', title:'叶子结点', id:'leaf'},
+                                {title:'增加', onclick:function(){
+                                   var g = CC.Base.find('treegrid');
+                                   var selected = g.content.getSelectionProvider().selected;
+                                   var item = {array:[{title:'ac'}, {title:'ac'}, {title:'ac'}]};
+                                   if(!this.pCt.$('leaf').checked)
+                                      item.nodes = [];
+                        
+                                   if(selected)
+                                     selected.addItem(item);
+                                   else g.content.add(item);
+                                 }
+                                },
+                                {title:'删除', 
+                                 onclick : function(){
+                                  var g = CC.Base.find('treegrid');
+                                  var selected = g.content.getSelectionProvider().selected;
+                                  if(selected) {
+                                    if(selected.pNode)
+                                      selected.pNode.removeItem(selected);
+                                    else g.content.remove(selected);
+                                  }
+                                 }
+                                }
+                           		]
+                           	  }
+                             }
+                           ],
+                           autoFit:true,
+                           header:
+                            {
+                             array:[
+                              {title:'第一列', colCls:'treecell',editor:'text'},
+                              {title:'第二列'},
+                              {title:'第三列'}
+                             ]
+                            },
+                           content : {
+                            ctype:'treecontent', 
+                            array : [
+                            /**/
+                              {
+                                expanded : true,
+                                array:[{title:'a'}, {title:'a'}, {title:'a'}],
+                                nodes : [
+                                  {
+                                    array:[{title:'a'}, {title:'a'}, {title:'a'}],
+                                    nodes : [
+                                      { array:[{title:'a'}, {title:'a'}, {title:'a'}] }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                           }
+					    }
+					 ]},
 					 {ctype:'titlepanel', width:190, title:'西部面板', lyInf:{split:true, dir:'west',collapsed: false}, maxW:300,
 					 	layout:'border',
 					 	css:'lnr lnb lnt',
