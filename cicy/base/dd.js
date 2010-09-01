@@ -738,25 +738,35 @@ var E = CC.Event,
   
 /**@class**/
   CC.create('CC.util.d2d.ContainerDragZoom', CC.util.d2d.RectZoom, {
+/**
+ * @cfg {Function} filter 在拖动开始收集控件区域时可过滤某些不合条件的子控件。
+ * <br>
+ * 格式:filter(childComponent),返回false时忽略该子控件
+ */
+    filter : false,
+    
     prepare : function(){
       var sv = this.ct.getScrollor().view, 
           ch = sv.clientHeight,
           st = sv.scrollTop,
-          source = mgr.getSource();
-      if( __debug ) console.group('zoom rects');
+          source = mgr.getSource(),
+          self = this;
+
       var zoom = this;
       this.ct.each(function(){
         if(this !== source){
-          var v = this.view, ot = v.offsetTop, oh = v.offsetHeight;
-          // 是否可见范围
-          if(ot + oh - st > 0){
-            if(ot - st - ch < 0){
-              zoom.add( new CC.util.d2d.ComponentRect(this) );
-              if(__debug) console.log('item index:', arguments[1]);
-            }else {
-              return false;
+            if(!self.filter || self.filter(this) !== false){
+              var v = this.view, ot = v.offsetTop, oh = v.offsetHeight;
+              // 是否可见范围
+              if(ot + oh - st > 0){
+                if(ot - st - ch < 0){
+                  zoom.add( new CC.util.d2d.ComponentRect(this) );
+                  if(__debug) console.log('item index:', arguments[1]);
+                }else {
+                  return false;
+                }
+              }
             }
-          }
         }
       });
       if( __debug ) console.groupEnd();
@@ -766,7 +776,7 @@ var E = CC.Event,
       this.rects.clear();
     },
 /**
- * @param {CC.Base} component
+ * @param {CC.Base} component(s)
  */
     addComp : function(comp){
       if(CC.isArray(comp)){

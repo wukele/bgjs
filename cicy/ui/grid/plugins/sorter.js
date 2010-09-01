@@ -20,6 +20,7 @@
 /**
  * @property order 属性来自{@link CC.ui.grid.plugins.Sorter},表示当前列的排序方式，'asc','desc'或undefined。
  * @type String
+ * @member CC.ui.grid.Column
  */
  
 CC.ui.Grid.prototype.sortable = true;
@@ -110,6 +111,7 @@ CC.ui.Grid.prototype.plugins.push({name:'sorter', ctype:'gridsorter'});
  * @param {Number} colIndex
  * @param {String} order order asc or desc.
  * @param {String} comparator use this comparator to compare two column values.
+ * @member CC.ui.Grid
  */
  
 /**
@@ -119,4 +121,5 @@ CC.ui.Grid.prototype.plugins.push({name:'sorter', ctype:'gridsorter'});
  * @param {Number} colIndex
  * @param {String} order order asc or desc.
  * @param {CC.ui.grid.Column} previous sorted column if existed.
+ * @member CC.ui.Grid
  */

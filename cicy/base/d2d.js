@@ -269,6 +269,13 @@
  * @constructor
  * @param {CC.Base} component 与矩形关联的控件
  */
+ 
+/**
+ * @property comp 
+ * 该区域对应的控件
+ * @type CC.ui.Base
+ */
+ 
   CC.create('CC.util.d2d.ComponentRect', CC.util.d2d.Rect, {
 /**
  * @property z 

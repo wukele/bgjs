@@ -515,7 +515,9 @@ C.register('CC.ui.grid.Row', function(){
     className: 'grid-row'
   });
 });
-
+/**
+ * @class CC.ui.grid.Row
+ */
 CC.create('CC.ui.grid.Row', CC.ui.ContainerBase, {
 
   eventable: false,

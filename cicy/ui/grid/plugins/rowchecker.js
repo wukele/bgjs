@@ -1,4 +1,8 @@
-﻿CC.create('CC.ui.grid.plugins.RowChecker', null, {
+﻿/**
+ * @class CC.ui.grid.plugins.RowChecker
+ * 为表格增加checkbox选择列
+ */
+CC.create('CC.ui.grid.plugins.RowChecker', null, {
    
    name : 'rowchecker',
    
