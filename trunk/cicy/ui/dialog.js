@@ -3,6 +3,13 @@
  * @class CC.ui.Dialog
  * 对话框是一个特殊的窗体，底部具有按钮栏，并且可指定是否模式，即是否有掩层。
  * @extends CC.ui.Win
+ <pre><code>
+ // 
+ </code></pre>
+ */
+ 
+/**
+ * @bottomer {CC.ui.ContainerBase} 底部面板，设置为false时可取消生成底部面板。
  */
 CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
   var CC = window.CC;
@@ -16,7 +23,6 @@ CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
  * @static
  * @return {CC.ui.Dialog}
  */
- 
 CC.ui.Dialog.getOpenning = function(){
 	return CC.Base.byCid(Openning);
 };

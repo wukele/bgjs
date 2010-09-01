@@ -4,6 +4,7 @@
 
 /**
  * @cfg {Boolean} isForm 属性来自表单控件,注明该容器是否为一个表单容器。
+ * 该属性便于表单元素通过getForm获得自身所在的表单容器。
  */
 CC.ui.ContainerBase.prototype.isForm = false;
 
@@ -14,15 +15,17 @@ CC.ui.ContainerBase.prototype.isForm = false;
 
 /**
  * @class CC.ui.form.FormElement
- * 表单元素基类
+ * 表单元素基类，所有表单元素都派生自该类。
  * @extends CC.Base
  */
  
 /**
  * @event focus
+ * 元素获得焦点时发送
  */
 /**
  * @event blur
+ * 元素失去焦点后发送
  */
 
 /**@cfg {String} name 指定提交字段的名称*/
@@ -41,16 +44,21 @@ CC.ui.ContainerBase.prototype.isForm = false;
  */
 
 /**
- * 
- */
-/**
  * @cfg {Boolean} validateOnblur=true 失去焦点时是否验证.
  */
+ 
+/**
+ * @cfg {String} elementNode 指定原生的表单元素所在结点的ID，默认为'_el'，
+ * 每个表单控件都有一个原生的表单元素。<br>
+ * 该配置通常用于创建或定制表单控件，使用时不必理会。
+ */
+
+
 (function(){
-var spr;
-var CC = window.CC;
-var Bx = CC.Base;
-var Tpl = CC.Tpl;
+var spr,
+    CC = window.CC,
+    Bx = CC.Base,
+    Tpl = CC.Tpl;
 
 CC.create('CC.ui.form.FormElement', Bx, {
 
@@ -262,6 +270,7 @@ Tpl.def('Text', '<input type="text" class="g-ipt-text g-corner" />')
 /**
  * @class CC.ui.form.Text
  * @extends CC.ui.form.FormElement
+ * 封装原生input text元素,引用名为text
  */
 CC.create('CC.ui.form.Text', cf, {
     template : 'Text',
@@ -292,6 +301,7 @@ CC.ui.def('text', fr.Text);
 /**
  * @class CC.ui.form.Textarea
  * @extends CC.ui.form.FormElement
+ * 封装原生textarea元素,引用名为textarea
  */
 CC.create('CC.ui.form.Textarea', cf, fr.Text.constructors, {
   template : 'Textarea',
@@ -304,6 +314,7 @@ CC.ui.def('textarea', fr.Textarea);
 /**
  * @class CC.ui.form.Checkbox
  * @extends CC.ui.form.FormElement
+ * 引用名为checkbox
  */
 
 /**
@@ -352,32 +363,6 @@ CC.create('CC.ui.form.Checkbox', cf, {
 });
 CC.ui.def('checkbox', fr.Checkbox);
 
-CC.Tpl.def('CC.ui.form.RadioGroup', '<input type="hidden" />');
-CC.create('CC.ui.form.RadioGroup', cf, {
-
-  getChecked : function(){
-    return this.currentRadio && Bx.byCid(this.currentRadio);
-  },
-  
-  setChecked : function(radio, b){
-    if(b){
-      var c = this.getChecked();
-      if(!c || c !== radio){
-        if(c) {
-          c.setChecked(false);
-        }
-        this.currentRadio = radio.cacheId;
-        var v = radio.getValue();
-        if(v !== undefined)
-          this.setValue( v );
-      }
-    }else {
-      this.currentRadio = null;
-      this.setValue('');
-    }
-  }
-});
-CC.ui.def('radiogrp', CC.ui.form.RadioGroup);
 
 /**
  * @class CC.ui.form.Radio
@@ -441,12 +426,84 @@ CC.create('CC.ui.form.Radio', cf, fr.Checkbox.constructors, {
 });
 CC.ui.def('radio', fr.Radio);
 
+CC.Tpl.def('CC.ui.form.RadioGroup', '<input type="hidden" />');
+
+/**
+ * @class CC.ui.form.RadioGroup
+ * @extends CC.ui.form.FormElement
+ * Radio分组，引用名为radiogrp
+ */
+CC.create('CC.ui.form.RadioGroup', cf, {
+/**
+ * 获得当前选中的Radio
+ * @return {CC.ui.form.Radio}
+ */
+  getChecked : function(){
+    return this.currentRadio && Bx.byCid(this.currentRadio);
+  },
+/**
+ * 设置Radio的选择状态。
+ * @param {CC.ui.form.Radio} radio
+ * @param {Boolean} selected
+ */
+  setChecked : function(radio, b){
+    if(b){
+      var c = this.getChecked();
+      if(!c || c !== radio){
+        if(c) {
+          c.setChecked(false);
+        }
+        this.currentRadio = radio.cacheId;
+        var v = radio.getValue();
+        if(v !== undefined)
+          this.setValue( v );
+      }
+    }else {
+      this.currentRadio = null;
+      this.setValue('');
+    }
+  }
+});
+CC.ui.def('radiogrp', CC.ui.form.RadioGroup);
 
 /**
  * @class CC.ui.form.Select
- * 对html select元素的轻量封装
+ * 对原生select元素的轻量封装
  * @extends CC.ui.form.FormElement
- * @cfg {Array} array options
+ * @cfg {Array} array options, 属性为原生option元素的属性，例如{text:'text', value:'value'}
+ * 
+ <pre><code>
+   var sel = CC.ui.instance(
+     {
+        ctype:'select',
+        selectedIndex : 1,
+        onchange : function(){
+            alert(this.getSelIdx());
+        },
+        array:[
+          {text:'请选择...', value:0},
+          {text:'选项一...', value:1},
+          {text:'选项二...', value:2}
+        ]
+     });
+     
+     alert(sel.getSelIdx());
+     sel.add({text:'选项三'});
+     sel.setSelIdx(3);
+     sel.$(3).text = '改变选项三';
+ </code></pre>
+ */
+
+/**
+ * @cfg {Number} selectedIndex 可以在初始化时设置一个默认选中的选项下标。
+ */
+ 
+/**
+ * @cfg {Function} onchange 选择变更时触发
+ */
+/**
+ * @event change
+ * 选择变更时发送
  */
 CC.create('CC.ui.form.Select', cf, {
   
@@ -475,8 +532,10 @@ CC.create('CC.ui.form.Select', cf, {
     onChangeTrigger : function(){
       if(this.onchange)
          this.onchange();
+         
+      this.fire('change');
     },
-    
+
     getText : function(){
       var sel = this.element.options[this.element.selectedIndex];
       return sel?sel.text : '';
@@ -490,12 +549,35 @@ CC.create('CC.ui.form.Select', cf, {
           op = document.createElement("OPTION");
       CC.extend(op, option);
       opts[opts.length] = op;
-    }
+    },
+/**
+ * 获得下标对应的html option元素
+ * @param {Number} index
+ * @return {HTMLElement} option
+ */
+    $ : function(idx){
+        return this.element.options[i];
+    },
+/**
+ * 获得当前选择项下标。
+ * @return {Number} selectedIndex
+ */
+    getSelIdx : function(){return this.element.selectedIndex;},
+/**
+ * 设置选中选项
+ * @param {Number} index
+ */
+    setSelIdx : function(idx){this.element.selectedIndex = idx;}
 });
 
 CC.ui.def('select', fr.Select);
-
-CC.create('CC.ui.form.Label', CC.Base, {	labelNode : '_tle'});
+/**
+ * @class CC.ui.form.Label
+ * 标签，
+ * 引用名为label
+ * @extend CC.Base
+ */
+CC.create('CC.ui.form.Label', CC.Base);
 CC.ui.def('label', CC.ui.form.Label);
 
 })();

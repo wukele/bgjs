@@ -9,6 +9,9 @@
 	.box {width:120px;height:100px;margin:3px;border:1px solid #CCC;float:left;cursor:move;}
 	.box-ghost {border:2px dotted #CCC;display:none;}
 	#ddwin .g-resizer-wrap {overflow:hidden;}
+	
+   .dragstart {filter: Alpha(opacity=50);opacity:0.5;background-color:black;}
+   .dragover  {filter: Alpha(opacity=10);opacity:0.1;}
 </style>
 </head>
 <body>
@@ -28,19 +31,19 @@ CC.ready(function(){
 	 };
 	 
    var win = new CC.ui.Win({
-   	
-   	id:'ddwin',
-   	
-    showTo:document.body,
-    
-    height:250,
-    
-    width:390,
-    
-    array:[
-    	cfg,cfg,cfg,cfg,cfg,
-    	{ctype:'ct', cs:'box box-ghost', id:'ghost'}
-    ]
+       	
+       	id:'ddwin',
+       	
+        showTo:document.body,
+        
+        height:290,
+        
+        width:470,
+        
+        array:[
+        	cfg,cfg,cfg,cfg,cfg,
+        	{ctype:'ct', cs:'box box-ghost', id:'ghost'}
+        ]
    });
    
    win.render();
@@ -48,9 +51,12 @@ CC.ready(function(){
    
 	 var G = CC.util.dd.Mgr;
 	 
-	 var zoom = new CC.util.d2d.ContainerDragZoom({ct:win});
+	 var portalZoom = new CC.util.d2d.ContainerDragZoom({ct:win});
 	 
-   var handler = {
+     var handler = {
+        beforedrag : function(){
+            G.setZoom(portalZoom);
+        },
   	 	//开始拖动
   	 	dragstart : function(e, source){
   	 	  G.setBounds(bounds);
@@ -63,6 +69,14 @@ CC.ready(function(){
   	 		g.setSize(source.getSize());
   	 		source.pCt.swap(source, g);
   	 		g.show();
+  	 		//
+  	 		// 突出区域
+  	 		//
+            CC.each(portalZoom.rects, function(){
+                if(this.comp != source){
+                    this.comp.addClass('dragstart');
+                }
+            });
   	 	},
   	 	
   	 	//拖动中
@@ -75,10 +89,10 @@ CC.ready(function(){
   	 	},
   	 	
   	 	//目标进入
-  	 	sbover: function(onEl){
+  	 	sbover: function(target, source){
   	 		var g = source.pCt.byId('ghost');
-  	 		g.setSize(onEl.getSize());
-  	 		onEl.pCt.swap(onEl, g);
+  	 		g.setSize(target.getSize());
+  	 		target.pCt.swap(target, g);
   	 		//交换后更新位置缓存
   	 		G.update();
   	 	},
@@ -94,22 +108,26 @@ CC.ready(function(){
   	 		    .fastStyleSet('position','')
   	 		    .fastStyleSet('left','')
   	 		    .fastStyleSet('top','');
-  	    var g = source.pCt.byId('ghost');
-  	    source.pCt.swap(source, g);
-  	    g.hide();
+      	    var g = source.pCt.byId('ghost');
+      	    source.pCt.swap(source, g);
+      	    g.hide();
+      	    
+            CC.each(portalZoom.rects, function(){
+                if(this.comp != source){
+                    this.comp.delClass('dragstart');
+                }
+            });
   	 	}
-   };
+     };
+	 
 	 //受限范围
 	 var bounds;
 	 
    
    win.each(function(){
    	if(this.id !== 'ghost'){
-   		//加入目标组,即drag target组
-	   	CC.util.dd.Mgr.addComp(this, '所属组名');
-	   	
 	   	//安装拖放,即drag source
-	   	CC.util.dd.Mgr.installDrag(this);
+	   	CC.util.dd.Mgr.installDrag(this, true, null, handler);
 	   	this.setTitle(this.title+CC.uniqueID());
     }
    });
@@ -131,7 +149,7 @@ CC.ready(function(){
    		  bounds = vbounds;
    		  break;
    		default : 
-        win.setSize(387,248)
+        win.setSize(290,470)
    		     .center();
    			bounds = false;
    	}

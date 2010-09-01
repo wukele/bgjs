@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
   <style>
    .g-openhand{cursor:url("../../default/openhand.cur"), default !important;}
+   .dragstart {filter: Alpha(opacity=50);opacity:0.5;background-color:black;}
+   .dragover  {filter: Alpha(opacity=10);opacity:0.1;}
   </style>
 </head>
 <body>
@@ -15,7 +17,6 @@
   
 CC.ready(function(){
 //__debug=true;
-var shareZoom = new CC.util.d2d.RectZoom();
 
 var win = new CC.ui.Win({
   layout:'border',
@@ -23,10 +24,10 @@ var win = new CC.ui.Win({
   items:[
       {ctype:'tree',id:'typetree',  cs:'scrolltree', css:'lnr',
        getScrollor : function(){ return this; },
+       // 默认tree点击触发事件是mousedown,就像tabitem一样,
+       // 这里为了不影响拖动事件mousedown,将触发事件改为click
        clickEvent:'click',
-       root:{expanded:true,title:'根目录',array:[
-         
-       ]},
+       root:{expanded:true,title:'根目录'},
        width:190,lyInf:{dir:'west'}
       },
       {ctype:'grid', id:'attrgrid', lyInf:{dir:'center'},autoFit:true,css:'lnl',
@@ -42,16 +43,35 @@ var win = new CC.ui.Win({
 win.render();
 win.center();
 
+var resizeImg = new CC.ui.Resizer({
+    layout : 'card',
+    left   : 20,
+    top    : 10,
+    width  : 300,
+    height : 300,
+    id     : '美女',
+    showTo : document.body,
+    autoRender : true,
+    shadow : true,
+    items  : [{
+        ctype:'base',
+        template:'<img src="http://www.i816.net/sucaisoso/attachments/day_090929/09092915041e3293ea53e46d25.jpg">'
+    }]
+});
+
 var attrgrid = win.byId('attrgrid');
 var typetree    = win.byId('typetree');
 // 拖放管理器
 var G = CC.util.dd.Mgr;
 
-// 拖放域
-var ctzoom = new CC.util.d2d.RectZoom({rects:[
-  new CC.util.d2d.ComponentRect(attrgrid),
-  new CC.util.d2d.ComponentRect(typetree)
-]});
+// 添加两个拖放域，为指定控件所在的区域
+var ctzoom = new CC.util.d2d.RectZoom({
+  rects:[
+    new CC.util.d2d.ComponentRect(attrgrid),
+    new CC.util.d2d.ComponentRect(typetree),
+    new CC.util.d2d.ComponentRect(resizeImg)
+  ]
+});
 
 // 拖放处理对象
 var handler = {
@@ -61,22 +81,36 @@ var handler = {
   dragstart : function(evt, source){
     G.getIndicator().prepare();
     G.getIndicator().setMsg("容器间的拖放!", "源:"+source.id);
+    CC.each(ctzoom.rects, function(){
+        if(this.comp != source){
+            this.comp.addClass('dragstart');
+        }
+    });
   },
   
   drag : function(){
+    // 使得指示器在正确的位置显示
     G.getIndicator().reanchor();
   },
   sbover : function(target){
     G.getIndicator().setMsg('进入了<font color="red">'+target.id+'</font>');
+    target.addClass('dragover');
   },
-  sbout : function(){
+  sbout : function(target){
     G.getIndicator().setMsg("容器间的拖放!");
-  },
-  sbdrop : function(target, source){
-   
+    target.delClass('dragover');
   },
   
-  dragend : function(){
+  sbdrop : function(target, source){
+    target.delClass('dragover');   
+  },
+  
+  dragend : function(evt, source){
+    CC.each(ctzoom.rects, function(){
+        if(this.comp != source){
+            this.comp.delClass('dragstart');
+        }
+    });
     G.getIndicator().end();
   }
 };
@@ -93,5 +127,7 @@ var handler = {
 G.installDrag(typetree, true, null, handler);
 
 G.installDrag(attrgrid, true, null, handler);
+
+G.installDrag(resizeImg, true, null, handler);
 });
 </script>
