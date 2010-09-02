@@ -61,7 +61,7 @@ Base.byDom = function(dom, pCt){
       //find cicyId mark
       var c, bd = pCt && pCt.view || document;
 
-      while( dom !== bd){
+      while(dom && dom !== bd){
         if(dom.cicyId){
           c = Base.byCid(dom.cicyId);
           if(c && !c.delegated){
