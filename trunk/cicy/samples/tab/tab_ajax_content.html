@@ -1,0 +1,42 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+</head>
+<body>
+</body>
+</html>
+<script>
+CC.ready(function(){
+__debug=true;
+ var win = new CC.ui.Win({
+  title : '选项卡Ajax加载',
+  destoryOnClose : true,
+  layout : 'row',
+  showTo:document.body,
+  items:[
+    {
+      ctype:'tab',   
+      id:'mytab', 
+      selectionProvider:{selected:0}, 
+      contentPanel:'tabcontentpanel', 
+      lyInf:{h:'auto'}, 
+      array:[{
+        title:'选项_1',
+        url : 'http://bgjs.googlecode.com/svn/trunk/cicy/samples/connection/request.php',
+        panel:{
+            ctype:'panel',
+            connectionProvider : { loadType:'html' }
+        }
+      }]
+    },
+    {ctype:'panel', id:'tabcontentpanel', lyInf:{h:'lead'}, layout:'card'}
+  ]
+ });
+ win.render();
+ win.center();
+ 
+});
+</script>
