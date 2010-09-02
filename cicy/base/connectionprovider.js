@@ -122,8 +122,13 @@ CC.util.ProviderFactory.create('Connection', null, {
         this.t.wrapper.html(data, true);
         break;
       default :
-        this.reader ? (this.t.layout||this.t).fromArray(CC.util.DataTranslator.get(this.reader).read(data, this.t)) :
-          (this.t.layout||this.t).fromArray(data);
+        var ct = this.t.layout||this.t;
+        if(this.reader){
+            if(typeof this.reader === 'string')
+                ct.fromArray(CC.util.DataTranslator.get(this.reader).read(data, this.t));
+            else ct.fromArray(this.reader.read(data, this.t));
+        }else 
+            ct.fromArray(data);
         break;
     }
   },
