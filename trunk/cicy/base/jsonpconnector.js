@@ -9,10 +9,7 @@ Jsonp原理：
 最后将 json 数据直接以入参的方式，放置到 function 中，这样就生成了一段 js 语法的文档，返回给客户端。
 客户端浏览器，解析script标签，并执行返回的 javascript 文档，此时数据作为参数，传入到了客户端预先定义好的 callback 函数里.（动态执行回调函数）
 </pre>
-<pre>
-<code>
-    
-</code></pre>
+ * @constructor
  * @param {Object} config
  */
 

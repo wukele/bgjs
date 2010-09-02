@@ -7,12 +7,10 @@ var CC = window.CC,
     C = CC.Cache;
 /**
  * @class CC.ui.grid
- * @namespace
  */
 
 /**
  * @class CC.ui.grid.plugin
- * @namespace
  */
  
 /**
@@ -504,7 +502,7 @@ return {
  */
 
 /**
- * @cfg {String|CC.Base} 指定该列单元格类，未设定时采用CC.ui.grid.Cell 
+ * @cfg {String|CC.Base} colCls 指定该列单元格类，未设定时采用CC.ui.grid.Cell 
  * @member CC.ui.grid.Column
  */ 
 CC.ui.grid.Column.prototype.colCls = CC.ui.grid.Cell;

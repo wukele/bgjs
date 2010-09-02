@@ -199,21 +199,6 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
   if(item.disabled)
     return this;
 
-/**
- * @event select
- * 选择前发出,为空选时不发出
- * @param {CC.Base} item
- * @param {Boolean}  b
- */
-
-
-/**
- * @event selected
- * 选择后发出,为空选时不发出
- * @param {CC.Base} item
- * @param {CC.util.SelectionProvider} selectionProvider
- * @param {DOMEvent} event 如果该选择事件由DOM事件触发,传递event
- */
 
 /**
  * @cfg {Boolean} forceSelect 是否强制发送select事件,即使当前子项已被选中.<br>
@@ -233,11 +218,7 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
   this.onSelectChanged(item, false);
   return this;
  },
- 
-/**
- * @cfg {Function} onselect 该属性由{@link CC.util.SelectionProvider}类处理,当项选中时,调用本方法.
- * @member CC.Base
- */
+
  onSelect : function(item, cancelscroll) {
   if(this.autoFocus)
    this.t.wrapper.focus();
@@ -246,14 +227,6 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
       item.scrollIntoView(this.t.getScrollor());
   item.onselect && item.onselect();
  },
-
-/**
- * 选择变更时发出,包括空选择.
- * @event selectchange
- * @param {CC.Base} item
- * @param {CC.Base}  previous
- * @param {CC.util.SelectionProvider} provider
- */
  
 /**@private*/
  onSelectChanged : function(item , b){
@@ -446,3 +419,36 @@ CC.util.ProviderFactory.create('Selection', null, function(father){
 
  }
 });
+
+/**@class CC.Base*/
+/**
+ * @cfg {Function} onselect 该属性由{@link CC.util.SelectionProvider}类处理,当项选中时,调用本方法.
+ * @member CC.Base
+ */
+ 
+/**
+ * @class CC.ui.ContainerBase
+ */
+/**
+ * 该属性由{@link CC.util.SelectionProvider}类提供，选择变更时发出,包括空选择.
+ * @event selectchange
+ * @param {CC.Base} item
+ * @param {CC.Base}  previous
+ * @param {CC.util.SelectionProvider} provider
+ */
+ 
+/**
+ * @event select
+ * 该属性由{@link CC.util.SelectionProvider}类提供，选择前发出,为空选时不发出
+ * @param {CC.Base} item
+ * @param {Boolean}  b
+ */
+
+
+/**
+ * @event selected
+ * 该属性由{@link CC.util.SelectionProvider}类提供，选择后发出,为空选时不发出
+ * @param {CC.Base} item
+ * @param {CC.util.SelectionProvider} selectionProvider
+ * @param {DOMEvent} event 如果该选择事件由DOM事件触发,传递event
+ */

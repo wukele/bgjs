@@ -1,6 +1,26 @@
 ﻿  /**
    * @class CC.layout.BorderLayout
    * 东南西北中布局, 与Java swing中的BorderLayout具有相同效果.
+ <pre><code>
+		CC.ready(function(){
+			var win = new CC.ui.Win({
+				layout:'border',
+				lyCfg : {
+					items : [
+					 {ctype:'panel', height:40, lyInf:{split:true, dir:'north', collapsed:true}},
+					 {ctype:'panel', height:40, lyInf:{split:true, dir:'south'}},
+					 {ctype:'panel', width:125, lyInf:{split:true, dir:'east',autoCollapseWidth:80,collapsed: false}},
+					 {ctype:'panel', width:125, lyInf:{split:true, dir:'west',collapsed: true}, maxW:300},
+					 {ctype:'panel', lyInf:{dir:'center'}}
+					]
+				},
+				showTo:document.body
+			});
+          win.render();
+          win.center();
+		});
+ </code></pre>
+
    * @extends CC.layout.Layout
    */
 (function(){

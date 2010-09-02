@@ -5,7 +5,6 @@
  * <li>基于空间划分检测</li>
  * <li>一种基于浏览器自身的mouse over + mouse out检测</li></ul>
  * 这里采用第一种.
- * @namespace
  */
 (function(){
 
@@ -265,6 +264,116 @@ var E = CC.Event,
 /**
  * @class CC.util.dd.Mgr
  * Drag & Drop 管理器
+ * 利用空间划分类，结合鼠标事件实现DRAG & DROP功能。
+ <pre><code>
+CC.ready(function(){
+//__debug=true;
+// 实现两个控件（树，表格）间的拖放响应效果。
+var win = new CC.ui.Win({
+  layout:'border',
+  showTo:document.body,
+  items:[
+      {ctype:'tree',id:'typetree',  cs:'scrolltree', css:'lnr',
+       getScrollor : function(){ return this; },
+       // 默认tree点击触发事件是mousedown,就像tabitem一样,
+       // 这里为了不影响拖动事件mousedown,将触发事件改为click
+       clickEvent:'click',
+       root:{expanded:true,title:'根目录'},
+       width:190,lyInf:{dir:'west'}
+      },
+      {ctype:'grid', id:'attrgrid', lyInf:{dir:'center'},autoFit:true,css:'lnl',
+       header : {array:[
+         {title:'名 称'},
+         {title:'值'}
+       ]},
+       
+       content:{array:[{  array:[{title:'码 数'}, {title:'20'}] }] }
+      }
+  ]
+});
+win.render();
+win.center();
+
+var resizeImg = new CC.ui.Resizer({
+    layout : 'card',
+    left   : 20,
+    top    : 10,
+    width  : 300,
+    height : 300,
+    id     : '图片',
+    showTo : document.body,
+    autoRender : true,
+    shadow : true,
+    items  : [{
+        ctype:'base',
+        template:'<img alt="图片位置" src="3ea53e46d25.jpg">'
+    }]
+});
+
+var attrgrid = win.byId('attrgrid');
+var typetree    = win.byId('typetree');
+// 拖放管理器
+var G = CC.util.dd.Mgr;
+
+// 添加三个拖放域，为指定控件所在的区域
+var ctzoom = new CC.util.d2d.RectZoom({
+  rects:[
+    new CC.util.d2d.ComponentRect(attrgrid),
+    new CC.util.d2d.ComponentRect(typetree),
+    new CC.util.d2d.ComponentRect(resizeImg)
+  ]
+});
+
+// 拖放处理对象
+var handler = {
+  beforedrag : function(){
+    G.setZoom(ctzoom);
+  },
+  dragstart : function(evt, source){
+    G.getIndicator().prepare();
+    G.getIndicator().setMsg("容器间的拖放!", "源:"+source.id);
+    CC.each(ctzoom.rects, function(){
+        if(this.comp != source){
+            this.comp.addClass('dragstart');
+        }
+    });
+  },
+  
+  drag : function(){
+    // 使得指示器在正确的位置显示
+    G.getIndicator().reanchor();
+  },
+  sbover : function(target){
+    G.getIndicator().setMsg('进入了<font color="red">'+target.id+'</font>');
+    target.addClass('dragover');
+  },
+  sbout : function(target){
+    G.getIndicator().setMsg("容器间的拖放!");
+    target.delClass('dragover');
+  },
+  
+  sbdrop : function(target, source){
+    target.delClass('dragover');   
+  },
+  
+  dragend : function(evt, source){
+    CC.each(ctzoom.rects, function(){
+        if(this.comp != source){
+            this.comp.delClass('dragstart');
+        }
+    });
+    G.getIndicator().end();
+  }
+};
+
+G.installDrag(typetree, true, null, handler);
+
+G.installDrag(attrgrid, true, null, handler);
+
+G.installDrag(resizeImg, true, null, handler);
+});
+ </code></pre>
+
  */
   var mgr = CC.util.dd.Mgr = {
 /**
@@ -634,7 +743,7 @@ var E = CC.Event,
  
 /**
 * @cfg {String} dragZoom 设置或获取控件源拖放区域名称(组),只有控件已安装拖动功能该设置才生效.<br>
-* 属性由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}
+* 属性由{@link CC.util.dd.Mgr}引入,另见{@link CC.dd.Mgr#installDrag}
 */
 
 /**
@@ -736,7 +845,21 @@ var E = CC.Event,
     sbmove : false
   });
   
-/**@class**/
+/**
+ *@class CC.util.d2d.ContainerDragZoom
+ * 该类可快速将容器首层子控件添加到容器矩域中，并可实时刷新矩域数据。
+ <pre><code>
+ // 容器子项拖放响应
+    var portalZoom = new CC.util.d2d.ContainerDragZoom({ct:win});
+    var handler = {
+        beforedrag : function(){
+            CC.util.dd.Mgr.setZoom(portalZoom);
+        },
+        ...
+    };
+ </code></pre>
+ * @extends CC.util.d2d.RectZoom
+ */
   CC.create('CC.util.d2d.ContainerDragZoom', CC.util.d2d.RectZoom, {
 /**
  * @cfg {Function} filter 在拖动开始收集控件区域时可过滤某些不合条件的子控件。
@@ -744,7 +867,9 @@ var E = CC.Event,
  * 格式:filter(childComponent),返回false时忽略该子控件
  */
     filter : false,
-    
+/**
+ * @private
+ */
     prepare : function(){
       var sv = this.ct.getScrollor().view, 
           ch = sv.clientHeight,
@@ -761,7 +886,7 @@ var E = CC.Event,
               if(ot + oh - st > 0){
                 if(ot - st - ch < 0){
                   zoom.add( new CC.util.d2d.ComponentRect(this) );
-                  if(__debug) console.log('item index:', arguments[1]);
+                  if(__debug) console.log('CC.util.d2d.ContainerDragZoom:item index:', arguments[1]);
                 }else {
                   return false;
                 }
@@ -771,7 +896,9 @@ var E = CC.Event,
       });
       if( __debug ) console.groupEnd();
     },
-    
+/**
+ * 
+ */
     clear   : function(){
       this.rects.clear();
     },
@@ -789,7 +916,11 @@ var E = CC.Event,
   });
   
   CC.ui.def('ctzoom', CC.util.d2d.ContainerDragZoom);
-  
+/**
+ * @class CC.util.dd.Indicator
+ * 默认的拖放指示器
+ * @extends CC.ui.ContainerBase
+ */
   CC.create('CC.util.dd.Indicator', CC.ui.ContainerBase, {
       
       hidden : true,
@@ -799,7 +930,11 @@ var E = CC.Event,
            '<div class="g-float-tip g-clear g-openhand"><div class="tipbdy"><div id="_tle" class="important_txt"></div><div id="_msg" class="important_subtxt"></div></div></div>',
       
       shadow : {ctype:'shadow', inpactY:-1,inpactH:5},
-      
+/**
+ * 设置标题。
+ * @param {String} text 正文
+ * @param {String} title 标题
+ */
       setMsg : function(text, title){
         if(text !== false) {
           if(!this.msgNode)
@@ -815,7 +950,9 @@ var E = CC.Event,
         if(this.shadow)
           this.shadow.resize();
       },
-      
+/**
+ * 显示前调用，设置初始位置等信息。
+ */
       prepare : function(x, y){
         if(x === undefined)
           x = 15;
@@ -837,18 +974,22 @@ var E = CC.Event,
         mgr.resizeHelper.masker.addClass('g-openhand');
         this.appendTo(document.body);
       },
-      
+
       setXY : function(){
         this.superclass.setXY.apply(this, arguments);
         if(this.shadow)
           this.shadow.repos();
         return this;
       },
-      
+/**
+ * 更新定位信息。
+ */
       reanchor : function(){
         this.setXY(this.initX + DXY[0], this.initY + DXY[1]);
       },
-      
+/**
+ * 指示结束后调用
+ */
       end : function(){
         mgr.resizeHelper.applyMasker(false);
         mgr.resizeHelper.masker.delClass('g-openhand');
@@ -858,6 +999,10 @@ var E = CC.Event,
   
   CC.ui.def('ddindicator', CC.util.dd.Indicator);
   
+  /**
+   * @member CC.util.dd.Mgr
+   * @method getIndicator
+   */
   mgr.getIndicator = function(cfg){
     var idc = this.indicator;
     if(!idc){

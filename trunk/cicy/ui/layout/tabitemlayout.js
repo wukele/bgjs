@@ -1,10 +1,10 @@
 /**
- * @class CC.ui.TabItemLayout
+ * @class CC.ui.layout.TabItemLayout
  * 用于布局{@link CC.ui.Tab}容器里的{@link CC.ui.TabItem},使得子项超出可视时出视导航条.
  * @extends CC.layout.Layout
  */
 CC.Tpl.def('CC.ui.TabItemLayout', '<div class="g-panel"><div class="auto-margin" id="_margin"><a href="javascript:fGo()" id="_rigmov" class="auto-rigmov" style="right:0px;"></a><a href="javascript:fGo()" style="left:0px;" id="_lefmov" class="auto-lefmov"></a><div class="auto-scrollor" id="_scrollor" tabindex="1" hidefocus="on"><div class="auto-offset" id="_wrap"></div></div></div></div>');
-CC.create('CC.ui.tab.TabItemLayout', CC.layout.Layout, function(father){
+CC.create('CC.ui.layout.TabItemLayout', CC.layout.Layout, function(father){
 return {
 
   layoutOnChange : true,
@@ -341,4 +341,4 @@ return {
 };
 });
 
-CC.layout.def('tabitem', CC.ui.tab.TabItemLayout);
+CC.layout.def('tabitem', CC.ui.layout.TabItemLayout);

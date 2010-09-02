@@ -34,14 +34,15 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
    * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
    * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
    * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
+   * @param {Array}  [offsetx, offsety] 显示X，Y增量
    * @method ftip
    * @member CC.Util
    */
-  CC.Util.ftip = function(msg, title, proxy, getFocus, timeout){
+  CC.Util.ftip = function(msg, title, proxy, getFocus, timeout, off){
     if(!instance)
       instance = CC.ui.instance({ctype:'tip', showTo:document.body, autoRender:true});
     CC.fly(instance.tail).show().unfly();
-    instance.show(msg, title, proxy, getFocus, timeout);
+    instance.show(msg, title, proxy, getFocus, timeout, off);
 
     return instance;
   };
@@ -123,8 +124,12 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
     },
 
   /**@private*/
-    setRightPosForTarget : function(target){
+    setRightPosForTarget : function(target, off){
       var f = CC.fly(target), xy = f.absoluteXY();
+      if(off){
+        xy[0] += off[0];
+        xy[1] += off[1];
+      }
       this.anchorPos([xy[0],xy[1],0,0], 'lt', 'hr', false, true, true);
       f.unfly();
     },
@@ -191,8 +196,9 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
    * @param {DOMElement|CC.Base} [target] 消息提示目录元素,消息将出现在该元素左上方
    * @param {Boolean} [getFocus] 提示时是否聚焦到target元素,这对于表单类控件比较有用
    * @param {Number} [timout] 超时毫秒数,即消息显示停留时间
+   * @param {Array}  [offsetx, offsety] 显示X，Y增量
    */
-    show : function(msg, title, target, getFocus, timeout){
+    show : function(msg, title, target, getFocus, timeout, off){
 
       if(arguments.length == 0)
         return superclass.show.call(this);
@@ -207,7 +213,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
 
       this.display(true);
       if(target){
-        this.setRightPosForTarget(target);
+        this.setRightPosForTarget(target, off);
         if(getFocus)
           CC.fly(target).focus(true).unfly();
       }
