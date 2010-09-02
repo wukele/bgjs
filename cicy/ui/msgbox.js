@@ -11,6 +11,40 @@ CC.extendIf(CC.Util, (function(){
   }
 /**
  * @class CC.Util
+ <pre><code>
+function allButtons(){
+	CC.Util.alert('选择任意按钮','按钮标题',(function(){
+		alert('你点击了'+this.returnCode);
+	}),'ok|cancel|yes|no|close');
+}
+
+//
+// 回调函数返回false时不关闭
+// 实现自定关闭
+//
+function callbackReturnFalse(){
+	CC.Util.alert('点击时并不会关闭', '', function(){
+		CC.Util.ftip("未得到肯定我是不会关闭的!","说明", this);
+		return false;
+	});
+}
+//
+// alert回调时有alert
+//
+function alertInAlert(){
+	CC.Util.alert('按钮被点击了','按钮标题',(function(){
+		CC.Util.alert.bind(CC.Util, this.returnCode).timeout(0);
+	}),'ok|cancel|yes|no|close');
+}
+
+//
+// 显示长篇消息时自动适应高度
+//
+function longText(){
+	CC.Util.alert("    1. 看一本权威的书, 推荐《JavaScript权威指南》(非广告-_-!!)<br><br>    2. 给自己选一个实践的目标,如利用JS做一个UI,或实现某一效果,或做一个小游戏<br><br>    3. 遇到问题先查查资料书,再g.cn,不行再google.com,最后才是问人<br><br>    4. 多看看同行的BLOG,里面有不少经验分享<br><br>    5. 学会调试，推荐Firefox的firebug插件<br><br>    5. 平时勤于独立思考,试试用不同方式模式实现同一效果", "学习JavaScript建议");
+}
+ </code></pre>
+
  */
 return {
   /**
@@ -22,6 +56,7 @@ return {
    * 返回系统全局唯一对话框.
    * 该对话框为系统消息窗口.
    * @return {Dialog} 系统对话框
+   * @member CC.Util
    */
   getSystemWin: function() {
     var w = this._sysWin;
@@ -69,6 +104,7 @@ return {
    * @param {String} buttons 显示按钮ID,用|号分隔,如ok|cancel|yes|no
    * @param {Win} modalParent 父窗口,默认为document.body层
    * @param {String} defButton 聚焦按钮ID,默认为 'ok'
+   * @member CC.Util
    */
   alert: function(msg, title, callback, buttons, modalParent, defButton) {
     title = title || '提示';
@@ -103,6 +139,7 @@ return {
    * @param {String} buttons 显示按钮ID,用|号分隔,如ok|cancel|yes|no,默认为ok|cancel
    * @param {Win} modalParent 父窗口,默认为document.body层
    * @param {String} defButton 聚焦按钮ID,默认为 'ok'
+   * @member CC.Util
    */
   inputBox: function(msg, title, callback, buttons, modalParent, defButton) {
     title = title || '提示';

@@ -1,5 +1,13 @@
 ﻿/**
  * @class CC.util.AsynchronizeQueue
+ * 异步处理队列，可监听各个异步请求{@link CC.Ajax}的状态。
+ * 结构包含两个队列：
+  * <ul>
+ * <li>waitQueue，等待队列</li>
+ * <li>requestQueue，请求队列，或为活动队列</li>
+ * </ul>
+ 利用{@link join}方法入队，放入等待队列。<br>
+ 利 用{@link out}方法出队，从请求或等待队列中移除。<br>
  */
 
 /**

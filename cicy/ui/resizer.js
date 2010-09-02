@@ -232,3 +232,5 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
         }
     };
 }));
+
+CC.ui.def('resizer', CC.ui.Resizer);

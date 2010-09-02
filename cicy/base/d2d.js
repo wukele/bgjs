@@ -1,7 +1,6 @@
 ﻿/**
  * @class CC.util.d2d
  * 平面2D相关类库
- * @namespace
  */
  CC.util.d2d = {};
 /**

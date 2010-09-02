@@ -10,7 +10,6 @@ CC.ui.ContainerBase.prototype.isForm = false;
 
 /**
  * @class CC.ui.form
- * @namespace
  */
 
 /**

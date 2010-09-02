@@ -8,7 +8,6 @@ var UX = CC.ui;
 /**
  * @class CC.layout
  * 容器布局管理器类库
- * @namespace
  */
 if(!CC.layout)
   CC.layout = {};
@@ -491,7 +490,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
   
 /**
- * @cfg {String|DOMElement} 指定容器存放子项的dom结点.
+ * @cfg {String|DOMElement} ct 指定容器存放子项的dom结点.
  */
   ct : false,
 

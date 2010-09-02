@@ -8,39 +8,65 @@
 /**
  * @class CC.Ajax
  * CC.Ajax Ajax请求封装类<br>
+ * 该类依赖底层连接器实现，目前已实现的连接器有
+ * <ul>
+ * <li>XMLHttpRequest，这是浏览器自带的http连接，不能跨哉。</li>
+ * <li>JSONP，利用script标签加载资源，可跨域。，参见{@link CC.util.JSONPConnector}</li>
+ * </ul>
+ * AJAX类具有很详细的事件列表，利用这些事件可控制请求的每个细节。
+ * 可以new一个实例，再调用{@link open}, {@link send}或{@link connect}方法请求数据，
+ * 也可以直接调用静态方法{@link CC.Ajax.connect}发起请求。
  <pre><code>
   //连接服务器并获得返回的JSON数据
-  Ajax.connect({
+  CC.Ajax.connect({
     url : '/server/json/example.page?param=v',
     success : function(ajax){
                     var json = this.getJson();
                     alert(json.someKey);
-                },
-    failure : function(){alert('连接失败.');}
+    },
+    failure : function(){alert('连接失败.');},
+    
+    onfinal : function(){
+        alert('无论成功与否，都被执行');
+    }
   });
 
   //连接服务器并获得返回的XML文档对象数据
-  Ajax.connect({
+  CC.Ajax.connect({
     url : '/server/xml/example.page?param=v',
     success : function(ajax){
-                    var xmlDoc = this.getXmlDoc();
+                    var xmlDoc = ajax.getXmlDoc();
                     alert(xmlDoc);
-                }
+    }
   });
 
-  //连接服务器并运行返回的html数据,将html显示在设置的displayPanel中,在window范围内运行Javascript和style
-  Ajax.connect({
+  // 连接服务器并运行返回的html数据,
+  // 将html显示在设置的displayPanel中,在window范围内运行Javascript和style
+  CC.Ajax.connect({
     url : '/server/xml/example.page?param=v',
     displayPanel : 'panel'
   });
 
   //
-  var ajax = new Ajax({
+  var ajax = new CC.Ajax({
    url : '...',
-   method:'POST'
+   // 指定POST请法度
+   method:'POST',
+   // POST数据
+   data : {article:'long long text.'}
    ....
   });
   ajax.connect('param=data');
+  
+  // 当资源需要跨域时，可进行JSONP请求，返回JSON对象数据。
+  CC.Ajax.connect({
+    // 指定方式为JSONP
+    method : 'JSONP',
+    //其它设置一样
+    success : function(json){
+        alert(json);
+    }
+  });
   </code></pre>
  * @extends CC.Eventable 
  */
@@ -181,7 +207,7 @@ Ajax.prototype =
  * @cfg {String|Object} params G提交的字符串参数或Map键值对,结果被追加到<b>url</b>尾.
  */
  /**
-  *@cfg {Function} success 设置成功后的回调,默认为运行服务器返回的数据内容.
+  *@cfg {Function} success 设置成功后的回调,默认为调用{@link invokeHtml}运行服务器返回的数据内容.
   */
     success: (function(ajax) {
         ajax.invokeHtml();
@@ -263,7 +289,7 @@ Ajax.prototype =
 
    /**
    * 重写以实现自定消息界面,用于进度的消息显示,默认为空调用.
-   * @method fGo
+   * @method setMsg
    */
     setMsg: fGo
     ,
@@ -428,7 +454,7 @@ Ajax.prototype =
           this.xmlReq.setRequestHeader(key, value);
         }catch(e){
           this._close();
-          console.log(e);
+          if(__debug) console.log(e);
         }
     }
     ,
