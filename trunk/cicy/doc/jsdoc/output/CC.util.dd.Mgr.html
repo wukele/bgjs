@@ -1,6 +1,151 @@
-<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>Class <a href="source/dd.html#cls-CC.util.dd.Mgr">CC.util.dd.Mgr</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">CC.util.dd</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">dd.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/dd.html#cls-CC.util.dd.Mgr">Mgr</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description">Drag & Drop 管理器</div><div class="hr"></div><a id="CC.util.dd.Mgr-props"></a><h2>Public Properties</h2><div class="no-members">This class has no public properties.</div><a id="CC.util.dd.Mgr-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div><a id="CC.util.dd.Mgr-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-$"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-$">$</a></b>(&nbsp;<code>String&nbsp;name</code>,&nbsp;<code>String&nbsp;parent</code>&nbsp;)
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>Class <a href="source/cicylib-all.html#cls-CC.util.dd.Mgr">CC.util.dd.Mgr</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">CC.util.dd</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">cicylib-all.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/cicylib-all.html#cls-CC.util.dd.Mgr">Mgr</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description">Drag & Drop 管理器
+利用空间划分类，结点鼠标事件实现DRAG & DROP功能。
+ <pre><code>CC.ready(<b>function</b>(){
+<i>//__debug=true;</i>
+<i>// 实现两个控件（树，表格）间的拖放响应效果。</i>
+<b>var</b> win = <b>new</b> CC.ui.Win({
+  layout:<em>'border'</em>,
+  showTo:document.body,
+  items:[
+      {ctype:<em>'tree'</em>,id:<em>'typetree'</em>,  cs:<em>'scrolltree'</em>, css:<em>'lnr'</em>,
+       getScrollor : <b>function</b>(){ <b>return</b> this; },
+       <i>// 默认tree点击触发事件是mousedown,就像tabitem一样,</i>
+       <i>// 这里为了不影响拖动事件mousedown,将触发事件改为click</i>
+       clickEvent:<em>'click'</em>,
+       root:{expanded:true,title:<em>'根目录'</em>},
+       width:190,lyInf:{dir:<em>'west'</em>}
+      },
+      {ctype:<em>'grid'</em>, id:<em>'attrgrid'</em>, lyInf:{dir:<em>'center'</em>},autoFit:true,css:<em>'lnl'</em>,
+       header : {array:[
+         {title:<em>'名 称'</em>},
+         {title:<em>'值'</em>}
+       ]},
+       
+       content:{array:[{  array:[{title:<em>'码 数'</em>}, {title:<em>'20'</em>}] }] }
+      }
+  ]
+});
+win.render();
+win.center();
+
+<b>var</b> resizeImg = <b>new</b> CC.ui.Resizer({
+    layout : <em>'card'</em>,
+    left   : 20,
+    top    : 10,
+    width  : 300,
+    height : 300,
+    id     : <em>'图片'</em>,
+    showTo : document.body,
+    autoRender : true,
+    shadow : true,
+    items  : [{
+        ctype:<em>'base'</em>,
+        template:<em>'<img alt=<em>"图片位置"</em> src=<em>"3ea53e46d25.jpg"</em>>'</em>
+    }]
+});
+
+<b>var</b> attrgrid = win.byId(<em>'attrgrid'</em>);
+<b>var</b> typetree    = win.byId(<em>'typetree'</em>);
+<i>// 拖放管理器</i>
+<b>var</b> G = CC.util.dd.Mgr;
+
+<i>// 添加两个拖放域，为指定控件所在的区域</i>
+<b>var</b> ctzoom = <b>new</b> CC.util.d2d.RectZoom({
+  rects:[
+    <b>new</b> CC.util.d2d.ComponentRect(attrgrid),
+    <b>new</b> CC.util.d2d.ComponentRect(typetree),
+    <b>new</b> CC.util.d2d.ComponentRect(resizeImg)
+  ]
+});
+
+<i>// 拖放处理对象</i>
+<b>var</b> handler = {
+  beforedrag : <b>function</b>(){
+    G.setZoom(ctzoom);
+  },
+  dragstart : <b>function</b>(evt, source){
+    G.getIndicator().prepare();
+    G.getIndicator().setMsg(<em>"容器间的拖放!"</em>, <em>"源:"</em>+source.id);
+    CC.each(ctzoom.rects, <b>function</b>(){
+        <b>if</b>(this.comp != source){
+            this.comp.addClass(<em>'dragstart'</em>);
+        }
+    });
+  },
+  
+  drag : <b>function</b>(){
+    <i>// 使得指示器在正确的位置显示</i>
+    G.getIndicator().reanchor();
+  },
+  sbover : <b>function</b>(target){
+    G.getIndicator().setMsg(<em>'进入了<font color=<em>"red"</em>>'</em>+target.id+<em>'</font>'</em>);
+    target.addClass(<em>'dragover'</em>);
+  },
+  sbout : <b>function</b>(target){
+    G.getIndicator().setMsg(<em>"容器间的拖放!"</em>);
+    target.delClass(<em>'dragover'</em>);
+  },
+  
+  sbdrop : <b>function</b>(target, source){
+    target.delClass(<em>'dragover'</em>);   
+  },
+  
+  dragend : <b>function</b>(evt, source){
+    CC.each(ctzoom.rects, <b>function</b>(){
+        <b>if</b>(this.comp != source){
+            this.comp.delClass(<em>'dragstart'</em>);
+        }
+    });
+    G.getIndicator().end();
+  }
+};
+
+G.installDrag(typetree, true, null, handler);
+
+G.installDrag(attrgrid, true, null, handler);
+
+G.installDrag(resizeImg, true, null, handler);
+});</code></pre></div><div class="hr"></div><a id="CC.util.dd.Mgr-props"></a><h2>Public Properties</h2><div class="no-members">This class has no public properties.</div><a id="CC.util.dd.Mgr-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div><a id="CC.util.dd.Mgr-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-installDrag"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-installDrag">installDrag</a></b>(&nbsp;<code>CC.Base&nbsp;component</code>,&nbsp;<code>Boolean&nbsp;install</code>,&nbsp;<code>HTMLElement|String&nbsp;dragNode</code>&nbsp;)
     :
-                                        CC.util.d2d.RectZoom<div class="mdesc"><div class="short">返回矩域</div><div class="long">返回矩域<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>name</code> : String<div class="sub-desc">矩域名称</div></li><li><code>parent</code> : String<div class="sub-desc">父层矩域,如果该参数为非空,并且name域未存在,则创建一个新域并返回该域</div></li></ul><strong>Returns:</strong><ul><li><code>CC.util.d2d.RectZoom</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-setBounds"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-setBounds">setBounds</a></b>(&nbsp;<code>Array&nbsp;constrainBounds</code>&nbsp;)
+                                        void<div class="mdesc"><div class="short">给控件安装可拖动功能,安装后控件component具有&#13;
+component.draggable = true;&#13;
+如果并不想控件view结点触发拖动事件,可设置component.dragNode&#13;
+指定触发结点.</div><div class="long">给控件安装可拖动功能,安装后控件component具有
+component.draggable = true;
+如果并不想控件view结点触发拖动事件,可设置component.dragNode
+指定触发结点.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>component</code> : CC.Base<div class="sub-desc"></div></li><li><code>install</code> : Boolean<div class="sub-desc">安装或取消安装</div></li><li><code>dragNode</code> : HTMLElement|String<div class="sub-desc">触发事件的结点,如无则采用c.dragNode</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-startDrag"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-startDrag">startDrag</a></b>(&nbsp;<code>CC.Base&nbsp;dragSource</code>,&nbsp;<code>DOMEvent&nbsp;event</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">手动触发拖放处理.</div><div class="long">手动触发拖放处理.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>dragSource</code> : CC.Base<div class="sub-desc"></div></li><li><code>event</code> : DOMEvent<div class="sub-desc">传入初始化事件.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-setSource"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-setSource">setSource</a></b>(&nbsp;<code>CC.Base&nbsp;draggingComponent</code>&nbsp;)
+    :
+                                        this<div class="mdesc"><div class="short">设置拖动中的控件, 在dragbefore时可以指定某个控件作为拖动源对象.</div><div class="long">设置拖动中的控件, 在dragbefore时可以指定某个控件作为拖动源对象.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>draggingComponent</code> : CC.Base<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-setDragMonitor"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-setDragMonitor">setDragMonitor</a></b>(&nbsp;<code>Object&nbsp;dragMonitor</code>&nbsp;)
+    :
+                                        this<div class="mdesc"><div class="short">设置拖动监听器, 在dragbefore时可以指定某个对象作为拖动监听器,如果未设置,drag source控件将作为监听器.&#13;
+monitor具有以下接口&#13;
+   beforedrag&#13;
+   dragstart &#13;
+   drag...</div><div class="long">设置拖动监听器, 在dragbefore时可以指定某个对象作为拖动监听器,如果未设置,drag source控件将作为监听器.<br>
+monitor具有以下接口
+   beforedrag<br>
+   dragstart <br>
+   drag      <br>
+   dragend   <br><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>dragMonitor</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-setDropMonitor"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-setDropMonitor">setDropMonitor</a></b>(&nbsp;<code>Object&nbsp;dropgMonitor</code>&nbsp;)
+    :
+                                        this<div class="mdesc"><div class="short">设置drop监听器, 在dragbefore时可以指定某个对象作为监听器,如果未设置,drag source控件将作为监听器.&#13;
+monitor具有以下接口&#13;
+   sbover    &#13;
+   sbout     &#13;
+   sbmo...</div><div class="long">设置drop监听器, 在dragbefore时可以指定某个对象作为监听器,如果未设置,drag source控件将作为监听器.<br>
+monitor具有以下接口
+   sbover    <br>
+   sbout     <br>
+   sbmove    <br>
+   sbdrop    <br><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>dropgMonitor</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-setMonitor"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-setMonitor">setMonitor</a></b>(&nbsp;<code>Object&nbsp;monitor</code>&nbsp;)
+    :
+                                        this<div class="mdesc"><div class="short">集中一个监听器.</div><div class="long">集中一个监听器.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>monitor</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-setZoom"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-setZoom">setZoom</a></b>(&nbsp;<code>CC.util.d2d.RectZoom&nbsp;rectzoom</code>,&nbsp;<code>Boolean&nbsp;update</code>&nbsp;)
+    :
+                                        this<div class="mdesc"><div class="short">可在dragbefore重定义当前拖放区域.</div><div class="long">可在dragbefore重定义当前拖放区域.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>rectzoom</code> : CC.util.d2d.RectZoom<div class="sub-desc"></div></li><li><code>update</code> : Boolean<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-$"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-$">$</a></b>(&nbsp;<code>String&nbsp;name</code>,&nbsp;<code>String&nbsp;parent</code>&nbsp;)
+    :
+                                        CC.util.d2d.RectZoom<div class="mdesc"><div class="short">返回矩域</div><div class="long">返回矩域<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>name</code> : String<div class="sub-desc">矩域名称</div></li><li><code>parent</code> : String<div class="sub-desc">父层矩域,如果该参数为非空,并且name域未存在,则创建一个新域并返回该域</div></li></ul><strong>Returns:</strong><ul><li><code>CC.util.d2d.RectZoom</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-setBounds"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-setBounds">setBounds</a></b>(&nbsp;<code>Array&nbsp;constrainBounds</code>&nbsp;)
     :
                                         this<div class="mdesc"><div class="short">设置拖放区域大小,在X方向上,最小的delta x与最大的delta x,&#13;
 在Y方向上,最小的delta y与最大的delta y, 所以数组数据为&#13;
@@ -9,38 +154,32 @@
 [max_delta_x, min_delta_x, max_delta_y, min_delta_y],
 设置拖动区域后,超出区域的行为将被忽略,也就是并不回调
 component.drag方法,所以,在drag方法内的操作都是安全的.
-受限区域在拖放结束后清空.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>constrainBounds</code> : Array<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getBounds"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-getBounds">getBounds</a></b>()
+受限区域在拖放结束后清空.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>constrainBounds</code> : Array<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getBounds"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-getBounds">getBounds</a></b>()
     :
-                                        Array<div class="mdesc"><div class="short">获得受限区域</div><div class="long">获得受限区域<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[MAX_DX,MIN_DX,MAX_DY,MIN_DY]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getRoot"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-getRoot">getRoot</a></b>()
+                                        Array<div class="mdesc"><div class="short">获得受限区域</div><div class="long">获得受限区域<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[MAX_DX,MIN_DX,MAX_DY,MIN_DY]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getRoot"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-getRoot">getRoot</a></b>()
     :
-                                        CC.util.d2d.RectZoom<div class="mdesc"><div class="short">返回根域</div><div class="long">返回根域<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>CC.util.d2d.RectZoom</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-remove"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-remove">remove</a></b>(&nbsp;<code>String&nbsp;name</code>&nbsp;)
+                                        CC.util.d2d.RectZoom<div class="mdesc"><div class="short">返回根域</div><div class="long">返回根域<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>CC.util.d2d.RectZoom</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-remove"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-remove">remove</a></b>(&nbsp;<code>String&nbsp;name</code>&nbsp;)
     :
-                                        CC.util.d2d.RectZoom<div class="mdesc"><div class="short">从域链中移除名称为name的域</div><div class="long">从域链中移除名称为name的域<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>name</code> : String<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>CC.util.d2d.RectZoom</code><div class="sub-desc">返回移除的域</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-addComp"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-addComp">addComp</a></b>(&nbsp;<code>CC.Base&nbsp;控件</code>,&nbsp;<code>String&nbsp;name</code>&nbsp;)
+                                        CC.util.d2d.RectZoom<div class="mdesc"><div class="short">从域链中移除名称为name的域</div><div class="long">从域链中移除名称为name的域<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>name</code> : String<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>CC.util.d2d.RectZoom</code><div class="sub-desc">返回移除的域</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-addComp"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-addComp">addComp</a></b>(&nbsp;<code>CC.Base&nbsp;控件</code>,&nbsp;<code>String&nbsp;name</code>&nbsp;)
     :
-                                        this<div class="mdesc"><div class="short">将控件加入name域</div><div class="long">将控件加入name域<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>控件</code> : CC.Base<div class="sub-desc"></div></li><li><code>name</code> : String<div class="sub-desc">矩域名</div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-removeComp"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-removeComp">removeComp</a></b>(&nbsp;<code>CC.Base&nbsp;控件</code>,&nbsp;<code>String&nbsp;name</code>&nbsp;)
+                                        this<div class="mdesc"><div class="short">将控件加入name域</div><div class="long">将控件加入name域<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>控件</code> : CC.Base<div class="sub-desc"></div></li><li><code>name</code> : String<div class="sub-desc">矩域名</div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-removeComp"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-removeComp">removeComp</a></b>(&nbsp;<code>CC.Base&nbsp;控件</code>,&nbsp;<code>String&nbsp;name</code>&nbsp;)
     :
-                                        this<div class="mdesc"><div class="short">控件移出域</div><div class="long">控件移出域<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>控件</code> : CC.Base<div class="sub-desc"></div></li><li><code>name</code> : String<div class="sub-desc">矩域名</div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getIMXY"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-getIMXY">getIMXY</a></b>()
+                                        this<div class="mdesc"><div class="short">控件移出域</div><div class="long">控件移出域<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>控件</code> : CC.Base<div class="sub-desc"></div></li><li><code>name</code> : String<div class="sub-desc">矩域名</div></li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getIMXY"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-getIMXY">getIMXY</a></b>()
     :
-                                        Array<div class="mdesc"><div class="short">获得对象拖动开始时鼠标坐标</div><div class="long">获得对象拖动开始时鼠标坐标<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[x, y]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getIEXY"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-getIEXY">getIEXY</a></b>()
+                                        Array<div class="mdesc"><div class="short">拖动开始时鼠标位置</div><div class="long">拖动开始时鼠标位置<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[x, y]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getIEXY"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-getIEXY">getIEXY</a></b>()
     :
-                                        Array<div class="mdesc"><div class="short">获得对象拖动开始时对象坐标</div><div class="long">获得对象拖动开始时对象坐标<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[x,y]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getDXY"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-getDXY">getDXY</a></b>()
+                                        Array<div class="mdesc"><div class="short">获得对象拖动开始时对象坐标</div><div class="long">获得对象拖动开始时对象坐标<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[x,y]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getDXY"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-getDXY">getDXY</a></b>()
     :
-                                        Array<div class="mdesc"><div class="short">获得自鼠标拖动起至今的x,y方向偏移量</div><div class="long">获得自鼠标拖动起至今的x,y方向偏移量<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[dx, dy]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getXY"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-getXY">getXY</a></b>()
+                                        Array<div class="mdesc"><div class="short">获得自鼠标拖动起至今的x,y方向偏移量</div><div class="long">获得自鼠标拖动起至今的x,y方向偏移量<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[dx, dy]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getXY"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-getXY">getXY</a></b>()
     :
-                                        Array<div class="mdesc"><div class="short">获得当前鼠标位置</div><div class="long">获得当前鼠标位置<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[x,y]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getSource"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-getSource">getSource</a></b>()
+                                        Array<div class="mdesc"><div class="short">获得当前鼠标位置</div><div class="long">获得当前鼠标位置<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">[x,y]</div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getSource"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-getSource">getSource</a></b>()
     :
-                                        CC.Base<div class="mdesc"><div class="short">获得当前拖动的对象</div><div class="long">获得当前拖动的对象<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>CC.Base</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getTarget"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-getTarget">getTarget</a></b>()
+                                        CC.Base<div class="mdesc"><div class="short">获得当前拖动的对象</div><div class="long">获得当前拖动的对象<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>CC.Base</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getTarget"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-getTarget">getTarget</a></b>()
     :
-                                        CC.Base<div class="mdesc"><div class="short">获得当前位正下方的对象,如果无,返回null</div><div class="long">获得当前位正下方的对象,如果无,返回null<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>CC.Base</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-update"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-update">update</a></b>()
+                                        CC.Base<div class="mdesc"><div class="short">获得当前位正下方的对象,如果无,返回null</div><div class="long">获得当前位正下方的对象,如果无,返回null<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>CC.Base</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-update"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-update">update</a></b>()
     :
-                                        this<div class="mdesc"><div class="short">更新当前拖动的矩域数据.</div><div class="long">更新当前拖动的矩域数据.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-installDrag"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-installDrag">installDrag</a></b>(&nbsp;<code>CC.Base&nbsp;component</code>,&nbsp;<code>Boolean&nbsp;install</code>,&nbsp;<code>HTMLElement&nbsp;触发事件的结点,如无则采用c.dragNode</code>&nbsp;)
+                                        this<div class="mdesc"><div class="short">更新当前拖动的矩域数据.</div><div class="long">更新当前拖动的矩域数据.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>this</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-isDragging"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-isDragging">isDragging</a></b>()
     :
-                                        void<div class="mdesc"><div class="short">给控件安装可拖动功能,安装后控件component具有&#13;
-component.draggable = true;&#13;
-如果并不想控件view结点触发拖动事件,可设置component.dragNode&#13;
-指定触发结点.</div><div class="long">给控件安装可拖动功能,安装后控件component具有
-component.draggable = true;
-如果并不想控件view结点触发拖动事件,可设置component.dragNode
-指定触发结点.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>component</code> : CC.Base<div class="sub-desc"></div></li><li><code>install</code> : Boolean<div class="sub-desc">安装或取消安装</div></li><li><code>触发事件的结点,如无则采用c.dragNode</code> : HTMLElement<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-isDragging"></a><b><a href="source/dd.html#method-CC.util.dd.Mgr-isDragging">isDragging</a></b>()
+                                        Boolean<div class="mdesc"><div class="short">是否拖放中</div><div class="long">是否拖放中<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-getIndicator"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-getIndicator">getIndicator</a></b>()
     :
-                                        Boolean<div class="mdesc"><div class="short">是否拖放中</div><div class="long">是否拖放中<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Mgr</td></tr></tbody></table></div>
+                                        void<div class="mdesc"><div class="short"></div><div class="long"><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">Mgr</td></tr></tbody></table></div>
