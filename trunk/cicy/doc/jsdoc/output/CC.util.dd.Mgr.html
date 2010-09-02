@@ -1,5 +1,5 @@
-<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>Class <a href="source/cicylib-all.html#cls-CC.util.dd.Mgr">CC.util.dd.Mgr</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">CC.util.dd</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">cicylib-all.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/cicylib-all.html#cls-CC.util.dd.Mgr">Mgr</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description">Drag & Drop 管理器
-利用空间划分类，结点鼠标事件实现DRAG & DROP功能。
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>类 <a href="source/cicylib-all.html#cls-CC.util.dd.Mgr">CC.util.dd.Mgr</a></h1><table cellspacing="0"><tr><td class="label">空间：</td><td class="hd-info">CC.util.dd</td></tr><tr><td class="label">定义在:</td><td class="hd-info">cicylib-all.js</td></tr><tr><td class="label">类:</td><td class="hd-info"><a href="source/cicylib-all.html#cls-CC.util.dd.Mgr">Mgr</a></td></tr><tr><td class="label">父类:</td><td class="hd-info">Object</td></tr></table><div class="description">Drag & Drop 管理器
+利用空间划分类，结合鼠标事件实现DRAG & DROP功能。
  <pre><code>CC.ready(<b>function</b>(){
 <i>//__debug=true;</i>
 <i>// 实现两个控件（树，表格）间的拖放响应效果。</i>
@@ -49,7 +49,7 @@ win.center();
 <i>// 拖放管理器</i>
 <b>var</b> G = CC.util.dd.Mgr;
 
-<i>// 添加两个拖放域，为指定控件所在的区域</i>
+<i>// 添加三个拖放域，为指定控件所在的区域</i>
 <b>var</b> ctzoom = <b>new</b> CC.util.d2d.RectZoom({
   rects:[
     <b>new</b> CC.util.d2d.ComponentRect(attrgrid),
@@ -105,7 +105,7 @@ G.installDrag(typetree, true, null, handler);
 G.installDrag(attrgrid, true, null, handler);
 
 G.installDrag(resizeImg, true, null, handler);
-});</code></pre></div><div class="hr"></div><a id="CC.util.dd.Mgr-props"></a><h2>Public Properties</h2><div class="no-members">This class has no public properties.</div><a id="CC.util.dd.Mgr-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div><a id="CC.util.dd.Mgr-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-installDrag"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-installDrag">installDrag</a></b>(&nbsp;<code>CC.Base&nbsp;component</code>,&nbsp;<code>Boolean&nbsp;install</code>,&nbsp;<code>HTMLElement|String&nbsp;dragNode</code>&nbsp;)
+});</code></pre></div><div class="hr"></div><a id="CC.util.dd.Mgr-props"></a><h2>公共属性（只读）</h2><div class="no-members">This class has no public properties.</div><a id="CC.util.dd.Mgr-events"></a><h2>事件列表</h2><div class="no-members">This class has no public events.</div><a id="CC.util.dd.Mgr-methods"></a><h2>公共方法</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">method</th><th class="msource-header">定义在</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.Mgr-installDrag"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.Mgr-installDrag">installDrag</a></b>(&nbsp;<code>CC.Base&nbsp;component</code>,&nbsp;<code>Boolean&nbsp;install</code>,&nbsp;<code>HTMLElement|String&nbsp;dragNode</code>&nbsp;)
     :
                                         void<div class="mdesc"><div class="short">给控件安装可拖动功能,安装后控件component具有&#13;
 component.draggable = true;&#13;
