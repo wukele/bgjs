@@ -328,6 +328,16 @@ CC.extendIf(Array.prototype,
  */
     clear : function(){
         this.splice(0,this.length);
+    },
+/**
+ * 复制并返回新数组。
+ */
+    clone : function(){
+        var a = [];
+        for(var i = this.length - 1;i>=0;i--)
+            a[i] = this[i];
+        
+        return a;
     }
 }
 );
