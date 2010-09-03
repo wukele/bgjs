@@ -261,7 +261,7 @@ spr = cf.prototype;
 
 var fr = CC.ui.form;
 
-Tpl.def('Text', '<input type="text" class="g-ipt-text g-corner" />')
+Tpl.def('Text', '<input type="{type}" class="g-ipt-text g-corner" />')
    .def('Textarea', '<textarea class="g-textarea g-corner" />')
    .def('Checkbox', '<span tabindex="0" class="g-checkbox"><input type="hidden" id="_el" /><img src="' + Tpl.BLANK_IMG + '" class="chkbk" /><label id="_tle"></label></span>')
    .def('Select', '<select class="g-corner"/>')
@@ -271,15 +271,21 @@ Tpl.def('Text', '<input type="text" class="g-ipt-text g-corner" />')
  * @extends CC.ui.form.FormElement
  * 封装原生input text元素,引用名为text
  */
+/**
+ * @cfg {String} type text或者password，默认text
+ */
 CC.create('CC.ui.form.Text', cf, {
-    template : 'Text',
+
+    type : 'text',
+    
     initComponent : function(){
+      this.view = Tpl.forNode(Tpl['Text'], this);
       spr.initComponent.call(this);
       this.domEvent('focus', this.onFocusTrigger)
           .domEvent('blur', this.onBlurTrigger)
           .domEvent('keydown', this.onKeydownTrigger);
     },
-
+    
     maxH : 20,
 
     focusCS: 'g-ipt-text-hover',
