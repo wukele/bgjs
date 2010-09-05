@@ -187,6 +187,10 @@ var E = CC.Event,
     }
     
     function drag(e){
+    	// dragstart false state
+    	if(ing === -1)
+    		return;
+    	
       V = e || _w.E;
       PXY = E.pageXY(e);
 
@@ -198,9 +202,13 @@ var E = CC.Event,
 
       if(!ing){
         if(__debug) console.log('dragstart       mouse x,y is ', PXY,'dxy:',DXY);
-        if(!AM.dragstart || AM.dragstart(e, dragEl) !== false){
-          ing = true;
+        if(AM.dragstart){
+        	if(AM.dragstart(e, dragEl) === false){
+        		ing = -1;
+        		return;
+        	}
         }
+        ing = true;
       }
       
       if((AM.drag === false || AM.drag(e) !== false) && zoom)
@@ -219,7 +227,7 @@ var E = CC.Event,
           E.un(doc, "mouseup", arguments.callee)
            .un(doc, "mousemove", drag)
            .un(doc, "selectstart", noSelect);
-          if(ing){
+          if(ing && ing !== -1){
              if(__debug) console.log('dragend         mouse delta x,y is ',DXY, ',mouse event:',e);
             //如果在拖动过程中松开鼠标
             if(onEl !== null){
@@ -228,7 +236,6 @@ var E = CC.Event,
             }
 
             AM.dragend && AM.dragend(e, dragEl);
-            ing = false;
           }
           
           onEl = null;
@@ -240,6 +247,7 @@ var E = CC.Event,
           }
           R = null;
           binded = false;
+          ing = false;
         }
         
         if(__debug) console.log('afterdrag');

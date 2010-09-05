@@ -23,13 +23,22 @@ __debug=true;
       selectionProvider:{selected:0}, 
       contentPanel:'tabcontentpanel', 
       lyInf:{h:'auto'}, 
-      array:[{
-        title:'选项_1',
-        panel:{
-            ctype:'panel',
-            connectionProvider : { loadType:'html', ajaxCfg:{url : 'http://bgjs.googlecode.com/svn/trunk/cicy/samples/connection/request.php'}}
-        }
-      }]
+      array:[
+	      {
+	        title:'JSON',
+	        panel:{
+	            ctype:'panel',
+	            connectionProvider : { loadType:'json', ajaxCfg:{url : 'ui.json'}}
+	        }
+	      },
+	      {
+	      	title:'HTML',
+	      	panel : {
+	      		ctype :'ct',
+	      		connectionProvider : { loadType:'html', ajaxCfg:{url : 'ui.json'}}
+	      	}
+	      }
+      ]
     },
     {ctype:'panel', id:'tabcontentpanel', lyInf:{h:'lead'}, layout:'card'}
   ]
