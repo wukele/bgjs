@@ -43,8 +43,10 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       if(this.closeable !== undefined)
         this.setCloseable(this.closeable);
 
-      if(this.panel)
+      if(this.panel){
         this.setContentPanel(this.panel);
+        //this.follow(this.panel);
+      }
     },
 
 /**

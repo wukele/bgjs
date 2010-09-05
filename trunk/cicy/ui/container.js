@@ -336,7 +336,8 @@ var Lt = CC.layout.Layout.prototype;
 var Adapert = CC.create(CC.layout.Layout, {
   doLayout : function(){
     Lt.doLayout.call(this);
-    this.doLayout = fGo;
+    if(this.rendered)
+    	this.doLayout = fGo;
   }
 });
 CC.layout.def('default', Adapert);
@@ -458,16 +459,16 @@ CC.create('CC.ui.ContainerBase', Base,
       this.bindClickInstaller();
     }
 
+    this.children = [];
+
+    this.createLayout();
+    
     if(this.selectionProvider){
       this.getSelectionProvider();
     }
 
     if(this.connectionProvider)
       this.getConnectionProvider();
-
-    this.children = [];
-
-    this.createLayout();
   },
   
 /**

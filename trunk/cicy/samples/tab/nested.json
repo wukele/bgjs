@@ -1,0 +1,8 @@
+[{
+        ctype: 'titlepanel',
+        title : '嵌套加载',
+        connectionProvider : {
+        	dataType:'json',
+        	ajaxCfg : { url : 'ui.json' }
+        }
+}]
