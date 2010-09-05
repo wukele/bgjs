@@ -278,8 +278,10 @@ CC.create('CC.ui.form.Text', cf, {
 
     type : 'text',
     
+    template : 'Text',
+    
     initComponent : function(){
-      this.view = Tpl.forNode(Tpl['Text'], this);
+      this.view = Tpl.forNode(Tpl[this.template], this);
       spr.initComponent.call(this);
       this.domEvent('focus', this.onFocusTrigger)
           .domEvent('blur', this.onBlurTrigger)

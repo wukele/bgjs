@@ -1,0 +1,117 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>CcLib树型控件功能展示</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+  
+<style>
+	.g-tree {width:49.9%;float:left;}
+</style>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+CC.ready(function() {
+/**
+ * Javascript Utility for web development.
+ * R&D : www.bgscript.com/forum
+ * @author javeejy@126.com
+ * www.bgscript.com © 2010 - 构建自由的WEB应用 
+ */
+  
+  //先要创建根结点
+  var treeRoot = new CC.ui.TreeItem({
+    //nodes=true说明是一个有子结点的结点
+    nodes: true
+  });
+  
+  var tree = new CC.ui.Tree({
+    root: {
+   		title:'树根目录',
+		  array:[{
+			    title: '禁用项',
+			    nodes: true,
+			    disabled: true
+		  	},
+			  {
+			    title: '结点B'
+			  },
+			  {
+			    title: '添加图标',
+			    nodes: true
+			  }
+			]
+   	},
+    showTo: document.body,
+    
+    contextMenu : {
+    	ctype : 'menu',
+    	showTo : document.body,
+    	onDisplay : function(show){
+    		if(show){
+    			if(this.trigSource.nodes){
+	    			this.$('expand')
+	    				  .setTitle( this.trigSource.expanded ? '收缩' : '展开' )
+	    				  .show();
+    		  }else {
+    		  	this.$('expand').hide();
+    		  }
+    		}
+    	},
+    	array:[
+    		{title:'删 除', onselect : function(){
+    			this.pCt.trigSource.destory();
+    		}},
+    		{id:'expand', onselect : function(){
+    			this.pCt.trigSource.expand(!this.pCt.trigSource.expanded);
+    		}}
+    	]
+    },
+    
+    events : {
+    	//
+    	// 检查contextMenu设置并生成菜单，在触发后添加trigSource指向触发控件
+    	//
+    	rendered : [{cb:function(){
+    		// has context menu config?
+    		var m = this.contextMenu;
+    		if(m){
+    			this.domEvent('contextmenu', function(e){
+    					// lazy render
+    					if(!m.rendered){
+			    			m = this.contextMenu = CC.ui.instance(m);
+			    			// link lifecycle
+			    			this.follow(m);
+    					}
+    					var el = CC.Event.element(e);
+    					// search component via html element, @see CC.Base.byDom
+    					var treeItem = CC.Base.byDom(el, function(c){
+    								return c.type === CC.ui.TreeItem.prototype.type;
+    							}, this);
+    					
+    					if(treeItem && !treeItem.disabled){
+    							var xy = CC.Event.pageXY(e);
+    							// make a reference to source
+    							m.trigSource = treeItem;
+    							// show
+    							m.at(xy[0], xy[1]);
+        					// tree fire contextmenu event for any future using
+        					this.fire('contextmenu', m, treeItem, e);
+        					// prevent default browser contextmenu menu
+        					CC.Event.stop(e);
+    					}
+    			});
+    		}
+    	}}]
+    }
+  });
+  
+  tree.render();
+  
+});
+</script>

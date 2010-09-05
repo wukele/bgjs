@@ -25,7 +25,7 @@ var w =  new CC.more.ArtWin({
     showTo:document.body,
     layout:'table',
     width:739,
-    height:280,
+    height:315,
     isForm:true,
     title:'用于table布局表单元素',
     lyCfg:{
@@ -89,11 +89,16 @@ var w =  new CC.more.ArtWin({
            ]
           }
         ],
+        [
+          {ctype:'label', title:'上传附件'},
+          {ctype:'text',type:'file'},
+          {ctype:'label', title:'<(jpg,gif,bmp,doc)>'}
+        ],
         // row eight
         // 加入html
         [ 
           false,
-          {td:{cols:3}, ctype:'base', css:'fr mr:20', template:'<div><span class="ui_yes"><button accesskey="y">确 定</button></span><span class="ui_no"><button accesskey="n">取 消</button></span></div>'}
+          {td:{cols:2}, ctype:'base', css:'fr mr:20', template:'<div><span class="ui_yes"><button accesskey="y">确 定</button></span><span class="ui_no"><button accesskey="n">取 消</button></span></div>'}
         ]
       ]
     }

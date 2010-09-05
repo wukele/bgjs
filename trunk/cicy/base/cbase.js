@@ -4,7 +4,6 @@ var Eventable = CC.Eventable;
 var CPC = {};
 var Cache = CC.Cache;
 var Event = CC.Event;
-
 /**
  * @class CC.Base
  * 为所有控件的基类,定义控件的基本属性与方法,管理控件的生命周期.<br>
@@ -50,23 +49,63 @@ Base.findByCid = Base.byCid = function(cid){
 };
 
 /**
- * 根据DOM元素返回一个控件, 如果已指定pCt,返回该容器子控件中的匹配控件
+ * 根据DOM元素返回一个控件, 如果已指定pCt,返回该容器子控件中的匹配控件，方法忽略已托管的(delegated)元素。
  * @param {HTMLElement} dom
- * @param {CC.ui.ContainerBase} pCt, 如果已指定,返回该容器子控件中的匹配控件
+ * @param {CC.ui.ContainerBase|Function} filter, 可以指定寻找子项的父容器，如果已指定,返回该容器子控件中的匹配控件；也可以传入一个function过滤器，返回true表示匹配，函数参数为当前已检测的控件。
+ * @param {CC.Base|CC.HTMLElement} [scope] 如果参数二为一个过滤器，第三个参数可传入一个限定检索的范围结点或控件，在该范围下查找。 
  * @static
  * @member CC.Base
  * @method byDom
+ <pre><code>
+  寻找点击html元素所在的首个控件
+  function onclick(e){
+  	var el = CC.Event.element(e);
+  	var component = CC.Base.byDom(el);
+  	if(component)
+  		alert("当前点击的是"+component.title+"控件");
+    
+    tab.domEvent('click', function(e){
+    	var el = CC.Event.element(e);
+    	var clickedTabItem = CC.Base.byDom(el, tab);
+    	if(clickedTabItem)
+    		alert('当前点击的tabitem是'+clickedTabItem.title);
+    });
+    
+    // 在嵌套的控件树中，可自定义过滤器，查找DOM所在的目标控件。
+    
+    tree.domEvent('click', function(e){
+    	var el = CC.Event.element(e);
+    	var treeitem = CC.Base.byDom(el, function(c){
+    			return c.type === 'CC.ui.TreeItem';
+    	});
+    	if(treeitem){
+    		alert('当前点击的树项是'+treeitem.title);
+    	}
+    }, tree);
+  }
+ </code></pre>
+
  */
 Base.byDom = function(dom, pCt){
       //find cicyId mark
-      var c, bd = pCt && pCt.view || document;
+      var c, 
+          isf = pCt && typeof pCt === 'function',
+          end;
+      // scope, arg[2]
+      if(isf && arguments[2])
+      	end = arguments[2].view || arguments[2];
+      
+      else end = pCt && pCt.view || document;
 
-      while(dom && dom !== bd){
+      while(dom && dom !== end){
         if(dom.cicyId){
           c = Base.byCid(dom.cicyId);
           if(c && !c.delegated){
             if(pCt){
-              if(c.pCt === pCt)
+              if(isf){
+              	if(pCt(c))
+              		return c;
+              }else if(c.pCt === pCt)
                 return c;
             }else return c;
           }

@@ -56,7 +56,7 @@
    data : {article:'long long text.'}
    ....
   });
-  ajax.connect('param=data');
+  ajax.connect();
   
   // 当资源需要跨域时，可进行JSONP请求，返回JSON对象数据。
   CC.Ajax.connect({

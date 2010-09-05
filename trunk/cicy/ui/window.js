@@ -143,7 +143,10 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
    addTitlebarNode : function(tb){
      this.wrapper.insertBefore(tb);
    },
-   
+        beforedrag : function(){
+        	if(this.unmoveable)
+        		return false;
+        },
 /**
  * 实现窗口的拖放
  * @private
@@ -294,18 +297,10 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
             if(n){
               this.setXY(n[0]);
               this.setSize(n[1]);
-              this.enableH = CC.delAttr(this, '_enableH');
-              this.enableW = CC.delAttr(this, '_enableW');
-              this.setResizable(CC.delAttr(this, '_resizeable'));
-              this.titlebar.draggable = CC.delAttr(this, '_draggable');
             }
           }
           else {
             this._normalBounds = [this.xy(),this.getSize(true)];
-            this._enableH = this.enableH;
-            this._enableW = this.enableW;
-            this._resizeable = this.resizeable;
-            this._draggable = this.titlebar.draggable;
           }
         },
         /**
@@ -373,13 +368,11 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
                 this.shadow.show();
               this.addClass(this.minCS);
               this.setHeight(this.minH);
-              this.setResizable(false);
               break;
             case 'max':
               if(this.shadow){
                 this.shadow.hide();
               }
-              this.titlebar.draggable = false;
               this.addClass(this.maxCS);
               var sz, p = this.pCt?this.pCt.view : this.view.parentNode;
               if(p === document.body){
@@ -391,7 +384,6 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
                 p.unfly();
               }
               this.setXY(0,0).setSize(sz);
-              this.setResizable(false);
               break;
             //as normal
             default :

@@ -296,7 +296,7 @@ var win = new CC.ui.Win({
         {cs:'tr-row'}, 
         {td:{css:'h:33'}}
       ],
-      // row with single cell 
+      // row with single cell , no component
       {tr:{cs:'tr-end'}, td:{cols:2}}
     ]
   }
@@ -387,6 +387,7 @@ CC.create('CC.layout.TableLayout', B, {
 				var col;
 				for(i=0;i<len;i++){
 				  col = CC.$C('COL');
+				  col.className = 'g'+(i+1);
 				  if(g[i]){
 				    Base.applyOption(col, g[i]);
 				  }
@@ -401,13 +402,14 @@ CC.create('CC.layout.TableLayout', B, {
           
 			if(its){
 			  var szits = its.length, chs = c.children, szchs = chs.length;
-			  var i,j,k,ch, szr, tr, td, cc, inf, tp;
+			  var i,j,k,ch, szr, tr, td, cc, inf, tp,cpp;
 			  for(i=0, k=0;i<szits;i++){
 			    r = its[i];
 			    tr = CC.$C('TR');
+			    tr.className = 'r'+(i+1);
 			    
 			    if(CC.isArray(r)){
-				     for(j=0,szr=r.length;j<szr;j++){
+				     for(j=0,cpp=1,szr=r.length;j<szr;j++){
 				       cc = r[j];
 				       if(cc){
 				          inf = cc.td, tp = cc.ctype;
@@ -417,7 +419,7 @@ CC.create('CC.layout.TableLayout', B, {
 				            continue;
 				          }
 				          td = CC.$C('TD');
-				          td.className = 'tbl-td';
+				          td.className = 'tbl-td c'+(cpp++);
 				          // td class
 				          if(cc.tdcs)
 				            CC.fly(td).addClass(cc.tdcs).unfly();
@@ -438,13 +440,14 @@ CC.create('CC.layout.TableLayout', B, {
 				       }else {
 				         // else single td, nothing
 				         td = CC.$C('TD');
-				         td.className = 'tbl-td';
+				         td.className = 'tbl-td c'+(cpp++);
 				         tr.appendChild(td);
 				       }
 				     }
 			    }else {
 				      // single td in row
 				     td = CC.$C('TD');
+				     td.className = 'tbl-td c'+(cpp++);
 				     if(r.td){
 				       var inf = r.td;
 				       if(inf.cols){
