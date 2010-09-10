@@ -1,0 +1,52 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  
+<style>
+	.myct{position:relative;left:300;top:200}
+	.g-progressbar{margin-top:5px;}
+	.g-progress-right {text-align:right;}
+</style>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+		function attachProgress(g, s, minus){
+			g.tid = setInterval(function(){
+				if(g.value > 100)
+					clearInterval(g.tid);
+				g.setValue(g.value+2);
+			}, s||100);
+		}
+		
+		CC.ready(function(){
+			var ct = new CC.ui.ContainerBase({cs:'myct',autoRender:true, width:280, showTo:document.body});
+			var g = new CC.ui.form.Progressbar();
+			ct.append(g);
+			attachProgress(g);
+			g = new CC.ui.form.Progressbar();
+			ct.append(g);
+			attachProgress(g, 300);
+			//黄色背景
+			CC.ui.form.Progressbar.img = 'http://bgjs.googlecode.com/svn/trunk/cicy/default/ru/progressbar-yellow.gif';
+			g = new CC.ui.form.Progressbar();
+			ct.append(g);
+			attachProgress(g, 580);
+			g = new CC.ui.form.Progressbar();
+			ct.append(g);
+			attachProgress(g, 700);
+			CC.ui.form.Progressbar.img = 'http://bgjs.googlecode.com/svn/trunk/cicy/default/ru/progressbar-black.gif';
+			g = new CC.ui.form.Progressbar({cs:'g-progress-right'});
+			ct.append(g);
+			attachProgress(g, 450);
+			CC.ui.form.Progressbar.img = 'http://bgjs.googlecode.com/svn/trunk/cicy/default/ru/progressbar-red.gif';
+			g = new CC.ui.form.Progressbar({cs:'g-progress-right'});
+			ct.append(g);
+			attachProgress(g, 280);
+		});
+</script>

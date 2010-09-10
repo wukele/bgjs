@@ -80,6 +80,52 @@
       }
       return false
     },
+    
+
+/**
+ * qd, quadrant 缩写，计算指定点所属矩形的象限，调用前请确保点已落在矩形上。
+ * <br> 返回值： 0 - 8;
+ * 象限所在X，Y轴正向与屏幕坐标系正方向一致。
+ *  ________ x+
+ *    |
+ *  2 |  1
+ *   y+
+ <div class="mdetail-params"><ul>
+ <li>0:原点</li>
+ <li>1 - 4 : 1-4象限</li>
+ <li>5 - 8 原点为中心，x, y四条轴，其中5为x正轴，其它类推。</li>
+ <li>bool</li>
+ <li>date</li>
+ </ul></div>
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Number}
+ */
+    qdAt : function(x, y){
+        // assert(this.isEnter({x:x, y:y}));
+        var dx = Math.floor(x - this.l - this.w/2),
+            dy = Math.floor(y - this.t - this.h/2);
+        
+        if(dx > 0){
+            if(dy>0) 
+                return 1;
+            else if(dy<0) return 4;
+            else return 5;
+        }else if(dx < 0){
+            if(dy>0)
+                return 2;
+            else if(dy<0)
+                return 3;
+            else return 7;
+        }else { // dx = 0
+            if(dy > 0)
+                return 6;
+            else if(dy < 0)
+                return 8;
+            return 0; 
+        }
+    },
+    
 /**
  * 接口,刷新矩形缓存数据,默认为空调用
  * @method
@@ -241,7 +287,7 @@
         this.h = t2 - t1;
      },
 /**
- * 刷新计算域数据.
+ * 刷新计算域数据。具体操作为：1.清空原有矩域；2.调用prepare方法；3.调用子矩域update方法，依次更新每个子矩域数据。
  * @override
  */
      update : function(){

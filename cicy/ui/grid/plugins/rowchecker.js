@@ -53,11 +53,12 @@ CC.create('CC.ui.grid.plugins.RowChecker', null, {
   	   ct.on('selectchange', function(current, previous, selProvider){
   	       var cell = current.$('rowcheckercell');
   	       var col  = ct.grid.header.$('rowCheckerCol');
-   	       cell.checkClass(col.checkedCS, selProvider.isSelected( current ));
-   	       if(previous){
-   	         var preCell = previous.$('rowcheckercell');
-   	         preCell.checkClass(col.checkedCS, selProvider.isSelected( previous ));
-   	       }
+   	       // maybe col destoryed ?
+            cell.checkClass(col.checkedCS, selProvider.isSelected( current ));
+            if(previous){
+                var preCell = previous.$('rowcheckercell');
+                preCell.checkClass(col.checkedCS, selProvider.isSelected( previous ));
+            }
    	   });
   	}
    }

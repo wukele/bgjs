@@ -43,7 +43,13 @@ CC.extendIf(console,
 /**
  * @method assert
  */
-    assert:fGo,
+    assert:function(a, b){
+        if(a !== b) {
+            this.trace();
+            throw "Assertion failed @"+a+' !== '+b;
+        }
+    },
+    
       /**
        * 列出对象所有属性.
        *@param {object} javascript对象
