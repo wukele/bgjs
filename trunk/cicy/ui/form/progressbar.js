@@ -5,7 +5,7 @@
  */
 CC.create('CC.ui.form.Progressbar', CC.ui.form.FormElement, function(father){
   if(!CC.ui.form.Progressbar.img)
-    CC.ui.form.Progressbar.img = 'http://www.bgscript.com/images/progressbar.gif';
+    CC.ui.form.Progressbar.img = 'http://bgjs.googlecode.com/svn/trunk/cicy/default/ru/progressbar.gif';
 
   return {
     /**@cfg {Number} range 范围,默认100*/

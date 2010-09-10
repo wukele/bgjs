@@ -1334,7 +1334,7 @@ CC.extend(Base.prototype,
     },
  /***/
     insertBefore : function(oNew) {
-        oNew = CC.$$(oNew).view;
+        oNew = oNew.view || oNew;
         this.view.parentNode.insertBefore(oNew, this.view);
         return this;
     },

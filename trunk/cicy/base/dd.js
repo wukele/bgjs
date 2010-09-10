@@ -52,7 +52,7 @@ var E = CC.Event,
     // drag monitor
     AM,
     
-    // drog monitor
+    // drop monitor
     OM = false,
     //拖放事件是否已绑定,避免重复绑定
     binded = false,
@@ -75,10 +75,6 @@ var E = CC.Event,
     }
     
     function checkZoom(){
-      // check zoom, if not set zoom in beforedrag
-      if(!zoom)
-        zoom = mgr.$(dragEl.dragZoom);
-      
       if(zoom) {
         if(dragEl.ownRect){
           if(zoom.contains(dragEl.ownRect)){
@@ -117,7 +113,7 @@ var E = CC.Event,
             binded = true;
             // chec drop monitor
             if(!OM)
-            OM = this;
+            	OM = this;
         
             if(!OM.movesb)
             OM.movesb = false;
@@ -454,8 +450,8 @@ G.installDrag(resizeImg, true, null, handler);
  * @param {Object} dragMonitor
  * @return this
  */
-        setDragMonitor : function(monitor){
-          DN = monitor;
+        setDragHandler : function(monitor){
+          OM = monitor;
           return this;
         },
 /**
@@ -468,7 +464,7 @@ G.installDrag(resizeImg, true, null, handler);
  * @param {Object} dropgMonitor
  * @return this
  */        
-        setDropMonitor : function(monitor){
+        setDropHandler : function(monitor){
           AM = monitor;
           return this;
         },
@@ -477,8 +473,8 @@ G.installDrag(resizeImg, true, null, handler);
  * @param {Object} monitor
  * @return this
  */
-        setMonitor : function(monitor){
-          DN = AM = monitor;
+        setHandler : function(monitor){
+          OM = AM = monitor;
           return this;
         },
 /**
@@ -492,31 +488,7 @@ G.installDrag(resizeImg, true, null, handler);
           if(z && update) zoom.update();
           return this;
         },
-/**
- * 返回矩域
- * @param {String} name 矩域名称
- * @param {String} parent 父层矩域,如果该参数为非空,并且name域未存在,则创建一个新域并返回该域
- * @return {CC.util.d2d.RectZoom}
- * @method $
- */
-        $ : function(k, p){
-          var z = this.zmCache[k];
-          if(!z && p){
-            var c = this.zmCache;
-            if(k === 'root')
-              throw "can't named root";
-            if(typeof p === 'string'){
-              p = c[p];
-              if(!p)
-                throw "parent zoom doesn't exist."
-            }else if(p === true)
-              p = c.root;
 
-            z = c[k] = new CC.util.d2d.RectZoom();
-            p.add(z);
-          }
-          return z;
-        },
 /**
  * 设置拖放区域大小,在X方向上,最小的delta x与最大的delta x,
  * 在Y方向上,最小的delta y与最大的delta y, 所以数组数据为
@@ -543,51 +515,8 @@ G.installDrag(resizeImg, true, null, handler);
  * 返回根域
  * @return {CC.util.d2d.RectZoom}
  */
-        getRoot : function(){
-          return this.zmCache.root;
-        },
-/**
- * 从域链中移除名称为name的域
- * @param {String} name
- * @return {CC.util.d2d.RectZoom} 返回移除的域
- */
-        remove : function(k){
-         var z = this.zmCache[k];
-         if(z && k !== 'root'){
-          z.pZoom.remove(z);
-          delete this.zmCache[k];
-         }
-         return z;
-        },
-
-/**
- * 将控件加入name域
- * @param {CC.Base} 控件
- * @param {String} name 矩域名
- * @return this
- */
-        addComp : function(comp, k){
-          k = this.$(k, true);
-          k.add(new CC.util.d2d.ComponentRect(comp));
-          return this;
-        },
-/**
- * 控件移出域
- * @param {CC.Base} 控件
- * @param {String} name 矩域名
- * @return this
- */
-        removeComp : function(comp, k){
-          k = this.$(k);
-          var rs = k.getRects();
-          CC.each(rs, function(){
-            if(this.comp === comp){
-              k.remove(this);
-              this.destory();
-              return false;
-            }
-          });
-          return this;
+        getZoom : function(){
+          return zoom;
         },
 
 /**
@@ -737,39 +666,80 @@ G.installDrag(resizeImg, true, null, handler);
         }
   };
 /**
- * @class CC.Base
- */
-  CC.extendIf(CC.Base.prototype, {
-/**
- * @cfg {String|HTMLElement} dragNode 触发控件拖动开始的结点或结点ID,属性由{@link CC.util.dd.Mgr}引入
- */
+ * @class CC.util.dd.DragHandler
+ * 这是一个接口类，实际并不存在，可以通过任意对象现实其中的一个或多个方法。
+ * 用于处理Drag & Drop事件回调。
 
-/**
- * @cfg {Boolean} draggable 是否允许拖动功能,该值只有在已安装拖动功能情况下才生效.<br>
- * 属性由{@link CC.util.dd.Mgr}类引入.
+<pre><code>
+// 拖放管理器
+var G = CC.util.dd.Mgr;
+
+// 添加三个拖放域，为指定控件所在的区域
+var ctzoom = new CC.util.d2d.RectZoom({
+  rects:[
+    new CC.util.d2d.ComponentRect(grid),
+    new CC.util.d2d.ComponentRect(tree),
+    new CC.util.d2d.ComponentRect(resizer)
+  ]
+});
+
+// 拖放处理对象
+// DragHandler 与 Drop Hander 合在一起实现
+
+var handler = {
+
+  beforedrag : function(){
+    G.setZoom(ctzoom);
+  },
+  
+  dragstart : function(evt, source){
+    G.getIndicator().prepare();
+    G.getIndicator().setMsg("容器间的拖放!", "源:"+source.id);
+    CC.each(ctzoom.rects, function(){
+        if(this.comp != source){
+            this.comp.addClass('dragstart');
+        }
+    });
+  },
+  
+  drag : function(){
+    // 使得指示器在正确的位置显示
+    G.getIndicator().reanchor();
+  },
+  
+  sbover : function(target){
+    G.getIndicator().setMsg('进入了<font color="red">'+target.id+'</font>');
+    target.addClass('dragover');
+  },
+  
+  sbout : function(target){
+    G.getIndicator().setMsg("容器间的拖放!");
+    target.delClass('dragover');
+  },
+  
+  sbdrop : function(target, source){
+    target.delClass('dragover');   
+  },
+  
+  dragend : function(evt, source){
+    CC.each(ctzoom.rects, function(){
+        if(this.comp != source){
+            this.comp.delClass('dragstart');
+        }
+    });
+    G.getIndicator().end();
+  }
+};
+
+G.installDrag(tree, true, null, handler);
+G.installDrag(grid, true, null, handler);
+G.installDrag(resizer, true, null, handler);
+ </code></pre>
+
  */
  
-/**
-* @cfg {String} dragZoom 设置或获取控件源拖放区域名称(组),只有控件已安装拖动功能该设置才生效.<br>
-* 属性由{@link CC.util.dd.Mgr}引入,另见{@link CC.dd.Mgr#installDrag}
-*/
-
-/**
-* 是否安装结点拖放效果,方法由{@link CC.util.dd.Mgr}引入.
-* @param {Boolean} true | false
-* @return this
-*/
-    installDrag : function(b){
-      mgr.installDrag(this, b);
-      return this;
-    },
-/**
-* 获得drag & drop 管理器,由{@link CC.util.dd.Mgr}引入,另见{@link #installDrag}.
-* @return {CC.util.dd.Mgr}
-*/
-    getDDProvider : function(){
-      return mgr;
-    },
+ 
+  CC.extendIf(CC.Base.prototype, {
 
 /**
  * 如果已安装拖放,
@@ -812,6 +782,80 @@ G.installDrag(resizeImg, true, null, handler);
  */
     drag : false,
 
+
+/**
+ * @class CC.util.dd.DropHandler
+ * 这是一个接口类，实际并不存在，可以通过任意对象现实其中的一个或多个方法。
+ * 用于处理Drag & Drop事件回调。
+
+<pre><code>
+// 拖放管理器
+var G = CC.util.dd.Mgr;
+
+// 添加三个拖放域，为指定控件所在的区域
+var ctzoom = new CC.util.d2d.RectZoom({
+  rects:[
+    new CC.util.d2d.ComponentRect(grid),
+    new CC.util.d2d.ComponentRect(tree),
+    new CC.util.d2d.ComponentRect(resizer)
+  ]
+});
+
+// 拖放处理对象
+// DragHandler 与 Drop Hander 合在一起实现
+
+var handler = {
+
+  beforedrag : function(){
+    G.setZoom(ctzoom);
+  },
+  
+  dragstart : function(evt, source){
+    G.getIndicator().prepare();
+    G.getIndicator().setMsg("容器间的拖放!", "源:"+source.id);
+    CC.each(ctzoom.rects, function(){
+        if(this.comp != source){
+            this.comp.addClass('dragstart');
+        }
+    });
+  },
+  
+  drag : function(){
+    // 使得指示器在正确的位置显示
+    G.getIndicator().reanchor();
+  },
+  
+  sbover : function(target){
+    G.getIndicator().setMsg('进入了<font color="red">'+target.id+'</font>');
+    target.addClass('dragover');
+  },
+  
+  sbout : function(target){
+    G.getIndicator().setMsg("容器间的拖放!");
+    target.delClass('dragover');
+  },
+  
+  sbdrop : function(target, source){
+    target.delClass('dragover');   
+  },
+  
+  dragend : function(evt, source){
+    CC.each(ctzoom.rects, function(){
+        if(this.comp != source){
+            this.comp.delClass('dragstart');
+        }
+    });
+    G.getIndicator().end();
+  }
+};
+
+G.installDrag(tree, true, null, handler);
+G.installDrag(grid, true, null, handler);
+G.installDrag(resizer, true, null, handler);
+ </code></pre>
+ 
+ */
+ 
 /**
  * 如果已加入拖放组,
  * 函数在源进入时触发.
@@ -872,14 +916,14 @@ G.installDrag(resizeImg, true, null, handler);
 /**
  * @cfg {Function} filter 在拖动开始收集控件区域时可过滤某些不合条件的子控件。
  * <br>
- * 格式:filter(childComponent),返回false时忽略该子控件
+ * 格式:filter(childComponent),false时忽略该子控件
  */
     filter : false,
 /**
  * @private
  */
     prepare : function(){
-      var sv = this.ct.getScrollor().view, 
+      var sv = this.ct.ct, 
           ch = sv.clientHeight,
           st = sv.scrollTop,
           source = mgr.getSource(),
@@ -888,7 +932,7 @@ G.installDrag(resizeImg, true, null, handler);
       var zoom = this;
       this.ct.each(function(){
         if(this !== source){
-            if(!self.filter || self.filter(this) !== false){
+            if(!self.filter || self.filter(this)){
               var v = this.view, ot = v.offsetTop, oh = v.offsetHeight;
               // 是否可见范围
               if(ot + oh - st > 0){

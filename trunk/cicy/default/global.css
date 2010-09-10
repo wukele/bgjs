@@ -67,8 +67,8 @@ a.g-win-clsbtn:hover { background-position:-129px -49px;}
 .g-layout-contexted .g-layout-sliper {display:none !important;}
 
 .g-layout-split, .g-layout-sp-ghost {text-align:center; position:absolute;z-index:3;font-size:0px;line-height:1px;border:none;overflow:hidden;padding:0;}
-.g-ly-split-v{cursor:col-resize;background-position:-384px 0;background-repeat:repeat-y !important;}
-.g-ly-split-h{cursor:row-resize;background-position:0 -1722px;}
+.g-ly-split-v{cursor:col-resize;background-repeat:repeat-y;}
+.g-ly-split-h{cursor:row-resize;background-repeat:repeat-x;}
 .g-layout-sp-ghost{z-index:1000;background-color:#AAAAAA;}
 
 .g-layout-cbar {table-layout:fixed;position:absolute;cursor:pointer;}
@@ -97,7 +97,7 @@ a.g-win-clsbtn:hover { background-position:-129px -49px;}
 .g-nav-block-u:hover,.g-nav-block-u-on{background-position:-474px -58px;}
 .g-nav-block-d:hover,.g-nav-block-d-on{background-position:-496px -22px;}
 
-.g-layout-contexted {z-index:5;border:1px solid #CCC;z-index:7999;background-color:white;}
+.g-layout-contexted {z-index:5;border:1px solid #CCC;z-index:7999;}
 .g-row-ly {overflow:hidden !important;}
 .g-rowlayout-split{background-position:0 -1783px;cursor:row-resize;}
 
@@ -560,6 +560,10 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-foldable .g-foldablewrap b.icoCls{
 	margin-top:2px;
 	position:relative;
+	background-position:-2px -129px;
+}
+.g-gridview-clsview .g-foldablewrap b.icoCls{
+	background-position:-2px -89px;
 }
 
 .g-progressbar {width:100%;}
@@ -569,9 +573,7 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-progress-c {position:relative;background-position:0 -1801px;height:16px;padding:2px 0;overflow:hidden;}
 .g-progress-c img{height:12px;width:0%;}
 
-.g-gridview-clsview b.icoCls{
-	background-position:-2px -89px;
-}
+
 .g-prpty-fldbar{background-color:#CCC;}
 .g-prpty-sp{background:transparent;position:absolute;z-index:8997;width:5px;top:0px;cursor:e-resize;}
 	
@@ -627,6 +629,9 @@ filter: Alpha(opacity=50); opacity:0.5;
 .g-fieldset legend{font-weight:bold;color:#001119;font-size:12px;}
 
 .g-form-mdy  {background-position:left top;background-repeat:no-repeat;}
-.g-form-error {background-position:center bottom !important;background-repeat:repeat-x;
+.g-form-error {background-position:center bottom !important;background-repeat:repeat-x;}
 
-}
+/** fix ie offsetParent widthout positioned attr */
+.g-portal-ie-ofp { position:relative !important; }
+.g-portal-ct-hold{  }
+.g-portal-float  {z-index:999;}

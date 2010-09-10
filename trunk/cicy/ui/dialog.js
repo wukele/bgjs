@@ -11,6 +11,55 @@
 /**
  * @bottomer {CC.ui.ContainerBase} 底部面板，设置为false时可取消生成底部面板。
  */
+ 
+/**
+ * @cfg {Array} buttons 显示的按钮列表
+  <pre><code>
+  new CC.ui.Dialog({
+    ...,
+  	buttons : [
+  		{title:'关 闭', id:'close'},
+  		{title:'忽 略', id:'ignore'}
+  	]
+  });
+ </code></pre>
+ */
+ 
+/**
+ * @cfg {String} defaultButton 设置默认按钮,该按钮必须在当前按钮列表中
+ */
+
+/**
+ * @cfg {Boolean} bottomer 设置是否显示底部面板，默认显示。
+ */
+
+/**
+ * @cfg {Function} on[ReturnCode] 以on+返回码(ID)方式定义按钮选择后的回调方法。
+  <pre><code>
+  new CC.ui.Dialog({
+    ...,
+  	buttons : [
+  		{title:'关 闭', id:'close'},
+  		{title:'忽 略', id:'ignore'}
+  	],
+  	
+  	onclose : function(){
+  		...
+  	},
+  	
+  	onignore : function(){
+  		....
+  	}
+  });  
+ </code></pre>
+
+ */
+
+/**
+ * @property bottomer
+ * 底部面板
+ * @type {CC.ui.ContainerBase}
+ */
 CC.create('CC.ui.Dialog', CC.ui.Win, function(superclass){
   var CC = window.CC;
   var Event = CC.Event;
@@ -41,9 +90,6 @@ CC.ui.def('dlg', CC.ui.Dialog);
      */
     returnCode : false,
 
-    /**
-     * @cfg {String} defaultButton 设置默认按钮,该按钮必须在当前按钮列表中
-     */
     defaultButton : false,
 
     initComponent: function(){

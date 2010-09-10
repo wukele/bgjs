@@ -154,7 +154,7 @@ CC.create('CC.ui.Resizer', CC.ui.Panel ,(function(superclass){
             vid.beforedrag = function(){self.onResizeStart(vid);};
             vid.drag = drag;
             vid.afterdrag = end;
-            vid.installDrag(true);
+            G.installDrag(vid, true);
             return this;
         },
 /**

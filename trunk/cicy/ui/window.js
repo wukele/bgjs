@@ -220,8 +220,8 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
  */
         trackZIndex : function(){
           if(this.zIndex != globalZ){
-            //以5+速度递增,+5因为存在阴影,边框拖放条的zindex更新
-            globalZ+=5;
+            //以2+速度递增,+2因为存在阴影
+            globalZ+=2;
             this.setZ(globalZ);
           }
         },
@@ -231,10 +231,11 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
             this.fastStyleSet("zIndex", zIndex);
 
             //corners
+            /*
             for(var i=0,cs=this.cornerSprites,len=cs.length;i<len;i++){
               cs[i].setZ(zIndex + 1);
             }
-
+            */
             //shadow
             if(this.shadow)
               this.shadow.setZ(zIndex-1);

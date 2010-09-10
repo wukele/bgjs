@@ -1,15 +1,14 @@
 ﻿(function () {
 
-var CC = window.CC;
-var Base = CC.Base;
-var cptx = Base.prototype;
-var UX = CC.ui;
+var CC = window.CC, 
+    Base = CC.Base,
+    cptx = Base.prototype,
+    UX = CC.ui;
 
 /**
  * @class CC.layout
  * 容器布局管理器类库
  */
-if(!CC.layout)
   CC.layout = {};
 
 /**
@@ -25,7 +24,7 @@ CC.layout.def = function(type, cls){
   return this;
 };
 
- /**
+/**
  * @class CC.ui.Item
  * @extends CC.Base
  */
@@ -43,29 +42,62 @@ CC.layout.def = function(type, cls){
 <br>container.items 意义与 container.layCfg.items一样,只是为了方便书写初始化.
  */
 
-CC.create('CC.layout.Layout', null, {
-        /**
-         * @cfg {CC.Base} ct
-         * 布局管理器对应的容器类
-         */
-        ct: false,
-
+/**
+ * @cfg {CC.Base} ct
+ * 布局管理器对应的容器
+ */
+         
 /**
  * @cfg {Array} items 初始化时由管理器加入到容器的子项列表, 该属性等同于{@link CC.ui.ContainerBase#items}.
  */
-        items : false,
-
+ 
 /**
  * @cfg {Boolean} layoutOnChange 如果每次布局都涉及所有容器子项,则该值应设为true,以便于当容器子项变更(add, remove, display)时重新布局容器
  */
-        layoutOnChange : false,
+ 
 
 /**
- * @cfg {Boolean} [deffer=false]
+ * @cfg {Boolean} deffer 默认false
  * 延迟多少毫秒后再布局,有利于提高用户体验,
  * 但注意访问同步,例如容器子项在布局时才渲染,
  * 如果deffer已置,则子项渲染将会在JavaScript下一周期调用.
  */
+ 
+/**
+ * @cfg {String} itemCS 将子项被加进容器时添加到子项的CSS样式
+ */
+ 
+/**
+ * @cfg {Object} lyInf 布局配置数据,子项的父容器布局管理器根据该信息布局子项.<br>
+    如果控件被布局管理器所管理,其布局相关的配置信息将存放在component.lyInf,
+    要访问子项当前布局信息,可通过container.layout.cfgFrom(component)方法获得.
+ * @member CC.Base
+ */
+ 
+/**
+ * @cfg {Boolean} invalidate 指示当引发布局时是否执行布局,
+ * 如大量引发重复布局的操作可先设置invalidate=true,执行完后再设置invalidate=false,
+ * 再调用{@link #doLayout}布局.<br>
+ * 容器类不必直接设置该属性,
+ * 可调用{@link CC.ui.ContainerBase#validate}和{@link CC.ui.ContainerBase#invalidate}方法.
+ */
+
+/**
+ * @cfg {String} ctCS 初始化时添加到容器的样式
+ */
+ 
+/**
+ * @cfg {String} wrCS 初始化时添加到容器ct.wrapper的样式
+ */
+ 
+CC.create('CC.layout.Layout', null, {
+
+        ct: false,
+
+        items : false,
+
+        layoutOnChange : false,
+
         deffer : false,
 
         initialize: function(opt){
@@ -85,17 +117,8 @@ CC.create('CC.layout.Layout', null, {
          */
         beforeAdd: fGo,
 
-/**
- * @cfg {String} itemCS 将子项被加进容器时添加到子项的CSS样式
- */
         itemCS : false,
 
-/**
- * @cfg {Object} lyInf 布局配置数据,子项的父容器布局管理器根据该信息布局子项.<br>
-    如果控件被布局管理器所管理,其布局相关的配置信息将存放在component.lyInf,
-    要访问子项当前布局信息,可通过container.layout.cfgFrom(component)方法获得.
- * @member CC.Base
- */
 
 /**
  * 将组件 component 添加到布局,
@@ -155,13 +178,6 @@ CC.create('CC.layout.Layout', null, {
             this.doLayout();
         },
 
-/**
- * @cfg {Boolean} invalidate 指示当引发布局时是否执行布局,
- * 如大量引发重复布局的操作可先设置invalidate=true,执行完后再设置invalidate=false,
- * 再调用{@link #doLayout}布局.<br>
- * 容器类不必直接设置该属性,
- * 可调用{@link CC.ui.ContainerBase#validate}和{@link CC.ui.ContainerBase#invalidate}方法.
- */
 
 /**
  * 布局容器,要重写布局应重写onLayout方法.
@@ -207,9 +223,7 @@ CC.create('CC.layout.Layout', null, {
         cfgFrom : function(item) {
           return item.lyInf || {};
         },
-/**
- * @param {CC.Base} component
- */
+
         insert : function(comp){
             if (this.layoutOnChange)
                  this.doLayout.bind(this).timeout(0);
@@ -223,16 +237,11 @@ CC.create('CC.layout.Layout', null, {
          */
         layoutChild: fGo,
 
-        /**
-         * 除移子项时调用并重新布局,
-         * 注意:从布局管理器移除子控件并不从容器移除.
-         * 如果layoutOnChange设置为false时不调用。
-         * @param {CC.Base} component
-         */
         remove: function(comp){
             if (this.layoutOnChange)
                 this.doLayout.bind(this).timeout(0);
         },
+        
 /**
  * 批量添加子控件到容器.
  * @param {CC.Base} items
@@ -255,7 +264,7 @@ CC.create('CC.layout.Layout', null, {
                if(!item.ctype && icfg)
                  item = CC.extendIf(item, icfg);
                
-               item = ct.instanceItem(item, cls, true)
+               item = ct.instanceItem(item, cls, true);
               }
               this.add(item);
             }
@@ -266,13 +275,8 @@ CC.create('CC.layout.Layout', null, {
             }
         },
 
-/**
- * @cfg {String} ctCS 初始化时添加到容器的样式
- */
         ctCS : false,
-/**
- * @cfg {String} wrCS 初始化时添加到容器ct.wrapper的样式
- */
+
         wrCS : false,
         
         /**
@@ -332,8 +336,14 @@ CC.create('CC.layout.Layout', null, {
         }
 });
 
-var Lt = CC.layout.Layout.prototype;
-var Adapert = CC.create(CC.layout.Layout, {
+var 
+Lt = CC.layout.Layout.prototype, 
+//
+// 容器默认的布局管理器布局方式为：
+// 未渲染前，rendered = false，总会重新布局容器，所以doLayout总是有效；
+// 渲染后，doLayout被设为空调用，忽略容器布局。
+//
+Adapert = CC.create(CC.layout.Layout, {
   doLayout : function(){
     Lt.doLayout.call(this);
     if(this.rendered)
@@ -342,7 +352,7 @@ var Adapert = CC.create(CC.layout.Layout, {
 });
 CC.layout.def('default', Adapert);
 
-CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>');
+
 /**
  * @class CC.ui.ContainerBase
  * 容器类控件,容器是基类的扩展,可包含多个子组件,
@@ -381,14 +391,30 @@ CC.create('CC.ui.ContainerBase', Base,
   maxH: 65535,
 
   maxW: 65535,
- /**
+  
+/**
  * @cfg {Base} itemCls=CC.ui.Item 容器子控件类, fromArray方法根据该子项类实例化子项
+ * 可以通过该属性设定容器子类类别，也可以在子项配置中通过ctype方法具体应用某个类。
  * @see #fromArray
+<pre><code>
+    ct = CC.ui.instance({
+        ctype:'ct',
+        itemCls : 'button',
+        array:[
+            // button
+            {title:'确定'},
+            // button
+            {title:'取消'},
+            // 也可具体指定应用某个类
+            {ctype:'text'}
+        ]
+    });
+</code></pre>
+
  */
   itemCls: CC.ui.Item,
 
   autoRender: false,
-
 
 /**
  * @cfg {Array} items
@@ -398,13 +424,14 @@ CC.create('CC.ui.ContainerBase', Base,
  * 该属性与{@link CC.layout.Layout#items}属性意义相同.
  */
   items : false,
+  
 /**
- * @cfg {Array} array 子项数据初始化组数, 由{@link #fromArray}装载.
+ * @cfg {Array} array 子项数据初始化组数, 由{@link #fromArray}装载，如果设定该配置，在初始化时通过{@link #fromArray}载入.
  */
   array:false,
   
   initialize : function(){
-    Base.prototype.initialize.apply(this, arguments);
+    cptx.initialize.apply(this, arguments);
     //pre load children
     if (this.array) {
       this.fromArray(this.array);
@@ -445,11 +472,17 @@ CC.create('CC.ui.ContainerBase', Base,
  * @cfg {Boolean|CC.util.SelectionProvider} selectionProvider 属性由{@link CC.util.SelectionProvider}提供,指明是否开启容器选择子项的功能. 
  */
   selectionProvider : false,
+  
 /**
  * @cfg {Boolean|CC.util.ConnectionProvider} connectionProvider 属性由{@link CC.util.ConnectionProvider}提供,指明是否开启容器向服务器请求加载数据的功能. 
  */
   connectionProvider : false,
-  
+
+/**
+ * @property children
+ * 最终存放子项的数组，可通过$方法获得子项，通过{@link #each}方法遍历子项。
+ * @type {Array}
+ */  
   initComponent: function() {
     cptx.initComponent.call(this);
     if (this.keyEvent)
@@ -463,9 +496,8 @@ CC.create('CC.ui.ContainerBase', Base,
 
     this.createLayout();
     
-    if(this.selectionProvider){
+    if(this.selectionProvider)
       this.getSelectionProvider();
-    }
 
     if(this.connectionProvider)
       this.getConnectionProvider();
@@ -475,6 +507,7 @@ CC.create('CC.ui.ContainerBase', Base,
  * @cfg {Layout|String} layout='default' 容器布局管理器
  */
   layout : 'default',
+  
 /**
  * @cfg {Object} lyCfg 用于初始化布局管理器的数据
  */
@@ -502,7 +535,8 @@ CC.create('CC.ui.ContainerBase', Base,
   */
   createView: function() {
     cptx.createView.call(this);
-    if (!this.ct) this.ct = this.view;
+    if (!this.ct) 
+        this.ct = this.view;
     //apply ct
     else if (typeof this.ct === 'string')
       this.ct = this.dom(this.ct);
@@ -601,8 +635,6 @@ CC.create('CC.ui.ContainerBase', Base,
  */
   onAdd : function(a){
     this.children.push(a);
-    //默认子项结点将调用_addNode方法将加到容器中.
-    this._addNode(a.view);
 
     if (a.pCt){
       if(a.pCt !== this){
@@ -611,14 +643,38 @@ CC.create('CC.ui.ContainerBase', Base,
         a.pCt = this;
       }
     }else a.pCt = this;
+
+    //默认子项结点将调用_addNode方法将加到容器中.
+    this._addNode(a.view);
     
     //在useContainerMonitor为false时,是否允许子项点击事件,并且是否由子项自身触发.
-    if (!this.useContainerMonitor && this.clickEvent && !a.__click) {
-      var bnd = a.__click = this.clickEventTrigger;
-      var clickProxy = this.clickEventNode ? a.dom(this.clickEventNode) : a.view;
-      a.domEvent(this.clickEvent === true ? 'mousedown': this.clickEvent, bnd, this.cancelClickBubble, null, clickProxy);
-    }
+    if (!this.useContainerMonitor && this.clickEvent)
+        this.installItemInnerClickEvent(a, true);
   },
+  
+  installItemInnerClickEvent : function(item, bind){
+      if(bind){
+        
+        if(__debug) console.assert(item.__ctClickData, undefined);
+        
+        var name  = this.clickEvent === true ? 
+                          'mousedown' : 
+                          this.clickEvent, 
+            proxy = this.clickEventNode ? item.dom(this.clickEventNode) : item.view;
+        
+        item.domEvent( name, this.clickEventTrigger, this.cancelClickBubble, null, proxy );
+        
+        item.__ctClickData = proxy === this.view ? name : [name, proxy]; 
+        
+      }else { // unbind
+        var data = item.__ctClickData;
+        if( CC.isArray(data) )
+             item.undomEvent(data[0] , this.clickEventTrigger, this.cancelClickBubble, null, data[1]);
+        else item.undomEvent(data , this.clickEventTrigger, this.cancelClickBubble, null);
+        delete item.__clickProxy; 
+      }
+  },
+  
 
 /**
  * @private
@@ -646,12 +702,13 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * 子项点击事件回调,发送clickEvent事件.
+ * 子项点击事件回调,发送itemclick事件.
  * @private
  */
   clickEventTrigger: function(event) {
     var p = this.pCt;
-    if (!this.clickDisabled) p.fire('itemclick', this, event);
+    if (!this.clickDisabled) 
+        p.fire('itemclick', this, event);
   },
 
 /**
@@ -681,8 +738,8 @@ CC.create('CC.ui.ContainerBase', Base,
           a.view.parentNode.removeChild(a.view);
     }
     else if(this.fire('beforeremove', a)!==false && this.beforeRemove(a) !== false){
-      this.onRemove.apply(this, arguments);
-        this.fire('remove', a);
+      this.onRemove(a);
+      this.fire('remove', a);
     }
     return this;
   },
@@ -690,7 +747,12 @@ CC.create('CC.ui.ContainerBase', Base,
   beforeRemove : fGo,
 
   onRemove : function(a){
+    
+    if(a.__clickProxy)
+        this.installItemInnerClickEvent(a, false);
+    
     a.pCt = null;
+    
     this.children.remove(a);
     
     this._removeNode(a.view);
@@ -715,13 +777,14 @@ CC.create('CC.ui.ContainerBase', Base,
   destoryChildren: function() {
     var it, chs = this.children;
     this.invalidate();
-    while (chs.length > 0) {
-      it = chs[0];
-      this.remove(it);
-      it.destory();
+    for(var i=chs.length-1;i>=0;i--) {
+        it = chs[i];
+        this.remove(it);
+        it.destory();
     }
 
-    if (!this.destoryed) this.validate();
+    if (!this.destoryed)
+        this.validate();
   },
 
   /**
@@ -780,7 +843,7 @@ CC.create('CC.ui.ContainerBase', Base,
   },
 
 /**
- * 返回窗口中控件的索引.
+ * 返回容器子控件索引.
  * @param {String|CC.Base} 参数a可为控件实例或控件ID
  * @return {Number} index or -1, if not found.
  */
@@ -795,13 +858,14 @@ CC.create('CC.ui.ContainerBase', Base,
   size: function() {
     return this.children.length;
   },
+  
   /**
  * 容器是否包含给出控件.
  * @param {String|CC.Base} component 可为控件实例或控件ID
  * @return {Boolean}
  */
   contains: function(a) {
-    if (!a.type) {
+    if (!a.cacheId) {
       a = this.$(a);
     }
     return a.pCt === this;
@@ -813,8 +877,10 @@ CC.create('CC.ui.ContainerBase', Base,
  * @param {CC.Base} componentB
  */
   insertBefore: function(a, b) {
-    var idx = this.indexOf(b);
-    this.insert(idx, a);
+    if(b !== undefined){
+        var idx = this.indexOf(b);
+        this.insert(idx, a);
+    }else cptx.insertBefore.call(this, a);
   },
 
   /**
@@ -833,24 +899,28 @@ CC.create('CC.ui.ContainerBase', Base,
      * @return this
      */
   insert: function(idx, item) {
-
-    //本身已容器内部,Remove后调整位置
-    if(item.pCt === this && this.indexOf(item)<idx)
-      idx --;
-
-    if(this.fire('beforeadd', item) !== false && this.beforeAdd(item) !== false){
-      
-      if (item.pCt && item.rendered){
-          item.pCt.remove(item);
-          item.pCt = this;
-      }
-      this.onInsert.apply(this, arguments);
-      this.fire('add', item);
-      //this.layout.insertComponent.apply(this.layout, arguments);
+    
+    if(item.pCt === this){
+        //本身已容器内部,Remove后调整位置
+        if(this.indexOf(item)<idx)
+            idx --;
+        this.children.remove(item);
+        this.onInsert(idx, item);
+    }else if( this.fire('beforeadd', item) !== false && 
+              this.beforeAdd(item) !== false){
+                
+        if (item.pCt && item.rendered){
+            item.pCt.remove(item);
+            item.pCt = this;
+        }
+        this.onInsert(idx, item);
+        this.fire('add', item);
     }
     return this;
   },
-
+  //
+  // 只负责结构相关的移动
+  //
   onInsert : function(idx, item){
       this.children.insert(idx, item);
       var nxt = this.children[idx+1];
@@ -878,23 +948,23 @@ CC.create('CC.ui.ContainerBase', Base,
  * @return this
  */
   swap: function(a1, a2) {
-    var ch = this.children;
-    var idx1 = this.indexOf(a1);
-    var idx2 = this.indexOf(a2);
-    a1 = this.children[idx1];
-    a2 = this.children[idx2];
+    var ch = this.children,
+        idx1 = this.indexOf(a1),
+        idx2 = this.indexOf(a2);
+    a1 = ch[idx1];
+    a2 = ch[idx2];
     ch[idx1] = a2;
     ch[idx2] = a1;
 
-    var n1 = a1.view;
-    var n2 = a2.view;
+    var n1 = a1.view, 
+        n2 = a2.view;
 
     if (n1.swapNode) {
       n1.swapNode(n2);
     }
     else {
-      var p = n2.parentNode;
-      var s = n2.nextSibling;
+      var p = n2.parentNode, 
+          s = n2.nextSibling;
 
       if (s == n1) {
         p.insertBefore(n1, n2);
@@ -926,7 +996,6 @@ CC.create('CC.ui.ContainerBase', Base,
     }
 
     this.ct.appendChild(oFrag);
-    this.sorted = true;
     return this;
   },
 /**
@@ -962,36 +1031,10 @@ CC.create('CC.ui.ContainerBase', Base,
     }));
     return this;
   },
-/**
- * 根据控件某个属性值来过滤子项.
- * @param {Function} callback 符合条件后的回调,传递当前子项作参数
- * @param {String} attrName 属性名
- * @param {Object} attrV 测试的属性值
- * @param {Boolean} [strictEq=false] 是否使用绝对等比较方式
- * @return this
- */
-  filterBy: function(callback, attrName, attrV, strictEq) {
-    var chs = this.children,
-    len = this.children.length,
-    i = 0,
-    it, useEq = strictEq || false,
-    rt, v;
-    for (; i < len; i++) {
-      it = chs[i];
-      if (useEq) {
-        if (it[attrName] === attrV) rt = callback.call(it);
-      }
-      else {
-        v = it[attrName] || false;
-        if (v == attrV) rt = callback.call(it);
-      }
-      if (rt === false) break;
-    }
-    return this;
-  },
+
 /**
  * 枚举子项, 如果回调函数返回false,则终止枚举.
- * @param {Function} callback 回调,传递参数为 callback(item, i)
+ * @param {Function} callback 回调,传递参数为 (caller||item).callback(item, i)
  * @param {Object} caller 调用callback的this, 默认为子项
  * @return 最后一个回调调用结果值
  */
@@ -1373,12 +1416,14 @@ CC.create('CC.ui.ContainerBase', Base,
  */
     getScrollor : function(){
       return this.scrollor || 
-             this.height === false && this.width === false && this.pCt ? this.pCt.wrapper: this.wrapper;
+             this.height === false && 
+             this.width === false && 
+             this.pCt ? this.pCt.wrapper: this.wrapper;
     }
 });
 
-var ccx = CC.ui.ContainerBase;
-var ccxp = CC.ui.ContainerBase.prototype;
+var ccx  = CC.ui.ContainerBase,
+    ccxp = ccx.prototype;
 
 /**
  * 等同 {@link byId}
@@ -1387,6 +1432,8 @@ var ccxp = CC.ui.ContainerBase.prototype;
 ccxp.find = ccxp.byId;
 
 UX.def('ct', ccx);
+
+CC.Tpl.def( 'CC.ui.Panel', '<div class="g-panel"></div>');
 /**
  * @class CC.ui.Panel
  * 面板与容器的主要区别是可发送resized, reposed事件,resize后可重新设定容器内容结点的宽高和位置.
@@ -1407,7 +1454,9 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
  * @cfg {Boolean} syncWrapper 当面板宽高改变时是否同步计算并更新容器内容组件宽高,默认为true.
  */
         syncWrapper : true,
-
+        
+        insets : false,
+        
         initComponent: function(){
             var w = false, h = false, l = false, t = false;
             if (this.width !== false) {
@@ -1435,6 +1484,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
               m[4] = m[0]+m[2];
               m[5] = m[1]+m[3];
             }
+            
             superclass.initComponent.call(this);
 
             if(this.insets){
@@ -1563,27 +1613,6 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
         }
 };
 });
-
-(function(cp){
-
-  var borderOpts = {
-    insets : [1, 1, 1, 1],
-    template : 'WrapPanel',
-    ct : '_wrap',
-    innerCS :'g-borderpanel',
-    wrCS :'g-borderpanel-wrap'
-  };
-
-  CC.ui.BorderPanel = function(opt, cls){
-    if(!opt)
-      opt = {};
-    CC.extendIf(opt, borderOpts);
-    var c = new (cls||cp)(opt);
-    c.wrapper.addClassIf(c.wrCS);
-    return c;
-  };
-
-})(CC.ui.Panel);
 
 UX.def('panel', CC.ui.Panel);
 })();

@@ -1,0 +1,166 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+<style>
+.module {
+    background:none repeat scroll 0 0 #FFFFFF;
+    border:3px solid #C0C0C0;
+    margin:10px 6px;
+}
+.white .moduleFrame {
+    border-color:#9E9E9E;
+}
+
+.moduleFrame {
+    border:1px solid #4E8EE2;
+    overflow:hidden;
+}
+
+.white .moduleHeader {
+    background:url("module-white.gif") repeat-x scroll 0 0 #9E9E9E;
+    border-color:#D9D9D9;
+}
+
+.moduleHeader {
+    border-left:1px solid #A7D0F6;
+    border-top:1px solid #A7D0F6;
+    color:#FFFFFF;
+    cursor:move;
+    height:1.6em;
+    overflow:hidden;
+}
+
+.moduleIcon, .moduleTitle {
+    float:left;
+    font-weight:bold;
+    line-height:1.4em;
+    padding-left:2px;
+}
+
+.moduleContent {
+    background:url("nav_bg.gif") repeat-x scroll 0 -5px #FFFFFF;
+    border-top:1px solid #DDDDDD;
+    padding:5px;
+}
+
+.main_containers {
+    float:left;
+    min-height:5em;
+}
+
+.ui-sortable-placeholder {
+    background:none repeat scroll 0 0 #FFAAAA;
+    border:1px dotted red;
+    height:20px;
+    visibility:visible !important;
+}
+
+#main {
+    width:900px;
+    padding:3px;
+    position:relative;
+}
+</style>
+</head>
+<body>
+<div id="main">
+</div>
+</body>
+</html>
+<script>
+// __debug = true;
+
+CC.create('CC.ui.Module', CC.ui.ContainerBase, {
+    template : [
+                '<div style="" class="module white">',
+                    '<div class="moduleFrame">',
+                        '<div class="moduleHeader" id="_drag">',
+                            '<span class="moduleIcon"><img src="icon.gif" alt="icon"></span>',
+                            '<div class="moduleTitle">站长常用工具</div>',
+                        '</div>',
+                        '<div class="moduleContent" id="_ct"></div>',
+                    '</div>',
+                '</div>'
+               ].join('')
+});
+
+CC.ui.def('module', CC.ui.Module);
+
+CC.ready(function(){
+ function createFolder(){
+    return {
+         ctype:'titlepanel', 
+         title:'一个BOX',
+         cs:'module',
+         dragNode:'_tleBar',
+	  	 array:[
+			{ctype:'folder',
+			 array:[
+	  			{title:'disabled item',icon:'iconRef',disabled:true},
+					{title:'粉红色',icon:'iconUser'},
+					{title:'蓝色',icon:'iconEdit'},
+					{title:'清除记录',icon:'iconLeaf'},
+					{title:'粉红色',icon:'iconTabs'},
+					{title:'蓝色',icon:'iconUser'},
+					{title:'清除记录',icon:'iconEdit'}
+              ]
+			}
+	     ]};
+ }
+ 
+ function createBox(){
+    return {
+        ctype:'module',
+        ct:'_ct',
+        array:[
+			{ctype:'folder',
+			 array:[
+					{title:'粉红色',icon:'iconUser'},
+					{title:'蓝色',icon:'iconEdit'},
+					{title:'清除记录',icon:'iconLeaf'}
+              ]
+			}
+	     ]
+    };
+ }
+ 
+ var ct = new CC.ui.ContainerBase({
+    view : 'main',
+    layout:'portal',
+    items : [
+        {
+            ctype:'ct', template:'<div class="main_containers ui-sortable" id="c0" style="width:33.3%;">',
+            array:[
+                createFolder(),
+                createFolder(),
+                createBox(),
+            ]
+        },
+        {
+            ctype:'ct', template:'<div class="main_containers ui-sortable" id="c0" style="width:33.3%;">',
+            array:[
+                createBox(),
+                createBox(),
+                createBox(),
+                {ctype:'module'}
+            ]
+        },
+        {
+            ctype:'ct', template:'<div class="main_containers ui-sortable" id="c0" style="width:33.3%;">',
+            array:[
+                createBox(),
+                createFolder(),
+                createFolder(),
+                {ctype:'module'}
+            ]
+        }
+    ]
+ });
+ 
+ ct.render();
+});
+</script>

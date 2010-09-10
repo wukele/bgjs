@@ -76,9 +76,6 @@ return {
   // 调整结点样式,展开/收缩时调用本方法更新结点样式状态
   _decElbowSt : function(b) {
     
-    console.log('_decElbowSt', this.cacheId);
-    console.trace();
-    
     if(b===undefined)
       b = this.pCt.expanded;
 

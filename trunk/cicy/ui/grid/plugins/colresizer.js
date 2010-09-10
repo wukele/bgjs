@@ -101,7 +101,7 @@ return {
         currentCol = col;
         
         Rz.applyMasker(true, 'col-resize');
-        G.setMonitor(this)
+        G.setHandler(this)
          .setBounds(this.calColWidthConstrain(col))
          .startDrag(col, e);
         E.preventDefault(e);
