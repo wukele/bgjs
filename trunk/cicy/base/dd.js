@@ -919,16 +919,33 @@ G.installDrag(resizer, true, null, handler);
  * 格式:filter(childComponent),false时忽略该子控件
  */
     filter : false,
+
 /**
+ * 获得视图元素(overflow:hidden),只有在该范围内的子控件才会被检测,范围外的子控件被忽略.
+ * 默认返回父层overflow:hidden元素.
+ * 控件开发者可重写该函数返回自定的范围视图.
+ * @private
+ * @return {CC.ui.Base} containerViewport
+ */
+    getViewportEl : function(){
+    	return this.ct.getScrollor();
+    },
+    
+/**
+ * 默认只将容器视图范围内的子控件加入到矩域,视图范围外不可见的子控件将被忽略.<br>
+ * 在收集子控件过程中,调用{@link #filter}方法过滤子控件
+ * @implementation
  * @private
  */
     prepare : function(){
-      var sv = this.ct.ct, 
+      var sv = this.getViewportEl(), 
           ch = sv.clientHeight,
           st = sv.scrollTop,
           source = mgr.getSource(),
           self = this;
-
+      
+      if( __debug ) console.group("容器"+this.ct.id+"拖放域:", this);
+      
       var zoom = this;
       this.ct.each(function(){
         if(this !== source){
@@ -938,7 +955,7 @@ G.installDrag(resizer, true, null, handler);
               if(ot + oh - st > 0){
                 if(ot - st - ch < 0){
                   zoom.add( new CC.util.d2d.ComponentRect(this) );
-                  if(__debug) console.log('CC.util.d2d.ContainerDragZoom:item index:', arguments[1]);
+                  if(__debug) console.log('CC.util.d2d.ContainerDragZoom:加入矩域:', arguments[1]);
                 }else {
                   return false;
                 }

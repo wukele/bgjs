@@ -5,20 +5,40 @@ var
     // 当前指示器方向，例如目标上半段或下半段
     DIR;
 /**
- * 
+ * @class CC.util.dd.Portable
+ * 本类支持容器内子控件子控件与子控件以及容器间子控件与子控件的拖放响应.
+ * 当拖放开始时,拖放源会离开原位置浮动起来,随着鼠标移动而移动.<br>
+ * 最常见例子是利用本类做Portal布局.它的效果就是这样,
+ * Portal布局只是限定了拖放的范围,只能在某一容器下拖放子控件.
  */
 
 /**
- * @cfg {String} 指定拖放区域控件拖放结点的ID。
+ * @cfg {String} dragNode 指定触发拖放响应的结点ID,该结点位于拖放源中.
  */
+ 
+/**
+ * @cfg {Function} createZoom, 生成并返回拖放域，回调参数：createZoom(dragSource)
+ */
+ 
 CC.create('CC.util.dd.Portable', null, {
     
     dragNode : '_drag',
     
-    // private    
+    // 浮动时添加到拖放源的样式
     floatingCS    :'g-portal-float',
-    placeholdCs   : 'module ui-sortable-placeholder',
+    
+    // 占位元素的样式
+    
+    srcPlaceholdCS : 'g-portal-srchold',
+    
+    ctPlaceholdCS : 'g-portal-ct-hold',
+    
+    indicatorCS   : 'g-portal-indicator',
+    
+    // 修复ie offsetParent与实际定位不一致,显式添加position
     ieOfpCs       : 'g-portal-ie-ofp',
+    
+    // 当容器无子项时,添加到容器占位元素的最小高度
     miniCtHolderH : 100,
     
     initialize : function(cfg){
@@ -27,18 +47,24 @@ CC.create('CC.util.dd.Portable', null, {
     },
     
 /**
- * @param {CC.Base} module
+ * 绑定一个控件,使之成为拖放源,以触发拖放事件.
+ * @param {CC.Base} dragSource
  */
     bind : function(c){
         return G.installDrag(c, true, this.getDragNode(c), this);
     },
     
+/**
+ * 如果不通过设置{@link #dragNode}来自定义触发拖放的元素,
+ * 可以重写该方法返回拖放源上的某个元素作为触发拖放的元素.<br>
+ * 函数默认返回拖放源的dragNode属性或者当前类的dragNode属性.
+ * @param {CC.Base} dragSource
+ * @return {HTMLElement|String} 触发拖放的html元素或元素ID
+ */
     getDragNode : function(c){
         return c.dragNode || this.dragNode;
     },
-/**
- * @cfg {Function} createZoom, 生成并返回拖放域，回调参数：createZoom(dragSource)
- */
+
     createZoom : fGo,
 
 //
@@ -60,6 +86,7 @@ CC.create('CC.util.dd.Portable', null, {
     },
     
     drag : function(){
+    	  // 拖放源随鼠标移动而移动
         var dxy = G.getDXY(), ixy = this._initOff;
         G.getSource().setXY(dxy[0]+ixy[0], dxy[1] + ixy[1]);
     },
@@ -71,7 +98,7 @@ CC.create('CC.util.dd.Portable', null, {
 //
     sbmove : function(target){
         //
-        // 得到目标矩形
+        // 得到目标矩形,并确定鼠标在矩形内的位置(象限)
         //
         var rect = target.ownRect,
             xy = G.getXY(),
@@ -90,10 +117,12 @@ CC.create('CC.util.dd.Portable', null, {
     },
 
     sbout : function(){
+    	 // 复位位置
         DIR = undefined;
     },
-  
+    
     dragend : function(e, source){
+        
         this.getIndicator().del();
         
         if(this._currHold)
@@ -114,14 +143,14 @@ CC.create('CC.util.dd.Portable', null, {
      * @private
      */
     getSrcPlacehold : function(){
-        return this.placehold || ( this.placehold = this.createPlacehold() );
+        return this.placehold || ( this.placehold = this.createPlacehold(this.srcPlaceholdCS) );
     },
     /**
      * 获得指示器
      * @private
      */
     getIndicator : function(){
-        return this.indicator || ( this.indicator = this.createPlacehold() );
+        return this.indicator || ( this.indicator = this.createPlacehold( this.indicatorCS ) );
     },
     
     /**
@@ -134,7 +163,7 @@ CC.create('CC.util.dd.Portable', null, {
         cph.setHeight(
             Math.max(
                 this.miniCtHolderH, 
-                ct.getHeight() - this.getSrcPlacehold().getHeight()
+                ct.getHeight() - this.getSrcPlacehold(this.ctPlaceholdCS).getHeight()
             )
         );
         cph.appendTo(ct.ct);
@@ -161,10 +190,10 @@ CC.create('CC.util.dd.Portable', null, {
 //
 // 生成占位 
 //
-    createPlacehold : function(){
+    createPlacehold : function(cs){
         var ph = CC.ui.instance({
             ctype:'base',
-            cs : this.placeholdCs
+            cs : cs
         });
         return ph;
     },

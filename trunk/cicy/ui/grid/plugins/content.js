@@ -216,7 +216,7 @@ return {
   
   // @override
   getScrollor : function(){
-    return this;
+    return this.view;
   },
 
   onAdd : function(c){

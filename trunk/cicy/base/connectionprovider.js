@@ -106,11 +106,12 @@ CC.util.ProviderFactory.create('Connection', null, {
  * @param {CC.Ajax} ajax
  */
   defaultLoadSuccess : function(j){
-    this.t.fire('defdataload', j, this);
-    var t = this.loadType;
-    if(t === 'html')
-      this.defaultDataProcessor(t, j.getText());
-    else this.defaultDataProcessor(t, j.getJson());
+    if(this.t.fire('connection:defdataload', j, this) !== false){
+        var t = this.loadType;
+        if(t === 'html')
+          this.defaultDataProcessor(t, j.getText());
+        else this.defaultDataProcessor(t, j.getJson());
+    }
   },
   
 /**
@@ -293,8 +294,10 @@ CC.util.ProviderFactory.create('Connection', null, {
   */
   
  /**
- * @event defdataload
- * 由{@link CC.util.ConnectionProvider}提供,数据成功返回后，进行默认的数据处理前发送
+ * @event connection:defdataload
+ * 由{@link CC.util.ConnectionProvider}提供,
+ * 数据成功返回后，进行默认的数据处理前发送，
+ * 返回false取消默认处理
  * @param {CC.Ajax} j
  * @param {CC.util.ConnectionProvider} connectionProvider
  */ 

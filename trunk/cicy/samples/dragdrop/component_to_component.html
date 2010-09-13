@@ -23,7 +23,6 @@ var win = new CC.ui.Win({
   showTo:document.body,
   items:[
       {ctype:'tree',id:'typetree',  cs:'scrolltree', css:'lnr',
-       getScrollor : function(){ return this; },
        // 默认tree点击触发事件是mousedown,就像tabitem一样,
        // 这里为了不影响拖动事件mousedown,将触发事件改为click
        clickEvent:'click',

@@ -1,4 +1,10 @@
-﻿(function(){
+﻿
+/**
+ * 在不改变原意的前提下,原型扩展如此便利快速,为何不好?
+ * 感觉良好!
+ */
+
+(function(){
 	var Slice = Array.prototype.slice;
 /**
  * @class String

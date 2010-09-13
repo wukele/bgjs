@@ -618,7 +618,8 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
     sprs.setSize.apply(this, arguments);
     if(w !== false && CC.ie){
       var sc = this.getScrollor();
-      if(sc !== this) sc.setWidth(this.width);
+      if(sc !== this) 
+      	CC.fly(sc).setWidth(this.width).unfly();
     }
   }
 });

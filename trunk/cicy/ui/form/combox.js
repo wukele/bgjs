@@ -100,12 +100,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         var st = CC.ui.instance({
         	ctype:'folder',
           showTo: document.body,
-          shadow: true,
-          getScrollor : function(){
-            if(!this.scrollor)
-             this.scrollor = this.dom('_scrollor');
-            return this.scrollor;
-          }
+          shadow: true
         });
         return st;
     },
