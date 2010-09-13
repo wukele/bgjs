@@ -14,7 +14,29 @@
     :
                                         [Boolean|CC.util.d2d.Rect]<div class="mdesc"><div class="short">检测点是否位于当前矩形链中,如果点已进入范围,点所在的矩形</div><div class="long">检测点是否位于当前矩形链中,如果点已进入范围,点所在的矩形<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>point</code> : CC.util.d2d.Point<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>[Boolean|CC.util.d2d.Rect]</code><div class="sub-desc">false或矩形类</div></li></ul></div></div></div></td><td class="msource">RectZoom</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.RectZoom-update"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.RectZoom-update">update</a></b>()
     :
-                                        void<div class="mdesc"><div class="short">刷新计算域数据.</div><div class="long">刷新计算域数据.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">RectZoom</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-toString"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.Rect-toString">toString</a></b>()
+                                        void<div class="mdesc"><div class="short">刷新计算域数据。具体操作为：1.清空原有矩域；2.调用prepare方法；3.调用子矩域update方法，依次更新每个子矩域数据。</div><div class="long">刷新计算域数据。具体操作为：1.清空原有矩域；2.调用prepare方法；3.调用子矩域update方法，依次更新每个子矩域数据。<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">RectZoom</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-qdAt"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.Rect-qdAt">qdAt</a></b>(&nbsp;<code>Number&nbsp;x</code>,&nbsp;<code>Number&nbsp;y</code>&nbsp;)
+    :
+                                        Number<div class="mdesc"><div class="short">qd, quadrant 缩写，计算指定点所属矩形的象限，调用前请确保点已落在矩形上。&#13;
+ 返回值： 0 - 8;&#13;
+象限所在X，Y轴正向与屏幕坐标系正方向一致。&#13;
+________ x+&#13;
+|&#13;
+2 |  1&#13;
+y+&#13;
+ &lt;div ...</div><div class="long">qd, quadrant 缩写，计算指定点所属矩形的象限，调用前请确保点已落在矩形上。
+<br> 返回值： 0 - 8;
+象限所在X，Y轴正向与屏幕坐标系正方向一致。
+________ x+
+|
+2 |  1
+y+
+ <div class="mdetail-params"><ul>
+ <li>0:原点</li>
+ <li>1 - 4 : 1-4象限</li>
+ <li>5 - 8 原点为中心，x, y四条轴，其中5为x正轴，其它类推。</li>
+ <li>bool</li>
+ <li>date</li>
+ </ul></div><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>x</code> : Number<div class="sub-desc"></div></li><li><code>y</code> : Number<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Number</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource"><a href="output/CC.util.d2d.Rect.html#qdAt" ext:member="#qdAt" ext:cls="CC.util.d2d.Rect">Rect</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-toString"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.Rect-toString">toString</a></b>()
     :
                                         this.valueOf()<div class="mdesc"><div class="short"></div><div class="long"><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>this.valueOf()</code><div class="sub-desc">+ ''</div></li></ul></div></div></div></td><td class="msource"><a href="output/CC.util.d2d.Rect.html#toString" ext:member="#toString" ext:cls="CC.util.d2d.Rect">Rect</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-valueOf"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.Rect-valueOf">valueOf</a></b>()
     :

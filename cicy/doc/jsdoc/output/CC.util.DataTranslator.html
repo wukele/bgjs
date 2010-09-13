@@ -1,0 +1,66 @@
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>类 <a href="source/cicylib-all.html#cls-CC.util.DataTranslator">CC.util.DataTranslator</a></h1><table cellspacing="0"><tr><td class="label">空间：</td><td class="hd-info">CC.util</td></tr><tr><td class="label">定义在:</td><td class="hd-info">cicylib-all.js</td></tr><tr><td class="label">类:</td><td class="hd-info"><a href="source/cicylib-all.html#cls-CC.util.DataTranslator">DataTranslator</a></td></tr><tr><td class="label">父类:</td><td class="hd-info">Object</td></tr></table><div class="description">UI容器只加载符合一定格式的子项数据，这个格式为{title:'...'}，在通过情况下，数据从后台加载进来，并不是UI容器可接受的格式类型，
+些时可运用本类将特定类型的数据数组转换成适合UI加载的数据数组。
+例如，可将一单纯数组数据['a', 'b', 'c']，转换为[{title:'a'}, {title:'b'}, {title:'c'}]。
+在容器的connectionProvider里设置reader属性指明运用的转换器即可，不必手动处理.
+ <pre><code><i>// 原生容器适用数据，不用转换，可直接通过fromArray载入</i>
+    <b>var</b> rawUIData = [
+      {array:[{title:<em>'原生'</em>}, {title:<em>'原生'</em>}, {title:<em>'原生'</em>}, {title:<em>'原生'</em>}]},
+      {array:[{title:<em>'原生'</em>}, {title:<em>'原生'</em>}, {title:<em>'原生'</em>}, {title:<em>'原生'</em>}]}
+    ];
+    <i>// 原始数组数据</i>
+    <b>var</b> arrayStream = [
+      [<em>'a'</em>, <em>'b'</em>, <em>'c'</em>, <em>'e'</em>],
+      [<em>'f'</em>, <em>'g'</em>, <em>'h'</em>, <em>'i'</em>],
+      [<em>'j'</em>, <em>'k'</em>, <em>'l'</em>, <em>'m'</em>],
+      [<em>'o'</em>, <em>'p'</em>, <em>'q'</em>, <em>'r'</em>]
+    ];
+    
+    <i>// 原始记录映射数据</i>
+    <b>var</b> mappedStream = [
+      [<em>'id'</em> , <em>'second'</em>,   [<em>'first'</em>,<em>'value'</em>], <em>'third'</em> ,<em>'fourth'</em>],
+      [<em>'row12345a'</em> , <em>'2'</em>, [<em>'1'</em>,<em>'aaa'</em>], <em>'3'</em>, <em>'4'</em>],
+      [<em>'row12345b'</em> , <em>'2'</em>, [<em>'1'</em>,<em>'bbb'</em>], <em>'3'</em>, <em>'4'</em>],
+      [<em>'row12345c'</em> , <em>'2'</em>, [<em>'1'</em>,<em>'bbb'</em>], <em>'3'</em>, <em>'4'</em>],
+      [<em>'row13423d'</em> , <em>'2'</em>, [<em>'1'</em>,<em>'bbb'</em>], <em>'3'</em>, <em>'4'</em>]
+    ];
+    
+    
+    CC.ready(<b>function</b>(){
+      <b>var</b> grid = <b>new</b> CC.ui.Grid({
+       header:
+        {
+         array:[
+          {title:<em>'第一列'</em>, id:<em>'first'</em>},
+          {title:<em>'第二列'</em>, id:<em>'second'</em>},
+          {title:<em>'第三列'</em>, id:<em>'third'</em>},
+          {title:<em>'第四列'</em>, id:<em>'fourth'</em>}
+         ]
+       },
+       content : {altCS:<em>'alt-row'</em>}
+      });
+    
+      <b>var</b> win = <b>new</b> CC.ui.Win({
+        title:<em>'自定义数据转换成UI可载入已格式化的数据'</em>,
+        showTo:document.body,
+        layout:<em>'card'</em>,
+        items:[grid]
+      });
+      
+      win.render();
+      win.center();
+      <i>// 原生容器适用数据，不用转换，可直接通过fromArray载入</i>
+      grid.content.fromArray(rawUIData);
+      
+      <i>// 特定格式的数据经转换后读入到表</i>
+      <b>var</b> arrayDataAfterTrans = CC.util.DataTranslator.get(<em>'gridarraytranslator'</em>).read(arrayStream);
+      grid.content.fromArray(arrayDataAfterTrans);
+    
+      <b>var</b> mappedDataAfterTrans = CC.util.DataTranslator.get(<em>'gridmaptranslator'</em>).read(mappedStream, grid.content);
+      console.log(mappedDataAfterTrans);
+      grid.content.fromArray(mappedDataAfterTrans);</code></pre></div><div class="hr"></div><a id="CC.util.DataTranslator-props"></a><h2>公共属性（只读）</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">properties</th><th class="msource-header">定义在</th></tr><tr class="property-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.DataTranslator-gridmaptranslator"></a><b><a href="source/cicylib-all.html#prop-CC.util.DataTranslator-gridmaptranslator">gridmaptranslator</a></b> : Object<div class="mdesc"><div class="short">数据格式为&#13;
+   ['col a',  'col b', ['col c','cell_data',...], 'row_attribute', ...],&#13;
+   ['data a', '..',    ['title', '.....</div><div class="long">数据格式为
+   ['col a',  'col b', ['col c','cell_data',...], 'row_attribute', ...],
+   ['data a', '..',    ['title', '...', '...'],    '..']</div></div></td><td class="msource">DataTranslator</td></tr></tbody></table><a id="CC.util.DataTranslator-events"></a><h2>事件列表</h2><div class="no-members">This class has no public events.</div><a id="CC.util.DataTranslator-methods"></a><h2>公共方法</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">method</th><th class="msource-header">定义在</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.DataTranslator-read"></a><b><a href="source/cicylib-all.html#method-CC.util.DataTranslator-read">read</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">注意:本方法会直接往传入的items里更新数据。</div><div class="long">注意:本方法会直接往传入的items里更新数据。<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">DataTranslator</td></tr></tbody></table></div>

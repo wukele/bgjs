@@ -3,7 +3,29 @@
     <b>var</b> rect2 = <b>new</b> CC.util.d2d.Rect([left, top, width, height]);</code></pre></div><div class="hr"></div><a id="CC.util.d2d.Rect-configs"></a><h2>配置项</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">config</th><th class="msource-header">定义在</th></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-valid"></a><b><a href="source/cicylib-all.html#cfg-CC.util.d2d.Rect-valid">valid</a></b> : Boolean<div class="mdesc">指示矩形数据是否有效，无效的数据将忽略对矩形的各种检测.</div></td><td class="msource">Rect</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-l"></a><b><a href="source/cicylib-all.html#cfg-CC.util.d2d.Rect-l">l</a></b> : Number<div class="mdesc">left值</div></td><td class="msource">Rect</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-t"></a><b><a href="source/cicylib-all.html#cfg-CC.util.d2d.Rect-t">t</a></b> : Number<div class="mdesc">top值</div></td><td class="msource">Rect</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-w"></a><b><a href="source/cicylib-all.html#cfg-CC.util.d2d.Rect-w">w</a></b> : Number<div class="mdesc">width值</div></td><td class="msource">Rect</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-h"></a><b><a href="source/cicylib-all.html#cfg-CC.util.d2d.Rect-h">h</a></b> : Number<div class="mdesc">height值</div></td><td class="msource">Rect</td></tr></tbody></table><a id="CC.util.d2d.Rect-props"></a><h2>公共属性（只读）</h2><div class="no-members">This class has no public properties.</div><a id="CC.util.d2d.Rect-events"></a><h2>事件列表</h2><div class="no-members">This class has no public events.</div><a id="CC.util.d2d.Rect-methods"></a><h2>公共方法</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">method</th><th class="msource-header">定义在</th></tr><tr class="method-row expandable"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-Rect"></a><b><a href="source/cicylib-all.html#cls-CC.util.d2d.Rect">Rect</a></b>(&nbsp;<code>Array|Number&nbsp;data</code>&nbsp;)
     <div class="mdesc"><div class="short"></div><div class="long"><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>data</code> : Array|Number<div class="sub-desc">传入一个数组或left, top, width, height</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">Rect</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-isEnter"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.Rect-isEnter">isEnter</a></b>(&nbsp;<code>CC.util.Point&nbsp;点</code>&nbsp;)
     :
-                                        Boolean<div class="mdesc"><div class="short">判断点p是位于矩形内.</div><div class="long">判断点p是位于矩形内.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>点</code> : CC.util.Point<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Rect</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-update"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.Rect-update">update</a></b>()
+                                        Boolean<div class="mdesc"><div class="short">判断点p是位于矩形内.</div><div class="long">判断点p是位于矩形内.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>点</code> : CC.util.Point<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Rect</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-qdAt"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.Rect-qdAt">qdAt</a></b>(&nbsp;<code>Number&nbsp;x</code>,&nbsp;<code>Number&nbsp;y</code>&nbsp;)
+    :
+                                        Number<div class="mdesc"><div class="short">qd, quadrant 缩写，计算指定点所属矩形的象限，调用前请确保点已落在矩形上。&#13;
+ 返回值： 0 - 8;&#13;
+象限所在X，Y轴正向与屏幕坐标系正方向一致。&#13;
+________ x+&#13;
+|&#13;
+2 |  1&#13;
+y+&#13;
+ &lt;div ...</div><div class="long">qd, quadrant 缩写，计算指定点所属矩形的象限，调用前请确保点已落在矩形上。
+<br> 返回值： 0 - 8;
+象限所在X，Y轴正向与屏幕坐标系正方向一致。
+________ x+
+|
+2 |  1
+y+
+ <div class="mdetail-params"><ul>
+ <li>0:原点</li>
+ <li>1 - 4 : 1-4象限</li>
+ <li>5 - 8 原点为中心，x, y四条轴，其中5为x正轴，其它类推。</li>
+ <li>bool</li>
+ <li>date</li>
+ </ul></div><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>x</code> : Number<div class="sub-desc"></div></li><li><code>y</code> : Number<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Number</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">Rect</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-update"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.Rect-update">update</a></b>()
     :
                                         void<div class="mdesc"><div class="short">接口,刷新矩形缓存数据,默认为空调用</div><div class="long">接口,刷新矩形缓存数据,默认为空调用<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">Rect</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.d2d.Rect-toString"></a><b><a href="source/cicylib-all.html#method-CC.util.d2d.Rect-toString">toString</a></b>()
     :
