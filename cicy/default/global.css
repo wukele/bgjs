@@ -467,7 +467,7 @@ filter: Alpha(opacity=50); opacity:0.5;
 	overflow:hidden;
 	position: absolute; 
 }
-
+:lang(zh) .g-datepicker {height:auto;}
 .g-datepicker .g-btn {display:inline;width:40px;}
 .g-datepicker .entbox {width:100%;height:100%;}
 .g-datepicker td {font-size:9px;}
@@ -633,5 +633,7 @@ filter: Alpha(opacity=50); opacity:0.5;
 
 /** fix ie offsetParent widthout positioned attr */
 .g-portal-ie-ofp { position:relative !important; }
-.g-portal-ct-hold{  }
-.g-portal-float  {z-index:999;}
+.g-portal-ct-hold{ visibility:hidden;min-height:300px; }
+.g-portal-indicator {height:50px;border:3px dashed #FFCC66;}
+.g-portal-srchold{ border:3px dashed #CCC;height:50px;}
+.g-portal-float  {z-index:9999;}
