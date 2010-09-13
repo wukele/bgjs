@@ -1,3 +1,11 @@
+/**
+ * @class CC.layout.Portal
+ */
+ 
+/**
+ * @cfg {Function} createZoom 自定义生成矩域，调用方式为 createZoom(source)，方法在拖放开始时触发。
+ */
+
 CC.create('CC.layout.Portal', CC.layout.Layout, {
     
     initialize : function(opt){
