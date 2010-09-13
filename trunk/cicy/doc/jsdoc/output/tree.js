@@ -8,6 +8,8 @@
 				,
                 {"href":"output/CC.layout.Layout.html","text":"Layout","id":"CC.layout.Layout","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
+                {"href":"output/CC.layout.Portal.html","text":"Portal","id":"CC.layout.Portal","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
+				,
                 {"href":"output/CC.layout.QQLayout.html","text":"QQLayout","id":"CC.layout.QQLayout","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
                 {"href":"output/CC.layout.RowLayout.html","text":"RowLayout","id":"CC.layout.RowLayout","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
@@ -169,11 +171,17 @@
                 {"id":"pkg-CC.util.dd","text":"dd","iconCls":"icon-pkg","cls":"package","singleClickExpand":true, children:[
                 {"href":"output/CC.util.dd.AbstractCtMonitor.html","text":"AbstractCtMonitor","id":"CC.util.dd.AbstractCtMonitor","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
+                {"href":"output/CC.util.dd.DragHandler.html","text":"DragHandler","id":"CC.util.dd.DragHandler","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
+				,
+                {"href":"output/CC.util.dd.DropHandler.html","text":"DropHandler","id":"CC.util.dd.DropHandler","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
+				,
                 {"href":"output/CC.util.dd.Indicator.html","text":"Indicator","id":"CC.util.dd.Indicator","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
                 {"href":"output/CC.util.dd.Mgr.html","text":"Mgr","id":"CC.util.dd.Mgr","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
                 {"href":"output/CC.util.dd.Mgr.resizeHelper.html","text":"Mgr.resizeHelper","id":"CC.util.dd.Mgr.resizeHelper","isClass":true,"iconCls":"icon-static","cls":"cls","leaf":true}
+				,
+                {"href":"output/CC.util.dd.Portable.html","text":"Portable","id":"CC.util.dd.Portable","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				]}
 				,
                 {"href":"output/CC.util.AsynchronizeQueue.html","text":"AsynchronizeQueue","id":"CC.util.AsynchronizeQueue","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
@@ -251,6 +259,8 @@
 			"CC.layout.CardLayout":"icon-cls"
 			,
 			"CC.layout.Layout":"icon-cls"
+			,
+			"CC.layout.Portal":"icon-cls"
 			,
 			"CC.layout.QQLayout":"icon-cls"
 			,
@@ -398,11 +408,17 @@
 			,
 			"CC.util.dd.AbstractCtMonitor":"icon-cls"
 			,
+			"CC.util.dd.DragHandler":"icon-cls"
+			,
+			"CC.util.dd.DropHandler":"icon-cls"
+			,
 			"CC.util.dd.Indicator":"icon-cls"
 			,
 			"CC.util.dd.Mgr":"icon-cls"
 			,
 			"CC.util.dd.Mgr.resizeHelper":"icon-static"
+			,
+			"CC.util.dd.Portable":"icon-cls"
 			,
 			"CC.util.AsynchronizeQueue":"icon-cls"
 			,

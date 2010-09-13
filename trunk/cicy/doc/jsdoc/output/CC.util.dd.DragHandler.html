@@ -1,0 +1,90 @@
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>类 <a href="source/cicylib-all.html#cls-CC.util.dd.DragHandler">CC.util.dd.DragHandler</a></h1><table cellspacing="0"><tr><td class="label">空间：</td><td class="hd-info">CC.util.dd</td></tr><tr><td class="label">定义在:</td><td class="hd-info">cicylib-all.js</td></tr><tr><td class="label">类:</td><td class="hd-info"><a href="source/cicylib-all.html#cls-CC.util.dd.DragHandler">DragHandler</a></td></tr><tr><td class="label">父类:</td><td class="hd-info">Object</td></tr></table><div class="description">这是一个接口类，实际并不存在，可以通过任意对象现实其中的一个或多个方法。
+用于处理Drag & Drop事件回调。
+
+<pre><code><i>// 拖放管理器</i>
+<b>var</b> G = CC.util.dd.Mgr;
+
+<i>// 添加三个拖放域，为指定控件所在的区域</i>
+<b>var</b> ctzoom = <b>new</b> CC.util.d2d.RectZoom({
+  rects:[
+    <b>new</b> CC.util.d2d.ComponentRect(grid),
+    <b>new</b> CC.util.d2d.ComponentRect(tree),
+    <b>new</b> CC.util.d2d.ComponentRect(resizer)
+  ]
+});
+
+<i>// 拖放处理对象</i>
+<i>// DragHandler 与 Drop Hander 合在一起实现</i>
+
+<b>var</b> handler = {
+
+  beforedrag : <b>function</b>(){
+    G.setZoom(ctzoom);
+  },
+  
+  dragstart : <b>function</b>(evt, source){
+    G.getIndicator().prepare();
+    G.getIndicator().setMsg(<em>"容器间的拖放!"</em>, <em>"源:"</em>+source.id);
+    CC.each(ctzoom.rects, <b>function</b>(){
+        <b>if</b>(this.comp != source){
+            this.comp.addClass(<em>'dragstart'</em>);
+        }
+    });
+  },
+  
+  drag : <b>function</b>(){
+    <i>// 使得指示器在正确的位置显示</i>
+    G.getIndicator().reanchor();
+  },
+  
+  sbover : <b>function</b>(target){
+    G.getIndicator().setMsg(<em>'进入了<font color=<em>"red"</em>>'</em>+target.id+<em>'</font>'</em>);
+    target.addClass(<em>'dragover'</em>);
+  },
+  
+  sbout : <b>function</b>(target){
+    G.getIndicator().setMsg(<em>"容器间的拖放!"</em>);
+    target.delClass(<em>'dragover'</em>);
+  },
+  
+  sbdrop : <b>function</b>(target, source){
+    target.delClass(<em>'dragover'</em>);   
+  },
+  
+  dragend : <b>function</b>(evt, source){
+    CC.each(ctzoom.rects, <b>function</b>(){
+        <b>if</b>(this.comp != source){
+            this.comp.delClass(<em>'dragstart'</em>);
+        }
+    });
+    G.getIndicator().end();
+  }
+};
+
+G.installDrag(tree, true, null, handler);
+G.installDrag(grid, true, null, handler);
+G.installDrag(resizer, true, null, handler);</code></pre></div><div class="hr"></div><a id="CC.util.dd.DragHandler-props"></a><h2>公共属性（只读）</h2><div class="no-members">This class has no public properties.</div><a id="CC.util.dd.DragHandler-events"></a><h2>事件列表</h2><div class="no-members">This class has no public events.</div><a id="CC.util.dd.DragHandler-methods"></a><h2>公共方法</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">method</th><th class="msource-header">定义在</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.DragHandler-beforedrag"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.DragHandler-beforedrag">beforedrag</a></b>(&nbsp;<code>DOMEvent&nbsp;event</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">如果已安装拖放,&#13;
+函数在鼠标按下时触发,方法由CC.util.dd.Mgr引入,另见installDrag.</div><div class="long">如果已安装拖放,
+函数在鼠标按下时触发,方法由<a href="output/CC.util.dd.Mgr.html" ext:cls="CC.util.dd.Mgr">CC.util.dd.Mgr</a>引入,另见<a href="output/CC.util.dd.DragHandler.html#CC.util.dd.DragHandler-installDrag" ext:member="installDrag" ext:cls="CC.util.dd.DragHandler">installDrag</a>.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>event</code> : DOMEvent<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">DragHandler</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.DragHandler-dragstart"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.DragHandler-dragstart">dragstart</a></b>(&nbsp;<code>DOMEvent&nbsp;event</code>,&nbsp;<code>CC.Base&nbsp;source</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">如果已安装拖放,拖动开始时触发.方法由CC.util.dd.Mgr引入,另见installDrag.</div><div class="long">如果已安装拖放,拖动开始时触发.方法由<a href="output/CC.util.dd.Mgr.html" ext:cls="CC.util.dd.Mgr">CC.util.dd.Mgr</a>引入,另见<a href="output/CC.util.dd.DragHandler.html#CC.util.dd.DragHandler-installDrag" ext:member="installDrag" ext:cls="CC.util.dd.DragHandler">installDrag</a>.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>event</code> : DOMEvent<div class="sub-desc"></div></li><li><code>source</code> : CC.Base<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">DragHandler</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.DragHandler-dragend"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.DragHandler-dragend">dragend</a></b>(&nbsp;<code>DOMEvent&nbsp;event</code>,&nbsp;<code>CC.Base&nbsp;source</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">如果已安装拖放,&#13;
+函数在鼠标松开时触发,拖动曾经发生过.&#13;
+方法由CC.util.dd.Mgr引入,另见installDrag.</div><div class="long">如果已安装拖放,
+函数在鼠标松开时触发,拖动曾经发生过.
+方法由<a href="output/CC.util.dd.Mgr.html" ext:cls="CC.util.dd.Mgr">CC.util.dd.Mgr</a>引入,另见<a href="output/CC.util.dd.DragHandler.html#CC.util.dd.DragHandler-installDrag" ext:member="installDrag" ext:cls="CC.util.dd.DragHandler">installDrag</a>.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>event</code> : DOMEvent<div class="sub-desc"></div></li><li><code>source</code> : CC.Base<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">DragHandler</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.DragHandler-afterdrag"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.DragHandler-afterdrag">afterdrag</a></b>(&nbsp;<code>DOMEvent&nbsp;event</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">如果已安装拖放,&#13;
+函数在鼠标松开时触发,拖动不一定发生过.&#13;
+方法由CC.util.dd.Mgr引入,另见installDrag.</div><div class="long">如果已安装拖放,
+函数在鼠标松开时触发,拖动不一定发生过.
+方法由<a href="output/CC.util.dd.Mgr.html" ext:cls="CC.util.dd.Mgr">CC.util.dd.Mgr</a>引入,另见<a href="output/CC.util.dd.DragHandler.html#CC.util.dd.DragHandler-installDrag" ext:member="installDrag" ext:cls="CC.util.dd.DragHandler">installDrag</a>.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>event</code> : DOMEvent<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">DragHandler</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="CC.util.dd.DragHandler-drag"></a><b><a href="source/cicylib-all.html#method-CC.util.dd.DragHandler-drag">drag</a></b>(&nbsp;<code>DOMEvent&nbsp;event</code>,&nbsp;<code>CC.Base&nbsp;overComponent</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">如果已安装拖放,&#13;
+函数在鼠标拖动时触发.&#13;
+方法由CC.util.dd.Mgr引入,另见installDrag.</div><div class="long">如果已安装拖放,
+函数在鼠标拖动时触发.
+方法由<a href="output/CC.util.dd.Mgr.html" ext:cls="CC.util.dd.Mgr">CC.util.dd.Mgr</a>引入,另见<a href="output/CC.util.dd.DragHandler.html#CC.util.dd.DragHandler-installDrag" ext:member="installDrag" ext:cls="CC.util.dd.DragHandler">installDrag</a>.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>event</code> : DOMEvent<div class="sub-desc"></div></li><li><code>overComponent</code> : CC.Base<div class="sub-desc">在下方的控件,无则为空</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">DragHandler</td></tr></tbody></table></div>
