@@ -88,14 +88,7 @@ CC.ready(function() {
 				{title:'disabled item',nodes:true,disabled:true},
 				{title:'AAAAAAAAAAAAAA'},
 				{title:'WEB前端'}
-			]},
-			
-			//指定滚动时滑动至可见的视图结点
-			getScrollor : function(){
-			  if(!this.scrollor)
-			    this.scrollor = this.$$('_scrollor') || this.wrapper;
-			  return this.scrollor;
-			}
+			]}
 		});			
 			tree.render();
 			tree.root.expand();

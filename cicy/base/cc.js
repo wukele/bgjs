@@ -54,7 +54,7 @@ if(window.__debug === undefined)
     isGecko = !isSafari && ua.indexOf("gecko") > -1,
     //优先检测BackCompat,因为
     //假如以后compatMode改变,也是非盒模型
-    isBorderBox = isIE && !isStrict,
+    isBorderBox = (isIE && !isStrict) || (!isIE && !isStrict),
     /**是否合法EMAIL字符串.
      * 参见 CC.isMail().
      * @ignore
@@ -1138,7 +1138,7 @@ function testNoForm() {
  * @return {Number}
  */
         getDocumentHeight: function() {
-            var scrollHeight = (document.compatMode != "CSS1Compat") ? document.body.scrollHeight : document.documentElement.scrollHeight;
+            var scrollHeight = !this.strict ? document.body.scrollHeight : document.documentElement.scrollHeight;
             return Math.max(scrollHeight, this.getViewportHeight());
         },
 /**
@@ -1146,7 +1146,7 @@ function testNoForm() {
  * @return {Number}
  */
         getDocumentWidth: function() {
-            var scrollWidth = (document.compatMode != "CSS1Compat") ? document.body.scrollWidth : document.documentElement.scrollWidth;
+            var scrollWidth = !this.strict ? document.body.scrollWidth : document.documentElement.scrollWidth;
             return Math.max(scrollWidth, this.getViewportWidth());
         },
 /**

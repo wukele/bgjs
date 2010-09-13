@@ -1408,18 +1408,34 @@ CC.create('CC.ui.ContainerBase', Base,
     }
   },
   
+  // private
+  scrollor : false,
+  
 /**
- * 获得容器的滚动条所在控件,如果控件宽高已设置或父容器不存在,返回控件wrapper,否则返回父容器wrapper,
- * 明确容器的scrollor有利于控制容器内容的滚动,
- * 在设计控件时可根据控件自身结构特点指定scrollor.
+ * 获得容器的滚动条所在控件,默认返回父层overflow:hidden元素,如无法找到,返回容器{@link #ct}结点.
  * @return {DOMElement|CC.Base}
  */
-    getScrollor : function(){
-      return this.scrollor || 
-             this.height === false && 
-             this.width === false && 
-             this.pCt ? this.pCt.wrapper: this.wrapper;
-    }
+	getScrollor : function(){
+		
+		// 某些实现控件可以缓存在控件内部的scrollor结点以快速返回
+		if(this.scrollor)
+			return this.scrollor;
+		
+		var bd = CC.strict ? document.documentElement : document.body,
+		    nd = this.ct,
+		    f  = CC.fly(nd);
+	
+		while(nd && nd !== bd){
+			f.view = nd;
+			if( f.fastStyle('overflow') !== 'visible' ){
+				f.unfly();
+				return nd;
+			}
+			nd = nd.parentNode;
+		}
+		f.unfly();
+		return nd ? nd : this.ct;
+	}
 });
 
 var ccx  = CC.ui.ContainerBase,
