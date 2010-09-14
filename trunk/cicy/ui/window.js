@@ -79,10 +79,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
           father.initComponent.call(this);
           
           //create titlebar
-          var tb = this.titlebar;
-          if(tb)
-            CC.extendIf(tb,wtbDef);
-          else tb = wtbDef;
+          var tb = CC.extendIf(this.titlebar, wtbDef);
           tb.title = tle;
           
           var tboutter = true, v=tb.view;
@@ -108,19 +105,15 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
           if(this.closeable === true){
             var cls = tb.$('close');
             if(!cls){
-                cls = tb.clsBtn;
-                if(cls)
-                  CC.extendIf(cls , wtbClsBtn);
-                else cls = wtbClsBtn;
-                
+                cls = CC.extendIf(tb.clsBtn , wtbClsBtn);
                 v = cls.view;
+                // case cls button in tb view, cls id
                 if(v && typeof v === 'string'){
                    cls.view = this.dom(v);
                 }
-                this.clsBtn = CC.ui.instance(cls);
-                // recovery
-                cls.view = v;
-                tb.layout.add(this.clsBtn);
+                
+                cls = this.clsBtn = CC.ui.instance(cls);
+                tb.layout.add(cls);
             }
             cls.onselect = this.onClsBtnClick;
           }
