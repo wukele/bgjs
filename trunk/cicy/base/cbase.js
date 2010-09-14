@@ -376,7 +376,7 @@ CC.extend(Base.prototype,
  * 以下情形将使得当前控件获得一个指向父容器的引用.<div class="mdetail-params">
  * <ul>
  * <li>通过父容器或父容器的布局管理器{@link CC.ui.ContainerBase#add}方式添加的子控件</li>
- * <li>通过{@link #follow}方式委托另一个控件("父"容器)管理自身控件周期的子控件</li>
+ * <li>通过{@link CC.ui.ContainerBase#follow}方式委托另一个控件("父"容器)管理自身控件周期的子控件</li>
  * </ul></div>
  * <pre><code>
     // 通过父控件的follow方法
@@ -1683,7 +1683,10 @@ CC.extend(Base.prototype,
             if(c !== false){
                 if(c<this.minW) c=this.minW;
                 if(c>this.maxW) c=this.maxW;
-                this.fastStyleSet('width', CC.borderBox?c + 'px':Math.max(c - this.getOuterW(),0)+'px');
+                this.fastStyleSet(
+                    'width', 
+                    CC.borderBox ? c + 'px' : Math.max(c - this.getOuterW(),0)+'px'
+                );
                 this.width = c;
             }
             c=a.height;
@@ -1692,7 +1695,10 @@ CC.extend(Base.prototype,
                 if(c>this.maxH) c=this.maxH;
                 if(c<0) a.height=c=0;
 
-                this.fastStyleSet('height', CC.borderBox?c + 'px':Math.max(c - this.getOuterH(),0)+'px');
+                this.fastStyleSet(
+                    'height', 
+                    CC.borderBox ? c + 'px' : Math.max(c - this.getOuterH(),0)+'px'
+                );
                 this.height = c;
             }
             return this;
@@ -1701,13 +1707,19 @@ CC.extend(Base.prototype,
         if(a !== false){
             if(a<this.minW) a=this.minW;
             if(a>this.maxW) a=this.maxW;
-            this.fastStyleSet('width', CC.borderBox? a + 'px':Math.max(a - this.getOuterW(),0)+'px');
+            this.fastStyleSet(
+                'width', 
+                CC.borderBox ? a + 'px' : Math.max(a - this.getOuterW(),0)+'px'
+            );
             this.width = a;
         }
         if(b !== false){
             if(b<this.minH) b=this.minH;
             if(b>this.maxH) b=this.maxH;
-            this.fastStyleSet('height', CC.borderBox? b + 'px':Math.max(b - this.getOuterH(),0)+'px');
+            this.fastStyleSet(
+                'height', 
+                CC.borderBox ? b + 'px' :  Math.max(b - this.getOuterH(),0)+'px'
+            );
             this.height=b;
         }
 

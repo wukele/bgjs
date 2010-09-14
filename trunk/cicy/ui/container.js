@@ -1536,6 +1536,37 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
             }
             return ins;
         },
+/**
+ * 获得容器ct结点存放子项的宽高，除去padding, border等影响。
+ * 默认是根据设定的{@link #getWrapperInsets}来计算。可以根据具体的HTML模板结构，
+ * 重写该方法以返回自定义的宽高。
+ */
+        getClientSize : function(w, h){
+            var wr = this.wrapper, spaces,cw, ch;
+            //如果wrapper非容器结点
+            if(wr.view !== this.view && this.syncWrapper){
+                spaces = this.getWrapperInsets();
+                cw = w===false?w:Math.max(w - spaces[5], 0);
+                ch = h===false?h:Math.max(h - spaces[4], 0);
+            }else {
+                //容器自身结点,计算容器content size
+                cw = w===false?w:Math.max(w - this.getOuterW(), 0);
+                ch = h===false?h:Math.max(h - this.getOuterH(), 0);
+            }
+            return [w, h];
+        },
+        
+        onSetSize : function(w, h){
+              var sz = this.getClientSize(w, h);
+              
+              if(this.syncWrapper){
+                this.wrapper.setSize(sz[0], sz[1]);
+              }
+              
+              // checked min, max wrapper size ?
+              this.fire('resized', sz[0], sz[1], w, h);
+              this.doLayout(sz[0], sz[1], w, h);
+        },
 
 /**
  * @event resized
@@ -1564,24 +1595,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
               //受max,min影响,重新获得
               if(w !== false) w = this.width;
               if(h !== false) h = this.height;
-
-              var wr = this.wrapper, spaces,cw, ch;
-              //如果wrapper非容器结点
-              if(wr.view !== this.view && this.syncWrapper){
-                spaces = this.getWrapperInsets();
-                cw = w===false?w:Math.max(w - spaces[5], 0);
-                ch = h===false?h:Math.max(h - spaces[4], 0);
-                wr.setSize(cw, ch);
-                //受max,min影响,重新获得
-                if(cw !== false) cw = wr.width;
-                if(ch !== false) ch = wr.height;
-              }else {
-                //容器自身结点,计算容器content size
-                cw = w===false?w:Math.max(w - this.getOuterW(), 0);
-                ch = h===false?h:Math.max(h - this.getOuterH(), 0);
-              }
-              this.fire('resized', cw, ch, w, h);
-              this.doLayout(cw, ch, w, h);
+              this.onSetSize(w, h);
             }
             return this;
         },

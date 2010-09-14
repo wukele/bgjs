@@ -116,6 +116,8 @@ CC.util.ProviderFactory.create('Connection', null, {
   
 /**
  *  可重写本方法自定义数据类型加载
+ * @param {String} dataType 数据类型 html, json ..
+ * @param {Object} data     具体数据
  */
   defaultDataProcessor : function(dataType, data){
     switch(dataType){
