@@ -106,19 +106,23 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
             this.wrapper.fastStyleSet('overflow', this.overflow);
 
           if(this.closeable === true){
-            var cls = tb.clsBtn;
-            if(cls)
-              CC.extendIf(cls,wtbClsBtn);
-            else cls = wtbClsBtn;
-            cls.onselect = this.onClsBtnClick;
-            v = cls.view;
-            if(v && typeof v === 'string'){
-               cls.view = this.dom(v);
+            var cls = tb.$('close');
+            if(!cls){
+                cls = tb.clsBtn;
+                if(cls)
+                  CC.extendIf(cls , wtbClsBtn);
+                else cls = wtbClsBtn;
+                
+                v = cls.view;
+                if(v && typeof v === 'string'){
+                   cls.view = this.dom(v);
+                }
+                this.clsBtn = CC.ui.instance(cls);
+                // recovery
+                cls.view = v;
+                tb.layout.add(this.clsBtn);
             }
-            this.clsBtn = CC.ui.instance(cls);
-            // recovery
-            cls.view = v;
-            tb.layout.add(this.clsBtn);
+            cls.onselect = this.onClsBtnClick;
           }
 
           if(this.destoryOnClose)

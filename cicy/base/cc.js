@@ -54,7 +54,7 @@ if(window.__debug === undefined)
     isGecko = !isSafari && ua.indexOf("gecko") > -1,
     //优先检测BackCompat,因为
     //假如以后compatMode改变,也是非盒模型
-    isBorderBox = (isIE && !isStrict) || (!isIE && !isStrict),
+    isBorderBox = isIE && !isStrict,
     /**是否合法EMAIL字符串.
      * 参见 CC.isMail().
      * @ignore
@@ -1057,8 +1057,9 @@ function testNoForm() {
         ,
 /**
  * 加载一个CSS样式文件
- * @param {String} id 加载css标签ID
  * @param {String} url 加载css的路径
+ * @param {Function} callback 
+ * @param {String} [id] style node id
  * @return {DOMElement} link node
  */
         loadCSS: function(url, callback, id) {

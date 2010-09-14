@@ -1,0 +1,115 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; " />  
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/fenghong_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+  <script type="text/javascript" src="../../more/qqwebwin.js"></script>
+  <style>
+
+    /** reset some style */
+    h1, h2, h3 {
+        margin:0 0;
+    }
+    ol, ul, dl {margin-left:0;}
+    blockquote, ul, ol, dl { margin:0;}
+    .window_title {white-space:nowrap;}
+    .g-titlepanel-hd .g-tle { font-weight:bold; }
+</style>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+CC.ready(function(){
+//
+// 实例
+// 
+ var win ; 
+ win = new CC.more.QQWin({
+  title : 'Loading http://web2.qq.com ...',
+  width : 600,
+  height : 400,
+  left : 419,
+  top:62,
+  layout : 'card',
+  showTo:document.body,
+  lyCfg : {
+    items : [
+    {ctype:'iframe',
+      connectionProvider:{
+        ajaxCfg:{
+          url:'http://web2.qq.com/',
+          //在连接前可添加加载状态事件, 这些事件与ajax加载是一致的:
+          success : function(j){
+            CC.Util.ftip('IFrame 加载完成！', '提示' , this.t.ct);
+            this.t.pCt.setTitle('WEB QQ 2.0');
+          }
+        }
+      }
+    }
+    ]
+  }
+ });
+ 
+ win.render();
+ 
+win = new CC.more.QQWin({
+				layout:'qq',
+				title:'QQ布局管理器',
+				left:90,
+				top:40,
+				width:200,
+				height:450,
+				itemCls:'titlepanel',
+				lyCfg : {
+					items : [
+					 {ctype:'titlepanel',title:'我的好友', array:[
+	  					{ctype:'folder',
+	  					 selectionProvider : {/**允许多选*/mode:0},
+	  					 array:[
+				  			{title:'disabled item',icon:'iconRef',disabled:true},
+								{title:'粉红色',icon:'iconUser'},
+								{title:'蓝色',icon:'iconEdit'},
+								{title:'清除记录',icon:'iconLeaf'},
+								{title:'粉红色',icon:'iconTabs'},
+								{title:'蓝色',icon:'iconUser'},
+								{title:'清除记录',icon:'iconEdit'}
+	  	         ]
+	  				 }
+	  			]},
+					 {title:'我的同学',array:[
+				 	  	{ctype:'tree', 
+				 	  	 lyInf:{
+				 	  	 	 dir:'center'}, 
+				 	  		 rootCfg:{ expanded:true, title:'根目录', array:
+				 	  			 [ {title:'show case'}, {title:'Wiki changes', nodes:true},{title:'show case'}, {title:'Wiki changes', nodes:true},{title:'show case'}, {title:'Wiki changes', nodes:true},{title:'show case'}, {title:'Wiki changes', nodes:true}]
+				 	  		 }
+				 	  	}
+					 ]},
+					 {ctype:'titlepanel',title:'公司同事', array:[
+	  					{ctype:'folder',
+	  					 array:[
+				  			{title:'disabled item',icon:'iconRef',disabled:true},
+								{title:'粉红色',icon:'iconUser'},
+								{title:'蓝色',icon:'iconEdit'},
+								{title:'清除记录',icon:'iconLeaf'},
+								{title:'粉红色',icon:'iconTabs'},
+								{title:'蓝色',icon:'iconUser'},
+								{title:'清除记录',icon:'iconEdit'}
+	  	         ]
+	  				 }
+	  			]},
+					 {title:'陌生人'},
+					 {title:'黑名单'}
+					]
+				},
+				showTo:document.body
+			});
+      win.render();
+      win.layout.collapse(win.$(0), false);
+});
+</script>
