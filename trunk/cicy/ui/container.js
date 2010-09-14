@@ -1553,7 +1553,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
                 cw = w===false?w:Math.max(w - this.getOuterW(), 0);
                 ch = h===false?h:Math.max(h - this.getOuterH(), 0);
             }
-            return [w, h];
+            return [cw, ch];
         },
         
         onSetSize : function(w, h){
