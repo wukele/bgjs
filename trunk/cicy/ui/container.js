@@ -1557,10 +1557,10 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
         },
         
         onSetSize : function(w, h){
-              var sz = this.getClientSize(w, h);
+              var sz = this.getClientSize(w, h), wr = this.wrapper;
               
-              if(this.syncWrapper){
-                this.wrapper.setSize(sz[0], sz[1]);
+              if(wr !== this && this.syncWrapper){
+                wr.setSize(sz[0], sz[1]);
               }
               
               // checked min, max wrapper size ?
