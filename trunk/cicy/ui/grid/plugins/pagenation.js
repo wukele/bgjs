@@ -181,7 +181,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
     });
     // update param data to temp object
     if(this.params)
-      CC.extend(pageInf, params);
+      CC.extend(pageInf, this.params);
       
     if(this.customQuery)
       this.customQuery(pageInf);
