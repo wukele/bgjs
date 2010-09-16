@@ -1,0 +1,1 @@
+java -jar compiler.jar -js h:/cicy/cicylib-all.js --js_output_file h:/cicy/cicylib-min.js
