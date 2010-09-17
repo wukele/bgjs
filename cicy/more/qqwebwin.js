@@ -1,8 +1,8 @@
 /**
  * Javascript Utility for web development.
- * 反馈 : www.bgscript.com/forum
+ * 反馈 : www.cicyui.com/forum
  * @mailto javeejy@126.com
- * www.bgscript.com ? 2010 - 构建自由的WEB应用
+ * www.cicyui.com ? 2010 - 构建自由的WEB应用
  */
 
 // Base on 
@@ -122,7 +122,6 @@ CC.create('CC.more.QQWin', CC.ui.Win, {
         var bx = this.fly(this._outerEl);
             bx.setHeight(this.height);
         bx.view = this._wrEl;
-        var bx = this.fly(this._wrEl);
         var sz = [w-20, h-41];
         bx.setSize(sz[0], sz[1]).unfly();
         return sz;
@@ -131,29 +130,4 @@ CC.create('CC.more.QQWin', CC.ui.Win, {
 
 CC.ui.def('qqwin', CC.more.QQWin);
 
-/*
- CC.create('CC.more.ArtWin', CC.ui.Win, {
-    shadow:{ctype:'shadow', inpactY:-4,inpactH:11, inpactX:-5, inpactW:11},
-    titlebar:{
-      view : '_tb',
-      ct : '_tbct',
-      clsBtn:{view:'_cls', cs:''}
-    },
-    minW : 190,
-    minH : 53,
-    getWrapperInsets : function(){
-      return CC.borderBox?[43,10,9,10,52,20]:[43,8,9,8,52,16];
-    },
-    
-    initComponent : function(){
-      this.superclass.initComponent.call(this);
-      // 容器隐藏时应用visibility:hidden
-      // 主要用于修改拖动时隐藏内容区域
-      this.wrapper.displayMode = 0;
-    }
-  });
- 
- CC.ui.def('artwin', CC.more.ArtWin);
- */
-// CC.Tpl.def('CC.more.ArtDialog', '<table><tr><td class="ui_bottom_wrap"><div class="ui_bottom"><div class="ui_btns" id="_ct"></div></div></td></tr></table>');
 })();

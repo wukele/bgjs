@@ -1,8 +1,8 @@
 /**
  * Javascript Utility for web development.
- * 反馈 : www.bgscript.com/forum
+ * 反馈 : www.cicyui.com/forum
  * @mailto javeejy@126.com
- * www.bgscript.com ? 2010 - 构建自由的WEB应用
+ * www.cicyui.com ? 2010 - 构建自由的WEB应用
  */
 
 // Base on 
