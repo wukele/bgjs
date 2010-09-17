@@ -1,0 +1,53 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; " /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+<style>
+/**写多个无图标的类*/
+.noIconGrp .g-grp-bdy li .icos{display:none !important;}
+.noIconGrp .g-grp-bdy li .g-tle {left:20px;}
+</style>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+CC.ready(function(){
+
+  var win = new CC.ui.Win({
+    minW:250,
+    title:'Connection Provider Custom Data Load', 
+    destroyOnlose:true, 
+    showTo:document.body,
+    autoRender:true,
+    layout:'card',
+    items:[
+      {
+        ctype:'folder',
+        cs:'noIconGrp',
+        connectionProvider : {
+          loadType:'json', // default type 默认是json
+          ajaxCfg:{url:'customdata.js'},
+          
+          // 自定义为追加数据
+          defaultDataProcessor : function(dataType, data){
+            if(dataType === 'json'){
+                alert(data.status);
+                if(data.status === 'ok'){
+                    var uiData = CC.util.DataTranslator.get('array').read(data.data.subdata);
+                    
+                    CC.util.ConnectionProvider.prototype.defaultDataProcessor.call(this, dataType, uiData);
+                }else {
+                    CC.Util.alert('请求出现错误:'+data.msg);
+                }
+            }
+          }
+        }
+      }]
+  });
+  win.center();
+});
+</script>
