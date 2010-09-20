@@ -1,7 +1,7 @@
 ﻿/*!
  * Javascript Utility for web development.
- * 反馈 : www.bgscript.com/forum
- * www.bgscript.com ? 2010 - 构建自由的WEB应用
+ * 反馈 : www.cicyui.com/forum
+ * www.cicyui.com ? 2010 - 构建自由的WEB应用
  */
 /**
  * @class global 全局对象
@@ -44,17 +44,21 @@ if(window.__debug === undefined)
 
     //浏览器检测, thanks ExtJS here
     isStrict = document.compatMode === "CSS1Compat",
-    isQuirks = document.compatMode === "BackCompat",
-    isOpera = ua.indexOf("opera") > -1,
-    isSafari = (/webkit|khtml/).test(ua),
-    isChrome = ua.indexOf('chrome') > -1,
-    isIE = !isOpera && ua.indexOf("msie") > -1,
-    isIE7 = !isOpera && ua.indexOf("msie 7") > -1,
-    isIE6 = !isOpera && ua.indexOf("msie 6") > -1,
-    isGecko = !isSafari && ua.indexOf("gecko") > -1,
-    //优先检测BackCompat,因为
-    //假如以后compatMode改变,也是非盒模型
-    isBorderBox = (isIE && !isStrict) || (!isIE && !isStrict),
+    isQuirks = !isStrict && document.compatMode === "BackCompat";
+    
+    var isOpera = ua.indexOf("opera") > -1;
+    var isIE = !isOpera && ua.indexOf("msie") > -1;
+    if(isIE){
+        var isIE7 = ua.indexOf("msie 7") > -1, 
+            isIE6 = ua.indexOf("msie 6") > -1;
+    }else if(!isOpera) {
+        var isSafari = (/webkit|khtml/).test(ua),
+            isChrome = !isSafari && ua.indexOf('chrome') > -1,
+            isGecko = !isSafari &&  ua.indexOf("gecko") > -1;
+    }
+    
+    var 
+    isBorderBox = isIE && !isStrict,
     /**是否合法EMAIL字符串.
      * 参见 CC.isMail().
      * @ignore
@@ -151,7 +155,7 @@ if(window.__debug === undefined)
         }
         ,
         /**
-         * 遍历可以枚举的对象.
+         * 遍历可以枚举的对象，callback返回false取消遍历.
          *<pre><code>
          *    CC.each(array, funtion(obj, i){
          *      //true
@@ -159,15 +163,22 @@ if(window.__debug === undefined)
          *   });
          * </code></pre>
          *@param {Object} object 可枚兴的对象,如果为数组或arguments时遍历下标数据,为普通对象时遍历对象所有属性.
-         *@param {Function} callback
+         *@param {Function} callback，参数根据object类型而定，如果是数组调为 value.callback(i, value)，对象调用为object.callback(key, object);
+         * @return {Boolean} interrupted 指明是否中断，返回true表示已发生中断。
          */
         each: function(object, callback) {
+                var k;
                 if (object.length === undefined) {
-                    for (var name in object)
-                        if (callback.call(object[name], name, object[name]) === false)
-                            break;
-                } else for (var i = 0, length = object.length, value = object[0]; i < length && callback.call(value, i, value) !== false; value = object[++i]){}
-            return object;
+                    for (var k in object)
+                        if (callback.call(object[k], k, object[k]) === false)
+                            return true;
+                } else {
+                    var len = object.length;
+                    for(k=0;k<len;k++){
+                        if(callback.call(object[k], k, object[k]) === false)
+                            return true;
+                    }
+                }
         },
 
         /**
@@ -1057,8 +1068,9 @@ function testNoForm() {
         ,
 /**
  * 加载一个CSS样式文件
- * @param {String} id 加载css标签ID
  * @param {String} url 加载css的路径
+ * @param {Function} callback 
+ * @param {String} [id] style node id
  * @return {DOMElement} link node
  */
         loadCSS: function(url, callback, id) {
@@ -1203,7 +1215,7 @@ function testNoForm() {
 
 //合并外部CC
 if(window.CC)
-CC.extend(CC, window.CC);
+  CC.extend(CC, window.CC);
 
 window.CC = CC;
 /**
@@ -2382,7 +2394,7 @@ Eventable.prototype.fireSubscribe = Eventable.prototype.fire;
 ﻿(function(){
 /**
  * @class CC.Event
- * DOM事件处理实用函数库,更多关于浏览器DOM事件的文章请查看<a href="http://www.bgscript.com/archives/369" target="_blank">http://www.bgscript.com/archives/369</a>
+ * DOM事件处理实用函数库,更多关于浏览器DOM事件的文章请查看<a href="http://www.cicyui.com/archives/369" target="_blank">http://www.cicyui.com/archives/369</a>
  * @singleton
  */
 var Event = CC.Event = {};
@@ -3073,8 +3085,8 @@ CC.create('CC.util.JSONPConnector', null, {
 });
 ﻿/*!
  * Javascript Utility for web development.
- * 反馈 : www.bgscript.com/forum
- * www.bgscript.com ? 2010 - 构建自由的WEB应用
+ * 反馈 : www.cicyui.com/forum
+ * www.cicyui.com ? 2010 - 构建自由的WEB应用
  */
 (function(){
 	var CC = window.CC;
@@ -3749,9 +3761,6 @@ Base.findByCid = Base.byCid = function(cid){
  * @param {HTMLElement} dom
  * @param {CC.ui.ContainerBase|Function} filter, 可以指定寻找子项的父容器，如果已指定,返回该容器子控件中的匹配控件；也可以传入一个function过滤器，返回true表示匹配，函数参数为当前已检测的控件。
  * @param {CC.Base|CC.HTMLElement} [scope] 如果参数二为一个过滤器，第三个参数可传入一个限定检索的范围结点或控件，在该范围下查找。 
- * @static
- * @member CC.Base
- * @method byDom
  <pre><code>
   寻找点击html元素所在的首个控件
   function onclick(e){
@@ -3780,7 +3789,9 @@ Base.findByCid = Base.byCid = function(cid){
     }, tree);
   }
  </code></pre>
-
+ * @static
+ * @member CC.Base
+ * @method byDom
  */
 Base.byDom = function(dom, pCt){
       //find cicyId mark
@@ -3947,7 +3958,7 @@ CC.extend(Tpl,
       }
       for(var i=0,len=nss.length;i<len;i++){
         if(nss[i].cacheId)
-           nss[i].destory();
+           nss[i].destroy();
       }
 
     }catch(e){if(__debug) console.log(e);}
@@ -3976,6 +3987,95 @@ var undefined;
 var Math = window.Math, parseInt = window.parseInt;
 
 var CPR = CC.util.CssParser.getParser();
+
+// context queue
+var ctxQueue = {
+	
+	context : function(comp){
+		
+		if(comp.contexted)
+			this.release(comp);
+
+		var q = this.q;
+		
+		if(!q)
+			this.q = q = [];
+	  
+	  if(!q.length)
+	  	Event.on(document, 'mousedown', this._getDocEvtHandler());
+	  
+	  q[q.length] = comp;
+	  
+	  this._setCompEvtHandler(comp, true);
+	  comp.contexted = true;
+	  comp.fire('contexted', true);
+	},
+	
+	release : function(comp, e){
+		if(__debug) console.assert(comp.contexted, true);
+		comp.contexted = false;
+		if(comp.onContextRelease(e) !== false && comp.fire('contexted', false, e) !== false) {
+    		this._setCompEvtHandler(comp, false);
+
+			this.q.remove(comp);
+			if(!this.q.length)
+				Event.un(document, 'mousedown', this._getDocEvtHandler());
+			
+		} else comp.contexted = true;
+	},
+/**
+ * @param {DOMEvent} [event] 如果释放由DOM事件引发，传递该事件。
+ * @inner
+ */
+	releaseAll : function(e){
+		var q = this.q,len=q.length;
+		for(var s = len - 1;s>=0;s--){
+			this.release(q[s], e);
+		}
+	},
+	
+	_setCompEvtHandler : function(comp, set){
+		set ? comp.domEvent('mousedown', this._compEvtHandler, true)
+		    : comp.unEvent('mousedown', this._compEvtHandler);
+	},
+	
+	_getDocEvtHandler : function(){
+		 var hd = this.docEvtHd;
+		 if(!hd)
+		 	hd = this.docEvtHd = this._docHandler.bindRaw(this);
+		 return hd;
+	},
+
+	_releaseFollower : function(curr, e){
+		var q = this.q;
+		if(q){
+			var last = q.length - 1;
+			// not the last one itself
+			if(last !== -1 && q[last] !== curr){
+				var len = last;
+				for(;last>=0;last--){
+					if(q[last] === curr)
+						break;
+				  this.release(q[last], e);
+				}
+		  }
+		}
+	},
+	
+	// component mouse down handler
+	// scope : component
+	_compEvtHandler : function(e){
+		// cancel 后来者
+		ctxQueue._releaseFollower(this, e);
+	},
+	
+	// document mouse down handler
+	_docHandler : function(e){
+		this.releaseAll(e);
+	}
+};
+
+
 /**
  * @class CC.Base
  */
@@ -4111,7 +4211,7 @@ CC.extend(Base.prototype,
         }
 
         if(this.eventable)
-            Eventable.apply(this);
+            Eventable.call(this);
 
         this.initComponent();
 
@@ -4130,7 +4230,7 @@ CC.extend(Base.prototype,
         if(this.hasOwnProperty('template') ||
            this.constructor.prototype.hasOwnProperty('template') ||
            (this.superclass && this.superclass.hasOwnProperty('template'))){
-          // come from a html string or cache
+          // come from html string or cache
           this.view = this.template.charAt(0) === '<' ? Tpl.forNode(this.template, this) : Tpl.$(this.template);
           
           delete this.template;
@@ -4336,7 +4436,6 @@ CC.extend(Base.prototype,
             
         if(this.shadow){
           this.shadow = CC.ui.instance(this.shadow===true?'shadow':this.shadow);
-          this.follow(this.shadow);
         }
     },
 
@@ -4379,7 +4478,16 @@ CC.extend(Base.prototype,
 /**
  * 销毁控件,包括:移出DOM;移除控件注册的所有事件;销毁与控件关联的部件.
  */
-    destory : function(){
+    destroy : function(){
+      
+      if(this.shadow){
+        this.shadow.destroy();
+        this.shadow = false;
+      }
+      
+      if(this.contexted)
+    	ctxQueue.release(this);
+      
       if(this.pCt && !this.delegated){
         this.pCt.remove(this);
       }
@@ -4414,7 +4522,7 @@ CC.extend(Base.prototype,
         for(i=0,len=obs.length;i<len;++i){
           obs[i].pCt = null;
           if(obs[i].cacheId)
-            obs[i].destory();
+            obs[i].destroy();
         }
         this.__delegations = null;
       }
@@ -4568,6 +4676,11 @@ CC.extend(Base.prototype,
  * @method fire
  */
     un : fGo,
+    
+    on : function(){
+      // will override this method after call
+      Eventable.call(this);
+    },
 
 /**
  * 隐藏控件.
@@ -4663,6 +4776,7 @@ CC.extend(Base.prototype,
  * 检查是否含有某个样式,如果有,添加或删除该样式.
  * @param {String} css
  * @param {Boolean} addOrRemove true -> add, or else remove
+ * @return {Object} this
  */
     checkClass : function(cs, b){
 			if(cs){
@@ -4674,6 +4788,7 @@ CC.extend(Base.prototype,
 					this.delClass(cs);
 				}
 		  }
+		  return this;
     },
 /**
 * 如果控件view元素未存在该样式类,添加元素样式类,否则忽略.<br>
@@ -4874,7 +4989,7 @@ CC.extend(Base.prototype,
       this.shadow.display(false);
      // release contexted on hide
      if(this.contexted)
-       this.releaseContext();
+       this.setContexted(false);
    },
 
 /**
@@ -5379,7 +5494,10 @@ CC.extend(Base.prototype,
             if(c !== false){
                 if(c<this.minW) c=this.minW;
                 if(c>this.maxW) c=this.maxW;
-                this.fastStyleSet('width', CC.borderBox?c + 'px':Math.max(c - this.getOuterW(),0)+'px');
+                this.fastStyleSet(
+                    'width', 
+                    CC.borderBox ? c + 'px' : Math.max(c - this.getOuterW(),0)+'px'
+                );
                 this.width = c;
             }
             c=a.height;
@@ -5388,7 +5506,10 @@ CC.extend(Base.prototype,
                 if(c>this.maxH) c=this.maxH;
                 if(c<0) a.height=c=0;
 
-                this.fastStyleSet('height', CC.borderBox?c + 'px':Math.max(c - this.getOuterH(),0)+'px');
+                this.fastStyleSet(
+                    'height', 
+                    CC.borderBox ? c + 'px' : Math.max(c - this.getOuterH(),0)+'px'
+                );
                 this.height = c;
             }
             return this;
@@ -5397,13 +5518,19 @@ CC.extend(Base.prototype,
         if(a !== false){
             if(a<this.minW) a=this.minW;
             if(a>this.maxW) a=this.maxW;
-            this.fastStyleSet('width', CC.borderBox? a + 'px':Math.max(a - this.getOuterW(),0)+'px');
+            this.fastStyleSet(
+                'width', 
+                CC.borderBox ? a + 'px' : Math.max(a - this.getOuterW(),0)+'px'
+            );
             this.width = a;
         }
         if(b !== false){
             if(b<this.minH) b=this.minH;
             if(b>this.maxH) b=this.maxH;
-            this.fastStyleSet('height', CC.borderBox? b + 'px':Math.max(b - this.getOuterH(),0)+'px');
+            this.fastStyleSet(
+                'height', 
+                CC.borderBox ? b + 'px' :  Math.max(b - this.getOuterH(),0)+'px'
+            );
             this.height=b;
         }
 
@@ -6055,70 +6182,39 @@ CC.extend(Base.prototype,
     }
     ,
 /**
+ * @property contexted
+ * 指明是否处于contexted菜单状态
+ */
+    contexted : false,
+    
+/**
  * @event contexted
-* 当控件具有{@link #eventable}后,切换上下文效果时发送该事件.
+ * 当控件具有{@link #eventable}后,切换上下文效果时发送该事件.
  * @param {Boolean} isContexted true|false
- * @param {DOMElement|DOMEvent} mixed fire('contexted', false, evt, tar),fire('contexted', true, tar), 其中tar为触发结点. 
  */
  
 /**
- * 添加上下文切换效果,当点击控件区域以外的地方时隐藏控件.
- <pre>
- * param {Function} callback
- * param {Boolean}  cancelBubble
- * param {Object}   caller
- * param {DOMElement|String} childNode 触发结点
- * param {DOMElement|String} cssTarget
- * param {String} cssName
- </pre>
- * @return {Object} this
+ * 添加上下文切换效果,当点击控件区域以外的地方时隐藏控件。
+ * @see #onContextRelease
+ * @return {CC.Base} this
  */
-    bindContext : function(callback,cancel, caller, childId, cssTarget, cssName) {
-        if(this.contexted)
-          return this;
-
-        var tar = childId ? this.dom(childId) : this.view;
-        if(!caller)
-          caller = this;
-        var self = this;
-        var releaseCall = (function(evt) {
-            if(callback)
-                if(callback.call(caller, evt, tar)===false)
-                    return;
-            Event.un(document, 'mousedown', arguments.callee);
-            Event.un(tar, 'mousedown', Event.noUp);
-
-            var f = tar == self.view ? self : CC.fly(tar);
-
-            self.contexted = false;
-            delete self.__contextedCb;
-            if(cssTarget){
-              CC.fly(cssTarget).delClass(cssName).unfly();
-            }
-            f.display(false).unfly();
-            self.fire('contexted', false, evt, tar);
-        }
-        );
-        Event.on(tar, 'mousedown', Event.noUp);
-        Event.on(document, 'mousedown', releaseCall);
-
-
-        this.contexted = true;
-        this.__contextedCb = releaseCall;
-        if(cssTarget){
-          CC.fly(cssTarget).addClass(cssName).unfly();
-        }
-        this.fire('contexted', true, tar);
-        return this;
+    setContexted : function(set){
+    	if(this.contexted !== set)
+    		set ? ctxQueue.context(this):ctxQueue.release(this);
+    	return this;
     },
+
 /**
- * 释放已绑定的上下文切换
+ *  释放context时调用，返回false取消释放。
+ *  默认实现调用后隐藏当前控件。
+ *  @param {DOMEvent} [event] 如果释放由DOM事件触发（通常为mousedown），传递该事件。
+ *  @see #setContexted
  */
-    releaseContext : function(){
-      if(this.contexted)
-        this.__contextedCb();
+    onContextRelease  : function(){
+    	this.hide();
     },
-
+    
+    
 /**
  * CC.Base包装控件内的子结点元素
  * @param {String|DOMElement} node
@@ -6415,9 +6511,11 @@ CC.ui = {
  * 注册控件类标识,方便在未知具体类的情况下生成该类,也方便序列化生成类实例.
  * @param {String} ctype 类标识
  * @param {Function} 类
+ * @return this
  */
   def : function(ctype, clazz){
     this.ctypes[ctype] = clazz;
+    return this;
   },
 /**
  * 根据ctype获得类.
@@ -6946,7 +7044,7 @@ CC.util.BrushFactory = {
 /**
  * 解除与控件关联
  */
-    destory : function(){
+    destroy : function(){
       delete this.comp.ownRect;
       this.comp = null;
     }
@@ -7759,11 +7857,11 @@ CC.create('CC.ui.ContainerBase', Base,
   },
   
 /**@private*/
-  destoryed : false,
+  destroyed : false,
   
-  destory: function() {
-    this.destoryed = true;
-    this.destoryChildren();
+  destroy: function() {
+    this.destroyed = true;
+    this.destroyChildren();
     //clear the binded action of this ct component.
     var cs = this.bndActs, n;
     if (cs) {
@@ -7776,7 +7874,7 @@ CC.create('CC.ui.ContainerBase', Base,
     this.layout.detach();
     this.ct = null;
     this.wrapper = null;
-    cptx.destory.call(this);
+    cptx.destroy.call(this);
   },
 
   onRender: function() {
@@ -7984,16 +8082,14 @@ CC.create('CC.ui.ContainerBase', Base,
   /**
      * 销毁容器所有子项.
      */
-  destoryChildren: function() {
+  destroyChildren: function() {
     var it, chs = this.children;
     this.invalidate();
     for(var i=chs.length-1;i>=0;i--) {
-        it = chs[i];
-        this.remove(it);
-        it.destory();
+        chs[i].destroy();
     }
 
-    if (!this.destoryed)
+    if (!this.destroyed)
         this.validate();
   },
 
@@ -8233,41 +8329,38 @@ CC.create('CC.ui.ContainerBase', Base,
   filter: function(matcher, caller) {
     var caller = caller || window;
     CC.each(this.children, (function() {
-      if (!matcher.call(caller, this)) {
-        this.display(0);
-        return;
-      }
-      this.display(1);
+      this.display(matcher.call(caller, this));
     }));
     return this;
   },
 
 /**
- * 枚举子项, 如果回调函数返回false,则终止枚举.
+ * 枚举子项, 如果回调函数返回false,则终止枚举。.
  * @param {Function} callback 回调,传递参数为 (caller||item).callback(item, i)
  * @param {Object} caller 调用callback的this, 默认为子项
- * @return 最后一个回调调用结果值
+ * @return {Boolean} interruptedChild 如果callback返回false中断当前遍历，
+ * 则each返回当前中断项，否则无返回值(undefined)，可利用undefined判断是否发生中断。
  */
   each: function(cb, caller) {
     var i, it, rt, len, its = this.children;
     for (i = 0, len = its.length; i < len; i++) {
       it = its[i];
-      rt = cb.call(caller || it, it, i);
-      if (rt === false) break;
+      if( cb.call(caller || it, it, i) === false )
+        return it;
     }
-    return rt;
   },
 
   /**
      * 是否为控件的父容器
      * @param {CC.Base} child
+     * @param {String} [key] 指定查找属性名称，默认为 'pCt'
      * @return {Boolean}
      */
-  parentOf: function(child) {
+  parentOf: function(child, key) {
     if (!child) return false;
     if (child.pCt == this) return true;
     var self = this;
-    var r = CC.eachH(child, 'pCt', function() {
+    var r = CC.eachH(child, key || 'pCt', function() {
       if (this == self) return 1;
     });
     return r == true;
@@ -8746,6 +8839,37 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
             }
             return ins;
         },
+/**
+ * 获得容器ct结点存放子项的宽高，除去padding, border等影响。
+ * 默认是根据设定的{@link #getWrapperInsets}来计算。可以根据具体的HTML模板结构，
+ * 重写该方法以返回自定义的宽高。
+ */
+        getClientSize : function(w, h){
+            var wr = this.wrapper, spaces,cw, ch;
+            //如果wrapper非容器结点
+            if(wr.view !== this.view && this.syncWrapper){
+                spaces = this.getWrapperInsets();
+                cw = w===false?w:Math.max(w - spaces[5], 0);
+                ch = h===false?h:Math.max(h - spaces[4], 0);
+            }else {
+                //容器自身结点,计算容器content size
+                cw = w===false?w:Math.max(w - this.getOuterW(), 0);
+                ch = h===false?h:Math.max(h - this.getOuterH(), 0);
+            }
+            return [cw, ch];
+        },
+        
+        onSetSize : function(w, h){
+              var sz = this.getClientSize(w, h), wr = this.wrapper;
+              
+              if(wr !== this && this.syncWrapper){
+                wr.setSize(sz[0], sz[1]);
+              }
+              
+              // checked min, max wrapper size ?
+              this.fire('resized', sz[0], sz[1], w, h);
+              this.doLayout(sz[0], sz[1], w, h);
+        },
 
 /**
  * @event resized
@@ -8774,24 +8898,7 @@ CC.create('CC.ui.Panel', ccx, function(superclass){
               //受max,min影响,重新获得
               if(w !== false) w = this.width;
               if(h !== false) h = this.height;
-
-              var wr = this.wrapper, spaces,cw, ch;
-              //如果wrapper非容器结点
-              if(wr.view !== this.view && this.syncWrapper){
-                spaces = this.getWrapperInsets();
-                cw = w===false?w:Math.max(w - spaces[5], 0);
-                ch = h===false?h:Math.max(h - spaces[4], 0);
-                wr.setSize(cw, ch);
-                //受max,min影响,重新获得
-                if(cw !== false) cw = wr.width;
-                if(ch !== false) ch = wr.height;
-              }else {
-                //容器自身结点,计算容器content size
-                cw = w===false?w:Math.max(w - this.getOuterW(), 0);
-                ch = h===false?h:Math.max(h - this.getOuterH(), 0);
-              }
-              this.fire('resized', cw, ch, w, h);
-              this.doLayout(cw, ch, w, h);
+              this.onSetSize(w, h);
             }
             return this;
         },
@@ -10058,7 +10165,7 @@ CC.create('CC.util.dd.Portable', null, {
         this.getSrcPlacehold().del();
         this.freeSource(source, false);
         
-        this.destoryCtPlaceholds();
+        this.destroyCtPlaceholds();
         delete this._currHold;
     },
 
@@ -10101,12 +10208,12 @@ CC.create('CC.util.dd.Portable', null, {
         return cph;
     },
     
-    destoryCtPlaceholds : function(){
+    destroyCtPlaceholds : function(){
         if(this.emptyCtHolds){
             var ct, ph;
             for(var i=0,chs=this.emptyCtHolds,len=chs.length;i<len;i++) {
                 delete chs[i].placeholdCt;
-                chs[i].destory();
+                chs[i].destroy();
                 chs[i] = null;
             }
             delete this.emptyCtHolds;
@@ -10409,6 +10516,8 @@ CC.util.ProviderFactory.create('Connection', null, {
         else this.defaultDataProcessor(t, j.getJson());
     }
   },
+  
+  loadType : 'json',
   
 /**
  *  可重写本方法自定义数据类型加载
@@ -11316,7 +11425,7 @@ CC.util.ProviderFactory.create('Store', null, {
   del : function(item){
     if(item && this.isNew(item)){
       item.pCt.remove(item);
-      item.destory();
+      item.destroy();
     }else if(this.beforeDel(item) !== false 
       && this.t.fire('store:beforedel', item, this) !== false){
       this.onDel(item);
@@ -11369,7 +11478,7 @@ CC.util.ProviderFactory.create('Store', null, {
   afterDel : function(item){
     if(item){
       item.pCt.remove(item);
-      item.destory();
+      item.destroy();
     }
   },
 /**
@@ -11890,10 +11999,16 @@ CC.util.DataTranslator = {
       Math = window.Math,
       G = CC.util.dd.Mgr,
       undefined;
-
-  tpx.def('CC.ui.BorderLayoutSpliter' , '<div class="g-layout-split"></div>')
+     
+  tpx
+     // 分隔条
+     .def('CC.ui.BorderLayoutSpliter' , '<div class="g-layout-split"></div>')
+     // 横向收缩栏
      .def('CCollapseBarH' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td><td class="cb-r"></td></tr></table>')
+     // 竖向收缩栏
      .def('CCollapseBarV' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td></tr><tr><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td></tr><tr><td class="cb-r"></td></tr></table>');
+  
+  // 分隔条类
   uix.BorderLayoutSpliter = CC.create(CC.Base, function(spr) {
 
     //ghost 初始坐标
@@ -11902,16 +12017,19 @@ CC.util.DataTranslator = {
     return {
 
       type: 'CC.ui.BorderLayoutSpliter',
-
+      
+      // 拖动开始时分隔条掩层样式
       ghostCS : 'g-layout-sp-ghost',
 
       initComponent: function() {
         this.ct = this.layout.ct.wrapper;
         if (this.dir == 'north' || this.dir == 'south')
+          // 禁止拖动的方向
           this.dxDisd = true;
         spr.initComponent.call(this);
         G.installDrag(this, true);
       },
+      
 /**
  * 计算拖动范围dx,dy
  * @private
@@ -12078,7 +12196,8 @@ CC.util.DataTranslator = {
       }
     };
   });
-
+  
+  // 收缩栏类
   uix.BorderLayoutCollapseBar = CC.create(ccx,
    {
 
@@ -12122,16 +12241,17 @@ CC.util.DataTranslator = {
 
       this.sliperEl = CC.$C({tagName:'A', className:this.sliperCS,href:'javascript:fGo()'});
       this.comp.append(this.sliperEl);
-      this.comp.domEvent('click', this.sliperAction, false, null, this.sliperEl);
+      this.comp.domEvent('click', this.sliperAction, false, null, this.sliperEl)
+               .on('contexted', this.onCompContexted);
     },
 
-    destory : function(){
+    destroy : function(){
       this.centerExpander = null;
       this.navBlock = null;
       this.sliperEl = null;
       if(this.compShadow)
-        this.compShadow.destory();
-      ccx.prototype.destory.call(this);
+        this.compShadow.destroy();
+      ccx.prototype.destroy.call(this);
     },
 
     sliperAction : function(){
@@ -12142,33 +12262,8 @@ CC.util.DataTranslator = {
     onNavBlockClick : function(){
       var c = this.comp;
       c.setXY(10000,10000);
-      if(c.contexted)
-        c.releaseContext();
+      this.remain();
       this.itsLayout.collapse(c, false);
-    },
-
-    // 使得面板浮动
-    makeFloat : function(){
-      var c = this.comp;
-      c.addClass(this.compContextedCS)
-       .show();
-
-      this.setCompContextedBounds();
-
-      var xy = c.absoluteXY();
-      c.appendTo(document.body)
-       .setXY(xy);
-
-      if(c.collapse && c.collapsed)
-        c.collapse(false);
-
-      this.getShadow().attach(c).display(true);
-
-      var cfg = c.lyInf;
-      if(!cfg.cancelAutoHide){
-        this.resetAutoHideTimer();
-        cfg.autoHideTimer = this.onTimeout.bind(this).timeout(cfg.autoHideTimeout||5000);
-      }
     },
 
     getShadow : function(){
@@ -12180,49 +12275,95 @@ CC.util.DataTranslator = {
     },
 
     onTimeout : function(){
-      var c = this.comp;
-      if(c.contexted)
-        c.releaseContext();
-      else this.unFloat();
-      this.resetAutoHideTimer();
+      this.remain();
     },
 
-    resetAutoHideTimer : function(){
-      var cfg = this.comp.lyInf;
-      if(cfg.autoHideTimer){
-        clearTimeout(cfg.autoHideTimer);
-        delete cfg.autoHideTimer;
+    setAutoHideTimer : function(on){
+      var cfg   = this.comp.lyInf,
+          timer = cfg.autoHideTimer;
+      if(on){
+         if(!timer)
+            cfg.autoHideTimer = this.onTimeout.bind(this).timeout(cfg.autoHideTimeout||5000);
+      }else if(timer){
+            clearTimeout(timer);
+            delete cfg.autoHideTimer;
       }
     },
 
+
+    // 使得面板浮动
+    // 追回到document.body，保持原来位置
+    popup : function(){
+      
+      var c = this.comp;
+      var cfg = c.lyInf;
+      // save a state
+      if(!cfg.popuped){
+          cfg.popuped = true;
+          this.setCompContextedBounds();
+          c.show()
+           .setContexted(true);
+          
+          // append to document.body
+          var xy = c.absoluteXY();
+          c.appendTo(document.body)
+           .setXY(xy);
+           
+          if(c.collapse && c.collapsed)
+            c.collapse(false);
+    
+          this.getShadow().attach(c).display(true);
+    
+          
+          if(!cfg.cancelAutoHide){
+            this.setAutoHideTimer(true);
+          }
+      }
+    },
+    
     // 面板复原
-    unFloat : function(){
+    // 将面板放回容器
+    // 取消阴影
+    remain : function(show){
       var c = this.comp,
           cfg = c.lyInf;
-
-      if(cfg.autoHideTimer)
-        this.resetAutoHideTimer();
-      c.pCt._addNode(c.view);
-      c.delClass(this.compContextedCS);
-      this.getShadow().detach();
+      if(cfg.popuped){
+          cfg.popuped = false;
+          this.setAutoHideTimer(false);
+          c.setContexted(false);
+    
+          c.display(!!show);
+          c.pCt._addNode(c.view);
+          c.delClass(this.compContextedCS);
+          this.getShadow().detach();
+      }
     },
 
     // 点击区域范围外时回调
-    onCompReleaseContext : function(){
-      var cfg = this.pCt.layout.cfgFrom(this);
-      cfg.cbar.unFloat();
+    onCompContexted : function(contexted, e){
+      
+      var cbar = this.pCt.layout.cfgFrom(this).cbar;
+      
+      // 是否为cbar点击，如果是则忽略
+      if(e && cbar.ancestorOf(CC.Event.element(e))){
+        return false;
+      }
+      
+      if(!contexted)
+	      cbar.remain();
+      else cbar.popup();
+      	
+      CC.fly(cbar.navBlock)
+        .checkClass(cbar.navBlockCS[cbar.dir]+'-on', contexted)
+        .unfly();
+      this.checkClass(cbar.compContextedCS, contexted);
     },
 
     // 侧边栏点击
     onBarClick : function(){
-      var c = this.comp;
-      if(c.contexted)
-        c.releaseContext();
-      //callback,cancel, caller, childId, cssTarget, cssName
-      else {
-        c.bindContext(this.onCompReleaseContext, true, null, null, this.navBlock, this.navBlockCS[this.dir]+'-on');
-        this.makeFloat();
-      }
+        if(!this.comp.contexted)
+            this.popup();
+        else this.remain();
     },
 
     // 设置浮动面板浮动开始前位置与宽高
@@ -12397,7 +12538,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
           t += cg;
         }
         if(c.contexted)
-          c.releaseContext();
+          c.setContexted(false);
       }
 
       c = this.south;
@@ -12421,7 +12562,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
         }
 
         if(c.contexted)
-          c.releaseContext();
+          c.setContexted(false);
       }
       h -= t;
 
@@ -12446,7 +12587,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
           if (sp) sp.setBounds(w, t, cg, h);
         }
         if(c.contexted)
-          c.releaseContext();
+          c.setContexted(false);
       }
 
       c = this.west;
@@ -12472,7 +12613,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
           l += cg;
         }
         if(c.contexted)
-          c.releaseContext();
+          c.setContexted(false);
       }
 
       c = this.center;
@@ -12488,13 +12629,13 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
 
       var sp = cfg.separator;
       if (sp) {
-        sp.destory();
+        sp.destroy();
         delete cfg.separator;
       }
 
       var cb = cfg.cbar;
       if(cb){
-          cb.destory();
+          cb.destroy();
         delete cfg.cbar;
       }
       superclass.remove.apply(this, arguments);
@@ -12546,6 +12687,16 @@ CC.create('CC.layout.CardLayout', B, {
 });
 
 ly.def('card', ly.CardLayout);
+
+/**
+ * @class CC.layout.QQLayout.LayoutInf
+ * 控件用于QQ布局的配置信息，本类实际不存在，方便描述。
+ * 配置信息位于控件的{@link CC.Base#lyInf}属性中。
+ */
+/**
+ * @cfg {Boolean} collapsed 是否收缩控件。
+ */
+
 /**
  * @class CC.layout.QQLayout
  *  
@@ -13116,7 +13267,7 @@ CC.create('CC.layout.Portal', CC.layout.Layout, {
 CC.layout.def('portal', CC.layout.Portal);
 
 /**
- * @class CC.ui.layout.TabItemLayout
+ * @class CC.layout.TabItemLayout
  * 用于布局{@link CC.ui.Tab}容器里的{@link CC.ui.TabItem},使得子项超出可视时出视导航条.
  * @extends CC.layout.Layout
  */
@@ -13458,7 +13609,7 @@ return {
 };
 });
 
-CC.layout.def('tabitem', CC.ui.layout.TabItemLayout);
+CC.layout.def('tabitem', CC.layout.TabItemLayout);
 /**
  * @class CC.layout.Portal
  */
@@ -13892,9 +14043,9 @@ CC.create('CC.ui.Loading', CC.Base,
     return this.loaded;
   }, 
   
-  destory : function(){
+  destroy : function(){
     this.setMonitor(null);
-    this.superclass.destory.call(this);
+    this.superclass.destroy.call(this);
   }
 });
 
@@ -14000,11 +14151,11 @@ CC.create('CC.ui.Mask', CC.Base, {
   },
 
 /**@private*/
-  destory : function(){
+  destroy : function(){
     if(this.target)
       this.detach();
 
-    CC.Base.prototype.destory.call(this);
+    CC.Base.prototype.destroy.call(this);
   }
 });
 ﻿/**
@@ -14408,9 +14559,9 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
     
 		/**
-		 * @cfg {Boolean} syncPanelDestory tab item 销毁时是否连同对应的Panel一起销毁, 当tabitem.panel被自动加入tab.contentPanel面板时,如果该值未设置,则置为true.
+		 * @cfg {Boolean} syncPaneldestroy tab item 销毁时是否连同对应的Panel一起销毁, 当tabitem.panel被自动加入tab.contentPanel面板时,如果该值未设置,则置为true.
 		 */
-	  syncPanelDestory : undefined,
+	  syncPaneldestroy : undefined,
 		
 /**
  * 获得tabItem对应的内容面板
@@ -14430,8 +14581,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
         if((ct = this.pCt) && (tct = ct.getContentPanel())){
         	tct.layout.add(p);
         }
-        if(this.syncPanelDestory === undefined)
-          this.syncPanelDestory = true;
+        if(this.syncPaneldestroy === undefined)
+          this.syncPaneldestroy = true;
       }
       
       return p;
@@ -14569,12 +14720,12 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       }
     },
 
-    //@bug  fixed @v2.0.8.3 reminded by robin {@link http://www.bgscript.com/forum/viewthread.php?tid=38&extra=page%3D1}
-    destory: function() {
-      this.syncPanelDestory &&
+    //@bug  fixed @v2.0.8.3 reminded by robin {@link http://www.cicyui.com/forum/viewthread.php?tid=38&extra=page%3D1}
+    destroy: function() {
+      this.syncPaneldestroy &&
                  this.panel &&
-                 this.panel.destory();
-      SC.destory.call(this);
+                 this.panel.destroy();
+      SC.destroy.call(this);
     }
 
   });
@@ -14622,9 +14773,9 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
  */
     autoLoad: true,
 /**
- * @cfg {Boolean} destoryItemOnclose 当关闭子项时是否销毁子项,默认为false, 子项也可以设置tabItem.destoryOnClose覆盖设置.
+ * @cfg {Boolean} destroyItemOnclose 当关闭子项时是否销毁子项,默认为false, 子项也可以设置tabItem.destroyOnClose覆盖设置.
  */
-    destoryItemOnclose : false,
+    destroyItemOnclose : false,
 
     lyCfg: {
 
@@ -14686,8 +14837,9 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
         if (this.fire('close', item) !== false){
           this.displayItem(item, 0);
           this.fire('closed', item);
-          if(item.destoryOnClose === true || this.destoryItemOnclose){
-            item.destory();
+          // destoryOnClose，E文差，打错字，要作兼容
+          if(item.destroyOnClose === true || this.destroyItemOnclose || item.destoryOnClose === true){
+            item.destroy();
           }
         }
       }
@@ -14948,7 +15100,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
       }
 
       if(!this.reuseable && check)
-        this.destory();
+        this.destroy();
     },
 
   /**
@@ -15720,10 +15872,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
           father.initComponent.call(this);
           
           //create titlebar
-          var tb = this.titlebar;
-          if(tb)
-            CC.extendIf(tb,wtbDef);
-          else tb = wtbDef;
+          var tb = CC.extendIf(this.titlebar, wtbDef);
           tb.title = tle;
           
           var tboutter = true, v=tb.view;
@@ -15747,23 +15896,23 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
             this.wrapper.fastStyleSet('overflow', this.overflow);
 
           if(this.closeable === true){
-            var cls = tb.clsBtn;
-            if(cls)
-              CC.extendIf(cls,wtbClsBtn);
-            else cls = wtbClsBtn;
-            cls.onselect = this.onClsBtnClick;
-            v = cls.view;
-            if(v && typeof v === 'string'){
-               cls.view = this.dom(v);
+            var cls = tb.$('close');
+            if(!cls){
+                cls = CC.extendIf(tb.clsBtn , wtbClsBtn);
+                v = cls.view;
+                // case cls button in tb view, cls id
+                if(v && typeof v === 'string'){
+                   cls.view = this.dom(v);
+                }
+                
+                cls = this.clsBtn = CC.ui.instance(cls);
+                tb.layout.add(cls);
             }
-            this.clsBtn = CC.ui.instance(cls);
-            // recovery
-            cls.view = v;
-            tb.layout.add(this.clsBtn);
+            cls.onselect = this.onClsBtnClick;
           }
-
-          if(this.destoryOnClose)
-            this.on('closed', this.destory);
+          // destoryOnClose，E文差，打错字，要作兼容
+          if(this.destroyOnClose || this.destoryOnClose)
+            this.on('closed', this.destroy);
 
           this.domEvent('mousedown', this.trackZIndex)
               //为避免获得焦点,已禁止事件上传,所以还需调用trackZIndex更新窗口zIndex
@@ -16492,14 +16641,20 @@ var SPP = CC.util.SelectionProvider.prototype;
  */
 CC.Tpl.def('CC.ui.Menu', '<div class="g-panel g-menu"><div id="_wrap" class="g-panel-wrap"><ul class="g-menu-opt" id="_bdy"  tabindex="1" hidefocus="on"></ul></div></div>')
       .def('CC.ui.MenuItem', '<li class="g-menu-item"><span id="_tle" class="item-title"></span></li>');
-
-CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider, {
 /**
- * 无论选中与否都强迫选择
+ * @class CC.util.MenuSelectionProvider
+ * @extends CC.util.SelectionProvider
+ * 该类提供菜单控件的按键导航，子项选择等功能，一般情况下不必理会该类。
+ */
+CC.create('CC.util.MenuSelectionProvider', CC.util.SelectionProvider, {
+/**
+ * 默认设为true, 无论选中与否都强迫选择
  */
   forceSelect : true,
+  
 /**
  * 取消修饰选择的样式
+ * @private
  */
   selectedCS : false,
 
@@ -16729,9 +16884,8 @@ return {
     var p = this.pCt;
     if(p.menubar){
       this.active(true);
-      if(!p.contexted)
-        p.bindContext();
-      p.setAutoExpand(true);
+      p.setContexted(true)
+       .setAutoExpand(true);
     }else if(this.subMenu){
       this.active(true);
       if(e)
@@ -16816,12 +16970,12 @@ return {
     }
   },
 
-  destory : function(){
+  destroy : function(){
     if(this.subMenu){
-      this.subMenu.destory();
+      this.subMenu.destroy();
       this.unbind();
     }
-    superclass.destory.call(this);
+    superclass.destroy.call(this);
   }
   };
 });
@@ -16831,16 +16985,23 @@ return {
  * 菜单控件,默认添加在document.body中.
  * @extends CC.ui.Panel
  */
+
+/**
+ * @cfg {Array} array 初始化时载入的子菜单数组
+ */
+ 
+/**
+ * @property pItem
+ * 父菜单项,如果存在。
+ * @type CC.ui.MenuItem
+ */
 CC.create('CC.ui.Menu', CC.ui.Panel, function(superclass) {
 return /**@lends CC.ui.Menu#*/{
 
   hidden : true,
 
   width : 115,
-/**
- * 父菜单项,如果存在
- * @type CC.ui.MenuItem
- */
+  
   pItem: null,
 
   // 菜单项激活时CSS样式
@@ -16859,7 +17020,7 @@ return /**@lends CC.ui.Menu#*/{
  */
   onItem: null,
 
-  selectionProvider : CC.ui.menu.MenuSelectionProvider,
+  selectionProvider : CC.util.MenuSelectionProvider,
 
   itemCls : CC.ui.MenuItem,
 
@@ -16890,8 +17051,8 @@ return /**@lends CC.ui.Menu#*/{
     this.noUp();
 
     //容器上监听子项mouseover/mouseout
-    this.itemAction('mouseover', this.mouseoverCallback, true);
-    this.itemAction('mouseout', this.mouseoutCallback, true);
+    this.itemAction('mouseover', this.mouseoverCallback, true)
+        .itemAction('mouseout', this.mouseoutCallback, true);
   }
   ,
 
@@ -17031,7 +17192,7 @@ return /**@lends CC.ui.Menu#*/{
  </code></pre>
  * @param {CC.Base|Number} x
  * @param {Number|Boolean} y
- * @param {Boolean} contexted
+ * @param {Boolean} [contexted]
 
  */
   at : function(a,b){
@@ -17039,23 +17200,60 @@ return /**@lends CC.ui.Menu#*/{
     if(typeof a === 'number'){
       this.anchorPos([a, b, 0, 0] ,'lb', 'hr', null, true, true);
       if(arguments[2] !== false && !this.menubar)
-        this.bindContext();
+        this.setContexted(true);
     }else {
       this.anchorPos(a ,'lb', 'hr', null, true, true);
       if(b !== false && !this.menubar)
-        this.bindContext();
+        this.setContexted(true);
     }
   },
 
-  destory : function(){
+  destroy : function(){
     this.each(function(){
       if(this.subMenu && !this.disabledCascadeDel){
         var sub = this.subMenu;
         this.pCt.detach(this);
-        sub.destory();
+        sub.destroy();
       }
     });
-    superclass.destory.call(this);
+    superclass.destroy.call(this);
+  },
+
+  // @override
+  onContextRelease : function(e){
+    if(e && this.isEventFromSubMenu(e))
+       return false;
+    this.hide();
+  },
+  
+  /**
+   * @param {DOMEvent} event
+   */
+  isEventFromSubMenu : function(e){
+    if(e){
+        // 如果点击来自子菜单，取消release context
+        var el = Event.element(e), 
+            t = CC.ui.Menu.prototype.type,
+            menu = CC.Base.byDom(el, function(c){
+                return c.type === t;
+            });
+         return menu && this.isChildMenu(menu);
+    }
+  },
+  
+  /**
+   * @param {CC.ui.Menu} menu
+   */
+  isChildMenu : function(m){
+    var sub;
+    return this.each(function(){
+        sub = this.subMenu;
+        if(sub){
+            if(sub === m)
+                return false; 
+           return !(sub.isChildMenu(m) === true);
+        }
+     }) !== undefined;
   }
 };
 });
@@ -17070,28 +17268,22 @@ CC.create('CC.ui.Menubar', CC.ui.Menu, {
     menubar : true,
     hidden : false,
     shadow : false,
+    
 /**@private*/
-  onContextedRelease : function(){
+  onContextRelease : function(e){
+    if(e && this.isEventFromSubMenu(e))
+        return false;
+    
     if(this.onItem)
-      this.onItem.deactive(true);
+       this.onItem.deactive(true);
     this.getSelectionProvider().select(null);
     this.setAutoExpand(false);
-    //无需隐藏
-    return false;
-  },
-
-/**
- * @private
- * @override
- */
-  bindContext : function(){
-    return CC.ui.Menu.prototype.bindContext.call(this, this.onContextedRelease);
   }
 });
 
-CC.ui.def('menu', CC.ui.Menu);
-CC.ui.def('menuitem', CC.ui.MenuItem);
-CC.ui.def('menubar', CC.ui.Menubar);
+CC.ui.def('menu', CC.ui.Menu)
+     .def('menuitem', CC.ui.MenuItem)
+     .def('menubar', CC.ui.Menubar);
 
 })();
 ﻿
@@ -17534,7 +17726,7 @@ CC.create('CC.ui.tree.TreeItemLoadingIndicator', CC.ui.Loading, {
   stopIndicator : function(){
     var t = this.target;
     t._head.delClass(t.loadCS);
-    //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
+    //@bug reminded by earls @v2.0.8 {@link http://www.cicyui.com/forum/viewthread.php?tid=33&extra=page%3D1}
     if(t.getConnectionProvider()
         .getConnectionQueue()
         .isConnectorLoaded(t._dataConnectorId)){
@@ -17687,7 +17879,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
   getItemUrl : function(item){
     var url = CC.templ(this, this.url);
     if(url){
-      //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
+      //@bug reminded by earls @v2.0.8 {@link http://www.cicyui.com/forum/viewthread.php?tid=33&extra=page%3D1}
       //contains '?' already ??
       url+= (url.indexOf('?') > 0 ?'&':'?') + encodeURIComponent(this.parentParamName)+'='+encodeURIComponent(item.id);
     }
@@ -17790,13 +17982,11 @@ CC.ui.def('tree', CC.ui.Tree);
 
       this.follow(this.todayBtn)
           .domEvent('click', this.toToday, true, null, this.todayBtn.view)
-          .selectorNode = this.dom('_seltor');
+          .selectCt = this.$$('_seltor');
     },
 
     _hideYearSel: function() {
-      CC.fly(this.selectorNode)
-        .display(false)
-        .unfly();
+      this.selectCt.display(false);
     },
 
     onNavBarMove: function(evt) {
@@ -17820,11 +18010,9 @@ CC.ui.def('tree', CC.ui.Tree);
     },
 
     onYearList: function() {
-      var dv = this.selectorNode;
-      CC.fly(dv)
-        .bindContext()
-        .display(true)
-        .unfly();
+      var dv = this.selectCt.view;
+      this.selectCt.setContexted(true)
+          .display(true);
 
       if (!dv.firstChild)
         this.createList();
@@ -17838,7 +18026,7 @@ CC.ui.def('tree', CC.ui.Tree);
     },
 
     createList: function() {
-      var dv = this.selectorNode,
+      var dv = this.selectCt.view,
           pan = this.fly('_planeY'),
           sz = pan.getSize();
       dv.innerHTML = this.getSelectListHtml();
@@ -18036,12 +18224,12 @@ CC.ui.def('tree', CC.ui.Tree);
   function showDatepicker() {
     var dp = instance,
     f = CC.fly(dp.bindingEditor);
-    dp.display(true);
-    dp.setValue(dp.bindingEditor.value.trim(), true);
+    dp.display(true)
+      .setValue(dp.bindingEditor.value.trim(), true);
     //get the right position.
     dp.anchorPos(f, 'lb', 'hr', null, true, true);
     f.unfly();
-    dp.bindContext();
+    dp.setContexted(true);
   }
 
   DP.getInstance = function(){
@@ -18511,18 +18699,18 @@ return {
     this.plugins.push(pl[0]);
   },
 
-  destoryPlugins : function(){
+  destroyPlugins : function(){
     var g = this;
     CC.each(this.plugins, function(){
-      if(this.destoryPlugin)
-        this.destoryPlugin(g);
+      if(this.destroyPlugin)
+        this.destroyPlugin(g);
     });
   },
 
 
-  destory : function(){
-    this.destoryPlugins();
-    father.destory.call(this);
+  destroy : function(){
+    this.destroyPlugins();
+    father.destroy.call(this);
   }
 };
 });
@@ -19666,13 +19854,13 @@ return {
     superclass.mouseoutCallback.apply(this, arguments);
   },
   
-  destory : function(){
+  destroy : function(){
     if(this.nodes){
       for(var i=0,nds=this.nodes,len=nds.length;i<len;i++){
-        nds[i].destory();
+        nds[i].destroy();
       }
     }
-    superclass.destory.call(this);
+    superclass.destroy.call(this);
   }
 };
 });
@@ -20186,8 +20374,8 @@ return {
     var inst = CC.ui.instance(cfg);
     var self = this;
     
-    inst.on('blur', function(){
-        if(this.bindingCell){
+    inst.on('contexted', function(set){
+        if(!set && this.bindingCell){
           self.endEdit(this.bindingCell);
         }
       });
@@ -20263,7 +20451,10 @@ return {
       
       et.setValue(cell.getValue())
         .setTitle(cell.getTitle())
-        .show().focus();
+        .show()
+        .setContexted(true)
+        .focus();
+      et.active();
       this.grid.fire('editstart', cell, et, col, idx, this);
     }
   },
@@ -20538,7 +20729,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
     });
     // update param data to temp object
     if(this.params)
-      CC.extend(pageInf, params);
+      CC.extend(pageInf, this.params);
       
     if(this.customQuery)
       this.customQuery(pageInf);
@@ -20559,7 +20750,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
 	       page.current = page.count;
 	     
     	 //clear content rows
-    	 this.t.destoryChildren();
+    	 this.t.destroyChildren();
     	 
        // call default processor
        this.defaultDataProcessor('json', json.data);
@@ -20825,7 +21016,7 @@ CC.create('CC.ui.grid.plugins.RowChecker', null, {
   	   ct.on('selectchange', function(current, previous, selProvider){
   	       var cell = current.$('rowcheckercell');
   	       var col  = ct.grid.header.$('rowCheckerCol');
-   	       // maybe col destoryed ?
+   	       // maybe col destroyed ?
             cell.checkClass(col.checkedCS, selProvider.isSelected( current ));
             if(previous){
                 var preCell = previous.$('rowcheckercell');
@@ -21392,6 +21583,23 @@ CC.create('CC.ui.form.Text', cf, {
       (function() {
         self.view.select();
       }).timeout(20);
+    },
+    
+    // fix ?? form element border box model
+    getSize : function(){
+        var tmp = CC.borderBox;
+        CC.borderBox = true;
+        var ret = Bx.prototype.getSize.apply(this, arguments);
+        CC.borderBox = tmp;
+        return ret;
+    },
+    // fix ?? form element border box model
+    setSize : function(){
+        var tmp = CC.borderBox;
+        CC.borderBox = true;
+        var ret = Bx.prototype.setSize.apply(this, arguments);
+        CC.borderBox = tmp;
+        return ret;
     }
 });
 
@@ -21796,35 +22004,81 @@ CC.ui.def('fieldset',CC.ui.form.Fieldset);
 ﻿CC.Tpl.def('CC.ui.form.Combox', '<div class="g-panel g-combo" tabindex="1" hidefocus="on"><div class="g-panel-wrap g-combo-wrap" id="_wrap"><input type="hidden" id="_el" /><div class="unedit-txt" id="_uetxt"></div><span class="downIco" id="_trigger"></span></div></div>');
 
 /**
+ * @class CC.Tpl.form.Combox
+ */
+ 
+/**
+ * @cfg {String} _uetxt 不可编辑时显示的结点
+ */
+/**
+ * @cfg {String} _wrap 存放editor的结点
+ */ 
+
+
+/**
  * @class CC.ui.form.Combox
  * @extends CC.ui.form.FormElement
  */
+ 
+/**
+ * @event focus
+ * @param {DOMEvent} event
+ */
+/**
+ * @event blur
+ * @param {DOMEvent} event
+ */
+/**
+ * @event keydown
+ * @param {DOMEvent} event
+ */
+ 
+/**
+ * @cfg {Boolean} filterContent 输入时是否过滤子项,默认为true
+ */
+
+/**
+ * @cfg {CC.Base} selector 下拉面板控件.
+ */
+ 
+/**
+ * @cfg {Array} array 下拉选项，将被应用到下拉面板中.
+ */
+
+/**
+ * @cfg {Array} selected 默认选中项
+ */
+ 
+/**
+ * @property editor
+ * 编辑框控件
+ * @type CC.ui.form.Text
+ */
+
+
 CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
   function allMather() { return true; }
 
   var Event = CC.Event;
 
-  return /**@lends CC.ui.form.Combox#*/{
+  return {
 
     hoverCS: 'g-combo-on',
-
+    
+    // 不允许编辑时样式
     uneditCS: 'g-combo-unedit',
-
+    
+    // trigger按下时样式
     downCS: 'g-combo-dwn',
-
+    
+    // 下拉面板样式
     selectorCS:'g-combo-list',
 
-    _leaveFocus: true,
-
     maxH: 21,
-/**
- * @cfg {Boolean} filterContent 输入时是否过滤子项,默认为true
- */
+    
     filterContent : true,
-/**
- * @cfg {CC.Base} selector 下拉面板控件.
- */
+    
     selector : false,
     
     initComponent: function() {
@@ -21833,9 +22087,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       var array = CC.delAttr(this, 'array');
 
       //编辑框
-      this.editor = new CC.ui.form.Text({
-        name: this.name
-      });
+      if(!this.editor)
+        this.editor = {name: this.name, ctype:'text'};
+      
+      this.editor = CC.ui.instance(this.editor);
 
       //父类初始化
       superclass.initComponent.call(this);
@@ -21858,39 +22113,40 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         sn.fromArray(array);
 
       this.attach(st, sn);
-      this._bindKey();
+      
+      this.setEditable(!CC.delAttr(this, 'uneditable'));
 
-      if (this.uneditable) {
-        delete this.uneditable;
-        this.setEditable(false);
-      } else this.setEditable(true);
-
-      if (this.selected)
+      if (this.selected){
         sn.getSelectionProvider().select(this.selected);
+        delete this.selected;
+      }
       
-      delete this.selected;
-      
-      //
-      // 由于Combox由多个控件拼装而成, 为了能正确捕获Combox控件的blur, focus事件,
-      // 不得不多监听几个事件,并作一处特殊处理.
-      //
+      this.initEvents();
+    },
+    
+    initEvents : function(){
       this.domEvent('focus', this.onFocusTrigger)
-          .domEvent('blur', this.onBodyBlurTrigger)
-          .domEvent('focus', this.onFocusTrigger, false, null, this.editor.element)
-          .domEvent('blur', this.onBodyBlurTrigger, false, null, this.editor.element)
+          .domEvent('blur', this.onBlurTrigger)
           .domEvent('keydown', this.onKeydownTrigger)
           .wheelEvent(this.onMouseWheel, true);
       
       //焦点消失时检查输入值是否是下拉项的某一项,如果有,选择之.
-      this.on('blur', this.checkSelected);
+      this.on('blur', this.checkSelected);      
+      
+      // 处理键盘响应
+      this.domEvent('keydown', this._keyHandler, false, null, this.editor.view)
+          .domEvent('keyup', this._filtHandler, false, null, this.editor.view);
     },
     
     onHide : function(){
+        // 关联下拉的隐藏
     	if(!this.selector.hidden)
     		this.selector.hide();
+    	
     	superclass.onHide.apply(this, arguments);
     },
     
+    // 创建默认的下拉
     createDefSelector : function(){
         var st = CC.ui.instance({
         	ctype:'folder',
@@ -21901,7 +22157,9 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
     
 /**
- * 获得下拉控件中具有selectionProvider的控件
+ * 获得下拉控件中具有selectionProvider的控件，这是个回调方法，当创建下拉面板selector后调用。
+ * 可以重写该方法自定义选择器。
+ * @param {Object} selector 已创建好的下拉面板
  */
     getSelectioner : function(st){
       return this.selectioner || st;
@@ -21916,25 +22174,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       }
     },
 
-    /**
-     * @private
-     * combox 主体失焦时触发
-     */
-    onBodyBlurTrigger: function() {
-      if (this.selector.hidden && this._leaveFocus) {
-        this.onBlurTrigger();
-      }
-    },
-
-    onBlurTrigger: function() {
-      this.leaveFocusOn();
-      superclass.onBlurTrigger.call(this);
-    },
-
     disable: function(b) {
       superclass.disable.call(this, b);
       this.editor.disable(b);
     },
+    
 /**
  * 设置下拉面板滚动高度,主要是为了出现滚动条.
  * @private
@@ -21948,19 +22192,18 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
  * @param {Boolean} editable
  */
     setEditable: function(b) {
-      if (this.uneditable !== undefined && this.uneditable == b) return this;
+      if (this.uneditable !== undefined && this.uneditable == b) 
+        return this;
 
       if (this.uneditable && b) {
         this.delClass(this.uneditCS)
             .unEvent('click', this.onUneditableClick);
       } else if (b) {
-        this.domEvent('click', this.onUneditableClick, true, null, '_trigger')
-            .domEvent('mousedown', this.leaveFocusOff, false, null, '_trigger');
+        this.domEvent('click', this.onUneditableClick, true, null, '_trigger');
       } else {
         this.addClass(this.uneditCS)
             .domEvent('click', this.onUneditableClick)
-            .unEvent('click', this.onUneditableClick, '_trigger')
-            .unEvent('mousedown', this.leaveFocusOff, '_trigger');
+            .unEvent('click', this.onUneditableClick, '_trigger');
       }
 
       this.uneditable = !b;
@@ -21981,21 +22224,13 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
     onUneditableClick: function(evt) {
       var b = !this.selector.hidden;
-      this.leaveFocusOff();
       if (!b && this.filterContent) {
         this.selectioner.filter(allMather);
       }
       this.showBox(!b);
     },
-
-    leaveFocusOff: function() {
-      if (this._leaveFocus !== false) this._leaveFocus = false;
-    },
-
-    leaveFocusOn: function() {
-      if (this._leaveFocus !== true) this._leaveFocus = true;
-    },
-
+    
+    // no detach -_-
     attach: function(selector, selectioner) {
       this.selector = selector;
       this.selectioner = selectioner;
@@ -22008,9 +22243,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       if (selector.shadow)
         selector.shadow.setZ(999);
 
-      selector.addClass(this.selectorCS);
+      selector.addClass(this.selectorCS)
+              .on('contexted', this.onBoxContexted, this);
       selectioner.on('selected', this.onSelected, this)
-      selectioner.on('itemclick', this.onclickEvent, this);
+                 .on('itemclick', this.onItemClick, this);
 
       this._savSelKeyHdr = selector.defKeyNav;
 
@@ -22020,23 +22256,23 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         self._keyHandler(ev, true);
       });
     },
-
-    onBoxContexted: function(evt) {
-    	//来自浏览器事件
-      if(evt){
-	      var el = Event.element(evt);
-	      if (this.ancestorOf(el)) return false;
+    
+    // 外围点击
+    onBoxContexted: function(set, e) {
+      if(!set){
+          //来自浏览器事件
+          if(e){
+    	      if (this.ancestorOf(Event.element(e))) 
+    	        return false;
+          }
+          this.showBox(false);
       }
-      //标记为外部影应,失去焦点
-      this.leaveFocusOn();
-      this.showBox(false);
-      this.leaveFocusOff();
-      this.onBlurTrigger();
     },
 
-    onclickEvent: function() {
+    onItemClick: function() {
       this.showBox(false);
     },
+    
 /**
  * 返回false表示不再发送该事件
  * @private
@@ -22073,7 +22309,6 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         sn.filter(this.matcher, this);
         this.preValue = v;
       }
-      this.leaveFocusOff();
       this.showBox(true);
     },
 
@@ -22082,10 +22317,6 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       if(ds != b){
         if (!b) {
           st.display(false);
-          if (!this._leaveFocus) {
-            if (!this.uneditable) this.editor.focus(true);
-            else this.focus(true);
-          }
           this.delClass(this.downCS);
           return;
         }else {
@@ -22093,14 +22324,17 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         }
   
         this.preferPosition();
-        if (st.shadow) st.shadow.reanchor();
-        if (!this.uneditable) this.editor.focus(true);
+        if (st.shadow) 
+            st.shadow.reanchor();
+        if (!this.uneditable) 
+            this.editor.focus(true);
         else this.focus(true);
   
         if (ds) return;
         this.checkSelected();
         this.addClass(this.downCS);
-        st.bindContext(this.onBoxContexted, false, this).display(true);
+        st.setContexted(true)
+          .display(true);
       }
     },
 
@@ -22111,6 +22345,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     deactive : function(){
     	this.showBox(false);
     },
+    
     /**
      * 检查输入值是否为下拉选项中的某一项.
      * 如果有多个相同项,并且当前已选其中一项,忽略之,否则选中符合的首个选项.
@@ -22159,14 +22394,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       return this.getWidth();
     },
 
-    _bindKey: function(event) {
-      this.domEvent('keydown', this._keyHandler, false, null, this.editor.view);
-      this.domEvent('keyup', this._filtHandler, false, null, this.editor.view);
-    },
-
     onSelected: function(item) {
       this.setValueFromItem(item, true);
-      if (!this.uneditable && this.focused) this.editor.focus(true);
+      if (!this.uneditable)
+        this.editor.focus(true);
     },
     
     getItemValue : function(item){
@@ -22241,11 +22472,18 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
  */
     select: function(id) {
       this.selectioner.selectionProvider.select(id);
+    },
+    
+    onContextRelease : function(e){
+        if(e){
+            if(this.selector.ancestorOf(Event.element(e)))
+                return false;
+        }
     }
   };
 });
 CC.ui.def('combo', CC.ui.form.Combox);
-﻿CC.Tpl.def('CC.ui.form.Progressbar' , '<table class="g-progressbar" cellspacing="0" cellpadding="0" border="0"><tr><td class="g-progress-l"><i>&nbsp;</i><input type="hidden" id="_el" /></td><td class="g-progress-c"><img id="_img" src="http://www.bgscript.com/s.gif" alt=""/></td><td class="g-progress-r"><i>&nbsp;</i></td></tr></table>');
+﻿CC.Tpl.def('CC.ui.form.Progressbar' , '<table class="g-progressbar" cellspacing="0" cellpadding="0" border="0"><tr><td class="g-progress-l"><i>&nbsp;</i><input type="hidden" id="_el" /></td><td class="g-progress-c"><img id="_img" src="http://www.cicyui.com/s.gif" alt=""/></td><td class="g-progress-r"><i>&nbsp;</i></td></tr></table>');
 /**
  * @class CC.ui.form.Progressbar
  * @extends CC.ui.form.FormElement
@@ -22296,6 +22534,11 @@ CC.Tpl.def('CC.ui.form.DatepickerField', '<div class="g-datepicker-field"><div c
 * @class CC.ui.form.DatepickerField
 * @extends CC.ui.form.FormElement
 */
+
+/**
+ * @property {CC.ui.Datepicker} datepicker
+ */
+ 
 CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 
 	focusCS: 'g-datepicker-field-focus',
@@ -22304,21 +22547,16 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 
 	contextCS: 'g-datepicker-field-ctx',
 
-	_leaveFocus: true,
-
 	maxH: 20,
 
 	applyTimeout: 200,
 
 	initComponent: function() {
 		FP.initComponent.call(this);
-		//关闭leaveFocus标记, element失焦后忽略
 		this.bindHoverStyle(this.triggerHoverCS, true, null, null, null, '_trigger', '_trigger')
 		.domEvent('click', this.onTriggerClick, false, null, '_trigger')
-		.domEvent('mousedown', this.leaveFocusOff, false, null, '_trigger')
-		.domEvent('mousedown', this.onFocusTriggerDelay)
 		.domEvent('focus', this.onFocusTrigger, false, null, this.element)
-		.domEvent('blur', this.onTrackBlur, false, null, this.element)
+		.domEvent('blur', this.onBlurTrigger, false, null, this.element)
 		.domEvent('keydown', this.onKeydownTrigger, false, null, this.element);
 	},
 
@@ -22330,42 +22568,12 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 	deactive : function(){
 		this.showDatepicker(false);
 	},
-
+  
+  // 关联消失
 	onHide : function(){
 		if(!this.getDatepicker().hidden)
 		this.getDatepicker().hide();
 		CC.ui.form.FormElement.prototype.onHide.apply(this, arguments);
-	},
-
-	onTrackBlur: function() {
-		if (!this._leaveFocus && (this.datepicker && this.datepicker.hidden)) {
-			this.leaveFocusOn();
-			return;
-		}
-		this.onBlurTrigger();
-	},
-
-	// mousedown -> blur -> timeout
-	onFocusTriggerDelay: function() {
-		var self = this;
-		(function() {
-			self.leaveFocusOn();
-			self.onFocusTrigger();
-		}).timeout(0);
-	},
-
-	onBlurTrigger: function() {
-		//恢复标记
-		if (!this._leaveFocus) return;
-		FP.onBlurTrigger.call(this);
-	},
-
-	leaveFocusOff: function() {
-		if (this._leaveFocus !== false) this._leaveFocus = false;
-	},
-
-	leaveFocusOn: function() {
-		if (this._leaveFocus !== true) this._leaveFocus = true;
 	},
 
 	onTriggerClick: function() {
@@ -22374,30 +22582,30 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 
 	showDatepicker: function(b) {
 		var dp = this.getDatepicker();
-		this.datepicker.display(b);
-		if (b) {
-			if (this.getValue())
-			dp.setValue(this.getValue(), true);
-
-			//get the right position.
-			//callback,cancel, caller, childId, cssTarget, cssName
-			dp.anchorPos(this, 'rb', 'hl', null, true, true);
-			dp.bindContext(this.onDatepickerContexted, false, this, null, this, this.contextCS)
-			  .focus(0);
-		}else {
-			this.focus();
-		}
-	},
-
-	onDatepickerContexted: function(evt) {
-		if(evt){
-			var el = E.element(evt);
-			if (!this.ancestorOf(el)){
-				//标记为外部影应,失去焦点
-				this.onBlurTrigger();
+    if(dp.hidden === b){
+			this.datepicker.display(b);
+			if (b) {
+				if (this.getValue())
+				dp.setValue(this.getValue(), true);
+	
+				//get the right position.
+				//callback,cancel, caller, childId, cssTarget, cssName
+				dp.anchorPos(this, 'rb', 'hl', null, true, true);
+				dp.focus(0);
+				this.setContexted(true);
+			}else {
+				this.focus();
 			}
-		}
+    }
 	},
+  
+  onContextRelease : function(e){
+      if(e){
+          if(this.getDatepicker().ancestorOf(CC.Event.element(e)))
+              return false;
+      }
+      this.showDatepicker(false);
+  },
 
 	getDatepicker: function() {
 		var dp = this.datepicker;
@@ -22439,21 +22647,22 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 		}).timeout(self.applyTimeout);
 	},
 
+	getText : function(){
+	  return this.getValue();
+	}
+	
+/*
 	setSize: function(a, b) {
 		FP.setSize.apply(this, arguments);
 		if (a.width) b = a.width;
 		if (b !== false) {
 			var f = this.fly('_trigger');
-			//CC.fly(this.element).setWidth(this.width - (f.getWidth() || 22)).unfly();
+			CC.fly(this.element).setWidth(this.width - (f.getWidth() || 22)).unfly();
 			f.unfly();
 		}
 		return this;
 	},
-	
-	getText : function(){
-	  return this.getValue();
-	}
-
+*/
 });
 
 CC.ui.def('datepicker', CC.ui.form.DatepickerField);
@@ -22494,6 +22703,202 @@ return {
 });
 CC.ui.def('formvalidation', CC.ui.form.ValidationProvider);
 CC.ui.form.FormLayer.prototype.validationProvider = CC.ui.form.ValidationProvider;
+/**
+ * @class CC.ui.form.RichEditor
+ * 基于CKEDITOR或其它开源的富文本编辑器
+ */
+ 
+/**
+ * @cfg {String} editorUrl 指定远程加载编辑器脚本文件
+ */
+
+/**
+ * @cfg {String} lazyLoad 是否延迟加载，延迟后当文本框聚焦时才加载，默认为false。
+ */
+ 
+/**
+ * @cfg {Object} editorCfg editor configeration
+ */
+
+/**
+ * @event editorload, replace后立即调用
+ * @param {Object} editor
+ */
+ 
+/**
+ * @event editorload, editor就绪后调用
+ * @param {Object} editor
+ * @param {Object} [editorEvent]
+ */ 
+
+CC.Tpl.def('CC.ui.form.RichEditor', '<div><textarea id="_el" class="g-textarea g-corner" ></textarea></div>');
+
+CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, {
+    
+    template : 'CC.ui.form.RichEditor',
+    
+    editorUrl : 'http://ckeditor.com/apps/ckeditor/3.4/ckeditor.js',
+ 
+    lazyLoad :  false,
+    
+    onRender : function(){
+        this.superclass.onRender.call(this);
+        if(!this.lazyLoad)
+            this.loadEditor();
+    },
+    
+    focusCallback : function(){
+        this.superclass.focusCallback.apply(this, arguments);
+        if(this.lazyLoad && !this.editor)
+            this.loadEditor();
+    },
+    
+/**手动加载编辑器*/
+    loadEditor : function(callback, cfg){
+        if(!this.editor){
+            // 等待load后的调用队列
+            if(!this._loadCbList){
+                this._loadCbList = [];
+                if(__debug) console.assert(CC.ui.form.RichEditor.isLoading, true);
+
+                this._replace(this.element, CC.extendIf(cfg, this.editorCfg), (function(editor){
+                    this._onEditorLoad(editor);
+                    if(this.editorCfg)
+                    delete this.editorCfg;
+                }).bindRaw(this));
+            }
+            
+            if(callback)
+                this._loadCbList.push(callback);
+        }
+        else callback.call(this, this.editor);
+    },
+    
+    focus : function(){
+        if(!this.editor){
+            this.loadEditor(function(editor){
+                //editor.focus();
+            });
+        }else{
+            alert('');
+            this.editor.focus();
+        }
+        return this;
+    },
+    
+    getValue : function(){
+        return this.editor ? this.editor.getData() : this.value;
+    },
+    
+    getText : function(){
+        return this.editor ? this.editor.getData() : this.value;
+    },
+    
+    setValue : function(v){
+        if(this.editor)
+            this.editor.setData(v);
+        return this.superclass.setValue.call(this, v);
+    },
+
+/**
+ * 如果未加载，并且callback参数为空，返回空。
+ * @param {Function} [callback] 加载editor后回调
+ * @return {Object} editor OR null
+ */
+    getEditor : function(callback){
+        if(!this.editor && callback)
+            this.loadEditor(callback);
+
+        return this.editor; 
+    },
+    
+/**
+ * 
+ */
+    isModified : function(){
+        if(this.editor){
+            this.modified = this.checkDirty();
+            return this.modified;
+        }
+        return this.modified;
+    },
+    
+    setSize : function(){
+        this.superclass.setSize.apply(this, arguments);
+
+        if(this.editor)
+            this.editor.resize(this.width, this.height);
+        else CC.fly(this.element)
+               .fastStyleSet('width', this.width + 'px')
+               .fastStyleSet('height', this.height + 'px');
+        return this;
+    },
+    
+    // override
+    destroy : function(){
+        try{
+            // ckeditor will throw some error when is removed from dom.
+            this.editor.destroy();
+        }catch(e) { }
+        this.superclass.destroy.call(this);
+    },
+    
+    _onEditorLoad : function(editor){
+        this.editor = editor;
+        this.fire('editorload', editor);
+        this.editor.on('dataReady', this._onEditorReady.bindRaw(this));
+    },
+    
+    _onEditorReady : function(e){
+        var editor = e.editor;
+
+        if(this.width !== false || 
+           this.height !== false)
+             this.editor.resize(this.width, this.height);
+        
+        if(this.value)
+            editor.setData(this.value);
+
+        this.fire('editorready', editor, e);
+
+        if(this._loadCbList){
+            for(var i=0,cs = this._loadCbList,len=cs.length;i<len;i++){
+                cs[i].call(this, editor, e);
+            }
+            delete this._loadCbList;
+        }
+        
+
+        if(this.onEditorReady)
+            this.onEditorReady(editor, e);
+    },
+
+    _replace : function(el, cfg, callback){
+        var editor;
+        if(!window.CKEDITOR){
+           this._loadAPI(function(){
+              editor =  CKEDITOR.replace(el, cfg);
+              callback(editor, cfg);
+           });
+        }else {
+            editor =  CKEDITOR.replace(el, cfg);
+            callback(editor, cfg);
+        }
+    },
+    
+    _loadAPI : function(callback){
+        // 防止重复加载
+        CC.ui.form.RichEditor.isLoading = true;
+        CC.loadScript(this.editorUrl, function(){
+            callback();
+            delete CC.ui.form.RichEditor.isLoading;
+        });
+    }
+});
+
+CC.ui.form.RichEditor.prototype.getText = CC.ui.form.RichEditor.prototype.getValue;
+
+CC.ui.def('rtext', CC.ui.form.RichEditor);
 ﻿/**
  * @class CC.ui.form.StoreProvider
  * @extends CC.util.StoreProvider
