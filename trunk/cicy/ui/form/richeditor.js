@@ -54,7 +54,7 @@ CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, {
             // 等待load后的调用队列
             if(!this._loadCbList){
                 this._loadCbList = [];
-                if(__debug) console.assert(CC.ui.form.RichEditor.isLoading, true);
+                if(__debug) console.assert(CC.ui.form.RichEditor.isLoading, undefined);
 
                 this._replace(this.element, CC.extendIf(cfg, this.editorCfg), (function(editor){
                     this._onEditorLoad(editor);
