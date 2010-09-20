@@ -168,9 +168,9 @@ CC.create('CC.ui.Loading', CC.Base,
     return this.loaded;
   }, 
   
-  destory : function(){
+  destroy : function(){
     this.setMonitor(null);
-    this.superclass.destory.call(this);
+    this.superclass.destroy.call(this);
   }
 });
 

@@ -549,11 +549,11 @@ CC.create('CC.ui.ContainerBase', Base,
   },
   
 /**@private*/
-  destoryed : false,
+  destroyed : false,
   
-  destory: function() {
-    this.destoryed = true;
-    this.destoryChildren();
+  destroy: function() {
+    this.destroyed = true;
+    this.destroyChildren();
     //clear the binded action of this ct component.
     var cs = this.bndActs, n;
     if (cs) {
@@ -566,7 +566,7 @@ CC.create('CC.ui.ContainerBase', Base,
     this.layout.detach();
     this.ct = null;
     this.wrapper = null;
-    cptx.destory.call(this);
+    cptx.destroy.call(this);
   },
 
   onRender: function() {
@@ -774,16 +774,14 @@ CC.create('CC.ui.ContainerBase', Base,
   /**
      * 销毁容器所有子项.
      */
-  destoryChildren: function() {
+  destroyChildren: function() {
     var it, chs = this.children;
     this.invalidate();
     for(var i=chs.length-1;i>=0;i--) {
-        it = chs[i];
-        this.remove(it);
-        it.destory();
+        chs[i].destroy();
     }
 
-    if (!this.destoryed)
+    if (!this.destroyed)
         this.validate();
   },
 
@@ -1023,41 +1021,38 @@ CC.create('CC.ui.ContainerBase', Base,
   filter: function(matcher, caller) {
     var caller = caller || window;
     CC.each(this.children, (function() {
-      if (!matcher.call(caller, this)) {
-        this.display(0);
-        return;
-      }
-      this.display(1);
+      this.display(matcher.call(caller, this));
     }));
     return this;
   },
 
 /**
- * 枚举子项, 如果回调函数返回false,则终止枚举.
+ * 枚举子项, 如果回调函数返回false,则终止枚举。.
  * @param {Function} callback 回调,传递参数为 (caller||item).callback(item, i)
  * @param {Object} caller 调用callback的this, 默认为子项
- * @return 最后一个回调调用结果值
+ * @return {Boolean} interruptedChild 如果callback返回false中断当前遍历，
+ * 则each返回当前中断项，否则无返回值(undefined)，可利用undefined判断是否发生中断。
  */
   each: function(cb, caller) {
     var i, it, rt, len, its = this.children;
     for (i = 0, len = its.length; i < len; i++) {
       it = its[i];
-      rt = cb.call(caller || it, it, i);
-      if (rt === false) break;
+      if( cb.call(caller || it, it, i) === false )
+        return it;
     }
-    return rt;
   },
 
   /**
      * 是否为控件的父容器
      * @param {CC.Base} child
+     * @param {String} [key] 指定查找属性名称，默认为 'pCt'
      * @return {Boolean}
      */
-  parentOf: function(child) {
+  parentOf: function(child, key) {
     if (!child) return false;
     if (child.pCt == this) return true;
     var self = this;
-    var r = CC.eachH(child, 'pCt', function() {
+    var r = CC.eachH(child, key || 'pCt', function() {
       if (this == self) return 1;
     });
     return r == true;

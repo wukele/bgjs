@@ -438,7 +438,7 @@ CC.create('CC.ui.tree.TreeItemLoadingIndicator', CC.ui.Loading, {
   stopIndicator : function(){
     var t = this.target;
     t._head.delClass(t.loadCS);
-    //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
+    //@bug reminded by earls @v2.0.8 {@link http://www.cicyui.com/forum/viewthread.php?tid=33&extra=page%3D1}
     if(t.getConnectionProvider()
         .getConnectionQueue()
         .isConnectorLoaded(t._dataConnectorId)){
@@ -591,7 +591,7 @@ CC.create('CC.ui.Tree', CC.ui.ContainerBase, {
   getItemUrl : function(item){
     var url = CC.templ(this, this.url);
     if(url){
-      //@bug reminded by earls @v2.0.8 {@link http://www.bgscript.com/forum/viewthread.php?tid=33&extra=page%3D1}
+      //@bug reminded by earls @v2.0.8 {@link http://www.cicyui.com/forum/viewthread.php?tid=33&extra=page%3D1}
       //contains '?' already ??
       url+= (url.indexOf('?') > 0 ?'&':'?') + encodeURIComponent(this.parentParamName)+'='+encodeURIComponent(item.id);
     }

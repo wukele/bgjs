@@ -98,10 +98,10 @@ CC.create('CC.ui.Mask', CC.Base, {
   },
 
 /**@private*/
-  destory : function(){
+  destroy : function(){
     if(this.target)
       this.detach();
 
-    CC.Base.prototype.destory.call(this);
+    CC.Base.prototype.destroy.call(this);
   }
 });

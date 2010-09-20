@@ -1,35 +1,81 @@
 ﻿CC.Tpl.def('CC.ui.form.Combox', '<div class="g-panel g-combo" tabindex="1" hidefocus="on"><div class="g-panel-wrap g-combo-wrap" id="_wrap"><input type="hidden" id="_el" /><div class="unedit-txt" id="_uetxt"></div><span class="downIco" id="_trigger"></span></div></div>');
 
 /**
+ * @class CC.Tpl.form.Combox
+ */
+ 
+/**
+ * @cfg {String} _uetxt 不可编辑时显示的结点
+ */
+/**
+ * @cfg {String} _wrap 存放editor的结点
+ */ 
+
+
+/**
  * @class CC.ui.form.Combox
  * @extends CC.ui.form.FormElement
  */
+ 
+/**
+ * @event focus
+ * @param {DOMEvent} event
+ */
+/**
+ * @event blur
+ * @param {DOMEvent} event
+ */
+/**
+ * @event keydown
+ * @param {DOMEvent} event
+ */
+ 
+/**
+ * @cfg {Boolean} filterContent 输入时是否过滤子项,默认为true
+ */
+
+/**
+ * @cfg {CC.Base} selector 下拉面板控件.
+ */
+ 
+/**
+ * @cfg {Array} array 下拉选项，将被应用到下拉面板中.
+ */
+
+/**
+ * @cfg {Array} selected 默认选中项
+ */
+ 
+/**
+ * @property editor
+ * 编辑框控件
+ * @type CC.ui.form.Text
+ */
+
+
 CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
   function allMather() { return true; }
 
   var Event = CC.Event;
 
-  return /**@lends CC.ui.form.Combox#*/{
+  return {
 
     hoverCS: 'g-combo-on',
-
+    
+    // 不允许编辑时样式
     uneditCS: 'g-combo-unedit',
-
+    
+    // trigger按下时样式
     downCS: 'g-combo-dwn',
-
+    
+    // 下拉面板样式
     selectorCS:'g-combo-list',
 
-    _leaveFocus: true,
-
     maxH: 21,
-/**
- * @cfg {Boolean} filterContent 输入时是否过滤子项,默认为true
- */
+    
     filterContent : true,
-/**
- * @cfg {CC.Base} selector 下拉面板控件.
- */
+    
     selector : false,
     
     initComponent: function() {
@@ -38,9 +84,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       var array = CC.delAttr(this, 'array');
 
       //编辑框
-      this.editor = new CC.ui.form.Text({
-        name: this.name
-      });
+      if(!this.editor)
+        this.editor = {name: this.name, ctype:'text'};
+      
+      this.editor = CC.ui.instance(this.editor);
 
       //父类初始化
       superclass.initComponent.call(this);
@@ -63,39 +110,40 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         sn.fromArray(array);
 
       this.attach(st, sn);
-      this._bindKey();
+      
+      this.setEditable(!CC.delAttr(this, 'uneditable'));
 
-      if (this.uneditable) {
-        delete this.uneditable;
-        this.setEditable(false);
-      } else this.setEditable(true);
-
-      if (this.selected)
+      if (this.selected){
         sn.getSelectionProvider().select(this.selected);
+        delete this.selected;
+      }
       
-      delete this.selected;
-      
-      //
-      // 由于Combox由多个控件拼装而成, 为了能正确捕获Combox控件的blur, focus事件,
-      // 不得不多监听几个事件,并作一处特殊处理.
-      //
+      this.initEvents();
+    },
+    
+    initEvents : function(){
       this.domEvent('focus', this.onFocusTrigger)
-          .domEvent('blur', this.onBodyBlurTrigger)
-          .domEvent('focus', this.onFocusTrigger, false, null, this.editor.element)
-          .domEvent('blur', this.onBodyBlurTrigger, false, null, this.editor.element)
+          .domEvent('blur', this.onBlurTrigger)
           .domEvent('keydown', this.onKeydownTrigger)
           .wheelEvent(this.onMouseWheel, true);
       
       //焦点消失时检查输入值是否是下拉项的某一项,如果有,选择之.
-      this.on('blur', this.checkSelected);
+      this.on('blur', this.checkSelected);      
+      
+      // 处理键盘响应
+      this.domEvent('keydown', this._keyHandler, false, null, this.editor.view)
+          .domEvent('keyup', this._filtHandler, false, null, this.editor.view);
     },
     
     onHide : function(){
+        // 关联下拉的隐藏
     	if(!this.selector.hidden)
     		this.selector.hide();
+    	
     	superclass.onHide.apply(this, arguments);
     },
     
+    // 创建默认的下拉
     createDefSelector : function(){
         var st = CC.ui.instance({
         	ctype:'folder',
@@ -106,7 +154,9 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     },
     
 /**
- * 获得下拉控件中具有selectionProvider的控件
+ * 获得下拉控件中具有selectionProvider的控件，这是个回调方法，当创建下拉面板selector后调用。
+ * 可以重写该方法自定义选择器。
+ * @param {Object} selector 已创建好的下拉面板
  */
     getSelectioner : function(st){
       return this.selectioner || st;
@@ -121,25 +171,11 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       }
     },
 
-    /**
-     * @private
-     * combox 主体失焦时触发
-     */
-    onBodyBlurTrigger: function() {
-      if (this.selector.hidden && this._leaveFocus) {
-        this.onBlurTrigger();
-      }
-    },
-
-    onBlurTrigger: function() {
-      this.leaveFocusOn();
-      superclass.onBlurTrigger.call(this);
-    },
-
     disable: function(b) {
       superclass.disable.call(this, b);
       this.editor.disable(b);
     },
+    
 /**
  * 设置下拉面板滚动高度,主要是为了出现滚动条.
  * @private
@@ -153,19 +189,18 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
  * @param {Boolean} editable
  */
     setEditable: function(b) {
-      if (this.uneditable !== undefined && this.uneditable == b) return this;
+      if (this.uneditable !== undefined && this.uneditable == b) 
+        return this;
 
       if (this.uneditable && b) {
         this.delClass(this.uneditCS)
             .unEvent('click', this.onUneditableClick);
       } else if (b) {
-        this.domEvent('click', this.onUneditableClick, true, null, '_trigger')
-            .domEvent('mousedown', this.leaveFocusOff, false, null, '_trigger');
+        this.domEvent('click', this.onUneditableClick, true, null, '_trigger');
       } else {
         this.addClass(this.uneditCS)
             .domEvent('click', this.onUneditableClick)
-            .unEvent('click', this.onUneditableClick, '_trigger')
-            .unEvent('mousedown', this.leaveFocusOff, '_trigger');
+            .unEvent('click', this.onUneditableClick, '_trigger');
       }
 
       this.uneditable = !b;
@@ -186,21 +221,13 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
 
     onUneditableClick: function(evt) {
       var b = !this.selector.hidden;
-      this.leaveFocusOff();
       if (!b && this.filterContent) {
         this.selectioner.filter(allMather);
       }
       this.showBox(!b);
     },
-
-    leaveFocusOff: function() {
-      if (this._leaveFocus !== false) this._leaveFocus = false;
-    },
-
-    leaveFocusOn: function() {
-      if (this._leaveFocus !== true) this._leaveFocus = true;
-    },
-
+    
+    // no detach -_-
     attach: function(selector, selectioner) {
       this.selector = selector;
       this.selectioner = selectioner;
@@ -213,9 +240,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       if (selector.shadow)
         selector.shadow.setZ(999);
 
-      selector.addClass(this.selectorCS);
+      selector.addClass(this.selectorCS)
+              .on('contexted', this.onBoxContexted, this);
       selectioner.on('selected', this.onSelected, this)
-      selectioner.on('itemclick', this.onclickEvent, this);
+                 .on('itemclick', this.onItemClick, this);
 
       this._savSelKeyHdr = selector.defKeyNav;
 
@@ -225,23 +253,23 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         self._keyHandler(ev, true);
       });
     },
-
-    onBoxContexted: function(evt) {
-    	//来自浏览器事件
-      if(evt){
-	      var el = Event.element(evt);
-	      if (this.ancestorOf(el)) return false;
+    
+    // 外围点击
+    onBoxContexted: function(set, e) {
+      if(!set){
+          //来自浏览器事件
+          if(e){
+    	      if (this.ancestorOf(Event.element(e))) 
+    	        return false;
+          }
+          this.showBox(false);
       }
-      //标记为外部影应,失去焦点
-      this.leaveFocusOn();
-      this.showBox(false);
-      this.leaveFocusOff();
-      this.onBlurTrigger();
     },
 
-    onclickEvent: function() {
+    onItemClick: function() {
       this.showBox(false);
     },
+    
 /**
  * 返回false表示不再发送该事件
  * @private
@@ -278,7 +306,6 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         sn.filter(this.matcher, this);
         this.preValue = v;
       }
-      this.leaveFocusOff();
       this.showBox(true);
     },
 
@@ -287,10 +314,6 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       if(ds != b){
         if (!b) {
           st.display(false);
-          if (!this._leaveFocus) {
-            if (!this.uneditable) this.editor.focus(true);
-            else this.focus(true);
-          }
           this.delClass(this.downCS);
           return;
         }else {
@@ -298,14 +321,17 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
         }
   
         this.preferPosition();
-        if (st.shadow) st.shadow.reanchor();
-        if (!this.uneditable) this.editor.focus(true);
+        if (st.shadow) 
+            st.shadow.reanchor();
+        if (!this.uneditable) 
+            this.editor.focus(true);
         else this.focus(true);
   
         if (ds) return;
         this.checkSelected();
         this.addClass(this.downCS);
-        st.bindContext(this.onBoxContexted, false, this).display(true);
+        st.setContexted(true)
+          .display(true);
       }
     },
 
@@ -316,6 +342,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
     deactive : function(){
     	this.showBox(false);
     },
+    
     /**
      * 检查输入值是否为下拉选项中的某一项.
      * 如果有多个相同项,并且当前已选其中一项,忽略之,否则选中符合的首个选项.
@@ -364,14 +391,10 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
       return this.getWidth();
     },
 
-    _bindKey: function(event) {
-      this.domEvent('keydown', this._keyHandler, false, null, this.editor.view);
-      this.domEvent('keyup', this._filtHandler, false, null, this.editor.view);
-    },
-
     onSelected: function(item) {
       this.setValueFromItem(item, true);
-      if (!this.uneditable && this.focused) this.editor.focus(true);
+      if (!this.uneditable)
+        this.editor.focus(true);
     },
     
     getItemValue : function(item){
@@ -446,6 +469,13 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
  */
     select: function(id) {
       this.selectioner.selectionProvider.select(id);
+    },
+    
+    onContextRelease : function(e){
+        if(e){
+            if(this.selector.ancestorOf(Event.element(e)))
+                return false;
+        }
     }
   };
 });

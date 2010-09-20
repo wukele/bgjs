@@ -65,9 +65,9 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
     },
     
 		/**
-		 * @cfg {Boolean} syncPanelDestory tab item 销毁时是否连同对应的Panel一起销毁, 当tabitem.panel被自动加入tab.contentPanel面板时,如果该值未设置,则置为true.
+		 * @cfg {Boolean} syncPaneldestroy tab item 销毁时是否连同对应的Panel一起销毁, 当tabitem.panel被自动加入tab.contentPanel面板时,如果该值未设置,则置为true.
 		 */
-	  syncPanelDestory : undefined,
+	  syncPaneldestroy : undefined,
 		
 /**
  * 获得tabItem对应的内容面板
@@ -87,8 +87,8 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
         if((ct = this.pCt) && (tct = ct.getContentPanel())){
         	tct.layout.add(p);
         }
-        if(this.syncPanelDestory === undefined)
-          this.syncPanelDestory = true;
+        if(this.syncPaneldestroy === undefined)
+          this.syncPaneldestroy = true;
       }
       
       return p;
@@ -226,12 +226,12 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       }
     },
 
-    //@bug  fixed @v2.0.8.3 reminded by robin {@link http://www.bgscript.com/forum/viewthread.php?tid=38&extra=page%3D1}
-    destory: function() {
-      this.syncPanelDestory &&
+    //@bug  fixed @v2.0.8.3 reminded by robin {@link http://www.cicyui.com/forum/viewthread.php?tid=38&extra=page%3D1}
+    destroy: function() {
+      this.syncPaneldestroy &&
                  this.panel &&
-                 this.panel.destory();
-      SC.destory.call(this);
+                 this.panel.destroy();
+      SC.destroy.call(this);
     }
 
   });
@@ -279,9 +279,9 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
  */
     autoLoad: true,
 /**
- * @cfg {Boolean} destoryItemOnclose 当关闭子项时是否销毁子项,默认为false, 子项也可以设置tabItem.destoryOnClose覆盖设置.
+ * @cfg {Boolean} destroyItemOnclose 当关闭子项时是否销毁子项,默认为false, 子项也可以设置tabItem.destroyOnClose覆盖设置.
  */
-    destoryItemOnclose : false,
+    destroyItemOnclose : false,
 
     lyCfg: {
 
@@ -343,8 +343,9 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
         if (this.fire('close', item) !== false){
           this.displayItem(item, 0);
           this.fire('closed', item);
-          if(item.destoryOnClose === true || this.destoryItemOnclose){
-            item.destory();
+          // destoryOnClose，E文差，打错字，要作兼容
+          if(item.destroyOnClose === true || this.destroyItemOnclose || item.destoryOnClose === true){
+            item.destroy();
           }
         }
       }

@@ -117,9 +117,9 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
             }
             cls.onselect = this.onClsBtnClick;
           }
-
-          if(this.destoryOnClose)
-            this.on('closed', this.destory);
+          // destoryOnClose，E文差，打错字，要作兼容
+          if(this.destroyOnClose || this.destoryOnClose)
+            this.on('closed', this.destroy);
 
           this.domEvent('mousedown', this.trackZIndex)
               //为避免获得焦点,已禁止事件上传,所以还需调用trackZIndex更新窗口zIndex

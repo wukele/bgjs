@@ -439,18 +439,18 @@ return {
     this.plugins.push(pl[0]);
   },
 
-  destoryPlugins : function(){
+  destroyPlugins : function(){
     var g = this;
     CC.each(this.plugins, function(){
-      if(this.destoryPlugin)
-        this.destoryPlugin(g);
+      if(this.destroyPlugin)
+        this.destroyPlugin(g);
     });
   },
 
 
-  destory : function(){
-    this.destoryPlugins();
-    father.destory.call(this);
+  destroy : function(){
+    this.destroyPlugins();
+    father.destroy.call(this);
   }
 };
 });

@@ -419,13 +419,13 @@ return {
     superclass.mouseoutCallback.apply(this, arguments);
   },
   
-  destory : function(){
+  destroy : function(){
     if(this.nodes){
       for(var i=0,nds=this.nodes,len=nds.length;i<len;i++){
-        nds[i].destory();
+        nds[i].destroy();
       }
     }
-    superclass.destory.call(this);
+    superclass.destroy.call(this);
   }
 };
 });

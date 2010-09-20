@@ -15,9 +15,9 @@
 CC.ready(function() {
 /**
  * Javascript Utility for web development.
- * R&D : www.bgscript.com/forum
+ * R&D : www.cicyui.com/forum
  * @author javeejy@126.com
- * www.bgscript.com © 2009 - 构建自由的WEB应用 
+ * www.cicyui.com © 2009 - 构建自由的WEB应用 
  */
   
   var tree = new CC.ui.Tree({
@@ -72,7 +72,7 @@ CC.ready(function() {
   		case '移除选择':
   			CC.each(tree.getSelectionProvider().getSelection(), function(){
   				if(this !== this.root)
-  					this.destory();
+  					this.destroy();
   			});
   			break;
   		

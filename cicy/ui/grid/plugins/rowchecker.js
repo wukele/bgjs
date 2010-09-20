@@ -53,7 +53,7 @@ CC.create('CC.ui.grid.plugins.RowChecker', null, {
   	   ct.on('selectchange', function(current, previous, selProvider){
   	       var cell = current.$('rowcheckercell');
   	       var col  = ct.grid.header.$('rowCheckerCol');
-   	       // maybe col destoryed ?
+   	       // maybe col destroyed ?
             cell.checkClass(col.checkedCS, selProvider.isSelected( current ));
             if(previous){
                 var preCell = previous.$('rowcheckercell');

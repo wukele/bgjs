@@ -53,9 +53,6 @@ Base.findByCid = Base.byCid = function(cid){
  * @param {HTMLElement} dom
  * @param {CC.ui.ContainerBase|Function} filter, 可以指定寻找子项的父容器，如果已指定,返回该容器子控件中的匹配控件；也可以传入一个function过滤器，返回true表示匹配，函数参数为当前已检测的控件。
  * @param {CC.Base|CC.HTMLElement} [scope] 如果参数二为一个过滤器，第三个参数可传入一个限定检索的范围结点或控件，在该范围下查找。 
- * @static
- * @member CC.Base
- * @method byDom
  <pre><code>
   寻找点击html元素所在的首个控件
   function onclick(e){
@@ -84,7 +81,9 @@ Base.findByCid = Base.byCid = function(cid){
     }, tree);
   }
  </code></pre>
-
+ * @static
+ * @member CC.Base
+ * @method byDom
  */
 Base.byDom = function(dom, pCt){
       //find cicyId mark
@@ -251,7 +250,7 @@ CC.extend(Tpl,
       }
       for(var i=0,len=nss.length;i<len;i++){
         if(nss[i].cacheId)
-           nss[i].destory();
+           nss[i].destroy();
       }
 
     }catch(e){if(__debug) console.log(e);}
@@ -280,6 +279,95 @@ var undefined;
 var Math = window.Math, parseInt = window.parseInt;
 
 var CPR = CC.util.CssParser.getParser();
+
+// context queue
+var ctxQueue = {
+	
+	context : function(comp){
+		
+		if(comp.contexted)
+			this.release(comp);
+
+		var q = this.q;
+		
+		if(!q)
+			this.q = q = [];
+	  
+	  if(!q.length)
+	  	Event.on(document, 'mousedown', this._getDocEvtHandler());
+	  
+	  q[q.length] = comp;
+	  
+	  this._setCompEvtHandler(comp, true);
+	  comp.contexted = true;
+	  comp.fire('contexted', true);
+	},
+	
+	release : function(comp, e){
+		if(__debug) console.assert(comp.contexted, true);
+		comp.contexted = false;
+		if(comp.onContextRelease(e) !== false && comp.fire('contexted', false, e) !== false) {
+    		this._setCompEvtHandler(comp, false);
+
+			this.q.remove(comp);
+			if(!this.q.length)
+				Event.un(document, 'mousedown', this._getDocEvtHandler());
+			
+		} else comp.contexted = true;
+	},
+/**
+ * @param {DOMEvent} [event] 如果释放由DOM事件引发，传递该事件。
+ * @inner
+ */
+	releaseAll : function(e){
+		var q = this.q,len=q.length;
+		for(var s = len - 1;s>=0;s--){
+			this.release(q[s], e);
+		}
+	},
+	
+	_setCompEvtHandler : function(comp, set){
+		set ? comp.domEvent('mousedown', this._compEvtHandler, true)
+		    : comp.unEvent('mousedown', this._compEvtHandler);
+	},
+	
+	_getDocEvtHandler : function(){
+		 var hd = this.docEvtHd;
+		 if(!hd)
+		 	hd = this.docEvtHd = this._docHandler.bindRaw(this);
+		 return hd;
+	},
+
+	_releaseFollower : function(curr, e){
+		var q = this.q;
+		if(q){
+			var last = q.length - 1;
+			// not the last one itself
+			if(last !== -1 && q[last] !== curr){
+				var len = last;
+				for(;last>=0;last--){
+					if(q[last] === curr)
+						break;
+				  this.release(q[last], e);
+				}
+		  }
+		}
+	},
+	
+	// component mouse down handler
+	// scope : component
+	_compEvtHandler : function(e){
+		// cancel 后来者
+		ctxQueue._releaseFollower(this, e);
+	},
+	
+	// document mouse down handler
+	_docHandler : function(e){
+		this.releaseAll(e);
+	}
+};
+
+
 /**
  * @class CC.Base
  */
@@ -415,7 +503,7 @@ CC.extend(Base.prototype,
         }
 
         if(this.eventable)
-            Eventable.apply(this);
+            Eventable.call(this);
 
         this.initComponent();
 
@@ -434,7 +522,7 @@ CC.extend(Base.prototype,
         if(this.hasOwnProperty('template') ||
            this.constructor.prototype.hasOwnProperty('template') ||
            (this.superclass && this.superclass.hasOwnProperty('template'))){
-          // come from a html string or cache
+          // come from html string or cache
           this.view = this.template.charAt(0) === '<' ? Tpl.forNode(this.template, this) : Tpl.$(this.template);
           
           delete this.template;
@@ -640,7 +728,6 @@ CC.extend(Base.prototype,
             
         if(this.shadow){
           this.shadow = CC.ui.instance(this.shadow===true?'shadow':this.shadow);
-          this.follow(this.shadow);
         }
     },
 
@@ -683,7 +770,16 @@ CC.extend(Base.prototype,
 /**
  * 销毁控件,包括:移出DOM;移除控件注册的所有事件;销毁与控件关联的部件.
  */
-    destory : function(){
+    destroy : function(){
+      
+      if(this.shadow){
+        this.shadow.destroy();
+        this.shadow = false;
+      }
+      
+      if(this.contexted)
+    	ctxQueue.release(this);
+      
       if(this.pCt && !this.delegated){
         this.pCt.remove(this);
       }
@@ -718,7 +814,7 @@ CC.extend(Base.prototype,
         for(i=0,len=obs.length;i<len;++i){
           obs[i].pCt = null;
           if(obs[i].cacheId)
-            obs[i].destory();
+            obs[i].destroy();
         }
         this.__delegations = null;
       }
@@ -872,6 +968,11 @@ CC.extend(Base.prototype,
  * @method fire
  */
     un : fGo,
+    
+    on : function(){
+      // will override this method after call
+      Eventable.call(this);
+    },
 
 /**
  * 隐藏控件.
@@ -967,6 +1068,7 @@ CC.extend(Base.prototype,
  * 检查是否含有某个样式,如果有,添加或删除该样式.
  * @param {String} css
  * @param {Boolean} addOrRemove true -> add, or else remove
+ * @return {Object} this
  */
     checkClass : function(cs, b){
 			if(cs){
@@ -978,6 +1080,7 @@ CC.extend(Base.prototype,
 					this.delClass(cs);
 				}
 		  }
+		  return this;
     },
 /**
 * 如果控件view元素未存在该样式类,添加元素样式类,否则忽略.<br>
@@ -1178,7 +1281,7 @@ CC.extend(Base.prototype,
       this.shadow.display(false);
      // release contexted on hide
      if(this.contexted)
-       this.releaseContext();
+       this.setContexted(false);
    },
 
 /**
@@ -2371,70 +2474,39 @@ CC.extend(Base.prototype,
     }
     ,
 /**
+ * @property contexted
+ * 指明是否处于contexted菜单状态
+ */
+    contexted : false,
+    
+/**
  * @event contexted
-* 当控件具有{@link #eventable}后,切换上下文效果时发送该事件.
+ * 当控件具有{@link #eventable}后,切换上下文效果时发送该事件.
  * @param {Boolean} isContexted true|false
- * @param {DOMElement|DOMEvent} mixed fire('contexted', false, evt, tar),fire('contexted', true, tar), 其中tar为触发结点. 
  */
  
 /**
- * 添加上下文切换效果,当点击控件区域以外的地方时隐藏控件.
- <pre>
- * param {Function} callback
- * param {Boolean}  cancelBubble
- * param {Object}   caller
- * param {DOMElement|String} childNode 触发结点
- * param {DOMElement|String} cssTarget
- * param {String} cssName
- </pre>
- * @return {Object} this
+ * 添加上下文切换效果,当点击控件区域以外的地方时隐藏控件。
+ * @see #onContextRelease
+ * @return {CC.Base} this
  */
-    bindContext : function(callback,cancel, caller, childId, cssTarget, cssName) {
-        if(this.contexted)
-          return this;
-
-        var tar = childId ? this.dom(childId) : this.view;
-        if(!caller)
-          caller = this;
-        var self = this;
-        var releaseCall = (function(evt) {
-            if(callback)
-                if(callback.call(caller, evt, tar)===false)
-                    return;
-            Event.un(document, 'mousedown', arguments.callee);
-            Event.un(tar, 'mousedown', Event.noUp);
-
-            var f = tar == self.view ? self : CC.fly(tar);
-
-            self.contexted = false;
-            delete self.__contextedCb;
-            if(cssTarget){
-              CC.fly(cssTarget).delClass(cssName).unfly();
-            }
-            f.display(false).unfly();
-            self.fire('contexted', false, evt, tar);
-        }
-        );
-        Event.on(tar, 'mousedown', Event.noUp);
-        Event.on(document, 'mousedown', releaseCall);
-
-
-        this.contexted = true;
-        this.__contextedCb = releaseCall;
-        if(cssTarget){
-          CC.fly(cssTarget).addClass(cssName).unfly();
-        }
-        this.fire('contexted', true, tar);
-        return this;
+    setContexted : function(set){
+    	if(this.contexted !== set)
+    		set ? ctxQueue.context(this):ctxQueue.release(this);
+    	return this;
     },
+
 /**
- * 释放已绑定的上下文切换
+ *  释放context时调用，返回false取消释放。
+ *  默认实现调用后隐藏当前控件。
+ *  @param {DOMEvent} [event] 如果释放由DOM事件触发（通常为mousedown），传递该事件。
+ *  @see #setContexted
  */
-    releaseContext : function(){
-      if(this.contexted)
-        this.__contextedCb();
+    onContextRelease  : function(){
+    	this.hide();
     },
-
+    
+    
 /**
  * CC.Base包装控件内的子结点元素
  * @param {String|DOMElement} node
@@ -2731,9 +2803,11 @@ CC.ui = {
  * 注册控件类标识,方便在未知具体类的情况下生成该类,也方便序列化生成类实例.
  * @param {String} ctype 类标识
  * @param {Function} 类
+ * @return this
  */
   def : function(ctype, clazz){
     this.ctypes[ctype] = clazz;
+    return this;
   },
 /**
  * 根据ctype获得类.

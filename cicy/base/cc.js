@@ -1,7 +1,7 @@
 ﻿/*!
  * Javascript Utility for web development.
- * 反馈 : www.bgscript.com/forum
- * www.bgscript.com ? 2010 - 构建自由的WEB应用
+ * 反馈 : www.cicyui.com/forum
+ * www.cicyui.com ? 2010 - 构建自由的WEB应用
  */
 /**
  * @class global 全局对象
@@ -44,16 +44,20 @@ if(window.__debug === undefined)
 
     //浏览器检测, thanks ExtJS here
     isStrict = document.compatMode === "CSS1Compat",
-    isQuirks = document.compatMode === "BackCompat",
-    isOpera = ua.indexOf("opera") > -1,
-    isSafari = (/webkit|khtml/).test(ua),
-    isChrome = ua.indexOf('chrome') > -1,
-    isIE = !isOpera && ua.indexOf("msie") > -1,
-    isIE7 = !isOpera && ua.indexOf("msie 7") > -1,
-    isIE6 = !isOpera && ua.indexOf("msie 6") > -1,
-    isGecko = !isSafari && ua.indexOf("gecko") > -1,
-    //优先检测BackCompat,因为
-    //假如以后compatMode改变,也是非盒模型
+    isQuirks = !isStrict && document.compatMode === "BackCompat";
+    
+    var isOpera = ua.indexOf("opera") > -1;
+    var isIE = !isOpera && ua.indexOf("msie") > -1;
+    if(isIE){
+        var isIE7 = ua.indexOf("msie 7") > -1, 
+            isIE6 = ua.indexOf("msie 6") > -1;
+    }else if(!isOpera) {
+        var isSafari = (/webkit|khtml/).test(ua),
+            isChrome = !isSafari && ua.indexOf('chrome') > -1,
+            isGecko = !isSafari &&  ua.indexOf("gecko") > -1;
+    }
+    
+    var 
     isBorderBox = isIE && !isStrict,
     /**是否合法EMAIL字符串.
      * 参见 CC.isMail().
@@ -151,7 +155,7 @@ if(window.__debug === undefined)
         }
         ,
         /**
-         * 遍历可以枚举的对象.
+         * 遍历可以枚举的对象，callback返回false取消遍历.
          *<pre><code>
          *    CC.each(array, funtion(obj, i){
          *      //true
@@ -159,15 +163,22 @@ if(window.__debug === undefined)
          *   });
          * </code></pre>
          *@param {Object} object 可枚兴的对象,如果为数组或arguments时遍历下标数据,为普通对象时遍历对象所有属性.
-         *@param {Function} callback
+         *@param {Function} callback，参数根据object类型而定，如果是数组调为 value.callback(i, value)，对象调用为object.callback(key, object);
+         * @return {Boolean} interrupted 指明是否中断，返回true表示已发生中断。
          */
         each: function(object, callback) {
+                var k;
                 if (object.length === undefined) {
-                    for (var name in object)
-                        if (callback.call(object[name], name, object[name]) === false)
-                            break;
-                } else for (var i = 0, length = object.length, value = object[0]; i < length && callback.call(value, i, value) !== false; value = object[++i]){}
-            return object;
+                    for (var k in object)
+                        if (callback.call(object[k], k, object[k]) === false)
+                            return true;
+                } else {
+                    var len = object.length;
+                    for(k=0;k<len;k++){
+                        if(callback.call(object[k], k, object[k]) === false)
+                            return true;
+                    }
+                }
         },
 
         /**
@@ -1204,7 +1215,7 @@ function testNoForm() {
 
 //合并外部CC
 if(window.CC)
-CC.extend(CC, window.CC);
+  CC.extend(CC, window.CC);
 
 window.CC = CC;
 /**

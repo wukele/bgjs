@@ -114,6 +114,8 @@ CC.util.ProviderFactory.create('Connection', null, {
     }
   },
   
+  loadType : 'json',
+  
 /**
  *  可重写本方法自定义数据类型加载
  * @param {String} dataType 数据类型 html, json ..

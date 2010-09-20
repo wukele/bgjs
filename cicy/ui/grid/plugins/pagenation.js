@@ -202,7 +202,7 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
 	       page.current = page.count;
 	     
     	 //clear content rows
-    	 this.t.destoryChildren();
+    	 this.t.destroyChildren();
     	 
        // call default processor
        this.defaultDataProcessor('json', json.data);
