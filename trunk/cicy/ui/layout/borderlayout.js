@@ -32,10 +32,16 @@
       Math = window.Math,
       G = CC.util.dd.Mgr,
       undefined;
-
-  tpx.def('CC.ui.BorderLayoutSpliter' , '<div class="g-layout-split"></div>')
+     
+  tpx
+     // 分隔条
+     .def('CC.ui.BorderLayoutSpliter' , '<div class="g-layout-split"></div>')
+     // 横向收缩栏
      .def('CCollapseBarH' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td><td class="cb-r"></td></tr></table>')
+     // 竖向收缩栏
      .def('CCollapseBarV' , '<table cellspacing="0" cellpadding="0" border="0" class="g-layout-split"><tr><td class="cb-l"></td></tr><tr><td class="cb-c"><div class="expander" id="_expander"><a class="nav" id="_navblock" href="javascript:fGo()"></a></div></td></tr><tr><td class="cb-r"></td></tr></table>');
+  
+  // 分隔条类
   uix.BorderLayoutSpliter = CC.create(CC.Base, function(spr) {
 
     //ghost 初始坐标
@@ -44,16 +50,19 @@
     return {
 
       type: 'CC.ui.BorderLayoutSpliter',
-
+      
+      // 拖动开始时分隔条掩层样式
       ghostCS : 'g-layout-sp-ghost',
 
       initComponent: function() {
         this.ct = this.layout.ct.wrapper;
         if (this.dir == 'north' || this.dir == 'south')
+          // 禁止拖动的方向
           this.dxDisd = true;
         spr.initComponent.call(this);
         G.installDrag(this, true);
       },
+      
 /**
  * 计算拖动范围dx,dy
  * @private
@@ -220,7 +229,8 @@
       }
     };
   });
-
+  
+  // 收缩栏类
   uix.BorderLayoutCollapseBar = CC.create(ccx,
    {
 
@@ -264,16 +274,17 @@
 
       this.sliperEl = CC.$C({tagName:'A', className:this.sliperCS,href:'javascript:fGo()'});
       this.comp.append(this.sliperEl);
-      this.comp.domEvent('click', this.sliperAction, false, null, this.sliperEl);
+      this.comp.domEvent('click', this.sliperAction, false, null, this.sliperEl)
+               .on('contexted', this.onCompContexted);
     },
 
-    destory : function(){
+    destroy : function(){
       this.centerExpander = null;
       this.navBlock = null;
       this.sliperEl = null;
       if(this.compShadow)
-        this.compShadow.destory();
-      ccx.prototype.destory.call(this);
+        this.compShadow.destroy();
+      ccx.prototype.destroy.call(this);
     },
 
     sliperAction : function(){
@@ -284,33 +295,8 @@
     onNavBlockClick : function(){
       var c = this.comp;
       c.setXY(10000,10000);
-      if(c.contexted)
-        c.releaseContext();
+      this.remain();
       this.itsLayout.collapse(c, false);
-    },
-
-    // 使得面板浮动
-    makeFloat : function(){
-      var c = this.comp;
-      c.addClass(this.compContextedCS)
-       .show();
-
-      this.setCompContextedBounds();
-
-      var xy = c.absoluteXY();
-      c.appendTo(document.body)
-       .setXY(xy);
-
-      if(c.collapse && c.collapsed)
-        c.collapse(false);
-
-      this.getShadow().attach(c).display(true);
-
-      var cfg = c.lyInf;
-      if(!cfg.cancelAutoHide){
-        this.resetAutoHideTimer();
-        cfg.autoHideTimer = this.onTimeout.bind(this).timeout(cfg.autoHideTimeout||5000);
-      }
     },
 
     getShadow : function(){
@@ -322,49 +308,95 @@
     },
 
     onTimeout : function(){
-      var c = this.comp;
-      if(c.contexted)
-        c.releaseContext();
-      else this.unFloat();
-      this.resetAutoHideTimer();
+      this.remain();
     },
 
-    resetAutoHideTimer : function(){
-      var cfg = this.comp.lyInf;
-      if(cfg.autoHideTimer){
-        clearTimeout(cfg.autoHideTimer);
-        delete cfg.autoHideTimer;
+    setAutoHideTimer : function(on){
+      var cfg   = this.comp.lyInf,
+          timer = cfg.autoHideTimer;
+      if(on){
+         if(!timer)
+            cfg.autoHideTimer = this.onTimeout.bind(this).timeout(cfg.autoHideTimeout||5000);
+      }else if(timer){
+            clearTimeout(timer);
+            delete cfg.autoHideTimer;
       }
     },
 
+
+    // 使得面板浮动
+    // 追回到document.body，保持原来位置
+    popup : function(){
+      
+      var c = this.comp;
+      var cfg = c.lyInf;
+      // save a state
+      if(!cfg.popuped){
+          cfg.popuped = true;
+          this.setCompContextedBounds();
+          c.show()
+           .setContexted(true);
+          
+          // append to document.body
+          var xy = c.absoluteXY();
+          c.appendTo(document.body)
+           .setXY(xy);
+           
+          if(c.collapse && c.collapsed)
+            c.collapse(false);
+    
+          this.getShadow().attach(c).display(true);
+    
+          
+          if(!cfg.cancelAutoHide){
+            this.setAutoHideTimer(true);
+          }
+      }
+    },
+    
     // 面板复原
-    unFloat : function(){
+    // 将面板放回容器
+    // 取消阴影
+    remain : function(show){
       var c = this.comp,
           cfg = c.lyInf;
-
-      if(cfg.autoHideTimer)
-        this.resetAutoHideTimer();
-      c.pCt._addNode(c.view);
-      c.delClass(this.compContextedCS);
-      this.getShadow().detach();
+      if(cfg.popuped){
+          cfg.popuped = false;
+          this.setAutoHideTimer(false);
+          c.setContexted(false);
+    
+          c.display(!!show);
+          c.pCt._addNode(c.view);
+          c.delClass(this.compContextedCS);
+          this.getShadow().detach();
+      }
     },
 
     // 点击区域范围外时回调
-    onCompReleaseContext : function(){
-      var cfg = this.pCt.layout.cfgFrom(this);
-      cfg.cbar.unFloat();
+    onCompContexted : function(contexted, e){
+      
+      var cbar = this.pCt.layout.cfgFrom(this).cbar;
+      
+      // 是否为cbar点击，如果是则忽略
+      if(e && cbar.ancestorOf(CC.Event.element(e))){
+        return false;
+      }
+      
+      if(!contexted)
+	      cbar.remain();
+      else cbar.popup();
+      	
+      CC.fly(cbar.navBlock)
+        .checkClass(cbar.navBlockCS[cbar.dir]+'-on', contexted)
+        .unfly();
+      this.checkClass(cbar.compContextedCS, contexted);
     },
 
     // 侧边栏点击
     onBarClick : function(){
-      var c = this.comp;
-      if(c.contexted)
-        c.releaseContext();
-      //callback,cancel, caller, childId, cssTarget, cssName
-      else {
-        c.bindContext(this.onCompReleaseContext, true, null, null, this.navBlock, this.navBlockCS[this.dir]+'-on');
-        this.makeFloat();
-      }
+        if(!this.comp.contexted)
+            this.popup();
+        else this.remain();
     },
 
     // 设置浮动面板浮动开始前位置与宽高
@@ -539,7 +571,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
           t += cg;
         }
         if(c.contexted)
-          c.releaseContext();
+          c.setContexted(false);
       }
 
       c = this.south;
@@ -563,7 +595,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
         }
 
         if(c.contexted)
-          c.releaseContext();
+          c.setContexted(false);
       }
       h -= t;
 
@@ -588,7 +620,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
           if (sp) sp.setBounds(w, t, cg, h);
         }
         if(c.contexted)
-          c.releaseContext();
+          c.setContexted(false);
       }
 
       c = this.west;
@@ -614,7 +646,7 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
           l += cg;
         }
         if(c.contexted)
-          c.releaseContext();
+          c.setContexted(false);
       }
 
       c = this.center;
@@ -630,13 +662,13 @@ CC.create('CC.layout.BorderLayout', CC.layout.Layout,
 
       var sp = cfg.separator;
       if (sp) {
-        sp.destory();
+        sp.destroy();
         delete cfg.separator;
       }
 
       var cb = cfg.cbar;
       if(cb){
-          cb.destory();
+          cb.destroy();
         delete cfg.cbar;
       }
       superclass.remove.apply(this, arguments);

@@ -132,7 +132,7 @@ CC.create('CC.util.dd.Portable', null, {
         this.getSrcPlacehold().del();
         this.freeSource(source, false);
         
-        this.destoryCtPlaceholds();
+        this.destroyCtPlaceholds();
         delete this._currHold;
     },
 
@@ -175,12 +175,12 @@ CC.create('CC.util.dd.Portable', null, {
         return cph;
     },
     
-    destoryCtPlaceholds : function(){
+    destroyCtPlaceholds : function(){
         if(this.emptyCtHolds){
             var ct, ph;
             for(var i=0,chs=this.emptyCtHolds,len=chs.length;i<len;i++) {
                 delete chs[i].placeholdCt;
-                chs[i].destory();
+                chs[i].destroy();
                 chs[i] = null;
             }
             delete this.emptyCtHolds;

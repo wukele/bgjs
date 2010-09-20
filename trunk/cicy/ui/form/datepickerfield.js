@@ -7,6 +7,11 @@ CC.Tpl.def('CC.ui.form.DatepickerField', '<div class="g-datepicker-field"><div c
 * @class CC.ui.form.DatepickerField
 * @extends CC.ui.form.FormElement
 */
+
+/**
+ * @property {CC.ui.Datepicker} datepicker
+ */
+ 
 CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 
 	focusCS: 'g-datepicker-field-focus',
@@ -15,21 +20,16 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 
 	contextCS: 'g-datepicker-field-ctx',
 
-	_leaveFocus: true,
-
 	maxH: 20,
 
 	applyTimeout: 200,
 
 	initComponent: function() {
 		FP.initComponent.call(this);
-		//关闭leaveFocus标记, element失焦后忽略
 		this.bindHoverStyle(this.triggerHoverCS, true, null, null, null, '_trigger', '_trigger')
 		.domEvent('click', this.onTriggerClick, false, null, '_trigger')
-		.domEvent('mousedown', this.leaveFocusOff, false, null, '_trigger')
-		.domEvent('mousedown', this.onFocusTriggerDelay)
 		.domEvent('focus', this.onFocusTrigger, false, null, this.element)
-		.domEvent('blur', this.onTrackBlur, false, null, this.element)
+		.domEvent('blur', this.onBlurTrigger, false, null, this.element)
 		.domEvent('keydown', this.onKeydownTrigger, false, null, this.element);
 	},
 
@@ -41,42 +41,12 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 	deactive : function(){
 		this.showDatepicker(false);
 	},
-
+  
+  // 关联消失
 	onHide : function(){
 		if(!this.getDatepicker().hidden)
 		this.getDatepicker().hide();
 		CC.ui.form.FormElement.prototype.onHide.apply(this, arguments);
-	},
-
-	onTrackBlur: function() {
-		if (!this._leaveFocus && (this.datepicker && this.datepicker.hidden)) {
-			this.leaveFocusOn();
-			return;
-		}
-		this.onBlurTrigger();
-	},
-
-	// mousedown -> blur -> timeout
-	onFocusTriggerDelay: function() {
-		var self = this;
-		(function() {
-			self.leaveFocusOn();
-			self.onFocusTrigger();
-		}).timeout(0);
-	},
-
-	onBlurTrigger: function() {
-		//恢复标记
-		if (!this._leaveFocus) return;
-		FP.onBlurTrigger.call(this);
-	},
-
-	leaveFocusOff: function() {
-		if (this._leaveFocus !== false) this._leaveFocus = false;
-	},
-
-	leaveFocusOn: function() {
-		if (this._leaveFocus !== true) this._leaveFocus = true;
 	},
 
 	onTriggerClick: function() {
@@ -85,30 +55,30 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 
 	showDatepicker: function(b) {
 		var dp = this.getDatepicker();
-		this.datepicker.display(b);
-		if (b) {
-			if (this.getValue())
-			dp.setValue(this.getValue(), true);
-
-			//get the right position.
-			//callback,cancel, caller, childId, cssTarget, cssName
-			dp.anchorPos(this, 'rb', 'hl', null, true, true);
-			dp.bindContext(this.onDatepickerContexted, false, this, null, this, this.contextCS)
-			  .focus(0);
-		}else {
-			this.focus();
-		}
-	},
-
-	onDatepickerContexted: function(evt) {
-		if(evt){
-			var el = E.element(evt);
-			if (!this.ancestorOf(el)){
-				//标记为外部影应,失去焦点
-				this.onBlurTrigger();
+    if(dp.hidden === b){
+			this.datepicker.display(b);
+			if (b) {
+				if (this.getValue())
+				dp.setValue(this.getValue(), true);
+	
+				//get the right position.
+				//callback,cancel, caller, childId, cssTarget, cssName
+				dp.anchorPos(this, 'rb', 'hl', null, true, true);
+				dp.focus(0);
+				this.setContexted(true);
+			}else {
+				this.focus();
 			}
-		}
+    }
 	},
+  
+  onContextRelease : function(e){
+      if(e){
+          if(this.getDatepicker().ancestorOf(CC.Event.element(e)))
+              return false;
+      }
+      this.showDatepicker(false);
+  },
 
 	getDatepicker: function() {
 		var dp = this.datepicker;
@@ -150,21 +120,22 @@ CC.create('CC.ui.form.DatepickerField', CC.ui.form.FormElement, {
 		}).timeout(self.applyTimeout);
 	},
 
+	getText : function(){
+	  return this.getValue();
+	}
+	
+/*
 	setSize: function(a, b) {
 		FP.setSize.apply(this, arguments);
 		if (a.width) b = a.width;
 		if (b !== false) {
 			var f = this.fly('_trigger');
-			//CC.fly(this.element).setWidth(this.width - (f.getWidth() || 22)).unfly();
+			CC.fly(this.element).setWidth(this.width - (f.getWidth() || 22)).unfly();
 			f.unfly();
 		}
 		return this;
 	},
-	
-	getText : function(){
-	  return this.getValue();
-	}
-
+*/
 });
 
 CC.ui.def('datepicker', CC.ui.form.DatepickerField);

@@ -121,8 +121,8 @@ return {
     var inst = CC.ui.instance(cfg);
     var self = this;
     
-    inst.on('blur', function(){
-        if(this.bindingCell){
+    inst.on('contexted', function(set){
+        if(!set && this.bindingCell){
           self.endEdit(this.bindingCell);
         }
       });
@@ -198,7 +198,10 @@ return {
       
       et.setValue(cell.getValue())
         .setTitle(cell.getTitle())
-        .show().focus();
+        .show()
+        .setContexted(true)
+        .focus();
+      et.active();
       this.grid.fire('editstart', cell, et, col, idx, this);
     }
   },

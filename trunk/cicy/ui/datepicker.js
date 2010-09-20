@@ -65,13 +65,11 @@
 
       this.follow(this.todayBtn)
           .domEvent('click', this.toToday, true, null, this.todayBtn.view)
-          .selectorNode = this.dom('_seltor');
+          .selectCt = this.$$('_seltor');
     },
 
     _hideYearSel: function() {
-      CC.fly(this.selectorNode)
-        .display(false)
-        .unfly();
+      this.selectCt.display(false);
     },
 
     onNavBarMove: function(evt) {
@@ -95,11 +93,9 @@
     },
 
     onYearList: function() {
-      var dv = this.selectorNode;
-      CC.fly(dv)
-        .bindContext()
-        .display(true)
-        .unfly();
+      var dv = this.selectCt.view;
+      this.selectCt.setContexted(true)
+          .display(true);
 
       if (!dv.firstChild)
         this.createList();
@@ -113,7 +109,7 @@
     },
 
     createList: function() {
-      var dv = this.selectorNode,
+      var dv = this.selectCt.view,
           pan = this.fly('_planeY'),
           sz = pan.getSize();
       dv.innerHTML = this.getSelectListHtml();
@@ -311,12 +307,12 @@
   function showDatepicker() {
     var dp = instance,
     f = CC.fly(dp.bindingEditor);
-    dp.display(true);
-    dp.setValue(dp.bindingEditor.value.trim(), true);
+    dp.display(true)
+      .setValue(dp.bindingEditor.value.trim(), true);
     //get the right position.
     dp.anchorPos(f, 'lb', 'hr', null, true, true);
     f.unfly();
-    dp.bindContext();
+    dp.setContexted(true);
   }
 
   DP.getInstance = function(){

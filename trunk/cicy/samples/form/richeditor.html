@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+        <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+        <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
+        <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+        
+    </head>
+    <body></body>
+</html>
+<script type="text/javascript">
+
+__debug = true;
+CC.ready(function(){
+   
+	var w = new CC.ui.Dialog({
+	    title:'CKEDITOR - 需要连网',
+	    showTo:document.body,
+	    layout:'card',
+	    destroyOnClose : true,
+	    buttons:[{title:'关 闭'}],
+	    items : [{
+	        ctype:'rtext'
+	    }]
+	});
+
+	w.render();
+	w.show().center();
+});
+
+</script>

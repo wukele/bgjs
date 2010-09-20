@@ -301,6 +301,23 @@ CC.create('CC.ui.form.Text', cf, {
       (function() {
         self.view.select();
       }).timeout(20);
+    },
+    
+    // fix ?? form element border box model
+    getSize : function(){
+        var tmp = CC.borderBox;
+        CC.borderBox = true;
+        var ret = Bx.prototype.getSize.apply(this, arguments);
+        CC.borderBox = tmp;
+        return ret;
+    },
+    // fix ?? form element border box model
+    setSize : function(){
+        var tmp = CC.borderBox;
+        CC.borderBox = true;
+        var ret = Bx.prototype.setSize.apply(this, arguments);
+        CC.borderBox = tmp;
+        return ret;
     }
 });
 

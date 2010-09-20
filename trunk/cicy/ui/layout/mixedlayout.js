@@ -30,6 +30,16 @@ CC.create('CC.layout.CardLayout', B, {
 });
 
 ly.def('card', ly.CardLayout);
+
+/**
+ * @class CC.layout.QQLayout.LayoutInf
+ * 控件用于QQ布局的配置信息，本类实际不存在，方便描述。
+ * 配置信息位于控件的{@link CC.Base#lyInf}属性中。
+ */
+/**
+ * @cfg {Boolean} collapsed 是否收缩控件。
+ */
+
 /**
  * @class CC.layout.QQLayout
  *  

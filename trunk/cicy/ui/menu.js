@@ -8,14 +8,20 @@ var SPP = CC.util.SelectionProvider.prototype;
  */
 CC.Tpl.def('CC.ui.Menu', '<div class="g-panel g-menu"><div id="_wrap" class="g-panel-wrap"><ul class="g-menu-opt" id="_bdy"  tabindex="1" hidefocus="on"></ul></div></div>')
       .def('CC.ui.MenuItem', '<li class="g-menu-item"><span id="_tle" class="item-title"></span></li>');
-
-CC.create('CC.ui.menu.MenuSelectionProvider', CC.util.SelectionProvider, {
 /**
- * 无论选中与否都强迫选择
+ * @class CC.util.MenuSelectionProvider
+ * @extends CC.util.SelectionProvider
+ * 该类提供菜单控件的按键导航，子项选择等功能，一般情况下不必理会该类。
+ */
+CC.create('CC.util.MenuSelectionProvider', CC.util.SelectionProvider, {
+/**
+ * 默认设为true, 无论选中与否都强迫选择
  */
   forceSelect : true,
+  
 /**
  * 取消修饰选择的样式
+ * @private
  */
   selectedCS : false,
 
@@ -245,9 +251,8 @@ return {
     var p = this.pCt;
     if(p.menubar){
       this.active(true);
-      if(!p.contexted)
-        p.bindContext();
-      p.setAutoExpand(true);
+      p.setContexted(true)
+       .setAutoExpand(true);
     }else if(this.subMenu){
       this.active(true);
       if(e)
@@ -332,12 +337,12 @@ return {
     }
   },
 
-  destory : function(){
+  destroy : function(){
     if(this.subMenu){
-      this.subMenu.destory();
+      this.subMenu.destroy();
       this.unbind();
     }
-    superclass.destory.call(this);
+    superclass.destroy.call(this);
   }
   };
 });
@@ -347,16 +352,23 @@ return {
  * 菜单控件,默认添加在document.body中.
  * @extends CC.ui.Panel
  */
+
+/**
+ * @cfg {Array} array 初始化时载入的子菜单数组
+ */
+ 
+/**
+ * @property pItem
+ * 父菜单项,如果存在。
+ * @type CC.ui.MenuItem
+ */
 CC.create('CC.ui.Menu', CC.ui.Panel, function(superclass) {
 return /**@lends CC.ui.Menu#*/{
 
   hidden : true,
 
   width : 115,
-/**
- * 父菜单项,如果存在
- * @type CC.ui.MenuItem
- */
+  
   pItem: null,
 
   // 菜单项激活时CSS样式
@@ -375,7 +387,7 @@ return /**@lends CC.ui.Menu#*/{
  */
   onItem: null,
 
-  selectionProvider : CC.ui.menu.MenuSelectionProvider,
+  selectionProvider : CC.util.MenuSelectionProvider,
 
   itemCls : CC.ui.MenuItem,
 
@@ -406,8 +418,8 @@ return /**@lends CC.ui.Menu#*/{
     this.noUp();
 
     //容器上监听子项mouseover/mouseout
-    this.itemAction('mouseover', this.mouseoverCallback, true);
-    this.itemAction('mouseout', this.mouseoutCallback, true);
+    this.itemAction('mouseover', this.mouseoverCallback, true)
+        .itemAction('mouseout', this.mouseoutCallback, true);
   }
   ,
 
@@ -547,7 +559,7 @@ return /**@lends CC.ui.Menu#*/{
  </code></pre>
  * @param {CC.Base|Number} x
  * @param {Number|Boolean} y
- * @param {Boolean} contexted
+ * @param {Boolean} [contexted]
 
  */
   at : function(a,b){
@@ -555,23 +567,60 @@ return /**@lends CC.ui.Menu#*/{
     if(typeof a === 'number'){
       this.anchorPos([a, b, 0, 0] ,'lb', 'hr', null, true, true);
       if(arguments[2] !== false && !this.menubar)
-        this.bindContext();
+        this.setContexted(true);
     }else {
       this.anchorPos(a ,'lb', 'hr', null, true, true);
       if(b !== false && !this.menubar)
-        this.bindContext();
+        this.setContexted(true);
     }
   },
 
-  destory : function(){
+  destroy : function(){
     this.each(function(){
       if(this.subMenu && !this.disabledCascadeDel){
         var sub = this.subMenu;
         this.pCt.detach(this);
-        sub.destory();
+        sub.destroy();
       }
     });
-    superclass.destory.call(this);
+    superclass.destroy.call(this);
+  },
+
+  // @override
+  onContextRelease : function(e){
+    if(e && this.isEventFromSubMenu(e))
+       return false;
+    this.hide();
+  },
+  
+  /**
+   * @param {DOMEvent} event
+   */
+  isEventFromSubMenu : function(e){
+    if(e){
+        // 如果点击来自子菜单，取消release context
+        var el = Event.element(e), 
+            t = CC.ui.Menu.prototype.type,
+            menu = CC.Base.byDom(el, function(c){
+                return c.type === t;
+            });
+         return menu && this.isChildMenu(menu);
+    }
+  },
+  
+  /**
+   * @param {CC.ui.Menu} menu
+   */
+  isChildMenu : function(m){
+    var sub;
+    return this.each(function(){
+        sub = this.subMenu;
+        if(sub){
+            if(sub === m)
+                return false; 
+           return !(sub.isChildMenu(m) === true);
+        }
+     }) !== undefined;
   }
 };
 });
@@ -586,27 +635,21 @@ CC.create('CC.ui.Menubar', CC.ui.Menu, {
     menubar : true,
     hidden : false,
     shadow : false,
+    
 /**@private*/
-  onContextedRelease : function(){
+  onContextRelease : function(e){
+    if(e && this.isEventFromSubMenu(e))
+        return false;
+    
     if(this.onItem)
-      this.onItem.deactive(true);
+       this.onItem.deactive(true);
     this.getSelectionProvider().select(null);
     this.setAutoExpand(false);
-    //无需隐藏
-    return false;
-  },
-
-/**
- * @private
- * @override
- */
-  bindContext : function(){
-    return CC.ui.Menu.prototype.bindContext.call(this, this.onContextedRelease);
   }
 });
 
-CC.ui.def('menu', CC.ui.Menu);
-CC.ui.def('menuitem', CC.ui.MenuItem);
-CC.ui.def('menubar', CC.ui.Menubar);
+CC.ui.def('menu', CC.ui.Menu)
+     .def('menuitem', CC.ui.MenuItem)
+     .def('menubar', CC.ui.Menubar);
 
 })();

@@ -171,7 +171,7 @@ CC.create('CC.ui.FloatTip', CC.ui.Panel,function(superclass){
       }
 
       if(!this.reuseable && check)
-        this.destory();
+        this.destroy();
     },
 
   /**

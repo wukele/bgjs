@@ -111,7 +111,7 @@ CC.util.ProviderFactory.create('Store', null, {
   del : function(item){
     if(item && this.isNew(item)){
       item.pCt.remove(item);
-      item.destory();
+      item.destroy();
     }else if(this.beforeDel(item) !== false 
       && this.t.fire('store:beforedel', item, this) !== false){
       this.onDel(item);
@@ -164,7 +164,7 @@ CC.util.ProviderFactory.create('Store', null, {
   afterDel : function(item){
     if(item){
       item.pCt.remove(item);
-      item.destory();
+      item.destroy();
     }
   },
 /**

@@ -367,7 +367,7 @@
 /**
  * 解除与控件关联
  */
-    destory : function(){
+    destroy : function(){
       delete this.comp.ownRect;
       this.comp = null;
     }
