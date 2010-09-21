@@ -1,0 +1,162 @@
+<html>
+<head> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Cicy JS 库制作EXT菜单</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <!-- 如果菜单无需阴影,这个样式文件也不用加载 -->
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <!-- 只需要加载EXT的样式文件 -->
+  <link rel="stylesheet" href="http://dev.sencha.com/deploy/dev/resources/css/ext-all.css" type="text/css"/>
+<style>
+    body {overflow:hidden;}
+	.menu-title {
+		border-bottom:1px solid #99BBE8;
+		color:#15428B;
+		display:block;
+		font-family:tahoma,arial,verdana,sans-serif;
+		font-size:12px;
+		padding:3px;
+	}
+	.calendar {
+		background-image:url('http://dev.sencha.com/deploy/dev/examples/menu/list-items.gif') !important;
+	}
+</style>
+</head>
+<body>
+	<p>
+	<h3>Cicy JS 库制作Ext菜单</h3>
+	利用库原有控件改造菜单,直接引入外部菜单CSS样式文件,在不改变样式，只改变JS的情况下以少量编码与菜单HTML模板结合获得菜单效果.
+	下面例子是利用库菜单设计EXT菜单外观效果,引入EXT的样式文件ext-all.css即可.
+	</p>
+</body>
+</html>
+<script id="demo_code" type="text/javascript">
+
+
+  if(CC.ie)
+    CC.fly(document.body).addClass('ext-ie').unfly();
+	
+  //EXT菜单HTML模板
+  CC.Tpl.def('CC.ui.more.ExtMenu', '<div class="x-layer x-menu-floating x-menu" style="position: absolute; z-index: 15000; visibility: visible;"><ul id="_bdy" class="x-menu-list"></ul></div>')
+        .def('CC.ui.more.ExtMenuItem', '<li class="x-menu-list-item" ><a href="#" id="_anchor" class="x-menu-item" ><img id="_ico" class="x-menu-item-icon" src="' + CC.Tpl.BLANK_IMG + '"/><span id="_tle"></span></a></li>')
+        //分隔条模板
+        .def('CC.ui.more.ExtMenuSepItem', '<li class="x-menu-list-item x-menu-sep-li" ><span class="x-menu-sep" ></span></li>');
+
+  //菜单项类，应用模板CC.ui.more.ExtMenuItem
+  CC.create('CC.ui.more.ExtMenuItem', CC.ui.MenuItem);
+
+  //一个Ext的checkbox菜单项
+  CC.create('CC.ui.more.ExtMenuCheckItem', CC.ui.more.ExtMenuItem, {
+    checked: false,
+    initComponent: function(opt) {
+      this.superclass.initComponent.call(this);
+      //添加样式
+      this.fly('_anchor').addClass('x-menu-check-item').unfly();
+      this.domEvent('mousedown', this.itemCheckedTrigger, true);
+    },
+
+    itemCheckedTrigger: function() {
+      this.checked = !this.checked;
+      this.checkClass('x-menu-item-checked', this.checked);
+    }
+  });
+
+  CC.create('CC.ui.more.ExtMenu', CC.ui.Menu, function(superclass) {
+    return {
+      activeCS : 'x-menu-item-active',
+      // reset super class width
+      width:false,
+      //菜单项的类,fromArray方法将根据该类创建菜单项
+      itemCls: CC.ui.more.ExtMenuItem,
+      shadow : true,
+      arrowCS: 'x-menu-item-arrow',
+      //改变子菜单箭头样式
+      attach: function(sub, idx) {
+        this.$(idx)
+            .fly('_anchor')
+            .addClass(this.arrowCS)
+            .unfly();
+        superclass.attach.call(this, sub, idx);
+      },
+
+      addSeparator: function() {
+        this.ct.appendChild(CC.Tpl.$('CC.ui.more.ExtMenuSepItem'));
+      },
+
+      onAdd: function(item) {
+        if (item.separator) 
+            this.addSeparator();
+        superclass.onAdd.call(this, item);
+      }
+    };
+  });
+
+
+
+
+  //例子
+	CC.ready(function() {
+	var extMenu = new CC.ui.more.ExtMenu(
+	  {
+	    showTo:document.body, 
+	    array:[
+	      {icon : 'calendar', title:'ext-menu-item'}, 
+	      {title:'Ext 菜单', brush:function(v){return '<b>'+v+'</b>';}}, 
+	      {title:'ext-menu-item'}, 
+	      {title:'Ext 菜单',brush:function(v){return '<i>'+v+'</i>';}}
+	    ]
+	  }
+	);
+	
+	//添加一个具有checkbox的菜单项,并具有子菜单
+	extMenu.add( new CC.ui.more.ExtMenuCheckItem({title:'Checkbox菜单项',separator:true}) );
+	extMenu.render();
+	
+	var extSubMenu = new CC.ui.more.ExtMenu(
+	  {
+	    showTo:document.body, 
+	    autoRender:true,
+	    array:[
+	        {title:'ext-menu-item'}, 
+	        {title:'Ext 菜单',separator:true}, 
+	        {title:'ext-menu-item'}, 
+	        {title:'Ext 菜单'}
+	    ]
+	  }
+    );
+	
+	extMenu.attach(extSubMenu, 4);
+
+	var extSubMenu2 = new CC.ui.more.ExtMenu({showTo:document.body});
+	
+	//可动态向菜单容器加入HTML
+	extSubMenu2.ct.appendChild(
+	    CC.Tpl.forNode('<li class="x-menu-list-item"><span class="x-menu-text""><b class="menu-title">自定菜单HTML</b></span></li>')
+	);	
+	
+	extSubMenu2.fromArray([
+	    {title:'ext-menu-item'}, 
+	    {title:'Ext 菜单'}, 
+	    {title:'ext-menu-item',separator:true}, 
+	    {title:'Ext 菜单'}
+	]);
+
+	
+	extSubMenu2.render();
+	
+	extSubMenu.attach(extSubMenu2, 2);
+	
+	//显示总菜单
+	extMenu.at(25,131);
+	
+    //右键菜单例子
+    CC.Event.on(document, 'contextmenu', function(e){
+    	var xy = CC.Event.pageXY(e);
+    	extMenu.at(xy[0], xy[1]);
+    	//阻止浏览器右键菜单
+    	CC.Event.stop(e);
+    });	
+    });
+	
+
+</script>

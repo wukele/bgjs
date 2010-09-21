@@ -341,7 +341,7 @@ CC.Tpl.def('CC.ui.TabItem', '<table unselectable="on" class="g-unsel g-tab-item"
       item = this.$(item);
       if(item.closeable){
         if (this.fire('close', item) !== false){
-          this.displayItem(item, 0);
+          this.displayItem(item, false);
           this.fire('closed', item);
           // destoryOnClose，E文差，打错字，要作兼容
           if(item.destroyOnClose === true || this.destroyItemOnclose || item.destoryOnClose === true){

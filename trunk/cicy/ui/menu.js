@@ -175,6 +175,15 @@ return {
  */
   subCS : 'sub-x',
 
+  initComponent : function(){
+    superclass.initComponent.call(this);
+    if(this.array){
+      var sub = new CC.ui.Menu({array:this.array, showTo:document.body});
+      this.bindMenu(sub);
+      delete this.array;
+    }
+  },
+  
 /**
  * 激活菜单项,要设置激活菜单项样式.
  * @param {Boolean} expand 激活时是否展开子菜单
@@ -319,15 +328,6 @@ return {
     }
   },
 
-  initComponent : function(){
-    superclass.initComponent.call(this);
-    if(this.array){
-      var sub = new CC.ui.Menu({array:this.array, showTo:document.body});
-      this.bindMenu(sub);
-      delete this.array;
-    }
-  },
-
 /**@private*/
   onRender : function() {
     superclass.onRender.call(this);
@@ -418,38 +418,71 @@ return /**@lends CC.ui.Menu#*/{
     this.noUp();
 
     //容器上监听子项mouseover/mouseout
-    this.itemAction('mouseover', this.mouseoverCallback, true)
-        .itemAction('mouseout', this.mouseoutCallback, true);
+    this.domEvent('mouseover', this.mouseoverCallback, true)
+        .domEvent('mouseout', this.mouseoutCallback, true);
   }
   ,
 
 /**@private*/
-  mouseoverCallback : function(item){
-    var pi = this.pItem, o = this.onItem;
+  mouseoverCallback : function(e){
+     if(this.pItem)
+        this.pItem.pCt.setAutoHideTimer(false);
+     this.setAutoHideTimer(false);
+     var item = this.getChildFromEvent(e);
 
-    if(o !== item){
-      if(o)
-        o.deactive(true);
-
-      if(pi && pi.deactiveTimer)
-        pi.clearDefer();
-
-      if(this.menubar && !this.autoExpand){
-        item.active();
-      }else {
-        item.active(true);
-      }
-    }else if(o){
-      o.clearDefer();
-    }
+     // mouseover on an item
+     if(item){
+        var pi = this.pItem, o = this.onItem;
+    
+        if(o !== item){
+          if(o)
+            o.deactive(true);
+            
+          if(pi && pi.deactiveTimer)
+            pi.clearDefer();
+    
+          if(this.menubar && !this.autoExpand){
+            item.active();
+          }else {
+            item.active(true);
+          }
+        }else if(o){
+          o.clearDefer();
+        }
+     }
   },
 
 /**@private*/
-  mouseoutCallback : function(item, e){
-    if(!this.menubar)
-      item.deferDeactive(true);
-    else if(!this.autoExpand)
-      item.deferDeactive();
+  mouseoutCallback : function(e){
+    this.setAutoHideTimer(true);
+  },
+  
+  autoHideTimeout : 100,
+  
+  setAutoHideTimer : function(on){
+    if(on){
+        // from new on
+        if(this._autoHideTimer)
+            clearTimeout(this._autoHideTimer);
+        this._autoHideTimer = setTimeout( this._getAutoHideCallback(), this.autoHideTimeout); 
+    }else if(this._autoHideTimer){
+        clearTimeout(this._autoHideTimer);
+        this._autoHideTimer = false;
+    }
+  },
+  
+  _getAutoHideCallback : function(){
+     if(!this._autoHideCallback)
+        this._autoHideCallback = (function(){
+            var item = this.onItem;
+            if(item){
+                if(!this.menubar)
+                  item.deferDeactive(true);
+                else if(!this.autoExpand)
+                  item.deferDeactive();
+            }
+        }).bindRaw(this);
+     return this._autoHideCallback;
   },
 
 /**
@@ -597,15 +630,14 @@ return /**@lends CC.ui.Menu#*/{
    * @param {DOMEvent} event
    */
   isEventFromSubMenu : function(e){
-    if(e){
-        // 如果点击来自子菜单，取消release context
-        var el = Event.element(e), 
-            t = CC.ui.Menu.prototype.type,
-            menu = CC.Base.byDom(el, function(c){
-                return c.type === t;
-            });
-         return menu && this.isChildMenu(menu);
-    }
+    // 如果点击来自子菜单，取消release context
+    var el   = Event.element(e),
+        t    = CC.ui.Menu.prototype.type,
+        self = this,
+        menu = CC.Base.byDom(el, function(c){
+          return self.isChildMenu(c);
+        });
+    return menu;
   },
   
   /**

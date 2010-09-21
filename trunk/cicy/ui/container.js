@@ -3,7 +3,8 @@
 var CC = window.CC, 
     Base = CC.Base,
     cptx = Base.prototype,
-    UX = CC.ui;
+    UX = CC.ui,
+    Event = CC.Event;
 
 /**
  * @class CC.layout
@@ -821,6 +822,16 @@ CC.create('CC.ui.ContainerBase', Base,
       }
     }
     return null;
+  },
+  
+/**
+ * 从一个事件源中获得子项。
+ * 如果事件由子项发出，方法返回该子项，否则返回空。
+ * @param {DOMElement} event
+ * @return {CC.Base} childItem
+ */
+  getChildFromEvent : function(e){
+    return this.$(Event.element(e));
   },
 
   onShow : function(){
