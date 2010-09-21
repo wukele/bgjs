@@ -1,0 +1,103 @@
+<html>
+<head> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>利用Cicy JS库制作EXTJS Tab</title>
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <!-- 只需要加载EXT的样式文件 -->
+  <link rel="stylesheet" href="http://dev.sencha.com/deploy/dev/resources/css/ext-all.css" type="text/css"/>
+  <link rel="stylesheet" href="../../samples/resources/example.css" type="text/css"/>
+<style>
+    /**some css reset*/
+	.g-disabled, .g-disabled *{color:gray !important;font-style:italic !important;cursor:default !important;}
+    /**display mode*/
+    .hid {display:none !important;}
+    .vid {visibility:hidden !important;}
+    .dbl {display:block !important;}
+    .dbi {display:inline !important;}
+    .vvi {visibility:visible !important;}
+</style>
+</head>
+<body>
+	<h3>Cicy JS 库制作Ext 选项卡</h3>
+	<br/>
+	<p>
+	利用库原有控件改造Tab控件,直接引入外部CSS样式文件,在不改变样式，只改变JS的情况下以少量编码与HTML模板结合获得Tab效果.
+	下面例子是利用库Tab类设计EXT Tab外观效果,引入EXT的样式文件ext-all.css即可.
+	</p>
+
+<br/>
+<div id="tabs1">
+ <div class="x-tab-panel" style="width: 450px;position:absolute;left:120px;top:150px;">
+ 	<div id="extTab"></div>
+ 	<div class="x-tab-panel-bwrap">
+ 		<div class="x-tab-panel-body x-tab-panel-body-top" style="width: 448px;">
+ 			<div class="x-panel x-panel-noborder" style="width: 448px;">
+ 				<div class="x-panel-bwrap" >
+ 					<div class="x-panel-body x-panel-body-noheader x-panel-body-noborder" style="height: auto; width: 428px;">
+ 						<div id="tabPanel" style="height:50px">
+ 								
+ 						</div>
+ 				 </div>
+ 			 </div>
+ 		 </div>
+ 	 </div>
+  </div>
+  </div>
+ </div>
+
+</body>
+</html>
+<script id="demo_code" type="text/javascript">
+
+(function createExtTab() {
+	//在所有应用EXT样式之前调检测
+	if(CC.ie)
+		CC.addClass(document.body, 'ext-ie');
+	
+	//注册模板
+	CC.Tpl.def('CC.more.ExtTab','<div class="x-tab-panel-header x-unseleCC.ui.Table"><div class="x-tab-strip-wrap"><ul class="x-tab-strip x-tab-strip-top" id="_bdy"><li class="x-tab-edge" id="_anchor"></li><div class="x-clear"></div></ul></div><div class="x-tab-strip-spacer"></div></div>')
+          .def('CC.more.ExtTabItem','<li class="x-tab-strip-closable"><a onclick="return false;" class="x-tab-strip-close" id="_trigger"></a><a onclick="return false;" href="#" class="x-tab-right"><em class="x-tab-left"><span class="x-tab-strip-inner"><span class="x-tab-strip-text tabs" id="_tle"></span></span></em></a></li>');
+  
+  //Ext TabItem类, 继承库CC.ui.TabItem类
+	CC.create('CC.more.ExtTabItem', CC.ui.TabItem, {
+		passCS : 'x-tab-strip-over',
+        iconNode : '_tle',
+        closeNode : '_trigger',
+        iconCS : 'x-tab-with-icon'
+	});
+	
+	//Ext Tab实现,继承库CC.ui.Tab类
+	CC.create('CC.more.ExtTab', CC.ui.Tab, {
+	    template:'CC.more.ExtTab',
+		selectionProvider : { selectedCS : 'x-tab-strip-active' },
+		itemCls : CC.more.ExtTabItem,
+		ct : '_bdy',
+		keyEventNode:'_bdy',
+		
+		// @override
+		// 重写以自定添加tab项的位置,
+		// 它并不像像类那样直接放在ct结尾,即调用ct.appendChild,
+		// 而是根据ext的tab结构要放_anchor结点(参见模板HTML)之前.
+		_addNode : function(itemView) {
+			this.ct.insertBefore(itemView, this.dom('_anchor'));
+		}
+	});
+	
+})();
+  
+  //例
+	CC.ready(function() {
+
+		var extTab = new CC.more.ExtTab({ showTo: 'extTab', width : 448, array:
+			[
+				{title:'选卡1', icon:'iconTabs'},
+				{title:'不能关闭',closeable:false},
+				{title:'已禁用', disabled : true},
+				{title:'选卡4',  icon:'iconTabs'},
+				{title:'选卡5',  icon:'iconTabs'}
+			]
+		});
+	    extTab.render();
+	    
+	});
+</script>

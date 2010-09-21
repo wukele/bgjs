@@ -72,10 +72,9 @@ CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, {
     focus : function(){
         if(!this.editor){
             this.loadEditor(function(editor){
-                //editor.focus();
+                editor.focus();
             });
         }else{
-            alert('');
             this.editor.focus();
         }
         return this;

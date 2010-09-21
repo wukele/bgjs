@@ -270,6 +270,11 @@ var camelFn = function(m, a){ return a.charAt(1).toUpperCase(); };
 //
 //
 //
+// .hid {display:none !important;}
+// .vid {visibility:hidden !important;}
+// .dbl {display:block !important;}
+// .dbi {display:inline !important;}
+// .vvi {visibility:visible !important;}
 var hidCS = ['vid','hid','hid','hid'];
 
 var disCS = ['vvi', 'dbl','dbi',''];
