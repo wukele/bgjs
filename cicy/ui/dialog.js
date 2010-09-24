@@ -176,9 +176,12 @@ CC.ui.def('dlg', CC.ui.Dialog);
  * @param {Function} callback 关闭前回调.
  */
     show: function(parent, modal, callback){
-      this.modal = modal;
-      this.modalParent = parent;
-      this.modalCallback = callback;
+      if(modal !== undefined)
+      	this.modal = modal;
+      if(parent !== undefined)
+      	this.modalParent = parent;
+      if(callback !== undefined)
+      	this.modalCallback = callback;
       return superclass.show.call(this);
     },
 
@@ -212,7 +215,8 @@ CC.ui.def('dlg', CC.ui.Dialog);
            return this;
         }
 
-        this.masker.detach();
+        if(this.masker)
+        	this.masker.detach();
         delete this.modal;
         delete this.modalParent;
         delete this.modalCallback;
@@ -259,7 +263,7 @@ CC.ui.def('dlg', CC.ui.Dialog);
     },
     
     getWrapperInsets: function(){
-      var s = this.superclass.getWrapperInsets.call(this),
+      var s = superclass.getWrapperInsets.call(this),
           h = this.bottomHeight - 1;
       s[2] += h;
       s[4] += h;

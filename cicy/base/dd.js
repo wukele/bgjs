@@ -985,6 +985,8 @@ G.installDrag(resizer, true, null, handler);
   });
   
   CC.ui.def('ctzoom', CC.util.d2d.ContainerDragZoom);
+  
+  var CBX = CC.ui.ContainerBase.prototype;
 /**
  * @class CC.util.dd.Indicator
  * 默认的拖放指示器
@@ -1045,7 +1047,7 @@ G.installDrag(resizer, true, null, handler);
       },
 
       setXY : function(){
-        this.superclass.setXY.apply(this, arguments);
+        CBX.setXY.apply(this, arguments);
         if(this.shadow)
           this.shadow.repos();
         return this;

@@ -29,7 +29,16 @@ var Base = CC.Base = (function(dom){
  * @member CC.Base
  * @method find
  */
-Base.find = function(id){
+ 
+/**
+ * 方法与find一样，根据控件ID获得控件,该方法将遍历控件缓存,速度并不快
+ * @param {String} componentId
+ * @static
+ * @return {CC.Base|null}
+ * @member CC.Base
+ * @method byId
+ */
+Base.find = Base.byId = function(id){
   for(var i in CPC){
     if(CPC[i].id === id)
       return CPC[i];

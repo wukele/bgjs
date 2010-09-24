@@ -2,6 +2,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <script type="text/javascript" src="../../more/editordialog.js"></script>
   <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
   <link rel="stylesheet" href="../../default/ru_share.css" type="text/css"/>
   <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
@@ -67,16 +68,17 @@ CC.ready(function(){
     {
      array:[
       {title:'第一列', width:.2, editor:'text', validator:function(v){ if(v=='') return '不能为空'; return true;}},
-      {title:'第二列', editor:{ctype:'textarea', minW:600, minH:600}},
-      {title:'第三列', editor:{ctype:'combo', array:[
+      {title:'第二列', editor:{ctype:'textarea', minW:300, minH:300}},
+      {title:'第三列', editor:{ctype:'editordlg', minW:500, minH:400}},
+      {title:'第四列', editor:{ctype:'combo', array:[
        	  	    {title:'无',icon:'iconUser',value:''},
        	  	    {title:'独享tab',value:'singletab',icon:'iconEdit'},
        	  	    {title:'全局共享tab',value:'sharetab',icon:'iconRef'}
        	       ]}
       },
-      {title:'第四列', editor:'datepicker'},
-      {title:'第五列', editor:getComboTreeEditor()},
-      {title:'第六列', editor:{ctype:'select',array:[{text:'请选择..', selected:true},{text:'第一项', value:5},{text:'第二项', value:6},{text:'第三项', value:7}]}}
+      {title:'第五列', editor:'datepicker'},
+      {title:'第六列', editor:getComboTreeEditor()},
+      {title:'第七列', editor:{ctype:'select',array:[{text:'请选择..', selected:true},{text:'第一项', value:5},{text:'第二项', value:6},{text:'第三项', value:7}]}}
      ]
     },
     
@@ -85,14 +87,15 @@ CC.ready(function(){
        CC.Util.ftip('当前单元值:'+cell.getValue(), '', g.header.view);
      }}]
    },
-   content : {array:createCellData(6, 20), altCS:'alt-row'}
+   content : {array:createCellData(7, 20), altCS:'alt-row'}
   });
 
   var win = new CC.ui.Win({
     title:'Grid 编辑功能演示 - TAB导航',
     showTo:document.body,
     layout:'card',
-    width:500,
+    width:800,
+    height:400,
     lyCfg:{items:[g]}
   });
 

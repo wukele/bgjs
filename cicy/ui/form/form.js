@@ -220,6 +220,13 @@ CC.create('CC.ui.form.FormElement', Bx, {
       return this.getValue();
     },
 /**
+ * 设置显示值
+ */
+    setText : function(text){
+    	return this.setValue(text);
+    },
+    
+/**
  * 设置提交字段名称.
  * @param {String} name
  * @return this
@@ -283,9 +290,10 @@ CC.create('CC.ui.form.Text', cf, {
     initComponent : function(){
       this.view = Tpl.forNode(Tpl[this.template], this);
       spr.initComponent.call(this);
-      this.domEvent('focus', this.onFocusTrigger)
-          .domEvent('blur', this.onBlurTrigger)
-          .domEvent('keydown', this.onKeydownTrigger);
+      var el = this.element;
+      this.domEvent('focus',   this.onFocusTrigger, false, null, el)
+          .domEvent('blur',    this.onBlurTrigger, false, null, el)
+          .domEvent('keydown', this.onKeydownTrigger, false, null, el);
     },
     
     maxH : 20,
@@ -561,8 +569,8 @@ CC.create('CC.ui.form.Select', cf, {
     },
 
     getText : function(){
-      var sel = this.element.options[this.element.selectedIndex];
-      return sel?sel.text : '';
+    	var el = this.element, idx = el.selectedIndex;
+      return idx == -1 ? '' : el.options[idx].text;
     },
 /**
  * 添加一个option元素
