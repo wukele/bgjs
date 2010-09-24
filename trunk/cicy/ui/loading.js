@@ -170,7 +170,7 @@ CC.create('CC.ui.Loading', CC.Base,
   
   destroy : function(){
     this.setMonitor(null);
-    this.superclass.destroy.call(this);
+    CC.Base.prototype.destroy.call(this);
   }
 });
 

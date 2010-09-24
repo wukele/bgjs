@@ -7,7 +7,34 @@
         <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
         
     </head>
-    <body></body>
+    <body>
+<textarea id="template" class="hid">
+<p>
+	<span style="color: rgb(0, 204, 0);">/*!<br>
+	&nbsp;* Javascript Utility for web development.<br>
+	&nbsp;* 反馈 : www.cicyui.com/forum<br>
+	&nbsp;* www.cicyui.com ? 2010 - 构建自由的WEB应用<br>
+	&nbsp;*/</span></p>
+<p>
+	Cicy UI的特点：<br>
+	<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>1. 小巧</strong></p>
+<p>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CICY所有的JS gzip后只有几十K，当然，随着功能的增加，代码量会越来越大。<br>
+	<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>2.&nbsp; 面向对象的设计方式</strong><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; JavaScript语言是OOP语言的一个超集，在JS中以OOP方式设计出来的应用在可重用，可扩展和可控性方面有保证。<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>3.&nbsp; 完全JSON序列化的UI生成</strong><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 支持以JSON方面构建整个应用，结合JSON编辑器，可很好的展示整个应用的代码结构。<br>
+	<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>4.&nbsp; 性能不错</strong><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在不断增加应用规模的情况下仍然保持一个不错的性能。<br>
+	<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>5.&nbsp; HTML结构，外观与控件的行为相分离</strong></p>
+
+</textarea>
+    </body>
 </html>
 <script type="text/javascript">
 
@@ -17,11 +44,22 @@ CC.ready(function(){
 	var w = new CC.ui.Dialog({
 	    title:'CKEDITOR - 需要连网',
 	    showTo:document.body,
+	    height:600,
+	    width : 800,
 	    layout:'card',
 	    destroyOnClose : true,
-	    buttons:[{title:'关 闭'}],
+	    buttons:[
+	        {title:'获得内容', id:'getcontent'}, 
+	        {title:'关 闭'}
+	    ],
+	    
+	    ongetcontent : function(){
+	           CC.Util.alert( CC.Base.byId('richeditor').getValue() );
+	           return false;
+	    },
+	    
 	    items : [{
-	        ctype:'rtext'
+	        ctype:'rtext', id:'richeditor', value:CC.$('template').value
 	    }]
 	});
 

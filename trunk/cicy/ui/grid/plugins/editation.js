@@ -1,6 +1,14 @@
 ﻿/**
  * @class CC.ui.grid.plugins.Editation
- * 支持表格编辑的插件
+ * 支持表格编辑的插件。符合编辑功能的控件应有的接口方法：
+  <div class="mdetail-params"><ul>
+ <li>[get|set]Value，获得或置值</li>
+ <li>setText，设置显示的标题</li>
+ <li>getText，设置显示的标题</li> 
+ <li>focus，聚焦</li>
+ <li>active，激活</li>
+  <li>接受contexted事件响应</li>
+ </ul></div>
  */
 CC.create('CC.ui.grid.plugins.Editation', null, function(){
   var E = CC.Event, Math = window.Math;
@@ -197,7 +205,7 @@ return {
       this.setBoundsForEditor(cell, et);
       
       et.setValue(cell.getValue())
-        .setTitle(cell.getTitle())
+        .setText(cell.getTitle())
         .show()
         .setContexted(true)
         .focus();
@@ -208,14 +216,15 @@ return {
 /**
  * 结束编辑指定单元格.
  * @param {CC.ui.grid.Cell} cell
+ * @param {Boolean} [apply] 当apply为false时忽略编辑值
  */
-  endEdit : function(cell){
+  endEdit : function(cell, apply){
     var g = this.grid;
     var idx = cell.pCt.indexOf(cell),
     et =  cell.bindingEditor,
     v, prev;
     
-    if(g.fire('edit', cell, et, idx, this) !== false){
+    if(apply !== false && g.fire('edit', cell, et, idx, this) !== false){
       et.hide();
       v = et.getValue(), prev = cell.getValue();
       if(v != prev){

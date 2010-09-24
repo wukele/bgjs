@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+        <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+        <link rel="stylesheet" href="../../default/lan_share.css" type="text/css"/>
+        <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+        <script src="../../more/artdialog.js"></script>
+    </head>
+<style>
+	.myform{width:100%;}
+	.myform .tbl-td{border:1px solid #444;}
+	.myform .c1 {width:12%;background-color:#CCC;}
+	.myform .c2 {width:20%;}
+	.myform .c3 {width:68%;}
+	.myform select {width:98%;}
+</style>
+<body>
+</body>
+</html>
+<script type="text/javascript">
+
+CC.ready(function(){
+var w =  new CC.more.ArtWin({
+    showTo:document.body,
+    layout:'table',
+    width:739,
+    height:550,
+    isForm:true,
+    title:'用于table布局表单元素',
+    lyCfg:{
+      tblCs:'myform',
+    	group:{ 
+    		cols:3,
+    		0 : {cs:'c1'},
+    		1 : {cs:'c2'},
+    		2 : {cs:'c3'}
+    	},
+      items : [
+        // row one
+        [
+          {ctype:'label', title:'定期发布'},
+          {ctype:'label', title:'起始时间'},
+          {ctype:'datepicker',css:'w:95%'}
+        ],
+        // row two
+        [
+          null,
+          {ctype:'label', title:'执行周期'},
+          {ctype:'panel', layout:'tablize', items:[
+             {ctype:'checkbox', title:'每隔'},
+             {ctype:'text', width:40},
+             {ctype:'label', title:'*'},
+             {ctype:'combo', width:100, array:[{title:'天'}, {title:'小时'}]}
+           ]
+          }
+        ],
+        // row three
+        [null, null, {ctype:'checkbox', title:'使用Cron表达式'}],
+        // row four
+        [
+          null,
+          {ctype:'label', title:'启用状态'},
+          {ctype:'panel', layout:'tablize', items:[
+             {ctype:'radio', title:'启 用', name:'switcher', checked:true},
+             {ctype:'radio', title:'停 用', name:'switcher', checked:true}
+           ]
+          }
+        ],
+        // row five
+        [
+          {ctype:'label', title:'归档设置'},
+          {ctype:'label', title:'归档期限:'},
+          {ctype:'select',array:[{text:'选择1'}, {text:'选择2'}]} 
+        ],
+        // row six
+        [
+          null,
+          {ctype:'label', title:'归档期限沿用:'},
+          {ctype:'select',array:[{text:'选择1'}, {text:'选择2'}]} 
+        ],
+        // row seven
+        [
+          {ctype:'label', title:'附件设置'},
+          {ctype:'label', title:'附件下载是否使用原始文件名:'},
+          {ctype:'panel', layout:'tablize', items:[
+             {ctype:'radio', title:'是', name:'rawname', value:'yes'},
+             {ctype:'radio', title:'否', name:'rawname', value:'no'}
+           ]
+          }
+        ],
+        [
+          {ctype:'label', title:'上传附件'},
+          {ctype:'text',type:'file'},
+          {ctype:'label', title:'<(jpg,gif,bmp,doc)>'}
+        ],
+        // row eight
+        [
+        	{ctype:'label', title:'内 容'},
+        	{td:{cols:2}, ctype:'rtext', width:600,height:220, editorCfg:{toolbar:'Basic'}}
+        ],
+        // row nine
+        // 加入html
+        [ 
+          false,
+          {td:{cols:2}, ctype:'base', css:'fr mr:20', template:'<div><span class="ui_yes"><button accesskey="y">确 定</button></span><span class="ui_no"><button accesskey="n">取 消</button></span></div>'}
+        ]
+      ]
+    }
+});
+ w.render();
+ w.center();
+});
+</script>

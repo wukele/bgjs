@@ -8,7 +8,7 @@
  */
 
 /**
- * @cfg {String} lazyLoad 是否延迟加载，延迟后当文本框聚焦时才加载，默认为false。
+ * @cfg {String} lazyLoad 是否延迟加载，延迟后当文本框聚焦时才加载，默认为true。
  */
  
 /**
@@ -28,24 +28,26 @@
 
 CC.Tpl.def('CC.ui.form.RichEditor', '<div><textarea id="_el" class="g-textarea g-corner" ></textarea></div>');
 
-CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, {
+CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, function(father){
+return {
     
     template : 'CC.ui.form.RichEditor',
     
     editorUrl : 'http://ckeditor.com/apps/ckeditor/3.4/ckeditor.js',
  
-    lazyLoad :  false,
+    lazyLoad :  true,
     
     onRender : function(){
-        this.superclass.onRender.call(this);
+        father.onRender.call(this);
         if(!this.lazyLoad)
             this.loadEditor();
     },
     
-    focusCallback : function(){
-        this.superclass.focusCallback.apply(this, arguments);
-        if(this.lazyLoad && !this.editor)
-            this.loadEditor();
+    onFocusTrigger : function(){
+        father.onFocusTrigger.apply(this, arguments);
+        if(this.lazyLoad && !this.editor){
+            this.loadEditor(this.focus);
+        }
     },
     
 /**手动加载编辑器*/
@@ -59,7 +61,7 @@ CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, {
                 this._replace(this.element, CC.extendIf(cfg, this.editorCfg), (function(editor){
                     this._onEditorLoad(editor);
                     if(this.editorCfg)
-                    delete this.editorCfg;
+                    	delete this.editorCfg;
                 }).bindRaw(this));
             }
             
@@ -91,7 +93,7 @@ CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, {
     setValue : function(v){
         if(this.editor)
             this.editor.setData(v);
-        return this.superclass.setValue.call(this, v);
+        return father.setValue.call(this, v);
     },
 
 /**
@@ -118,10 +120,15 @@ CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, {
     },
     
     setSize : function(){
-        this.superclass.setSize.apply(this, arguments);
+        father.setSize.apply(this, arguments);
 
-        if(this.editor)
-            this.editor.resize(this.width, this.height);
+        if(this.editor){
+           // CKEDITOR在载入时并缩放窗口时会抛出一个异常，具体原因未知。
+           try { 
+           	this.editor.resize(this.width, this.height); 
+           }catch(e){}
+        }
+        
         else CC.fly(this.element)
                .fastStyleSet('width', this.width + 'px')
                .fastStyleSet('height', this.height + 'px');
@@ -134,35 +141,33 @@ CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, {
             // ckeditor will throw some error when is removed from dom.
             this.editor.destroy();
         }catch(e) { }
-        this.superclass.destroy.call(this);
+        father.destroy.call(this);
     },
     
     _onEditorLoad : function(editor){
         this.editor = editor;
         this.fire('editorload', editor);
-        this.editor.on('dataReady', this._onEditorReady.bindRaw(this));
-    },
-    
-    _onEditorReady : function(e){
-        var editor = e.editor;
-
-        if(this.width !== false || 
-           this.height !== false)
-             this.editor.resize(this.width, this.height);
         
         if(this.value)
             editor.setData(this.value);
 
-        this.fire('editorready', editor, e);
-
         if(this._loadCbList){
             for(var i=0,cs = this._loadCbList,len=cs.length;i<len;i++){
-                cs[i].call(this, editor, e);
+                cs[i].call(this, editor);
             }
             delete this._loadCbList;
         }
         
-
+        if(this.width !== false || 
+           this.height !== false){
+            var self = this;
+             (function(){editor.resize(self.width, self.height);}).timeout(100);
+        }
+        
+        // bind events
+        editor.on('focus', this.onFocusTrigger.bind(this));
+        editor.on('blur',  this.onBlurTrigger.bind(this));
+        
         if(this.onEditorReady)
             this.onEditorReady(editor, e);
     },
@@ -188,6 +193,7 @@ CC.create('CC.ui.form.RichEditor', CC.ui.form.Textarea, {
             delete CC.ui.form.RichEditor.isLoading;
         });
     }
+};
 });
 
 CC.ui.form.RichEditor.prototype.getText = CC.ui.form.RichEditor.prototype.getValue;

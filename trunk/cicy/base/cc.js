@@ -334,6 +334,8 @@ if(window.__debug === undefined)
            var obj = {name:'xiaoming', car : {color:'black'}};
            //set
            CC.attr(obj, 'car.color', 'white');
+           // create a new namespace
+           CC.attr(window, 'CC.util.dd.ns', {});
            //get
            alert( CC.attr(obj, 'car.color'));
          *  </code></pre>
@@ -1120,7 +1122,10 @@ function testNoForm() {
         }
         ,
 /**
- * 将可枚举对象内容复制到新数组中,并返回该数组,可枚举对象是指可用[index]访问,并具有length属性的,常见的有arguments对象.
+ * 将可枚举对象内容复制到新数组中,
+ * 并返回该数组,可枚举对象是指可用[index]访问,
+ * 并具有length属性的,常见的有arguments对象。
+ * 方法的意义是返回新数组后，可利用数组的各种方法进行操作。
  * @param {Object} iterable 可枚举对象
  * @return {Array} 新数组
  * @member CC
