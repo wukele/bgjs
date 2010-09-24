@@ -334,9 +334,12 @@ var ctxQueue = {
  * @inner
  */
 	releaseAll : function(e){
-		var q = this.q,len=q.length;
-		for(var s = len - 1;s>=0;s--){
-			this.release(q[s], e);
+		var q = this.q;
+		if (q) {
+			var len = q.length;
+			for (var s = len - 1; s >= 0; s--) {
+				this.release(q[s], e);
+			}
 		}
 	},
 	
@@ -2289,13 +2292,32 @@ CC.extend(Base.prototype,
             || this.view.attachEvent)) {
             evName = 'keydown';
         }
-
+		
         if(!this.observes){
           this.observes = [];
         }
 
         var self = caller || this;
-        var cb = (function(ev){
+		var cb;
+		if(evName === 'mousedown'){
+			var comp = this;
+			cb = function(ev){
+	            var ev = ev || window.event;
+				// 在控件 contexted后，其它控件如果停止mousedown冒泡到document的话，
+				// contexted就不能正常响 应。
+	           	if(!comp.contexted){
+					ctxQueue.releaseAll(ev);
+				}
+				
+	            if(self.disabled){
+	              Event.stop(ev);
+	              return false;
+	            }
+	            if(cancel)
+	                Event.stop(ev);
+	            return handler.call(self, ev);
+			};
+		}else cb = (function(ev){
             var ev = ev || window.event;
             if(self.disabled){
               Event.stop(ev);
@@ -2305,7 +2327,6 @@ CC.extend(Base.prototype,
                 Event.stop(ev);
             return handler.call(self, ev);
         });
-
 
         if(childId){
           childId = this.dom(childId);
