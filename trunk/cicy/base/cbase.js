@@ -330,15 +330,19 @@ var ctxQueue = {
 		} else comp.contexted = true;
 	},
 /**
- * @param {DOMEvent} [event] 如果释放由DOM事件引发，传递该事件。
+ * 释放所有已上下文绑定的控件，释放对于传递事件event由控件自身或控件子结点发出控件无效。
+ * @param {DOMEvent} [event] 如果释放由DOM事件引发，传递该事件，如果事件由控件发出，包括子结点，则取消释放该控件。
  * @inner
  */
 	releaseAll : function(e){
 		var q = this.q;
 		if (q) {
 			var len = q.length;
+			if(e)
+			    var src = Event.element(e);
 			for (var s = len - 1; s >= 0; s--) {
-				this.release(q[s], e);
+				if(!src || !q[s].ancestorOf(src))
+				    this.release(q[s], e);
 			}
 		}
 	},
