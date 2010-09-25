@@ -35,18 +35,19 @@
                     if(tabitem){
                        switch(menuitem.id){
                           case 'closeself' :
-                            tab.close(tabitem);
+                            if(tab.getDisc() > 1)
+                            	tab.close(tabitem);
                             break;
                           case 'closeother' :
-                            tab.each(function(){
-                              if(this !== tabitem)
-                                tab.close(this);
-                            }); 
+                            for(var chs=tab.children,k=chs.length-1;k>=0;k--){
+                                if(chs[k] !== tabitem)
+                                    tab.close(chs[k]);
+                            }
                             break;
                           case 'closeall' : 
-                            tab.each(function(){
-                               tab.close(this);
-                            }); 
+                            for(chs=tab.children,k=chs.length-1;k>=0;k--){
+                                tab.close(chs[k]);
+                            }
                        }
                     }
                   }
