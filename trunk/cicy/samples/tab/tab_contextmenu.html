@@ -30,10 +30,17 @@ __debug=true;
       events:{
        contextmenu : [ { cb:function(menu, tabitem){
          // 可以往菜单上添加自己的内容
-         var customItem = menu.$('customitem');
-         if(!customItem){
-           customItem = menu.instanceItem({title:'自定义项', onselect:function(){CC.Util.alert(this.title);}, id:'customitem'});
-           menu.layout.add(customItem);
+         // 这个标志是自己加上去的
+         if(!menu.customMenuAdded){
+           menu.fromArray([
+              {title:'刷新', onselect:function(){
+			       var tabitem = CC.Base.byCid(this.pCt.currentTabItem);
+			       if(tabitem.src)
+			            tabitem.loadContent(tabitem.src);
+              }},
+              {title:'自定义项', onselect:function(){CC.Util.alert(this.title);}}
+           ]);
+           menu.customMenuAdded = true;          
          }
        } } ]
       },
