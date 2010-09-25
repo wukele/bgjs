@@ -327,11 +327,12 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
             this.editor.focus(true);
         else this.focus(true);
   
-        if (ds) return;
-        this.checkSelected();
-        this.addClass(this.downCS);
-        st.setContexted(true)
-          .display(true);
+        if (!ds) {
+            this.checkSelected();
+            this.addClass(this.downCS)
+                .setContexted(true);
+            st.display(true);
+        }
       }
     },
 
@@ -476,6 +477,7 @@ CC.create('CC.ui.form.Combox', CC.ui.form.FormElement, function(superclass) {
             if(this.selector.ancestorOf(Event.element(e)))
                 return false;
         }
+        this.selector.display(false);
     }
   };
 });
