@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
 
 var ly = CC.layout;
 var B =  ly.Layout;
@@ -13,7 +13,7 @@ var Base = CC.Base;
      // 使得子项iframepanel布满整个window客户区域.
      layout:'card',
      items : [
-       {ctype :'iframe', src:'http://www.g.cn' }
+       {ctype :'iframe', src:'http://www.cicyui.com' }
      ]
    });
  </code></pre>
@@ -159,13 +159,31 @@ CC.create('CC.layout.QQLayout', B, {
 
 ly.def('qq', ly.QQLayout);
 
+
+/**
+ * @class CC.layout.RowLayout.LayoutInf
+ * 本类并不存在，用于说明基于RowLayout类容器子项布局配置的信息。
+ */
+
+/**
+ * @cfg {String|Number} h 设置组件高度信息，'auto','lead'，默认'auto'。
+ * <div class="mdetail-params"><ul>
+ * <li>auto:每次布局时利用component.getHeight()方法获得高度</li>
+ * <li>lead:等待其它非lead组件高度信息确定后，再来计算组件高度。最终组件高度是容器剩下高度的均值。</li>
+ * <li>Number值:大于或等于1时为高度值，小于1时为相对容器高度百分比，最终获得的高度将应用到组件的高度。</li>
+ * </ul></div>
+ */
+
+/**
+ * @cfg {Number} w 设置组件宽度信息，可以为整型或浮点值。
+ * 大于或等于1时被作为宽度应用到组件宽；小于1时被告作为相对容器宽度百分比应用到宽；
+ * 未设置时将保持组件宽度与容器宽度一致。
+ */
+
 /**
  * @class CC.layout.RowLayout
  * 行布局,该布局将对子控件宽度/高度进行布局,不干预控件坐标.
- * 控件配置方面:<div class="mdetail-params"><ul>
- * <li>auto : 自动宽高,不进行干预</li>
- * <li>具体宽/高 : 如50px</li>
- * <li>leading : 平分宽高</li></ul></div><br>
+ * <br>
   <pre><code>
 var win = new CC.ui.Win({
   showTo:document.body,
@@ -184,14 +202,21 @@ win.render();
 CC.create('CC.layout.RowLayout', B, {
     wrCS : 'g-row-ly',
     onLayout: function() {
-      var wr = this.ct.wrapper;
-      var w = wr.getWidth(true),
-      h = wr.getHeight(true),
-      i,len, it, its = this.ct.children, cfg, ty = this.type, iv;
-      //y direction
-      var leH = [], leW = [];
-      for(i=0,len=its.length;i<len;i++){
+      var wr = this.ct.wrapper, 
+	      w = wr.getWidth(true),
+          h = wr.getHeight(true),
+          i,len, it, 
+		  its = this.ct.children, 
+		  cfg, 
+		  ty = this.type, 
+		  iv,
+          //y direction
+		  leH = [], 
+		  leW = [];
+
+	  for(i=0,len=its.length;i<len;i++){
         it = its[i];
+		
         if(it.hidden)
           continue;
 
@@ -199,7 +224,11 @@ CC.create('CC.layout.RowLayout', B, {
         switch(cfg.h){
           case 'auto' :
           case undefined :
-            h-=it.getHeight();
+		    // render to get correct height
+            if(!it.rendered)
+				it.render();
+				
+			h-=it.getHeight();
             break;
           case 'lead' :
             leH[leH.length] = it;
@@ -265,7 +294,9 @@ ly.def('row', ly.RowLayout);
  *  行为object时,表示该行只有一个单元格,可以在object中定义td,tr的属性信息, object.td = {}, object.tr = {}<br>
  * 当一个配置信息既无ctype属性,亦无td属性时被看作是该行tr的信息
  * <br>
- <pre><code>
+
+ <pre>
+ <code>
 var win = new CC.ui.Win({
   showTo:document.body,
   layout:'table',
@@ -314,6 +345,15 @@ var win = new CC.ui.Win({
  </code></pre>
  * @extends CC.layout.Layout
  */
+
+/**
+ * @property tableEl
+ * @type HTMLElement
+ */
+/**
+ * @cfg {String} tblCs class name of main table node
+ */
+
 CC.create('CC.layout.TableLayout', B, {
 
 	attach : function(ct){
@@ -335,36 +375,16 @@ CC.create('CC.layout.TableLayout', B, {
         for(j=0;j<as.length;j++){
           if(as[j] && as[j].ctype){
             news.push(as[j]);
-            // 避免td污染
-//            tds.push(as[j].td);
-//            delete as[j].td;
           }   
         }
       }else if(as && as.ctype){
         news.push(as);
-        // 避免td污染
-//        tds.push(as.td);
-//        delete as.td;
       }
     }
     superclass.fromArray.call(this, news);
-    
-    // 恢复td
-//    for(i=0,len=news.length;i<len;i++){
-//      if(news[i].td !== undefined){
-//        news[i].td = tds[i];
-//      }
-//    }
-//    tds = null;
     news = null;
   },
-/**
- * @property tableEl
- * @type HTMLElement
- */
-/**
- * @cfg {String} tblCs class name of main table node
- */
+
 /**
  * 一次性布局,生成table表
  * @private
@@ -386,10 +406,11 @@ CC.create('CC.layout.TableLayout', B, {
 			  delete this.tblCs;
 			}
 			
-			if(tbl){
+			// 应用table结点配置
+			if(tbl)
 			  Base.applyOption(tb, tbl);
-			}
 			
+			// 创建col结点信息
 			if(this.group){
 				var g = this.group;
 				var gn = CC.$C('COLGROUP');

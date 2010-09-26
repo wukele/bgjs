@@ -391,7 +391,7 @@ white-space:nowrap;
 .g-combo-on .g-combo-wrap {border: 1px solid #666;}
 .g-combo-on .downIco{background-position:-230px -29px}
 .g-combo-on input, .g-combo-on .unedit-txt {background-color:#FFFFCC;}
-.g-combo input, .g-combo .unedit-txt {border:none;height:100%;width:100%;padding:0px 2px;}
+.g-combo input, .g-combo .unedit-txt {-webkit-border-radius:0;-moz-border-radius:0;border:none;line-height:19px;height:19px;padding:0px 2px;}
 .g-combo .unedit-txt{display:none;}
 .g-combo-unedit .unedit-txt {display:block;cursor:pointer;}
 .g-combo-unedit input{display:none;}

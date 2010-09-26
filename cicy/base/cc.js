@@ -68,8 +68,8 @@ if(window.__debug === undefined)
     
     Slice = Array.prototype.slice;
 
-    // 修复在IE的一些版本中通过CSS改变元素背景图片会出现重新请求闪烁现象,IE6犹为明显.
-    if(isIE && !isIE7){
+    // 修复在IE6中通过CSS改变元素背景图片会出现重新请求闪烁现象.
+    if(isIE6){
         try{
             document.execCommand("BackgroundImageCache", false, true);
         }catch(e){}
