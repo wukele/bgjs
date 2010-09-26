@@ -1,0 +1,67 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="../../cicylib-all-debug.js"></script>
+  <link rel="stylesheet" href="../../default/global.css" type="text/css"/>
+  <link rel="stylesheet" href="../../default/lan_share.css" type="text/css"/>
+  <link rel="stylesheet" href="../resources/example.css" type="text/css"/>
+
+<style>
+</style>
+</head>
+<body>
+  <input type="button" onclick="testAddRow()" value="新增行" />
+  <input type="button" onclick="testClear()" value="清空" />
+</body>
+</html>
+<script>
+
+function createCellData(cols, rows){
+  var rs = [];
+  for(var i=0;i<rows;i++){
+    var cs = {array:[]};
+    for(var j=0;j<cols;j++){
+      cs.array.push({title:i+','+j});
+      if(((i+j)%3) === 0)
+        cs.array[cs.array.length - 1].disabled = true;
+    }
+    rs.push(cs);
+  }
+  return rs;
+}
+
+CC.ready(function(){
+  __debug = true;
+
+  window.g = new CC.ui.Grid({
+   width:300,
+   showTo:document.body,
+   css:'lnx',
+   autoFit:true,
+   header:
+    {
+     array:[
+      {title:'第一列', width:.2},
+      {title:'第二列'},
+      {title:'第三列'},
+      {title:'第四列'}
+     ]
+    },
+   content : {
+    // GRID容器布局是rowlayout，只要配置这个布局信息，就能不限内容高度
+    lyInf:{h:'auto'}, 
+    array:createCellData(4, 8), altCS:'alt-row'}
+  });
+
+  g.render();
+});
+
+
+  function testAddRow(){
+    g.content.add({ctype:'gridrow', array:[{title:'测试add'},{title:'测试add2'},{title:'测试add3'},{title:'测试add4'}]});
+  }
+  
+  function testClear(){
+    g.content.destroyChildren();
+  }
+</script>

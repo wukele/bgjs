@@ -10,23 +10,156 @@
 	
 	.fix {background:red;}
 	.lead{text-align:center;overflow:hidden;background:black;color:white;}
+	.percent {background:blue;color:white;}
 </style>
 </head>
 <body>
 </body>
 </html>
 <script>
+	
 	CC.ready(function(){
-    var win = new CC.ui.Win({
-    	showTo:document.body,
-      layout:'row',
-      lyCfg:{
-        items:[
-          {ctype:'base', template:'<div />', cs:'fix', css:'h:50', strHtml:'fixed height'},
-          {ctype:'base', template:'<div />', cs:'lead',strHtml:'lead',lyInf:{h:'lead'}}
-        ]
-      }
+		// 第一个例子
+	    var win = new CC.ui.Win({
+		  title:'CC.layout.RowLayout',
+	      showTo:document.body,
+	      layout:'row',
+	      lyCfg:{
+	        items:[
+	          {ctype:'base', template:'<div />', cs:'fix', css:'h:50', strHtml:'fixed height'},
+	          {ctype:'base', template:'<div />', cs:'lead',strHtml:'lead',lyInf:{h:'lead'}},
+			  {ctype:'base', template:'<div />', cs:'percent',strHtml:'.2, 20% height',lyInf:{h:.2}}
+	        ]
+	      }
+	    });
+	    win.render();
+		win.center();
+		
+		// 第二个例子
+        var vp = new CC.ui.Viewport({
+            layout: 'row',
+            items: [{
+                ctype: 'ct',
+                css: 'p:10px,20px',
+                layout : 'table',
+				lyCfg:{
+					items:[
+						// row 1
+						[
+							{ctype:'label', title:'订单号：'},
+							{ctype:'text', disabled:true, value:CC.dateFormat(new Date(), 'yy-mm-dd').replace(/-/g,'') + 'R' + new Date().valueOf()},
+							{ctype:'label', title:'日 期：'},
+							{ctype:'datepicker',value : CC.dateFormat(new Date(), 'yy/mm/dd')}
+						],
+						// row 2
+						[
+							{ctype:'label', title:'顾 客：'},
+							{ctype:'combo', array:[{title:'实体顾客',icon:'iconUser'}, {title:'网上购物',icon:'iconUser'}]},
+                            getComboGrid({
+									ctype:'grid',
+									header:{
+										array:[{title:'价 格'},{title:'数 量'}, {title:'总价格'}]
+									},
+									content:{
+										array:CC.util.DataTranslator.get('gridarraytranslator').read([
+											['20', '30', '600'], ['30', '30', '900'], ['40', '30', '1200'],
+											['20', '30', '600'], ['30', '30', '900'], ['40', '30', '1200'],
+											['20', '30', '600'], ['30', '30', '900'], ['40', '30', '1200'],
+											['20', '30', '600'], ['30', '30', '900'], ['40', '30', '1200']
+										])
+									}
+								} , { 
+									td:{cols:3}, 
+									uneditable:true, 
+									getItemValue: function(row){ return row.id; }
+							    })
+						],
+						// row 3
+						[
+							{ctype:'label', title:'备 注：'},
+                            {td:{cols:3},ctype:'textarea',css:'w:99% h:40px'}
+						]
+					]
+				}
+            }, 
+			{
+                ctype:'panel',
+				css:'p:10px,20px',
+				lyInf: { h:'lead'},
+				layout:'card',
+				items:[
+			        {
+						ctype: 'grid',
+						css: 'lnx',
+						header: {
+							array: [{
+								title: '价 格'
+							}, {
+								title: '数 量'
+							}, {
+								title: '总价格'
+							}]
+						},
+						content:{
+							array:CC.util.DataTranslator.get('gridarraytranslator').read([
+								['20', '30', '600'], ['20', '30', '600'], ['20', '30', '600'],
+								['20', '30', '600'], ['20', '30', '600'], ['20', '30', '600']
+							])
+					     }
+					}
+				]
+             },
+			 {
+			 	ctype:'bigbar',
+				array:[
+					{title:'保 存', icon:'iconUser'}
+				]
+			 }
+			]
+        });
+
+ vp.render();
+
+function getComboGrid(grid, combox){
+    return CC.extendIf(combox, {
+        ctype: 'combo',
+        //@override
+        // 定义从selector控件获得具有selectionProvider的子控件方式
+        getSelectioner: function(selector){
+            // grid.content
+			return selector.content;
+        },
+        
+        showTo: document.body,
+        autoRender: true,
+        filterContent: false,
+        
+        //@override
+        //定义获得项数据方式
+        getItemValue: function(row){
+            return row.id;
+        },
+		
+		// combox里显示的标题所在列
+		// 参见下面的getItemTitle
+        gridTitleIndex : 0,
+        
+		//@override
+        getItemTitle: function(row){
+            return row.getCell(this.gridTitleIndex).getTitle();
+        },
+        
+        selector: CC.extendIf(grid, {
+            showTo: document.body,
+            shadow: true,
+			css:'lnx',
+            height: 250,
+            minW: 300,
+            autoFit: true
+        })
     });
-    win.render();
-	});
+} 
+  });
+
+
 </script>

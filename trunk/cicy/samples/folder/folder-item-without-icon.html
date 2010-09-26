@@ -26,6 +26,8 @@
                ctype:'folder',
                showTo:document.body,
                cs:'noIconGrp',
+               // 强制每次都触发selected事件，默认是选后不再触发的。
+               selectionProvider:{forceSelect:true},
                array:[
                   {title:'disabled item',disabled:true},
                   {title:'粉红色'},
