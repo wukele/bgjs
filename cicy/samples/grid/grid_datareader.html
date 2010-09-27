@@ -32,6 +32,11 @@ var mappedStream = [
   ['row13423d' , '2', ['1','bbb'], '3', '4']
 ];
 
+var colMappedStream = [
+    {id:'row12345a', first:'11', second:'22', third:'33', fourth:'44'},
+    {id:'row12345a', first:'11', second:'22', third:'33', fourth:'44'},
+    {id:'row12345a', first:'11', second:'22', third:'33', fourth:'44'}
+];
 
 CC.ready(function(){
   var grid = new CC.ui.Grid({
@@ -64,8 +69,13 @@ CC.ready(function(){
   grid.content.fromArray(arrayDataAfterTrans);
 
   var mappedDataAfterTrans = CC.util.DataTranslator.get('gridmaptranslator').read(mappedStream, grid.content);
-  console.log(mappedDataAfterTrans);
+  if(__debug) console.log(mappedDataAfterTrans);
   grid.content.fromArray(mappedDataAfterTrans);
+  
+  var mappedColDataAfterTrans = CC.util.DataTranslator.get('gridcolmaptranslator').read(colMappedStream, grid.content);
+  grid.content.fromArray(mappedColDataAfterTrans);  
+  console.log(mappedColDataAfterTrans);
+  
   //
   // 如果是通过ajax加载数据，可设置connectionProvider的reader属性来适用的数据转换器
   /*
