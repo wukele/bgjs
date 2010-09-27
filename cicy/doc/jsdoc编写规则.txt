@@ -1,3 +1,0 @@
-jsdoc toolkit地址:http://code.google.com/p/jsdoc-toolkit/wiki/
-
-写法参见本目录下的例子
