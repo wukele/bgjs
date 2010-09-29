@@ -1,13 +1,13 @@
 
 .iconCalendar {
-	background-image:url(ext/images/default/shared/calendar.gif) !important;
+	background-image:url(calendar.gif) !important;
 }
-.iconUser {background-image:url(user_green.gif) !important;}
+.iconUser {background-image:url(calendar.gif) !important;}
 .iconEdit {background-image:url(cog_edit.png) !important;}
 .iconRef {background-image:url(refresh.gif) !important;}
-.iconFolder {background-image:url(ext/images/default/tree/folder.gif) !important;}
-.iconLeaf {background-image:url(ext/images/default/tree/leaf.gif) !important;}
-.iconTabs {	background-image:url(ext/images/default/tabs.gif) !important;}
+.iconFolder {background-image:url(folder.gif) !important;}
+.iconLeaf {background-image:url(leaf.gif) !important;}
+.iconTabs {	background-image:url(calendar.gif) !important;}
 
 /**CFolderView*/
 .g-folderview-ctx dd{
