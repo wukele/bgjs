@@ -40,7 +40,7 @@ CC.create('CC.util.JSONPConnector', null, {
     },
     
     send : function(data){
-        var cfg = this.cfg || {};
+        var cfg = this.cfg || {},
             url = this.url || cfg.url, 
             isQ = url.indexOf('?')>=0,
             win = cfg.win || window,
@@ -92,7 +92,8 @@ CC.create('CC.util.JSONPConnector', null, {
     _clean : function(){
         if(!this.cleaned){
             try {
-                delete this._win[this._fn];
+                this._win[this._fn] = null;
+                try{ delete this._win[this._fn]; }catch(ex){}
                 delete this._win;
                 delete this._fn;
                 this._script.onreadystatechange = null;
