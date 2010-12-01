@@ -106,6 +106,6 @@ CC.create('CC.util.JSONPConnector', null, {
         this.readyState = rs;
         if(status !== undefined)
             this.status = status;
-        this.onreadystatechange.call(this, args);
+        this.onreadystatechange.apply(this, args);
     }
 });
