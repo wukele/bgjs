@@ -90,17 +90,18 @@ CC.create('CC.util.JSONPConnector', null, {
     },
     
     _clean : function(){
-        try {
-            alert('cleaned');
-            delete this._win[this._fn];
-            delete this._win;
-            delete this._fn;
-            this._script.onreadystatechange = null;
-            this._script.parentNode.removeChild(this._script);
-            delete this._script;
-            delete this.cfg;
-        }catch(e){}
-        this.cleaned = true;
+        if(!this.cleaned){
+            try {
+                delete this._win[this._fn];
+                delete this._win;
+                delete this._fn;
+                this._script.onreadystatechange = null;
+                this._script.parentNode.removeChild(this._script);
+                delete this._script;
+                delete this.cfg;
+            }catch(e){}
+            this.cleaned = true;
+        }
     },
     
     _fireState : function(rs, status, args){
