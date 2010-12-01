@@ -120,21 +120,26 @@ CC.create('CC.ui.grid.plugins.Pagenation', null, {
 /**
  * @event page:afterchange
  * 事件由{@link CC.ui.grid.plugins.Pagenation}提供,分页改变,数据加载完成后发送.<br/>
- * @param {Object} pageInformation
+ * @param {CC.ui.grid.plugins.Pagenation} pageInformation
  * @param {Object} returnedJsonObject
  * @param {CC.Ajax} ajax
  * @member CC.ui.Grid
  */
 
+/** 
+ * 跳到指定页，并指定如果同一页是否强制刷新该页数据。
+ * @param {Object} pageInfo
+ * @param {Boolean} forceRefresh
+ */
  
-  go : function(inf, fource){
+  go : function(inf, force){
     if(!this.disabled){
     	if(!inf || typeof inf === 'number')
     	  inf = {current:inf||1};
     	
     	var pre = this.current, cr = inf.current;
     	
-      if( (pre !== cr || fource) && cr>0){
+      if( (pre !== cr || force) && cr>0){
         this.grid.fire('page:beforechange', inf, this) !== false && this.onPageChange(inf) !== false;
       }
     }

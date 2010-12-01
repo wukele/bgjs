@@ -57,7 +57,8 @@ CC.create('CC.ui.grid.plugins.RowChecker', null, {
             cell.checkClass(col.checkedCS, selProvider.isSelected( current ));
             if(previous){
                 var preCell = previous.$('rowcheckercell');
-                preCell.checkClass(col.checkedCS, selProvider.isSelected( previous ));
+                if(preCell)
+                    preCell.checkClass(col.checkedCS, selProvider.isSelected( previous ));
             }
    	   });
   	}
