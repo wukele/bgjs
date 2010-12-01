@@ -44,7 +44,7 @@ CC.create('CC.util.JSONPConnector', null, {
             url = this.url || cfg.url, 
             isQ = url.indexOf('?')>=0,
             win = cfg.win || window,
-            fn  = 'jsonp_' + (new Date() + CC.uniqueID()),
+            fn  = 'jsonp_' + (+new Date() + CC.uniqueID()),
             doc = cfg.win ? CC.frameDoc(win) : document,
             script = doc.createElement('script'),
             jsonp = cfg.jsonp || 'jsonp',
