@@ -70,6 +70,7 @@ CC.create('CC.ui.Shadow', CC.Base,
         this.target.on('resized', this.reanchor, this)
                    .on('reposed', this.reanchor, this);
     }
+    
     this.setZ((this.target.fastStyle('zIndex') || 1)-1);
     //专门针对不支持PNG图片的IE6
     if(CC.ie6){
