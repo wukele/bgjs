@@ -264,14 +264,14 @@ white-space:nowrap;
 .g-resizer{position:relative;}
 .g-resizer .g-resizer-wrap{position:absolute;top:6px;left:1px;overflow:auto;}
 /*window*/
-.g-win{position:absolute;z-index:900;}
+.g-win{position:absolute;z-index:1001;}
 .g-tbar-win .g-resizer-wrap {top:29px;}
 .g-win-wrap-out{overflow:hidden;}
 .g-win-min, .g-win-min .g-win-wrap {overflow:hidden !important;}
 .g-win-max, .g-win-max .g-win-wrap {overflow:hidden !important;}
 
 .g-win {height:auto;}
-.g-win .g-win-hd {text-align:left;background-position:0 -494px;height:29px;z-index:901;position:absolute;width:100%;overflow:hidden;/*filter: Alpha(opacity=85); opacity:0.85;*/}
+.g-win .g-win-hd {text-align:left;background-position:0 -494px;height:29px;z-index:1002;position:absolute;width:100%;overflow:hidden;/*filter: Alpha(opacity=85); opacity:0.85;*/}
 .g-win .g-win-hd .fLe, .g-win .g-win-hd .fRi {height:29px;width:6px;}
 .g-win .g-win-hd .fLe {background-position:-336px 0px;}
 .g-win .g-win-hd .fRi {background-position:-356px 0px;position:absolute;right:0;top:0;}
@@ -281,7 +281,7 @@ white-space:nowrap;
 :lang(zh).g-win .icoSw{margin:7px 2px 0px;}
 .g-win .g-win-hd .g-tle {color:#FFFFFF;cursor:default;float:none;font-weight:normal;line-height:29px;}
 :lang(zh) .g-win .g-win-hd .g-tle {line-height:26px;}
-.g-win-e,.g-win-s,.g-win-w,.g-win-n,.g-win-sw,.g-win-es,.g-win-wn,.g-win-ne{z-index:1000;position:absolute;font-size:0px;overflow:hidden;margin:0px;padding:0px;/*filter: Alpha(opacity=85); opacity:0.85;*/}
+.g-win-e,.g-win-s,.g-win-w,.g-win-n,.g-win-sw,.g-win-es,.g-win-wn,.g-win-ne{z-index:1010;position:absolute;font-size:0px;overflow:hidden;margin:0px;padding:0px;/*filter: Alpha(opacity=85); opacity:0.85;*/}
 .g-win-sw,.g-win-es,.g-win-wn,.g-win-ne{height:6px;width:6px;}
 .g-win-e{cursor:e-resize;height:100%;right:0;width:4px;right:-3px;}
 .g-win-s{bottom:0;cursor:s-resize;width:100%;height:2px;}
@@ -300,13 +300,13 @@ white-space:nowrap;
 .g-win-sw{ background-position:-336px -73px;}
 .g-win-es{background-position:-356px -73px;}
 
-.g-win-bottom {height:51px;bottom:0;left:0;position:absolute;background-position:0 -551px;overflow:hidden;width:100%;z-index:900;}
+.g-win-bottom {height:51px;bottom:0;left:0;position:absolute;background-position:0 -551px;overflow:hidden;width:100%;z-index:1001;}
 .g-win-bottom .bottom-wrap{padding:15px 12px 0px 5px;vertical-align:middle;}
 .g-win-bottom .g-btn{float:right;margin-right:8px;}
 .g-resize-mask{height:100%;left:0;background-color:white;left:0;top:0;position:absolute;width:100%;z-index:200000;font-size:0px;visibility:visible;filter: Alpha(opacity=0); opacity:0;cursor:move;}
 .g-resize-ghost {border:1px dashed #3B5A82;left:0;overflow:hidden;position:absolute;top:0;z-index:50000;visibility:visible;padding:0px;margin:0px;}
 .g-resize-ghost .icos{background:none;}
-.g-modal-mask {height:100%;z-index:1001;left:0;position:absolute;top:0;width:100%;font-size:0px;visibility:visible;background:gray;filter: Alpha(opacity=5); opacity:0.05;}
+.g-modal-mask {height:100%;z-index:1000;left:0;position:absolute;top:0;width:100%;font-size:0px;visibility:visible;background:gray;filter: Alpha(opacity=5); opacity:0.05;}
 /*shadow*/
 .g-shadow {position:absolute;overflow:hidden;}
 /**For browser that does not support png*/
