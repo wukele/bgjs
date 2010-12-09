@@ -9,7 +9,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
     CC.Tpl.def('CC.ui.win.TitlebarButton', '<a class="g-hd-btn" href="javascript:fGo();"></a>');
 
     //static变量,跟踪当前最顶层窗口的zIndex
-    var globalZ = 900,
+    var globalZ = 1001,
         G = CC.util.dd.Mgr,
         H = G.resizeHelper,
         Base = CC.Base,

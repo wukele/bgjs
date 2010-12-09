@@ -16,8 +16,6 @@ CC.Cache =
     /**@cfg {Number} MAX_ITEM_SIZE 某类设置的最大缓存数量.*/
     MAX_ITEM_SIZE: 5,
 
-    /**@private 获取缓存数据的回调函数.*/
-    callbacks: [],
 /**
  * 注册数据产生方式回调函数,可重复赋值,函数返回键对应的数据.
  * @param {Object} key
