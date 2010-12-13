@@ -23,13 +23,13 @@ CC.create('CC.ui.form.EditorDialog', CC.ui.Dialog, {
 	layout:'card',
 	modal : true,
 	buttons : [
-		{title:'确 定', id:'ok'},
-		{title:'取 消', id:'cancel'}
+		{title:'取 消', id:'cancel'},
+		{title:'确 定', id:'ok'}
 	],
 	
 	initComponent : function(){
 		CC.ui.Dialog.prototype.initComponent.call(this);
-		this.editor = CC.ui.instance(CC.extend(this.editor, { ctype:'rtext' }));
+		this.editor = CC.ui.instance(CC.extendIf(this.editor, { ctype:'rtext' }));
 		this.add(this.editor);
 	},
 	
@@ -44,8 +44,8 @@ CC.create('CC.ui.form.EditorDialog', CC.ui.Dialog, {
 		return this.editor.getValue();
 	},
 	
-	setValue : function(){
-		this.editor.setValue();
+	setValue : function(v){
+		this.editor.setValue(v);
 		return this;
 	},
 	
