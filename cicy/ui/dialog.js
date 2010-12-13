@@ -190,6 +190,7 @@ CC.ui.def('dlg', CC.ui.Dialog);
       if(this.masker){
        this.masker.setZ(this.getZ() - 2);
       }
+      return this;
     },
 
     onShow : function(){

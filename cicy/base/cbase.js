@@ -4,6 +4,7 @@ var Eventable = CC.Eventable;
 var CPC = {};
 var Cache = CC.Cache;
 var Event = CC.Event;
+var globalZ = 1001;
 /**
  * @class CC.Base
  * 为所有控件的基类,定义控件的基本属性与方法,管理控件的生命周期.<br>
@@ -348,7 +349,7 @@ var ctxQueue = {
 	},
 	
 	_setCompEvtHandler : function(comp, set){
-		set ? comp.domEvent('mousedown', this._compEvtHandler, true)
+		set ? comp.domEvent('mousedown', this._compEvtHandler)
 		    : comp.unEvent('mousedown', this._compEvtHandler);
 	},
 	
@@ -380,6 +381,8 @@ var ctxQueue = {
 	_compEvtHandler : function(e){
 		// cancel 后来者
 		ctxQueue._releaseFollower(this, e);
+		if(e)
+		    Event.stopPropagation(e);
 	},
 	
 	// document mouse down handler
@@ -905,8 +908,12 @@ CC.extend(Base.prototype,
         }
       }
       if(this.shadow){
-        if(!this.getZ())
-          this.setZ(1001);
+        if(!this.getZ()){
+          var shadow = this.shadow;
+          delete this.shadow;
+          this.trackZIndex();
+          this.shadow = shadow;
+        }
         this.shadow.attach(this);
       }
     },
@@ -1164,6 +1171,43 @@ CC.extend(Base.prototype,
         return this;
     }
     ,
+    
+/**
+ * 更新窗口系统的zIndex,使得当前激活窗口位于最顶层
+ * @private
+ */
+        trackZIndex : function(){
+          if(this.zIndex != globalZ){
+            //以2+速度递增,+2因为存在阴影
+            globalZ+=2;
+            this.setZ(globalZ);
+          }
+          return this;
+        },
+
+ /**
+  * 设置控件的zIndex值.
+  * @param {Number} zIndex
+  * @return {Object} this
+  */
+        setZ : function(zIndex) {
+            this.fastStyleSet("zIndex", zIndex);
+
+            //corners
+            /*
+            for(var i=0,cs=this.cornerSprites,len=cs.length;i<len;i++){
+              cs[i].setZ(zIndex + 1);
+            }
+            */
+            //shadow
+            if(this.shadow)
+              this.shadow.setZ(zIndex-1);
+
+            //cache the zIndex
+            this.zIndex = zIndex;
+
+            return this;
+        },
 
 /**
  * this.view.getElementsByTagName(tagName);
@@ -1462,17 +1506,7 @@ CC.extend(Base.prototype,
         this.view.parentNode.insertBefore(oNew, this.view);
         return this;
     },
- /**
-  * 设置控件的zIndex值.
-  * @param {Number} zIndex
-  * @return {Object} this
-  */
-    setZ : function(zIndex) {
-        this.fastStyleSet("zIndex", zIndex);
-        if(this.shadow)
-          this.shadow.setZ(zIndex - 1);
-        return this;
-    },
+
   /**
    * 获得控件的zIndex值.
    * @return {Number}

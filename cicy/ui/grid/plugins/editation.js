@@ -206,6 +206,7 @@ return {
       
       et.setValue(cell.getValue())
         .setText(cell.getTitle())
+        .trackZIndex()
         .show()
         .setContexted(true)
         .focus();

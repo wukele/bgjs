@@ -9,8 +9,7 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
     CC.Tpl.def('CC.ui.win.TitlebarButton', '<a class="g-hd-btn" href="javascript:fGo();"></a>');
 
     //static变量,跟踪当前最顶层窗口的zIndex
-    var globalZ = 1001,
-        G = CC.util.dd.Mgr,
+    var G = CC.util.dd.Mgr,
         H = G.resizeHelper,
         Base = CC.Base,
         SX = Base.prototype.setXY,
@@ -210,37 +209,6 @@ CC.create('CC.ui.Win', CC.ui.Resizer, function(father){
         setTitle : function(tle) {
           this.titlebar.setTitle(tle);
           return this;
-        },
-/**
- * 更新窗口系统的zIndex,使得当前激活窗口位于最顶层
- * @private
- */
-        trackZIndex : function(){
-          if(this.zIndex != globalZ){
-            //以2+速度递增,+2因为存在阴影
-            globalZ+=2;
-            this.setZ(globalZ);
-          }
-        },
-
-        //override
-        setZ : function(zIndex) {
-            this.fastStyleSet("zIndex", zIndex);
-
-            //corners
-            /*
-            for(var i=0,cs=this.cornerSprites,len=cs.length;i<len;i++){
-              cs[i].setZ(zIndex + 1);
-            }
-            */
-            //shadow
-            if(this.shadow)
-              this.shadow.setZ(zIndex-1);
-
-            //cache the zIndex
-            this.zIndex = zIndex;
-
-            return this;
         },
 
         switchState : function(){
