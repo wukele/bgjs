@@ -120,12 +120,14 @@ return {
 
 /**
  * 将子项滚动到可见处
- * @param {CC.ui.TabItem} tabItem
+ * @param {CC.ui.TabItem|HTMLElement} tabItem
  */
   scrollItemIntoView : function(item){
     if(!item)
       item = this.ct.selectionProvider.selected;
-
+    else if(!item.view)
+    		item = this.ct.$(item);
+    		
     if(item){
       var dx = this.getScrollIntoViewDelta(item);
       if(dx !== 0){
